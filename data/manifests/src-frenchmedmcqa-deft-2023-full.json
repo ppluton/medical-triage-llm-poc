@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "src-frenchmedmcqa-deft-2023-full",
+  "dataset_name": "qanastek/frenchmedmcqa",
+  "primary_url": "https://huggingface.co/datasets/qanastek/frenchmedmcqa",
+  "immutable_revision": "be9a03fde01d9f05107b14941af1ad99897691cf",
+  "artifact": {
+    "upstream_path": "DEFT-2023-FULL.zip",
+    "retrieved_at": "2026-08-28T00:00:00Z",
+    "byte_size": 550466,
+    "sha256": "58724ce1ac97b01b89ad5a6d4d1d9b9de3379d36feaaa11058d88aad8a2af4c9",
+    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/frenchmedmcqa/DEFT-2023-FULL.zip"
+  },
+  "license": {
+    "identifier": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "attribution_required": true,
+    "restrictions": ["Candidate only until content and split checks complete."]
+  },
+  "citation": "Labrak et al. (2022), FrenchMedMCQA: A French Multiple-Choice Question Answering Dataset for Medical domain.",
+  "admission_status": "candidate",
+  "pre_ingestion_checks": {
+    "provenance": "passed",
+    "license": "passed",
+    "pii": "not_run",
+    "format": "passed",
+    "duplicates": "not_run",
+    "split_leakage": "not_run"
+  },
+  "notes": ["Archive integrity checked with unzip -t.", "No content extraction or training use in this acquisition step."]
+}
