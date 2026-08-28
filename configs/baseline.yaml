@@ -1,0 +1,6 @@
+experiment: baseline-qwen3-1.7b
+model_id: Qwen/Qwen3-1.7B-Base
+mode: evaluation_only
+dataset_manifest_status_required: approved
+seed: 42
+splits: [validation, test]

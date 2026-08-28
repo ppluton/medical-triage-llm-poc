@@ -1,0 +1,9 @@
+experiment: dpo-qwen3-1.7b
+base_checkpoint: sft-lora-approved-checkpoint-required
+mode: direct_preference_optimization
+dataset_manifest_status_required: approved
+seed: 42
+dpo:
+  beta: proposed
+  learning_rate: proposed
+  epochs: proposed

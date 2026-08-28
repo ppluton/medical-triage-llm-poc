@@ -1,0 +1,13 @@
+experiment: sft-lora-qwen3-1.7b
+base_model: Qwen/Qwen3-1.7B-Base
+mode: supervised_fine_tuning
+dataset_manifest_status_required: approved
+seed: 42
+lora:
+  rank: proposed
+  alpha: proposed
+  dropout: proposed
+  target_modules: proposed
+training:
+  learning_rate: proposed
+  epochs: proposed
