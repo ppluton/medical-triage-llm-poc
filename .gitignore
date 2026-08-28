@@ -1,0 +1,29 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+secrets/
+
+# Medical data and generated artifacts
+data/raw/
+data/processed/
+artifacts/
+checkpoints/
+models/
+mlruns/
+wandb/
+*.safetensors
+*.pt
+*.pth
+
+# Runtime and local tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+dist/
+build/
+*.log

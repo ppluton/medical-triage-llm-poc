@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/triage_record_v1.schema.json",
+  "title": "Triage training and evaluation record v1",
+  "description": "Metadata and structured content for an anonymized or synthetic SFT, DPO, or evaluation record. This schema does not establish clinical validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "task_type",
+    "language",
+    "data_origin",
+    "patient_context",
+    "source",
+    "transformation",
+    "quality",
+    "split"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_id": {
+      "type": "string",
+      "pattern": "^(sft|dpo|eval)-[a-z0-9][a-z0-9-]{5,127}$"
+    },
+    "task_type": { "enum": ["sft", "dpo", "evaluation"] },
+    "language": { "enum": ["fr", "en"] },
+    "data_origin": { "enum": ["synthetic", "source_derived"] },
+    "patient_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["age_group", "symptoms", "medical_history", "vitals", "vulnerability_factors"],
+      "properties": {
+        "age_group": { "enum": ["pediatric", "adult", "older_adult", "unknown"] },
+        "symptoms": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "maxItems": 20 },
+        "duration": { "type": ["string", "null"], "maxLength": 120 },
+        "evolution": { "type": ["string", "null"], "maxLength": 120 },
+        "intensity": { "type": ["string", "null"], "maxLength": 120 },
+        "associated_symptoms": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "medical_history": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "medications": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "allergies": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "vitals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["heart_rate", "temperature_c", "respiratory_rate", "oxygen_saturation_pct", "systolic_bp"],
+          "properties": {
+            "heart_rate": { "type": ["number", "null"] },
+            "temperature_c": { "type": ["number", "null"] },
+            "respiratory_rate": { "type": ["number", "null"] },
+            "oxygen_saturation_pct": { "type": ["number", "null"] },
+            "systolic_bp": { "type": ["number", "null"] }
+          }
+        },
+        "vulnerability_factors": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_manifest_id", "source_record_id", "source_dataset", "source_license"],
+      "properties": {
+        "source_manifest_id": { "type": "string", "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$" },
+        "source_record_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "source_dataset": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "source_license": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "source_url": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
+    "transformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pipeline_name", "pipeline_version", "code_revision", "run_id"],
+      "properties": {
+        "pipeline_name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "pipeline_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "code_revision": { "type": "string", "minLength": 7, "maxLength": 64 },
+        "run_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pii_anonymization_status", "clinical_review_status", "safety_review_status"],
+      "properties": {
+        "pii_anonymization_status": { "enum": ["not_run", "passed", "failed", "manual_review_required"] },
+        "clinical_review_status": { "enum": ["not_required", "pending", "approved", "rejected"] },
+        "safety_review_status": { "enum": ["not_run", "passed", "failed", "manual_review_required"] }
+      }
+    },
+    "split": { "enum": ["train", "validation", "test"] },
+    "sft_target": { "$ref": "#/$defs/triage_output" },
+    "dpo_pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt", "chosen", "rejected", "preference_rationale", "preference_review_status"],
+      "properties": {
+        "prompt": { "type": "string", "minLength": 1, "maxLength": 12000 },
+        "chosen": { "$ref": "#/$defs/triage_output" },
+        "rejected": { "$ref": "#/$defs/triage_output" },
+        "preference_rationale": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "preference_review_status": { "enum": ["pending", "approved", "rejected"] }
+      }
+    },
+    "evaluation_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_category", "expected_behavior"],
+      "properties": {
+        "scenario_category": { "enum": ["chest_pain", "respiratory_distress", "neurological_deficit", "pediatric", "pregnancy", "vulnerability", "insufficient_information", "contradictory_information", "other"] },
+        "expected_triage_level": { "enum": ["maximum", "moderate", "deferred"] },
+        "expected_behavior": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "task_type": { "const": "sft" } } },
+      "then": { "required": ["sft_target"] }
+    },
+    {
+      "if": { "properties": { "task_type": { "const": "dpo" } } },
+      "then": { "required": ["dpo_pair"] }
+    },
+    {
+      "if": { "properties": { "task_type": { "const": "evaluation" } } },
+      "then": { "required": ["evaluation_target"] }
+    }
+  ],
+  "$defs": {
+    "triage_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["triage_level", "summary", "clinical_rationale", "missing_information", "red_flags", "recommendation", "safety_notice"],
+      "properties": {
+        "triage_level": { "enum": ["maximum", "moderate", "deferred"] },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "clinical_rationale": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "missing_information": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "red_flags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 20 },
+        "recommendation": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "safety_notice": { "type": "string", "minLength": 1, "maxLength": 1000 }
+      }
+    }
+  }
+}

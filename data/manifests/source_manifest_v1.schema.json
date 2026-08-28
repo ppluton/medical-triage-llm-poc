@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/source_manifest_v1.schema.json",
+  "title": "Source artifact manifest v1",
+  "description": "Traceability manifest for one source artifact. It must never contain raw records or patient data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "dataset_name",
+    "primary_url",
+    "immutable_revision",
+    "artifact",
+    "license",
+    "citation",
+    "admission_status",
+    "pre_ingestion_checks"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "manifest_id": { "type": "string", "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$" },
+    "dataset_name": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "primary_url": { "type": "string", "format": "uri" },
+    "immutable_revision": { "type": "string", "minLength": 7, "maxLength": 128 },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upstream_path", "retrieved_at", "byte_size", "sha256", "local_storage_uri"],
+      "properties": {
+        "upstream_path": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "retrieved_at": { "type": "string", "format": "date-time" },
+        "byte_size": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "local_storage_uri": { "type": "string", "pattern": "^(file|s3|gs)://" }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "url", "attribution_required", "restrictions"],
+      "properties": {
+        "identifier": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "url": { "type": "string", "format": "uri" },
+        "attribution_required": { "type": "boolean" },
+        "restrictions": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 30 }
+      }
+    },
+    "citation": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "admission_status": { "enum": ["candidate", "approved", "rejected", "quarantined"] },
+    "pre_ingestion_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provenance", "license", "pii", "format", "duplicates", "split_leakage"],
+      "properties": {
+        "provenance": { "enum": ["not_run", "passed", "failed"] },
+        "license": { "enum": ["not_run", "passed", "failed"] },
+        "pii": { "enum": ["not_run", "passed", "failed", "manual_review_required"] },
+        "format": { "enum": ["not_run", "passed", "failed"] },
+        "duplicates": { "enum": ["not_run", "passed", "failed", "manual_review_required"] },
+        "split_leakage": { "enum": ["not_run", "passed", "failed", "manual_review_required"] }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 50 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "admission_status": { "const": "approved" } } },
+      "then": {
+        "properties": {
+          "pre_ingestion_checks": {
+            "properties": {
+              "provenance": { "const": "passed" },
+              "license": { "const": "passed" },
+              "pii": { "const": "passed" },
+              "format": { "const": "passed" },
+              "duplicates": { "const": "passed" },
+              "split_leakage": { "const": "passed" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
