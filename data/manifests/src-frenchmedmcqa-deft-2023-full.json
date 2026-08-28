@@ -22,10 +22,10 @@
   "pre_ingestion_checks": {
     "provenance": "passed",
     "license": "passed",
-    "pii": "not_run",
+    "pii": "manual_review_required",
     "format": "passed",
-    "duplicates": "not_run",
-    "split_leakage": "not_run"
+    "duplicates": "passed",
+    "split_leakage": "manual_review_required"
   },
-  "notes": ["Archive integrity checked with unzip -t.", "No content extraction or training use in this acquisition step."]
+  "notes": ["Archive integrity checked with unzip -t.", "Native split IDs have no overlap; semantic leakage remains to review.", "Regex scan found no email or French phone match; Presidio and manual review remain required."]
 }

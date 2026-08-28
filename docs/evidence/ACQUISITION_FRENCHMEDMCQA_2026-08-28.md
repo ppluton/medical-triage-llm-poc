@@ -6,4 +6,4 @@
 
 La récupération a produit un fichier de 550 466 octets avec le SHA-256 `58724ce1ac97b01b89ad5a6d4d1d9b9de3379d36feaaa11058d88aad8a2af4c9`. `unzip -t` a terminé sans erreur.
 
-Le manifeste est `candidate`. Provenance, licence affichée et intégrité d'archive sont vérifiées. PII, doublons et absence de fuite entre splits ne sont pas encore vérifiés ; aucun exemple de cette archive ne doit donc servir à la baseline, au SFT, au DPO ou à l'évaluation.
+Le manifeste est `candidate`. Provenance, licence affichée et intégrité d'archive sont vérifiées. L'archive contient 2 171 exemples `train`, 312 `dev` et 622 `test`, sans chevauchement d'identifiants. Un scan regex n'a trouvé ni email ni numéro de téléphone français standard. Les contrôles PII Presidio, revue manuelle et fuite sémantique restent requis ; aucun exemple ne doit donc servir à la baseline, au SFT, au DPO ou à l'évaluation.
