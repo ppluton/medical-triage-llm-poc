@@ -25,7 +25,7 @@
     "pii": "manual_review_required",
     "format": "passed",
     "duplicates": "passed",
-    "split_leakage": "manual_review_required"
+    "split_leakage": "failed"
   },
-  "notes": ["Archive integrity checked with unzip -t.", "Native split IDs have no overlap; semantic leakage remains to review.", "Regex scan found no email or French phone match; Presidio and manual review remain required."]
+  "notes": ["Archive integrity checked with unzip -t.", "Native split IDs have no overlap, but normalized question text overlaps: dev/test 2, dev/train 12, test/train 14. Rebuild splits after deduplication.", "Regex scan found no email or French phone match; Presidio and manual review remain required."]
 }
