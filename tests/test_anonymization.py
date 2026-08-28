@@ -4,6 +4,7 @@ import pytest
 from presidio_analyzer import RecognizerResult
 
 from triage_poc.anonymization import AnonymizationConfigurationError, TextAnonymizer
+from triage_poc.contracts import ContractValidationError, validate_against_schema
 
 
 @dataclass
@@ -72,3 +73,39 @@ def test_anonymize_fails_closed_when_detector_raises():
 
     with pytest.raises(AnonymizationConfigurationError, match="could not complete safely"):
         TextAnonymizer(BrokenAnalyzer(), FakeAnonymizer()).anonymize("synthetic text", "fr")
+
+
+def test_contract_rejects_an_approved_manifest_with_a_skipped_pii_check():
+    manifest = {
+        "schema_version": "1.0.0",
+        "manifest_id": "src-fixture-source",
+        "dataset_name": "fixture",
+        "primary_url": "https://example.org/dataset",
+        "immutable_revision": "abcdef1",
+        "artifact": {
+            "upstream_path": "fixture.jsonl",
+            "retrieved_at": "2026-08-28T00:00:00Z",
+            "byte_size": 1,
+            "sha256": "a" * 64,
+            "local_storage_uri": "file:///controlled/fixture.jsonl",
+        },
+        "license": {
+            "identifier": "MIT",
+            "url": "https://opensource.org/license/mit",
+            "attribution_required": True,
+            "restrictions": [],
+        },
+        "citation": "Synthetic fixture",
+        "admission_status": "approved",
+        "pre_ingestion_checks": {
+            "provenance": "passed",
+            "license": "passed",
+            "pii": "not_run",
+            "format": "passed",
+            "duplicates": "passed",
+            "split_leakage": "passed",
+        },
+    }
+
+    with pytest.raises(ContractValidationError, match="passed"):
+        validate_against_schema(manifest, "source_manifest_v1.schema.json")
