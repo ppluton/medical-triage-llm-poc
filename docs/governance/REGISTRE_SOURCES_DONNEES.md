@@ -1,7 +1,7 @@
 # Registre de gouvernance des sources de données
 
 - **Date :** 2026-08-31
-- **Statut :** draft — FrenchMedMCQA et MedQuAD acquis et audités comme candidats ; aucune source externe approuvée pour l'entraînement
+- **Statut :** draft — FrenchMedMCQA, MedQuAD et MEDIQA acquis et audités comme candidats ; aucune source externe approuvée pour l'entraînement
 - **Périmètre :** sources citées par `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Propriétaire :** projet d'étude POC Agent IA de triage médical
 
@@ -13,7 +13,7 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 
 | Source | Usage envisagé | Licence affichée à la source | Statut actuel | Décision avant ingestion |
 |---|---|---|---|---|
-| MEDIQA 2019 | Évaluation QA/RQE, pas de référentiel de triage | CC BY 4.0 | candidate sous contrôle | Vérifier les sous-tâches et exclusions ; ne pas mélanger avec le test clinique isolé |
+| MEDIQA 2019 | Évaluation QA/RQE, pas de référentiel de triage | CC BY 4.0 | candidate auditée | Révision `32311a1…` épinglée ; tâches 2–3 seulement ; revue PII et déduplication requises |
 | FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Respecter les splits natifs ; ne pas transformer automatiquement les QCM en recommandations de triage |
 | MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate auditée | Révision `577bd37…` épinglée ; exclure les sous-ensembles 10–12 ; revue PII et clinique requise avant toute sélection |
 | UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate sous contrôle | Contrôler le schéma, la révision, la qualité et l'adéquation au triage avant toute sélection |
@@ -25,12 +25,12 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 ### MEDIQA 2019
 
 - **Référence primaire :** [dépôt `abachaa/MEDIQA2019`](https://github.com/abachaa/MEDIQA2019)
-- **Version à épingler avant téléchargement :** commit Git précis, à renseigner dans le manifeste ; la branche `master` seule n'est pas une version reproductible.
-- **Contenu :** challenge ACL-BioNLP 2019 comprenant NLI, reconnaissance d'entailment de questions (RQE) et QA ; les jeux sont répartis par tâches.
+- **Version acquise :** commit `32311a139b583a9ccec133b3f8a21873d4ff3561`, archive et checksum consignés dans `data/manifests/src-mediqa2019-32311a1.json`.
+- **Contenu observé :** tâches 2 RQE et 3 QA ; 9 120 paires RQE, 383 questions QA et 3 042 réponses dans les exports canoniques.
 - **Licence affichée :** Creative Commons Attribution 4.0 International (CC BY 4.0).
 - **Usage POC envisagé :** évaluation ou transformation limitée vers des tâches de compréhension médicale, jamais comme validation clinique de triage.
-- **Risques / contrôles :** identifier les fichiers utilisés et leurs licences effectives ; exclure les éléments provenant de jeux sous accès contrôlé (par exemple MedNLI) ; conserver citation et attribution.
-- **PII :** aucun contrôle local effectué à ce stade ; passage obligatoire dans le pipeline d'anonymisation et revue d'échantillons avant usage.
+- **Risques / contrôles :** tâche 1 MedNLI exclue car non distribuée dans le dépôt et contrôlée via PhysioNet ; labels RQE/QA interdits comme cibles automatiques de triage ; préserver citation et attribution.
+- **PII :** sample déterministe de 70 questions passé sans résidu, mais le corpus complet et les réponses nécessitent encore un contrôle et une revue humaine.
 
 ### FrenchMedMCQA
 
@@ -75,7 +75,7 @@ Une source ou un sous-ensemble ne passe de `candidate sous contrôle` à `approv
 
 ## État d’acquisition au 2026-08-31
 
-FrenchMedMCQA et MedQuAD ont été acquis localement dans `data/raw/`, hors Git. MedQuAD a fait l’objet d’un inventaire complet et d’un sample Presidio de 90 paires ; son manifeste reste `candidate`. MEDIQA 2019 et UltraMedical-Preference ne sont pas encore acquis.
+FrenchMedMCQA, MedQuAD et MEDIQA 2019 ont été acquis localement dans `data/raw/`, hors Git. MedQuAD a fait l’objet d’un inventaire complet et d’un sample Presidio de 90 paires. MEDIQA a fait l’objet d’un inventaire complet de ses tâches 2–3 et d’un sample Presidio de 70 questions. Leurs manifestes restent `candidate`. UltraMedical-Preference n'est pas encore acquis localement ; sa révision et ses volumes distants ont été identifiés avant téléchargement.
 
 ## Ce que ce document prouve et ne prouve pas
 
