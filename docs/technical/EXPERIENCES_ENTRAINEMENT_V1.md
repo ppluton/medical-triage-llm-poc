@@ -1,6 +1,6 @@
 # Expériences baseline, SFT/LoRA et DPO
 
-- **Statut :** proposed — aucune exécution d'entraînement
+- **Statut :** observed for synthetic technical baseline and SFT micro-run; governed full runs pending
 
 Les configurations sous `configs/` rendent les trois expériences comparables : même modèle de base, seed documentée, manifests approuvés requis et jeux de validation/test isolés.
 

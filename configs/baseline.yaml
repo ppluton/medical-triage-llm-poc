@@ -1,6 +1,23 @@
 experiment: baseline-qwen3-1.7b
-model_id: Qwen/Qwen3-1.7B-Base
+status: observed_synthetic_technical_baseline
+model_id: unsloth/Qwen3-1.7B-Base
 mode: evaluation_only
-dataset_manifest_status_required: approved
+runtime:
+  framework: unsloth-core
+  accelerator: Apple MLX
+  python: "3.13.14"
+  unsloth_version: "2026.8.22"
+data:
+  scenarios: data/samples/synthetic-triage-evaluation-v1.json
+  reference_status: proposed
+  scenario_count: 8
+  isolated_from_training: true
+generation:
+  chat_template: qwen3
+  deterministic: true
+  max_new_tokens: 384
 seed: 42
-splits: [validation, test]
+output: artifacts/baseline-qwen3-base-synthetic-v1.json
+safety:
+  clinical_validation_claim_allowed: false
+  invalid_outputs_must_remain_visible: true
