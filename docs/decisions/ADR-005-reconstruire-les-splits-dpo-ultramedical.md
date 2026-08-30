@@ -30,3 +30,7 @@ Le split `train` contient aussi 33 152 instances de prompts normalisés dupliqu�
 ## Conséquences
 
 Le volume DPO utile sera inférieur aux 109 353 lignes brutes. Cette réduction est acceptable : l'indépendance de l'évaluation, la pertinence de la préférence et la traçabilité priment sur le volume annoncé. Un script de reconstruction déterministe doit précéder toute préparation DPO.
+
+## État d'implémentation
+
+La reconstruction v1 est implémentée. Elle produit un index sans texte de 112 362 décisions. Après priorité des splits et déduplication exacte, 95 350 lignes restent candidates pour l'entraînement et 2 227 pour la validation ; les 777 lignes de test restent réservées à l'évaluation. Ces statuts ne constituent pas une approbation DPO.
