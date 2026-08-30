@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "src-ultramedical-preference-761eb79",
+  "dataset_name": "TsinghuaC3I/UltraMedical-Preference",
+  "primary_url": "https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference",
+  "immutable_revision": "761eb7935310ba662a96d93c5af342e5269d5759",
+  "artifact": {
+    "upstream_path": "ordered byte concatenation: data/train.json, data/dev.json, data/test.json",
+    "retrieved_at": "2026-08-31T00:00:00Z",
+    "byte_size": 1019500856,
+    "sha256": "d40f19d8feb6f56e2310207e065716eb791449e2acd215b5705726869cdc926c",
+    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/ultramedical-preference"
+  },
+  "license": {
+    "identifier": "MIT",
+    "url": "https://opensource.org/license/mit/",
+    "attribution_required": true,
+    "restrictions": [
+      "Preserve the UltraMedical citation and dataset attribution.",
+      "Reserve the human-revised test split for evaluation only."
+    ]
+  },
+  "citation": "Zhang K et al. UltraMedical: Building Specialized Generalists in Biomedicine. arXiv:2406.03949, 2024.",
+  "admission_status": "candidate",
+  "pre_ingestion_checks": {
+    "provenance": "passed",
+    "license": "passed",
+    "pii": "manual_review_required",
+    "format": "passed",
+    "duplicates": "manual_review_required",
+    "split_leakage": "failed"
+  },
+  "notes": [
+    "Pinned files contain 109,353 train, 2,232 dev, and 777 test preference rows.",
+    "Audit found 1,228 normalized prompt overlaps between train and dev and 30 between train and test.",
+    "Train contains 33,152 duplicate normalized prompt instances before reconstruction.",
+    "A deterministic 30-triple Presidio sample left one residual PERSON detection.",
+    "Generic biomedical preferences are not direct triage-safety preferences."
+  ]
+}

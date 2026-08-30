@@ -1,7 +1,7 @@
 # Registre de gouvernance des sources de données
 
 - **Date :** 2026-08-31
-- **Statut :** draft — FrenchMedMCQA, MedQuAD et MEDIQA acquis et audités comme candidats ; aucune source externe approuvée pour l'entraînement
+- **Statut :** draft — quatre sources acquises et auditées comme candidates ; aucune source externe approuvée pour l'entraînement
 - **Périmètre :** sources citées par `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Propriétaire :** projet d'étude POC Agent IA de triage médical
 
@@ -16,7 +16,7 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 | MEDIQA 2019 | Évaluation QA/RQE, pas de référentiel de triage | CC BY 4.0 | candidate auditée | Révision `32311a1…` épinglée ; tâches 2–3 seulement ; revue PII et déduplication requises |
 | FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Respecter les splits natifs ; ne pas transformer automatiquement les QCM en recommandations de triage |
 | MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate auditée | Révision `577bd37…` épinglée ; exclure les sous-ensembles 10–12 ; revue PII et clinique requise avant toute sélection |
-| UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate sous contrôle | Contrôler le schéma, la révision, la qualité et l'adéquation au triage avant toute sélection |
+| UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate auditée, fuite de split | Révision `761eb79…` épinglée ; reconstruire les splits ; réserver le test à l'évaluation |
 
 **Aucune source n'est encore approuvée pour l'entraînement.** La décision sera prise par sous-ensemble et par transformation, pas globalement par nom de dataset.
 
@@ -55,11 +55,11 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 ### UltraMedical-Preference
 
 - **Référence primaire :** [dataset `TsinghuaC3I/UltraMedical-Preference`](https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference) ; [dépôt de publication UltraMedical](https://github.com/TsinghuaC3I/UltraMedical)
-- **Version à épingler avant téléchargement :** révision Hugging Face (commit SHA) et checksums des fichiers réellement retenus.
-- **Contenu :** données de préférences biomédicales en anglais ; la publication annonce plus de 100 000 données de préférence dans la collection UltraMedical.
+- **Version acquise :** révision `761eb7935310ba662a96d93c5af342e5269d5759`, fichiers et checksums consignés dans `data/manifests/src-ultramedical-preference-761eb79.json`.
+- **Contenu observé :** 109 353 paires `train`, 2 232 `dev` et 777 `test`, au format prompt/conversations choisie et rejetée/métadonnées.
 - **Licence affichée :** MIT.
 - **Usage POC envisagé :** candidat pour le DPO, après filtrage par type, langue et sécurité.
-- **Risques / contrôles :** le visualiseur Hugging Face signalait, lors de la consultation du 2026-08-28, un schéma de colonnes incohérent entre fichiers. Inspecter les fichiers et normaliser explicitement le schéma avant ingestion ; ne pas supposer que toutes les paires sont adaptées au triage ; vérifier la provenance des composants synthétiques et documenter les exclusions.
+- **Risques / contrôles :** schéma local cohérent, mais 1 228 chevauchements `train/dev`, 30 `train/test` et 1 `dev/test` ; reconstruction obligatoire. Un sample Presidio de 30 triples conserve une détection `PERSON` résiduelle. Ne pas supposer que toutes les paires sont adaptées au triage.
 
 ## Critères d'acceptation avant ingestion
 
@@ -75,7 +75,7 @@ Une source ou un sous-ensemble ne passe de `candidate sous contrôle` à `approv
 
 ## État d’acquisition au 2026-08-31
 
-FrenchMedMCQA, MedQuAD et MEDIQA 2019 ont été acquis localement dans `data/raw/`, hors Git. MedQuAD a fait l’objet d’un inventaire complet et d’un sample Presidio de 90 paires. MEDIQA a fait l’objet d’un inventaire complet de ses tâches 2–3 et d’un sample Presidio de 70 questions. Leurs manifestes restent `candidate`. UltraMedical-Preference n'est pas encore acquis localement ; sa révision et ses volumes distants ont été identifiés avant téléchargement.
+FrenchMedMCQA, MedQuAD, MEDIQA 2019 et UltraMedical-Preference ont été acquis localement dans `data/raw/`, hors Git, à des révisions épinglées. Les quatre manifestes restent `candidate`. UltraMedical-Preference ne peut pas être admis avant reconstruction de ses splits, contrôle PII du sous-ensemble retenu et sélection spécifique au triage.
 
 ## Ce que ce document prouve et ne prouve pas
 
