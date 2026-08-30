@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "src-medquad-577bd37",
+  "dataset_name": "abachaa/MedQuAD",
+  "primary_url": "https://github.com/abachaa/MedQuAD",
+  "immutable_revision": "577bd37b96c02d1833b2c9eed2de9f96964e96cb",
+  "artifact": {
+    "upstream_path": "git archive 577bd37b96c02d1833b2c9eed2de9f96964e96cb",
+    "retrieved_at": "2026-08-31T00:00:00Z",
+    "byte_size": 45649920,
+    "sha256": "9dd2db77967323da64d1514e0125b44fcce2e59ab5b2da16eba99245649c64a8",
+    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/medquad"
+  },
+  "license": {
+    "identifier": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution_required": true,
+    "restrictions": [
+      "Preserve attribution to MedQuAD and its cited publication.",
+      "Do not reconstruct or recrawl answers removed from subsets 10, 11, and 12."
+    ]
+  },
+  "citation": "Ben Abacha A, Demner-Fushman D. A Question-Entailment Approach to Question Answering. BMC Bioinformatics. 2019;20:511.",
+  "admission_status": "candidate",
+  "pre_ingestion_checks": {
+    "provenance": "passed",
+    "license": "passed",
+    "pii": "manual_review_required",
+    "format": "passed",
+    "duplicates": "manual_review_required",
+    "split_leakage": "manual_review_required"
+  },
+  "notes": [
+    "Candidate for medical knowledge grounding only; not direct triage SFT labels.",
+    "Inventory found 47,441 QA pairs, including 31,034 empty answers.",
+    "Subsets 10, 11, and 12 are excluded because answers were removed upstream for copyright.",
+    "A deterministic 90-record Presidio sample left one residual PERSON detection for manual review."
+  ]
+}

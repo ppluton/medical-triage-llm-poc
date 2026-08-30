@@ -1,7 +1,7 @@
 # Registre de gouvernance des sources de données
 
-- **Date :** 2026-08-28
-- **Statut :** draft — métadonnées vérifiées, aucune donnée téléchargée ni approuvée pour l'entraînement
+- **Date :** 2026-08-31
+- **Statut :** draft — FrenchMedMCQA et MedQuAD acquis et audités comme candidats ; aucune source externe approuvée pour l'entraînement
 - **Périmètre :** sources citées par `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Propriétaire :** projet d'étude POC Agent IA de triage médical
 
@@ -15,7 +15,7 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 |---|---|---|---|---|
 | MEDIQA 2019 | Évaluation QA/RQE, pas de référentiel de triage | CC BY 4.0 | candidate sous contrôle | Vérifier les sous-tâches et exclusions ; ne pas mélanger avec le test clinique isolé |
 | FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Respecter les splits natifs ; ne pas transformer automatiquement les QCM en recommandations de triage |
-| MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate sous contrôle | Utiliser uniquement les contenus distribués par le dépôt ; ne pas recrawler les trois sous-ensembles dont les réponses ont été retirées |
+| MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate auditée | Révision `577bd37…` épinglée ; exclure les sous-ensembles 10–12 ; revue PII et clinique requise avant toute sélection |
 | UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate sous contrôle | Contrôler le schéma, la révision, la qualité et l'adéquation au triage avant toute sélection |
 
 **Aucune source n'est encore approuvée pour l'entraînement.** La décision sera prise par sous-ensemble et par transformation, pas globalement par nom de dataset.
@@ -73,9 +73,13 @@ Une source ou un sous-ensemble ne passe de `candidate sous contrôle` à `approv
 6. Contrôle de format, de langue, de doublons et de contenu dangereux exécuté.
 7. Validation de l'adéquation clinique demandée lorsque le contenu est utilisé pour produire une priorité, une recommandation ou une règle d'escalade.
 
+## État d’acquisition au 2026-08-31
+
+FrenchMedMCQA et MedQuAD ont été acquis localement dans `data/raw/`, hors Git. MedQuAD a fait l’objet d’un inventaire complet et d’un sample Presidio de 90 paires ; son manifeste reste `candidate`. MEDIQA 2019 et UltraMedical-Preference ne sont pas encore acquis.
+
 ## Ce que ce document prouve et ne prouve pas
 
-Il prouve qu'une première lecture des pages de référence a établi les licences affichées, rôles possibles et précautions de chaque source. Il ne prouve ni la conformité juridique définitive, ni l'absence de PII dans les fichiers, ni la qualité clinique, ni l'aptitude d'une donnée à entraîner un agent de triage. Aucune donnée, modèle ou métrique n'a été produit dans cette étape.
+Il prouve qu'une lecture des pages de référence et des audits locaux a établi les licences affichées, rôles possibles et précautions des sources acquises. Il ne prouve ni la conformité juridique définitive, ni l'absence de PII dans les corpus complets, ni la qualité clinique, ni l'aptitude d'une donnée à entraîner un agent de triage.
 
 ## Sources consultées
 
