@@ -5,8 +5,8 @@ import pytest
 
 from triage_poc.sft_dataset import (
     SftDatasetError,
-    render_sft_conversation,
     render_qwen3_text_dataset,
+    render_sft_conversation,
     render_sft_dataset,
 )
 
