@@ -1,0 +1,28 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_id": "sft-synthetic-chest-pain-001",
+    "task_type": "sft",
+    "language": "fr",
+    "data_origin": "synthetic",
+    "patient_context": {"age_group": "adult", "symptoms": ["douleur thoracique"], "duration": "30 minutes", "evolution": "aggravation déclarée", "intensity": null, "associated_symptoms": ["essoufflement"], "medical_history": [], "medications": [], "allergies": [], "vitals": {"heart_rate": null, "temperature_c": null, "respiratory_rate": null, "oxygen_saturation_pct": null, "systolic_bp": null}, "vulnerability_factors": []},
+    "source": {"source_manifest_id": "src-synthetic-sft-fixture", "source_record_id": "synthetic-sft-001", "source_dataset": "medical-triage-poc-synthetic-sft", "source_license": "CC0-1.0", "source_url": null},
+    "transformation": {"pipeline_name": "synthetic-fixture", "pipeline_version": "1.0.0", "code_revision": "0000000", "run_id": "fixture-sft-001"},
+    "quality": {"pii_anonymization_status": "passed", "clinical_review_status": "pending", "safety_review_status": "manual_review_required"},
+    "split": "train",
+    "sft_target": {"triage_level": "maximum", "summary": "Scénario synthétique nécessitant une évaluation professionnelle immédiate.", "clinical_rationale": ["Douleur thoracique aiguë déclarée", "Essoufflement associé"], "missing_information": ["Constantes vitales"], "red_flags": ["Douleur thoracique", "Essoufflement"], "recommendation": "Orienter immédiatement vers un professionnel de santé ou les services d'urgence selon le protocole local.", "safety_notice": "Cette évaluation est une aide au triage et ne remplace pas un professionnel de santé."}
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_id": "sft-synthetic-insufficient-info-001",
+    "task_type": "sft",
+    "language": "en",
+    "data_origin": "synthetic",
+    "patient_context": {"age_group": "unknown", "symptoms": ["feeling unwell"], "duration": null, "evolution": null, "intensity": null, "associated_symptoms": [], "medical_history": [], "medications": [], "allergies": [], "vitals": {"heart_rate": null, "temperature_c": null, "respiratory_rate": null, "oxygen_saturation_pct": null, "systolic_bp": null}, "vulnerability_factors": []},
+    "source": {"source_manifest_id": "src-synthetic-sft-fixture", "source_record_id": "synthetic-sft-002", "source_dataset": "medical-triage-poc-synthetic-sft", "source_license": "CC0-1.0", "source_url": null},
+    "transformation": {"pipeline_name": "synthetic-fixture", "pipeline_version": "1.0.0", "code_revision": "0000000", "run_id": "fixture-sft-002"},
+    "quality": {"pii_anonymization_status": "passed", "clinical_review_status": "pending", "safety_review_status": "manual_review_required"},
+    "split": "validation",
+    "sft_target": {"triage_level": "deferred", "summary": "Synthetic scenario with insufficient information for a reliable priority assessment.", "clinical_rationale": ["The reported symptom is nonspecific", "No duration, severity, or vital signs are provided"], "missing_information": ["Age group", "Duration and evolution", "Vital signs", "Warning signs"], "red_flags": [], "recommendation": "Collect the missing information and escalate to a healthcare professional if warning signs, deterioration, or uncertainty are present.", "safety_notice": "This assessment is triage assistance only and does not replace a healthcare professional."}
+  }
+]

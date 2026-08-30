@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "src-synthetic-sft-fixture",
+  "dataset_name": "medical-triage-poc-synthetic-sft",
+  "primary_url": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/samples/synthetic-sft-training-v1.json",
+  "immutable_revision": "synthetic-v1",
+  "artifact": {
+    "upstream_path": "data/samples/synthetic-sft-training-v1.json",
+    "retrieved_at": "2026-08-30T00:00:00Z",
+    "byte_size": 3420,
+    "sha256": "bfb6ae82c420a866117f7b6c35a91c04a59b5504ca20cdfea60524c3ca88028e",
+    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/samples/synthetic-sft-training-v1.json"
+  },
+  "license": {
+    "identifier": "CC0-1.0",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "attribution_required": false,
+    "restrictions": [
+      "Synthetic technical fixture only; it does not establish clinical validity.",
+      "Not for clinical deployment, diagnosis, prescription, or performance claims."
+    ]
+  },
+  "citation": "Medical Triage POC synthetic SFT fixture v1, authored for local technical pipeline validation.",
+  "admission_status": "approved",
+  "pre_ingestion_checks": {
+    "provenance": "passed",
+    "license": "passed",
+    "pii": "passed",
+    "format": "passed",
+    "duplicates": "passed",
+    "split_leakage": "passed"
+  },
+  "notes": [
+    "Approval applies only to synthetic technical use.",
+    "Clinical review remains pending on the response targets."
+  ]
+}

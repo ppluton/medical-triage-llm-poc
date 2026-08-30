@@ -1,0 +1,44 @@
+experiment: unsloth-core-mlx-synthetic-sft-qwen3-1.7b
+status: observed_synthetic_technical_run_only
+base_model: Qwen/Qwen3-1.7B-Base
+mode: supervised_fine_tuning
+runtime:
+  python: "3.13.14"
+  accelerator: Apple MLX
+  framework: unsloth
+  distribution: core
+  unsloth_version: "2026.8.22"
+data:
+  canonical_schema: data/manifests/triage_record_v1.schema.json
+  manifest_status_required: approved
+  splits:
+    training: train
+    validation: validation
+    excluded: test
+  chat_template: qwen3
+  output_directory: artifacts/unsloth-core-synthetic-sft-evidence
+reproducibility:
+  seed: 42
+  record_code_revision: required
+  record_dataset_checksums: required
+  record_package_versions: required
+  push_to_hub: false
+lora:
+  rank: 16
+  alpha: 16
+  dropout: 0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+training:
+  max_steps: 20
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  evaluation_strategy: steps
+  eval_steps: 1
+  save_steps: 0
+  logging_steps: 1
+  purpose: technical_pipeline_smoke_test_only
+safety:
+  no_patient_data: true
+  clinical_validation_required_before_any_clinical_claim: true
+  execution_requires_approved_source_manifests: true
