@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/sft_authoring_candidate_v1.schema.json",
+  "title": "Non-trainable SFT authoring candidate v1",
+  "description": "A source-grounded writing task with no clinical target, split, or training approval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "bilingual_group_id", "requested_language", "requested_risk_family", "risk_family_status", "source", "grounding", "draft", "quality", "transformation", "split", "training_eligible"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "candidate_id": {"type": "string", "pattern": "^sft-candidate-[a-f0-9]{20}-(fr|en)$"},
+    "bilingual_group_id": {"type": "string", "pattern": "^sft-authoring-group-[a-f0-9]{20}$"},
+    "requested_language": {"enum": ["fr", "en"]},
+    "requested_risk_family": {"enum": ["chest_pain", "respiratory_distress", "neurological_deficit", "pediatric", "pregnancy", "vulnerability", "insufficient_information", "contradictory_information", "other"]},
+    "risk_family_status": {"const": "proposed_authoring_quota_only"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_manifest_id", "source_dataset", "source_license", "source_record_id", "source_locator", "source_language"],
+      "properties": {
+        "source_manifest_id": {"type": "string", "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$"},
+        "source_dataset": {"type": "string", "minLength": 1},
+        "source_license": {"type": "string", "minLength": 1},
+        "source_record_id": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "source_language": {"enum": ["fr", "en"]}
+      }
+    },
+    "grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "answer", "truncated"],
+      "properties": {
+        "question": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "answer": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "truncated": {"type": "boolean"}
+      }
+    },
+    "draft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["patient_context", "instruction", "response", "triage_level"],
+      "properties": {
+        "patient_context": {"type": "null"},
+        "instruction": {"type": "null"},
+        "response": {"type": "null"},
+        "triage_level": {"type": "null"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pii_anonymization_status", "source_relevance_review_status", "clinical_review_status", "safety_review_status"],
+      "properties": {
+        "pii_anonymization_status": {"const": "passed"},
+        "source_relevance_review_status": {"const": "not_started"},
+        "clinical_review_status": {"const": "not_started"},
+        "safety_review_status": {"const": "not_started"}
+      }
+    },
+    "transformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pipeline_name", "pipeline_version", "code_revision", "run_id"],
+      "properties": {
+        "pipeline_name": {"const": "sft_authoring_queue"},
+        "pipeline_version": {"const": "1.0.0"},
+        "code_revision": {"type": "string", "minLength": 7, "maxLength": 64},
+        "run_id": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "split": {"type": "null"},
+    "training_eligible": {"const": false}
+  }
+}
