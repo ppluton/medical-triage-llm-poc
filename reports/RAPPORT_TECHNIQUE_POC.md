@@ -34,3 +34,5 @@ Ne rapporter que des résultats liés à une exécution identifiée. Distinguer 
 ## 8. Roadmap go / no-go
 
 Conditions de poursuite : données approuvées, validation clinique, tests de sûreté, architecture d'hébergement, conformité et monitoring.
+
+La roadmap opérationnelle active est maintenue dans [`docs/technical/ROADMAP_POC_V1.md`](../docs/technical/ROADMAP_POC_V1.md). Le rapport final n'en reprendra que l'état correspondant aux preuves disponibles au moment de sa clôture.

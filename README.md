@@ -4,6 +4,8 @@ Projet d'étude public pour démontrer la faisabilité technique d'un assistant 
 
 Les documents de référence sont [`CADRAGE_MISSION.md`](CADRAGE_MISSION.md), [`SPEC_POC_TRIAGE_MEDICAL.md`](SPEC_POC_TRIAGE_MEDICAL.md) et les règles de contribution dans [`AGENTS.md`](AGENTS.md).
 
+L'avancement réel, les écarts au cadrage et les prochains jalons sont suivis dans [`docs/technical/ROADMAP_POC_V1.md`](docs/technical/ROADMAP_POC_V1.md).
+
 ## Démarrage local
 
 ```bash

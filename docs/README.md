@@ -2,6 +2,8 @@
 
 Ce dossier sépare volontairement les notes d'apprentissage des documents techniques et des preuves professionnelles. Les règles détaillées sont dans [`AGENTS.md`](../AGENTS.md).
 
+La roadmap active et son état de preuve sont dans [`technical/ROADMAP_POC_V1.md`](technical/ROADMAP_POC_V1.md).
+
 | Emplacement | Contenu attendu | Ne pas y mettre |
 |---|---|---|
 | `learning/` | Notes pédagogiques, exercices, glossaire, questions ouvertes | Affirmations de performance ou de validation clinique |
