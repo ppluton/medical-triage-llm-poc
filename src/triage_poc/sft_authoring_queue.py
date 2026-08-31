@@ -231,13 +231,18 @@ def _select_anonymized_anchors(
         if question_result.audit.status != "passed" or answer_result.audit.status != "passed":
             rejected_residual_pii += 1
             continue
+        anonymized_question, anonymized_question_truncated = _truncate(question_result.text)
+        anonymized_answer, anonymized_answer_truncated = _truncate(answer_result.text)
         seen_questions.add(question_key)
         selected.append(
             {
                 "anchor": anchor,
-                "question": question_result.text,
-                "answer": answer_result.text,
-                "grounding_truncated": question_truncated or answer_truncated,
+                "question": anonymized_question,
+                "answer": anonymized_answer,
+                "grounding_truncated": question_truncated
+                or answer_truncated
+                or anonymized_question_truncated
+                or anonymized_answer_truncated,
             }
         )
         if len(selected) == quota:

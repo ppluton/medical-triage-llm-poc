@@ -29,6 +29,11 @@ class _FakeAnonymizer:
         return _Result(text.replace("Pierre", "<PERSON>"), _Audit({"PERSON": 1}, status))
 
 
+class _ExpandingAnonymizer:
+    def anonymize(self, text: str, language: str) -> _Result:
+        return _Result(text.replace("X", "<LOCATION>"), _Audit({"LOCATION": 1}, "passed"))
+
+
 def _anchors(source_name: str, count: int, *, rejected_first: bool = False):
     if rejected_first:
         yield SourceAnchor(source_name, "rejected", "rejected", "reject-me", "answer")
@@ -123,3 +128,27 @@ def test_production_quotas_describe_five_thousand_candidates():
     assert sum(SOURCE_ANCHOR_QUOTAS.values()) * 2 == 5_000
     assert sum(RISK_FAMILY_CANDIDATE_QUOTAS.values()) == 5_000
     assert all(quota % 2 == 0 for quota in RISK_FAMILY_CANDIDATE_QUOTAS.values())
+
+
+def test_bounds_anonymized_output_when_replacements_expand_text(monkeypatch):
+    monkeypatch.setattr(
+        "triage_poc.sft_authoring_queue.SOURCE_ANCHOR_QUOTAS",
+        {"medquad": 1, "mediqa2019": 1, "frenchmedmcqa": 1},
+    )
+    monkeypatch.setattr(
+        "triage_poc.sft_authoring_queue.RISK_FAMILY_CANDIDATE_QUOTAS",
+        {"other": 6},
+    )
+    anchors = {
+        source: [SourceAnchor(source, "record", "locator", "X" * 4_000, "X" * 4_000)]
+        for source in SOURCE_ANCHOR_QUOTAS
+    }
+    queue = build_sft_authoring_queue(
+        anchors,
+        _ExpandingAnonymizer(),
+        code_revision="abcdef1",
+        run_id="unit-test",
+    )
+
+    assert all(len(record["grounding"]["question"]) == 4_000 for record in queue["records"])
+    assert all(record["grounding"]["truncated"] is True for record in queue["records"])
