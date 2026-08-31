@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "target_candidate_count": 5000,
+  "languages": ["fr", "en"],
+  "batch_size": 100,
+  "source_anchor_quotas": {
+    "medquad": 1000,
+    "mediqa2019": 750,
+    "frenchmedmcqa": 750
+  },
+  "risk_family_candidate_quotas": {
+    "chest_pain": 600,
+    "respiratory_distress": 600,
+    "neurological_deficit": 600,
+    "pediatric": 560,
+    "pregnancy": 560,
+    "vulnerability": 560,
+    "insufficient_information": 560,
+    "contradictory_information": 480,
+    "other": 480
+  },
+  "training_eligible": false,
+  "clinical_review_status": "not_started",
+  "split": null,
+  "triage_level": null
+}

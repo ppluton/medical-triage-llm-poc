@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--frenchmedmcqa-rebuilt", required=True, type=Path)
     parser.add_argument("--output-directory", required=True, type=Path)
     parser.add_argument("--schema", required=True, type=Path)
+    parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--manifest-output", required=True, type=Path)
     parser.add_argument("--code-revision", required=True)
     parser.add_argument("--run-id", required=True)
@@ -44,6 +45,22 @@ def _write_jsonl(path: Path, rows: list[dict[str, object]]) -> str:
 
 def main() -> int:
     args = parse_args()
+    config_bytes = args.config.read_bytes()
+    config = json.loads(config_bytes)
+    expected_config = {
+        "target_candidate_count": sum(RISK_FAMILY_CANDIDATE_QUOTAS.values()),
+        "languages": ["fr", "en"],
+        "batch_size": args.batch_size,
+        "source_anchor_quotas": SOURCE_ANCHOR_QUOTAS,
+        "risk_family_candidate_quotas": RISK_FAMILY_CANDIDATE_QUOTAS,
+        "training_eligible": False,
+        "clinical_review_status": "not_started",
+        "split": None,
+        "triage_level": None,
+    }
+    for key, expected_value in expected_config.items():
+        if config.get(key) != expected_value:
+            raise ValueError(f"Configuration mismatch for {key}.")
     if args.batch_size <= 0:
         raise ValueError("batch-size must be positive.")
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
@@ -103,6 +120,10 @@ def main() -> int:
         "status": "authoring_queue_not_training_data",
         "run_id": args.run_id,
         "code_revision": args.code_revision,
+        "configuration": {
+            "path": args.config.name,
+            "sha256": hashlib.sha256(config_bytes).hexdigest(),
+        },
         "record_count": len(records),
         "unique_bilingual_groups": len({record["bilingual_group_id"] for record in records}),
         "training_eligible_count": sum(bool(record["training_eligible"]) for record in records),
