@@ -1,0 +1,358 @@
+{
+  "artifacts": {
+    "queue": {
+      "path": "sft-authoring-queue-v1.jsonl",
+      "sha256": "26c18bbf7b4a885738118788ce585718ef7992b9b4be481eb765383d3bf7d571"
+    },
+    "review_batches": [
+      {
+        "path": "review-batch-001.jsonl",
+        "record_count": 100,
+        "sha256": "9ad31b6067b7dace794f8fafe2bcce05cd7fc5de294a728be118c4d06933fabe"
+      },
+      {
+        "path": "review-batch-002.jsonl",
+        "record_count": 100,
+        "sha256": "6308b2b4652c514552714ee638a9e4c3e7885d173dd79632e92d804c6226e0fd"
+      },
+      {
+        "path": "review-batch-003.jsonl",
+        "record_count": 100,
+        "sha256": "6b6a06ae45ae9310bb94306107efe8efcfc0c6051cda487e0907531dc4ad72ce"
+      },
+      {
+        "path": "review-batch-004.jsonl",
+        "record_count": 100,
+        "sha256": "79d1eaf795c812836f66a49602ee2894780fb0d0f961fdedd68280f57292f914"
+      },
+      {
+        "path": "review-batch-005.jsonl",
+        "record_count": 100,
+        "sha256": "064cc923e15b4394547bf9c8d3e5e1f3ae5df6b1f1e7cd438803f8889e7f451e"
+      },
+      {
+        "path": "review-batch-006.jsonl",
+        "record_count": 100,
+        "sha256": "8b0160c98949d50bcc13b6af19854477ddca3d186e69f2e58618c363db772698"
+      },
+      {
+        "path": "review-batch-007.jsonl",
+        "record_count": 100,
+        "sha256": "646e759b83c63253adada600044ae5a2a9e5c4a45016c6ada3f326d4226f2f18"
+      },
+      {
+        "path": "review-batch-008.jsonl",
+        "record_count": 100,
+        "sha256": "1afbdeb5ceab022305a2e3e4d17a6d4bedc6d182201bc3f80c2fa48ffd0fe3c6"
+      },
+      {
+        "path": "review-batch-009.jsonl",
+        "record_count": 100,
+        "sha256": "15d6231504325a4331684e819b9948c0ee7f787d9338eea9d59c265bc34ca33f"
+      },
+      {
+        "path": "review-batch-010.jsonl",
+        "record_count": 100,
+        "sha256": "a337df2121ffc8e95c703aa2a5e8d26b91ded7d71778bfdb18a6dadf3cb6b51a"
+      },
+      {
+        "path": "review-batch-011.jsonl",
+        "record_count": 100,
+        "sha256": "c734b836a1e212b898596d0cb2bfed99fe28cddf68a8fff65988429c3edf059a"
+      },
+      {
+        "path": "review-batch-012.jsonl",
+        "record_count": 100,
+        "sha256": "0ec9e4f1f6a923bf5ea4869dc7b75865534dafb7e9f3d385e7c737cd34084c0b"
+      },
+      {
+        "path": "review-batch-013.jsonl",
+        "record_count": 100,
+        "sha256": "1bada0b3108f4b4ef62a1c85f74cb2f261b670bc71d77fe33f6aaa81ac9b88bd"
+      },
+      {
+        "path": "review-batch-014.jsonl",
+        "record_count": 100,
+        "sha256": "258fd7fc6f7c685aed9a7616ec8cc4e61e07bd39a24e92fe55df4db4e0f75457"
+      },
+      {
+        "path": "review-batch-015.jsonl",
+        "record_count": 100,
+        "sha256": "a66dea4e8b34f184ed98cf6e9ee7a8dca4a23e34fe3054a90f71befeaaef3be0"
+      },
+      {
+        "path": "review-batch-016.jsonl",
+        "record_count": 100,
+        "sha256": "24bb39b9c9462911b7ec554477d8fc7ca151be77e231401f7bf98abbd7c3c38b"
+      },
+      {
+        "path": "review-batch-017.jsonl",
+        "record_count": 100,
+        "sha256": "98452ffe1732d7e2349ac2f2b935719784deb8c133fb06a1259bca763a0df6a6"
+      },
+      {
+        "path": "review-batch-018.jsonl",
+        "record_count": 100,
+        "sha256": "7cee5756cb71fdfe7a5442aa8fb7216b050f9d855c50c959f029f07412b198be"
+      },
+      {
+        "path": "review-batch-019.jsonl",
+        "record_count": 100,
+        "sha256": "eabf2d623b779ce9935309ae7e4e5dde83735d69d55c308d007e89a846da46bc"
+      },
+      {
+        "path": "review-batch-020.jsonl",
+        "record_count": 100,
+        "sha256": "28139723f30f3bebf6e0f1a036de24a311392bdfdceb7d13d17dfd0d10d6c07b"
+      },
+      {
+        "path": "review-batch-021.jsonl",
+        "record_count": 100,
+        "sha256": "e4699b3aea5134d93158ae2182214109693c6c5a21623267a97e865151ec1afa"
+      },
+      {
+        "path": "review-batch-022.jsonl",
+        "record_count": 100,
+        "sha256": "e49117b82ff082f6818bb19349e87e6c9169d9cb2f4e5dd894972db4ad20a573"
+      },
+      {
+        "path": "review-batch-023.jsonl",
+        "record_count": 100,
+        "sha256": "e8d5d6cbe6f8f9778743bd3632c2818b7ba6a5038347bc6b3f4d33103db05c92"
+      },
+      {
+        "path": "review-batch-024.jsonl",
+        "record_count": 100,
+        "sha256": "bd5d061aeac28aebdd86fec420323a584bc08bb4adec0904d9a63f8160638b43"
+      },
+      {
+        "path": "review-batch-025.jsonl",
+        "record_count": 100,
+        "sha256": "f846a08aaa683da23ac6b6ffdc2b25d771f3996f0ece33a892cc94b89f60b5b7"
+      },
+      {
+        "path": "review-batch-026.jsonl",
+        "record_count": 100,
+        "sha256": "c35f45a4743d48125eddbded5dbe752abf13be3ac61d5636dcb5f99319f54ed4"
+      },
+      {
+        "path": "review-batch-027.jsonl",
+        "record_count": 100,
+        "sha256": "b95666add69eb371f0efb2ad474b55871f2d1027a9fabfbf7e3c0ceabb20ebda"
+      },
+      {
+        "path": "review-batch-028.jsonl",
+        "record_count": 100,
+        "sha256": "27caa1b5fbb1bb92b93bd394611f823cd2dbb8a5aafad9500f3f3829f52759d5"
+      },
+      {
+        "path": "review-batch-029.jsonl",
+        "record_count": 100,
+        "sha256": "1fdb01a250aa052e1a688a4be74a8b27f048107c2da0a6c35086ea145f1db267"
+      },
+      {
+        "path": "review-batch-030.jsonl",
+        "record_count": 100,
+        "sha256": "101cebe9450f05ed40744836df50ec94fae3f312cf7a435b1329d206f1c44333"
+      },
+      {
+        "path": "review-batch-031.jsonl",
+        "record_count": 100,
+        "sha256": "fb679cd6752842d69426123a786c7d451f01abe963c01b801b026a9c13245a74"
+      },
+      {
+        "path": "review-batch-032.jsonl",
+        "record_count": 100,
+        "sha256": "afadb23c35fd7318c5add92462309355300c1af6594a835b32ebe528ba9c9e25"
+      },
+      {
+        "path": "review-batch-033.jsonl",
+        "record_count": 100,
+        "sha256": "100b85daf4f44d4fb9119de787d524e0a4bbb60de21f157801ab0e2e689823b9"
+      },
+      {
+        "path": "review-batch-034.jsonl",
+        "record_count": 100,
+        "sha256": "5ff36ed387d00b77e33d383f1a19dad9e25406e6e9d97b6735a49500aff36f1a"
+      },
+      {
+        "path": "review-batch-035.jsonl",
+        "record_count": 100,
+        "sha256": "c4865088cf6a7bcd811d68ee37c5908ed57c252a77bc84b7598eebb47fa26b6a"
+      },
+      {
+        "path": "review-batch-036.jsonl",
+        "record_count": 100,
+        "sha256": "ba6222c82deaabca141c94bd29ab8f465859efe2d31f83f65ee45e7a9efcced3"
+      },
+      {
+        "path": "review-batch-037.jsonl",
+        "record_count": 100,
+        "sha256": "f26c507f7d0307c22a3f0f68d81086f46601e7ea77eb732c4c2fc8479e2b73a6"
+      },
+      {
+        "path": "review-batch-038.jsonl",
+        "record_count": 100,
+        "sha256": "b49b32fa7d11c54cf220deea08ab58425c9584b89e5bdd06b17aee0d6f47f8c2"
+      },
+      {
+        "path": "review-batch-039.jsonl",
+        "record_count": 100,
+        "sha256": "cdfbe48ad53ee4a3f7768eb0fddc78ebff4ae96b5033c1612ae4a7ed86ddb3e5"
+      },
+      {
+        "path": "review-batch-040.jsonl",
+        "record_count": 100,
+        "sha256": "b0f94e80cdea2c2d39323f2de7e72c57c48c82ccdff95b4aa731d3a857bea077"
+      },
+      {
+        "path": "review-batch-041.jsonl",
+        "record_count": 100,
+        "sha256": "96eb590418eab89406e1f0e5fe05db318c58355237497c8a80fad9343e4d5cf2"
+      },
+      {
+        "path": "review-batch-042.jsonl",
+        "record_count": 100,
+        "sha256": "d38d8c6c34d590bb010e52a6611ed3f34773d3028b3715451d1ddb144b69d897"
+      },
+      {
+        "path": "review-batch-043.jsonl",
+        "record_count": 100,
+        "sha256": "f90306ed3340010f05ae6827ef7204d451132016272586a31eb7fcb624f4774b"
+      },
+      {
+        "path": "review-batch-044.jsonl",
+        "record_count": 100,
+        "sha256": "ab188d8c8907e5876825353a0e5cb9139b78a12bd445119f2aed747233bed1d3"
+      },
+      {
+        "path": "review-batch-045.jsonl",
+        "record_count": 100,
+        "sha256": "9dd0da98760afd2dd4ab2370b73bf9718471beed8fd6c70a0d2ff7cf2da4dfa6"
+      },
+      {
+        "path": "review-batch-046.jsonl",
+        "record_count": 100,
+        "sha256": "d82fe199e7fd00bb8aeb3c13c3bbfb6d4e9400c033594dc90ff558a96118923c"
+      },
+      {
+        "path": "review-batch-047.jsonl",
+        "record_count": 100,
+        "sha256": "07787019b60c6ee11e89974ef705740e0d7d7a62a9b4ac45d87dcebf5e320010"
+      },
+      {
+        "path": "review-batch-048.jsonl",
+        "record_count": 100,
+        "sha256": "bf07e46de1f2ac47a2c66f6286cfe1ae79ec8b6d7d24667f4e069b15a9594790"
+      },
+      {
+        "path": "review-batch-049.jsonl",
+        "record_count": 100,
+        "sha256": "7ba7e9d6b35cd396bb4adc1910e59bad14d189a66015875d9c7bf03344db224f"
+      },
+      {
+        "path": "review-batch-050.jsonl",
+        "record_count": 100,
+        "sha256": "1a3dc7de76d1bfeccec95275c9b4ecfc8ba6c38967d69bd7ff498a8018cdc76c"
+      }
+    ],
+    "text_free_index": {
+      "path": "sft-authoring-index-v1.jsonl",
+      "sha256": "2a32e690d0ae7eb2a3ca7bf592713667ab24ba1171a711aacf9568186dbedb09"
+    }
+  },
+  "code_revision": "facd3e4",
+  "configuration": {
+    "path": "sft_authoring_queue.json",
+    "sha256": "b3fe589812d8fe74559fc181d4a705d5d505c88845df7b4d1396d9d3c76eeea2"
+  },
+  "language_counts": {
+    "en": 2500,
+    "fr": 2500
+  },
+  "limits": [
+    "Source labels and requested risk families are not triage labels.",
+    "Every scenario and target must be written and clinically approved independently.",
+    "Exact normalized deduplication does not detect semantic paraphrases.",
+    "A passed Presidio scan does not replace human privacy review."
+  ],
+  "manifest_id": "derived-sft-authoring-queue-v1",
+  "record_count": 5000,
+  "risk_family_candidate_quotas": {
+    "chest_pain": 600,
+    "contradictory_information": 480,
+    "insufficient_information": 560,
+    "neurological_deficit": 600,
+    "other": 480,
+    "pediatric": 560,
+    "pregnancy": 560,
+    "respiratory_distress": 600,
+    "vulnerability": 560
+  },
+  "risk_family_counts": {
+    "chest_pain": 600,
+    "contradictory_information": 480,
+    "insufficient_information": 560,
+    "neurological_deficit": 600,
+    "other": 480,
+    "pediatric": 560,
+    "pregnancy": 560,
+    "respiratory_distress": 600,
+    "vulnerability": 560
+  },
+  "run_id": "sft-authoring-queue-2026-08-31",
+  "schema_version": "1.0.0",
+  "source_anchor_quotas": {
+    "frenchmedmcqa": 750,
+    "mediqa2019": 750,
+    "medquad": 1000
+  },
+  "source_audits": {
+    "frenchmedmcqa": {
+      "detected_entity_counts": {
+        "DATE_TIME": 1,
+        "LOCATION": 352,
+        "PERSON": 133
+      },
+      "duplicate_anchors_skipped": 6,
+      "rejected_residual_pii": 33,
+      "selected_anchors": 750,
+      "truncated_anchors": 0
+    },
+    "mediqa2019": {
+      "detected_entity_counts": {
+        "DATE_TIME": 532,
+        "LOCATION": 145,
+        "PERSON": 238,
+        "PHONE_NUMBER": 1
+      },
+      "duplicate_anchors_skipped": 1,
+      "rejected_residual_pii": 5,
+      "selected_anchors": 750,
+      "truncated_anchors": 32
+    },
+    "medquad": {
+      "detected_entity_counts": {
+        "DATE_TIME": 430,
+        "EMAIL_ADDRESS": 1,
+        "LOCATION": 583,
+        "PERSON": 778,
+        "PHONE_NUMBER": 2
+      },
+      "duplicate_anchors_skipped": 11,
+      "rejected_residual_pii": 9,
+      "selected_anchors": 1000,
+      "truncated_anchors": 26
+    }
+  },
+  "source_candidate_counts": {
+    "abachaa/MEDIQA2019": 1500,
+    "abachaa/MedQuAD": 2000,
+    "qanastek/frenchmedmcqa": 1500
+  },
+  "split_present_count": 0,
+  "status": "authoring_queue_not_training_data",
+  "training_eligible_count": 0,
+  "triage_target_present_count": 0,
+  "unique_bilingual_groups": 2500
+}

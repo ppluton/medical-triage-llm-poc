@@ -52,7 +52,7 @@ flowchart TD
 
 ### Jalon 1 — Dataset SFT gouverné
 
-- **Statut :** `blocked by clinical decision` pour les cibles ; préparation technique active.
+- **Statut :** file de 5 000 candidats `proven` techniquement ; dataset SFT `blocked by clinical decision` pour les scénarios et cibles.
 - **Entrées :** MedQuAD, MEDIQA et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
 - **Travail :** construire une file d'environ 5 000 candidats bilingues avec provenance ; laisser `triage_level` vide tant qu'il n'est pas approuvé ; appliquer Presidio ; dédupliquer ; reconstruire les splits par groupe de scénario.
 - **Porte de sortie :** chaque ligne utilisée par le SFT porte `clinical_review_status: approved`, `pii_anonymization_status: passed`, une licence, une provenance et un split sans fuite.
@@ -109,16 +109,18 @@ flowchart TD
 - **Porte de sortie :** rapport de 20 pages maximum, relu, sans affirmation clinique non étayée.
 - **Décision :** le POC peut être techniquement démontré sans être autorisé pour un usage clinique réel.
 
-## Prochain incrément recommandé
+## Incrément réalisé — file de rédaction de 5 000 candidats
 
-Construire une file unifiée de 5 000 candidats de rédaction à partir des sources réelles déjà auditées. Cette file ne sera pas appelée « dataset SFT » : elle conservera `triage_level: null` et `clinical_review_status: not_started` jusqu'à la validation clinique. L'incrément doit produire :
+La file unifiée a été générée localement à partir des sources réelles auditées. Elle n'est pas appelée « dataset SFT » : elle conserve `triage_level: null`, `split: null`, `training_eligible: false` et `clinical_review_status: not_started`. L'incrément produit :
 
-1. une stratégie de quotas FR/EN et par famille de risque ;
+1. une stratégie versionnée de quotas FR/EN et par famille de rédaction ;
 2. un générateur déterministe et traçable ;
 3. un passage Presidio sans persistance des valeurs détectées ;
-4. un index de provenance et des checksums ;
-5. un paquet de revue humaine de taille maîtrisable ;
-6. une preuve claire du nombre de candidats, de rejets PII et de doublons.
+4. un index de provenance sans texte et des checksums ;
+5. 50 paquets de revue humaine de 100 lignes ;
+6. une preuve des 5 000 candidats, 47 rejets PII résiduels rencontrés et 18 doublons exacts ignorés.
+
+Le prochain incrément est un pilote de revue humaine sur un seul paquet de 100. Son but est de mesurer la pertinence des ancrages, les faux positifs d'anonymisation et la clarté du protocole avant toute rédaction à grande échelle. La production des réponses et labels reste bloquée sur la désignation et l'approbation des référents cliniques.
 
 ## Décisions externes nécessaires
 
