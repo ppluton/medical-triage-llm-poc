@@ -80,7 +80,7 @@ def main() -> int:
         validator.validate(record)
 
     args.output_directory.mkdir(parents=True, exist_ok=True)
-    queue_path = args.output_directory / "sft-authoring-queue-v1.jsonl"
+    queue_path = args.output_directory / "sft-authoring-queue-v2.jsonl"
     queue_sha256 = _write_jsonl(queue_path, records)
     batches = []
     for offset in range(0, len(records), args.batch_size):
@@ -109,14 +109,14 @@ def main() -> int:
         }
         for record in records
     ]
-    index_path = args.output_directory / "sft-authoring-index-v1.jsonl"
+    index_path = args.output_directory / "sft-authoring-index-v2.jsonl"
     index_sha256 = _write_jsonl(index_path, index_rows)
     source_counts = Counter(record["source"]["source_dataset"] for record in records)
     language_counts = Counter(record["requested_language"] for record in records)
     risk_counts = Counter(record["requested_risk_family"] for record in records)
     manifest = {
         "schema_version": "1.0.0",
-        "manifest_id": "derived-sft-authoring-queue-v1",
+        "manifest_id": "derived-sft-authoring-queue-v2",
         "status": "authoring_queue_not_training_data",
         "run_id": args.run_id,
         "code_revision": args.code_revision,

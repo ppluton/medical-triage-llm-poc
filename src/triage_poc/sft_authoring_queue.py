@@ -355,7 +355,7 @@ def build_sft_authoring_queue(
                     },
                     "transformation": {
                         "pipeline_name": "sft_authoring_queue",
-                        "pipeline_version": "1.0.0",
+                        "pipeline_version": "2.0.0",
                         "code_revision": code_revision,
                         "run_id": run_id,
                     },
