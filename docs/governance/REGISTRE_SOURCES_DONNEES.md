@@ -1,7 +1,7 @@
 # Registre de gouvernance des sources de données
 
-- **Date :** 2026-08-31
-- **Statut :** draft — quatre sources acquises et auditées comme candidates ; aucune source externe approuvée pour l'entraînement
+- **Date :** 2026-09-03
+- **Statut :** draft — source MediQAl corrigée et file v2 générée ; aucune source externe approuvée pour l'entraînement
 - **Périmètre :** sources citées par `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Propriétaire :** projet d'étude POC Agent IA de triage médical
 
@@ -13,7 +13,7 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 
 | Source | Usage envisagé | Licence affichée à la source | Statut actuel | Décision avant ingestion |
 |---|---|---|---|---|
-| MEDIQA 2019 | Évaluation QA/RQE, pas de référentiel de triage | CC BY 4.0 | candidate auditée | Révision `32311a1…` épinglée ; tâches 2–3 seulement ; revue PII et déduplication requises |
+| MediQAl | QCM médicaux francophones comme ancrages documentaires | CC BY 4.0 | candidate auditée, fuite de split mesurée | Révision `5af3494…` épinglée ; test et recouvrements avec test exclus ; revue PII et clinique requise |
 | FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Respecter les splits natifs ; ne pas transformer automatiquement les QCM en recommandations de triage |
 | MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate auditée | Révision `577bd37…` épinglée ; exclure les sous-ensembles 10–12 ; revue PII et clinique requise avant toute sélection |
 | UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate auditée, fuite de split | Révision `761eb79…` épinglée ; reconstruire les splits ; réserver le test à l'évaluation |
@@ -22,15 +22,19 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 
 ## Fiches de provenance
 
-### MEDIQA 2019
+### MediQAl
 
-- **Référence primaire :** [dépôt `abachaa/MEDIQA2019`](https://github.com/abachaa/MEDIQA2019)
-- **Version acquise :** commit `32311a139b583a9ccec133b3f8a21873d4ff3561`, archive et checksum consignés dans `data/manifests/src-mediqa2019-32311a1.json`.
-- **Contenu observé :** tâches 2 RQE et 3 QA ; 9 120 paires RQE, 383 questions QA et 3 042 réponses dans les exports canoniques.
+- **Référence primaire :** [dataset `ANR-MALADES/MediQAl`](https://huggingface.co/datasets/ANR-MALADES/MediQAl)
+- **Version acquise :** commit `5af34948a74c7b8807c476204a21149ffb00ea2c`, fichiers et checksum de collection consignés dans `data/manifests/src-mediqal-5af3494.json`.
+- **Contenu observé :** 32 603 questions d'examens médicaux français : 17 017 MCQU, 10 617 MCQM et 4 969 OEQ.
 - **Licence affichée :** Creative Commons Attribution 4.0 International (CC BY 4.0).
-- **Usage POC envisagé :** évaluation ou transformation limitée vers des tâches de compréhension médicale, jamais comme validation clinique de triage.
-- **Risques / contrôles :** tâche 1 MedNLI exclue car non distribuée dans le dépôt et contrôlée via PhysioNet ; labels RQE/QA interdits comme cibles automatiques de triage ; préserver citation et attribution.
-- **PII :** sample déterministe de 70 questions passé sans résidu, mais le corpus complet et les réponses nécessitent encore un contrôle et une revue humaine.
+- **Usage POC envisagé :** ancrages documentaires francophones pour la rédaction de scénarios synthétiques, jamais comme validation clinique de triage.
+- **Risques / contrôles :** 399 recouvrements normalisés `train/test`, 478 `train/validation` et 112 `validation/test` ; tous les tests et leurs recouvrements sont exclus de la file.
+- **PII :** Presidio a rejeté 56 ancrages résiduels pendant la génération v2 ; cela ne prouve pas l'absence de PII dans le corpus complet.
+
+### Historique MEDIQA 2019
+
+`abachaa/MEDIQA2019` a été acquis et audité avant la clarification de la source. Son manifeste et ses preuves restent versionnés comme historique, mais ce corpus n'entre plus dans la file courante depuis ADR-006.
 
 ### FrenchMedMCQA
 
@@ -73,9 +77,9 @@ Une source ou un sous-ensemble ne passe de `candidate sous contrôle` à `approv
 6. Contrôle de format, de langue, de doublons et de contenu dangereux exécuté.
 7. Validation de l'adéquation clinique demandée lorsque le contenu est utilisé pour produire une priorité, une recommandation ou une règle d'escalade.
 
-## État d’acquisition au 2026-08-31
+## État d’acquisition au 2026-09-03
 
-FrenchMedMCQA, MedQuAD, MEDIQA 2019 et UltraMedical-Preference ont été acquis localement dans `data/raw/`, hors Git, à des révisions épinglées. Les quatre manifestes restent `candidate`. UltraMedical-Preference ne peut pas être admis avant reconstruction de ses splits, contrôle PII du sous-ensemble retenu et sélection spécifique au triage.
+MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference ont été acquis localement dans `data/raw/`, hors Git, à des révisions épinglées. Les quatre manifestes restent `candidate`. Les miroirs `nthngdy/frenchmedmcqa` et `keivalya/MedQuad-MedicalQnADataset` transmis comme références secondaires ne remplacent pas les sources canoniques déjà auditées : leurs dataset cards n'affichent pas de licence et leurs périmètres diffèrent des corpus canoniques.
 
 ## Ce que ce document prouve et ne prouve pas
 
@@ -83,7 +87,7 @@ Il prouve qu'une lecture des pages de référence et des audits locaux a établi
 
 ## Sources consultées
 
-- [MEDIQA2019 — dépôt et licence](https://github.com/abachaa/MEDIQA2019)
+- [MediQAl — dataset card, licence et splits](https://huggingface.co/datasets/ANR-MALADES/MediQAl)
 - [FrenchMedMCQA — dataset card](https://huggingface.co/datasets/qanastek/frenchmedmcqa)
 - [MedQuAD — dépôt et restriction sur trois sous-ensembles](https://github.com/abachaa/MedQuAD)
 - [UltraMedical-Preference — dataset card et révision](https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference)

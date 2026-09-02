@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "src-mediqal-5af3494",
+  "dataset_name": "ANR-MALADES/MediQAl",
+  "primary_url": "https://huggingface.co/datasets/ANR-MALADES/MediQAl",
+  "immutable_revision": "5af34948a74c7b8807c476204a21149ffb00ea2c",
+  "artifact": {
+    "upstream_path": "mcqu/{train,validation}.json + mcqm/{train,validation}.json",
+    "retrieved_at": "2026-09-03T00:44:00Z",
+    "byte_size": 16328634,
+    "sha256": "1261de046189f45f3f22a91c13928886d9d3abf17778cb6d04c87abf26fd1f81",
+    "local_storage_uri": "file:///Volumes/MacExternalDrive/Dev/CodexWorktrees/medical_train_llm/mediqal-source-correction/data/raw/mediqal"
+  },
+  "license": {
+    "identifier": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution_required": true,
+    "restrictions": [
+      "Preserve attribution to MediQAl and its cited Scientific Data publication.",
+      "Exclude all test rows and normalized question overlaps with test from authoring."
+    ]
+  },
+  "citation": "Bazoge A. MediQAl: A French Medical Question Answering Dataset for Knowledge and Reasoning Evaluation. Scientific Data. 2026.",
+  "admission_status": "candidate",
+  "pre_ingestion_checks": {
+    "provenance": "passed",
+    "license": "passed",
+    "pii": "manual_review_required",
+    "format": "passed",
+    "duplicates": "manual_review_required",
+    "split_leakage": "failed"
+  },
+  "notes": [
+    "Pinned inventory contains 32,603 rows: 17,017 MCQU, 10,617 MCQM and 4,969 test-only OEQ.",
+    "Train and validation contain 19,907 candidate rows before test-overlap and PII filtering.",
+    "Normalized question overlaps measured: train/test 399, train/validation 478, validation/test 112.",
+    "MCQ answers measure medical examination knowledge, not triage priority.",
+    "The artifact hash is SHA-256 over the ordered SHA-256 listing of the four authoring input files."
+  ]
+}

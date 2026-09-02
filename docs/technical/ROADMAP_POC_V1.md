@@ -1,9 +1,9 @@
 # Roadmap de réalisation du POC de triage médical
 
-- **Date :** 2026-08-31
-- **Statut :** active — mise à jour après audit des quatre sources et reconstruction DPO
+- **Date :** 2026-09-03
+- **Statut :** active — source MediQAl corrigée et file candidate v2 générée
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
-- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-005 et preuves versionnées dans `docs/evidence/`
+- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-006 et preuves versionnées dans `docs/evidence/`
 
 ## Lecture de l'état
 
@@ -17,9 +17,9 @@ Un statut technique vert ne constitue jamais une validation clinique.
 
 ## État par rapport aux quatre semaines du cadrage
 
-| Phase du cadrage | État au 2026-08-31 | Résultat prouvé | Écart à fermer |
+| Phase du cadrage | État au 2026-09-03 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
-| Semaine 1 — données | `partially proven` | Les quatre sources sont acquises à des révisions immuables, auditées et documentées. Les fuites FrenchMedMCQA et UltraMedical-Preference sont mesurées et reconstruites. Presidio et les contrats de données sont testés. | Produire environ 5 000 paires SFT bilingues, source-grounded, anonymisées et approuvées ; produire les paires DPO spécifiques au triage ; isoler le test clinique. |
+| Semaine 1 — données | `partially proven` | MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference sont acquis à des révisions immuables. La file candidate v2 contient 5 000 lignes ; les fuites lexicales connues sont filtrées ou reconstruites. | Rédiger et approuver les cibles SFT ; produire les paires DPO spécifiques au triage ; isoler le test clinique. |
 | Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. La configuration Unsloth Core/MLX est reproductible. | Entraîner sur le dataset réel approuvé, conserver checkpoint, logs et métriques de validation, puis comparer à la baseline avec le même protocole. |
 | Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Sélectionner des préférences compatibles avec le triage, les anonymiser et les faire valider ; entraîner depuis le checkpoint SFT validé ; mesurer le gain et les régressions. |
 | Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
@@ -53,7 +53,7 @@ flowchart TD
 ### Jalon 1 — Dataset SFT gouverné
 
 - **Statut :** file de 5 000 candidats `proven` techniquement ; dataset SFT `blocked by clinical decision` pour les scénarios et cibles.
-- **Entrées :** MedQuAD, MEDIQA et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
+- **Entrées :** MedQuAD, MediQAl et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
 - **Travail :** construire une file d'environ 5 000 candidats bilingues avec provenance ; laisser `triage_level` vide tant qu'il n'est pas approuvé ; appliquer Presidio ; dédupliquer ; reconstruire les splits par groupe de scénario.
 - **Porte de sortie :** chaque ligne utilisée par le SFT porte `clinical_review_status: approved`, `pii_anonymization_status: passed`, une licence, une provenance et un split sans fuite.
 - **Preuve attendue :** manifeste du dataset, checksums, distribution FR/EN et par risque, rapport de revue, tests de contrats et de fuite.
@@ -109,7 +109,7 @@ flowchart TD
 - **Porte de sortie :** rapport de 20 pages maximum, relu, sans affirmation clinique non étayée.
 - **Décision :** le POC peut être techniquement démontré sans être autorisé pour un usage clinique réel.
 
-## Incrément réalisé — file de rédaction de 5 000 candidats
+## Incrément réalisé — file de rédaction de 5 000 candidats v2
 
 La file unifiée a été générée localement à partir des sources réelles auditées. Elle n'est pas appelée « dataset SFT » : elle conserve `triage_level: null`, `split: null`, `training_eligible: false` et `clinical_review_status: not_started`. L'incrément produit :
 
@@ -118,7 +118,8 @@ La file unifiée a été générée localement à partir des sources réelles au
 3. un passage Presidio sans persistance des valeurs détectées ;
 4. un index de provenance sans texte et des checksums ;
 5. 50 paquets de revue humaine de 100 lignes ;
-6. une preuve des 5 000 candidats, 47 rejets PII résiduels rencontrés et 18 doublons exacts ignorés.
+6. une preuve des 5 000 candidats, 98 rejets PII résiduels rencontrés et 19 doublons exacts ignorés ;
+7. le remplacement traçable de MEDIQA 2019 par MediQAl, avec exclusion des tests et de leurs recouvrements lexicaux.
 
 Le prochain incrément est un pilote de revue humaine sur un seul paquet de 100. Son but est de mesurer la pertinence des ancrages, les faux positifs d'anonymisation et la clarté du protocole avant toute rédaction à grande échelle. La production des réponses et labels reste bloquée sur la désignation et l'approbation des référents cliniques.
 

@@ -44,10 +44,10 @@ Le système retourne :
 
 ### Sources prévues
 
-- MediQA ;
-- FrenchMedMCQA ;
-- MedQuAD ;
-- UltraMedical-Preference.
+- [MediQAl (`ANR-MALADES/MediQAl`)](https://huggingface.co/datasets/ANR-MALADES/MediQAl) ;
+- [FrenchMedMCQA (`qanastek/frenchmedmcqa`)](https://huggingface.co/datasets/qanastek/frenchmedmcqa) ;
+- [MedQuAD (`abachaa/MedQuAD`)](https://github.com/abachaa/MedQuAD) ;
+- [UltraMedical-Preference](https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference).
 
 Documenter, pour chaque source, l’URL, la version, la licence, les restrictions d’usage, les transformations et la provenance de chaque enregistrement.
 

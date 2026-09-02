@@ -34,7 +34,7 @@ Ce projet est un POC d’assistance. Il ne constitue ni un dispositif médical e
 
 | Semaine | Objectif | Résultats attendus |
 |---|---|---|
-| 1 | Agréger MediQA, FrenchMedMCQA, MedQuAD et UltraMedical-Preference ; nettoyer, anonymiser et versionner les données | Dataset bilingue, ~5 000 paires SFT, paires DPO, splits train/validation/test, schéma de métadonnées et justification RGPD |
+| 1 | Agréger MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference ; nettoyer, anonymiser et versionner les données | Dataset bilingue, ~5 000 paires SFT, paires DPO, splits train/validation/test, schéma de métadonnées et justification RGPD |
 | 2 | Spécialiser Qwen3-1.7B-Base par SFT + LoRA | Checkpoints reproductibles, logs, hyperparamètres, métriques intermédiaires |
 | 3 | Aligner le modèle à l’aide de DPO | Comparaison SFT/DPO, contrôles d’hallucinations et de recommandations dangereuses |
 | 4 | Déployer et valider le POC | Endpoint vLLM, API, conteneur Docker, CI/CD, tests de latence, pertinence, robustesse et traçabilité |
@@ -61,4 +61,3 @@ Ce projet est un POC d’assistance. Il ne constitue ni un dispositif médical e
 - Cours « Post-training 101 | Tokens for Thoughts ».
 - Cours « Supervised Fine-Tuning — Hugging Face LLM ».
 - Hugging Face Datasets, Presidio, PyTorch, Transformers, PEFT/LoRA, MLflow ou Weights & Biases, vLLM, Docker, FastAPI et GitHub Actions.
-

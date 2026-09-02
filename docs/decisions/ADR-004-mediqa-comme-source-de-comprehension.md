@@ -1,7 +1,7 @@
 # ADR-004 — MEDIQA comme source candidate de compréhension médicale
 
 - **Date :** 2026-08-31
-- **Statut :** approved for candidate processing only
+- **Statut :** superseded par ADR-006
 - **Propriétaire :** équipe POC
 - **Statut clinique :** not approved
 - **Sources :** `data/manifests/src-mediqa2019-32311a1.json`, dépôt `abachaa/MEDIQA2019`
@@ -30,3 +30,5 @@ L'audit de la révision épinglée trouve 9 120 paires RQE, 383 questions QA et 
 ## Conséquences
 
 MEDIQA augmente la couverture linguistique et la variété des questions candidates, mais ne résout pas la création des labels cliniques. Le corpus SFT final restera bloqué sur une validation clinique explicite des scénarios et des cibles.
+
+Depuis le 3 septembre 2026, cette décision est conservée comme historique. Le corpus prescrit est clarifié comme étant MediQAl dans ADR-006 ; MEDIQA 2019 n'entre plus dans la file courante.
