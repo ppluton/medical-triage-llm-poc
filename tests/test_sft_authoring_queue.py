@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 
 import pytest
@@ -7,6 +8,7 @@ from triage_poc.sft_authoring_queue import (
     SOURCE_ANCHOR_QUOTAS,
     SourceAnchor,
     build_sft_authoring_queue,
+    iter_mediqal_anchors,
 )
 
 
@@ -50,7 +52,7 @@ def _anchors(source_name: str, count: int, *, rejected_first: bool = False):
 def test_builds_exact_bilingual_non_trainable_queue(monkeypatch):
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.SOURCE_ANCHOR_QUOTAS",
-        {"medquad": 2, "mediqa2019": 1, "frenchmedmcqa": 1},
+        {"medquad": 2, "mediqal": 1, "frenchmedmcqa": 1},
     )
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.RISK_FAMILY_CANDIDATE_QUOTAS",
@@ -59,7 +61,7 @@ def test_builds_exact_bilingual_non_trainable_queue(monkeypatch):
     queue = build_sft_authoring_queue(
         {
             "medquad": _anchors("medquad", 2),
-            "mediqa2019": _anchors("mediqa2019", 1),
+            "mediqal": _anchors("mediqal", 1),
             "frenchmedmcqa": _anchors("frenchmedmcqa", 1),
         },
         _FakeAnonymizer(),
@@ -80,7 +82,7 @@ def test_builds_exact_bilingual_non_trainable_queue(monkeypatch):
 def test_fails_closed_when_source_quota_cannot_be_met(monkeypatch):
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.SOURCE_ANCHOR_QUOTAS",
-        {"medquad": 2, "mediqa2019": 1, "frenchmedmcqa": 1},
+        {"medquad": 2, "mediqal": 1, "frenchmedmcqa": 1},
     )
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.RISK_FAMILY_CANDIDATE_QUOTAS",
@@ -90,7 +92,7 @@ def test_fails_closed_when_source_quota_cannot_be_met(monkeypatch):
         build_sft_authoring_queue(
             {
                 "medquad": _anchors("medquad", 1),
-                "mediqa2019": _anchors("mediqa2019", 1),
+                "mediqal": _anchors("mediqal", 1),
                 "frenchmedmcqa": _anchors("frenchmedmcqa", 1),
             },
             _FakeAnonymizer(),
@@ -102,7 +104,7 @@ def test_fails_closed_when_source_quota_cannot_be_met(monkeypatch):
 def test_rejects_residual_pii_and_replenishes_quota(monkeypatch):
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.SOURCE_ANCHOR_QUOTAS",
-        {"medquad": 1, "mediqa2019": 1, "frenchmedmcqa": 1},
+        {"medquad": 1, "mediqal": 1, "frenchmedmcqa": 1},
     )
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.RISK_FAMILY_CANDIDATE_QUOTAS",
@@ -133,7 +135,7 @@ def test_production_quotas_describe_five_thousand_candidates():
 def test_bounds_anonymized_output_when_replacements_expand_text(monkeypatch):
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.SOURCE_ANCHOR_QUOTAS",
-        {"medquad": 1, "mediqa2019": 1, "frenchmedmcqa": 1},
+        {"medquad": 1, "mediqal": 1, "frenchmedmcqa": 1},
     )
     monkeypatch.setattr(
         "triage_poc.sft_authoring_queue.RISK_FAMILY_CANDIDATE_QUOTAS",
@@ -152,3 +154,67 @@ def test_bounds_anonymized_output_when_replacements_expand_text(monkeypatch):
 
     assert all(len(record["grounding"]["question"]) == 4_000 for record in queue["records"])
     assert all(record["grounding"]["truncated"] is True for record in queue["records"])
+
+
+def test_iter_mediqal_anchors_uses_only_train_and_validation(tmp_path):
+    row = {
+        "id": "42",
+        "clinical_case": "Synthetic clinical context",
+        "question": "Which statements are correct?",
+        "answer_a": "First answer",
+        "answer_b": "Second answer",
+        "answer_c": "Third answer",
+        "answer_d": "Fourth answer",
+        "answer_e": "Fifth answer",
+        "correct_answers": "A,C",
+    }
+    for config_name in ("mcqu", "mcqm"):
+        config_path = tmp_path / config_name
+        config_path.mkdir()
+        for split in ("train", "validation", "test"):
+            content = dict(row, id=f"{config_name}-{split}")
+            if split == "test":
+                content["question"] = "Reserved test question"
+            (config_path / f"{split}.json").write_text(
+                json.dumps(content) + "\n", encoding="utf-8"
+            )
+
+    anchors = list(iter_mediqal_anchors(tmp_path))
+
+    assert len(anchors) == 4
+    assert all(anchor.source_name == "mediqal" for anchor in anchors)
+    assert all("/test.json:" not in anchor.source_locator for anchor in anchors)
+    assert all(anchor.answer == "First answer\nThird answer" for anchor in anchors)
+    assert all("Synthetic clinical context" in anchor.question for anchor in anchors)
+
+
+def test_iter_mediqal_anchors_excludes_questions_overlapping_test(tmp_path):
+    def row(source_id, question):
+        return {
+            "id": source_id,
+            "clinical_case": None,
+            "question": question,
+            "answer_a": "Correct",
+            "correct_answers": "A",
+        }
+
+    for config_name in ("mcqu", "mcqm"):
+        config_path = tmp_path / config_name
+        config_path.mkdir()
+        (config_path / "train.json").write_text(
+            json.dumps(row(f"{config_name}-train", "Question shared with test")) + "\n",
+            encoding="utf-8",
+        )
+        (config_path / "validation.json").write_text(
+            json.dumps(row(f"{config_name}-validation", "Validation-only question")) + "\n",
+            encoding="utf-8",
+        )
+        (config_path / "test.json").write_text(
+            json.dumps(row(f"{config_name}-test", "question shared with TEST!")) + "\n",
+            encoding="utf-8",
+        )
+
+    anchors = list(iter_mediqal_anchors(tmp_path))
+
+    assert len(anchors) == 2
+    assert all("validation" in anchor.source_locator for anchor in anchors)

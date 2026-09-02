@@ -17,7 +17,7 @@ from triage_poc.sft_authoring_queue import (
     SOURCE_ANCHOR_QUOTAS,
     build_sft_authoring_queue,
     iter_frenchmedmcqa_anchors,
-    iter_mediqa_anchors,
+    iter_mediqal_anchors,
     iter_medquad_anchors,
 )
 
@@ -25,7 +25,7 @@ from triage_poc.sft_authoring_queue import (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--medquad-repository", required=True, type=Path)
-    parser.add_argument("--mediqa-repository", required=True, type=Path)
+    parser.add_argument("--mediqal-repository", required=True, type=Path)
     parser.add_argument("--frenchmedmcqa-rebuilt", required=True, type=Path)
     parser.add_argument("--output-directory", required=True, type=Path)
     parser.add_argument("--schema", required=True, type=Path)
@@ -68,7 +68,7 @@ def main() -> int:
     queue = build_sft_authoring_queue(
         {
             "medquad": iter_medquad_anchors(args.medquad_repository),
-            "mediqa2019": iter_mediqa_anchors(args.mediqa_repository),
+            "mediqal": iter_mediqal_anchors(args.mediqal_repository),
             "frenchmedmcqa": iter_frenchmedmcqa_anchors(args.frenchmedmcqa_rebuilt),
         },
         TextAnonymizer(),

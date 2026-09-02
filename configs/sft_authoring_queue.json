@@ -5,7 +5,7 @@
   "batch_size": 100,
   "source_anchor_quotas": {
     "medquad": 1000,
-    "mediqa2019": 750,
+    "mediqal": 750,
     "frenchmedmcqa": 750
   },
   "risk_family_candidate_quotas": {

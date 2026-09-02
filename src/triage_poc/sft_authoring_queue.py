@@ -18,7 +18,7 @@ from triage_poc.medquad_audit import REMOVED_ANSWER_SUBSETS
 LANGUAGES = ("fr", "en")
 SOURCE_ANCHOR_QUOTAS = {
     "medquad": 1_000,
-    "mediqa2019": 750,
+    "mediqal": 750,
     "frenchmedmcqa": 750,
 }
 RISK_FAMILY_CANDIDATE_QUOTAS = {
@@ -39,11 +39,11 @@ SOURCE_METADATA = {
         "license": "CC-BY-4.0",
         "source_language": "en",
     },
-    "mediqa2019": {
-        "manifest_id": "src-mediqa2019-32311a1",
-        "dataset": "abachaa/MEDIQA2019",
+    "mediqal": {
+        "manifest_id": "src-mediqal-5af3494",
+        "dataset": "ANR-MALADES/MediQAl",
         "license": "CC-BY-4.0",
-        "source_language": "en",
+        "source_language": "fr",
     },
     "frenchmedmcqa": {
         "manifest_id": "src-frenchmedmcqa-deft-2023-full",
@@ -116,61 +116,78 @@ def iter_medquad_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
                 )
 
 
-def _mediqa_file_description(xml_path: Path) -> tuple[str, str, bool]:
-    name = xml_path.name.lower()
-    task = "rqe" if "task2-rqe" in name else "qa"
-    split = "train" if "training" in name else "validation" if "validation" in name else "test"
-    labeled_peer = xml_path.with_name(xml_path.stem + "-wLabels.xml")
-    canonical = not (split == "test" and "-wlabels" not in name and labeled_peer.exists())
-    return task, split, canonical
+def _iter_jsonl(path: Path) -> Iterator[dict[str, object]]:
+    with path.open(encoding="utf-8") as stream:
+        for line_number, line in enumerate(stream, start=1):
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise ValueError(f"Invalid JSONL at {path}:{line_number}.") from error
+            if not isinstance(row, dict):
+                raise ValueError(f"Expected a JSON object at {path}:{line_number}.")
+            yield row
 
 
-def iter_mediqa_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
-    """Yield relevant train/validation QA and positive-RQE knowledge anchors."""
+def _mediqal_correct_answers(row: Mapping[str, object]) -> list[str]:
+    answer_keys = {
+        "A": "answer_a",
+        "B": "answer_b",
+        "C": "answer_c",
+        "D": "answer_d",
+        "E": "answer_e",
+    }
+    raw_keys = str(row.get("correct_answers", ""))
+    keys = [key.strip().upper() for key in raw_keys.split(",") if key.strip()]
+    return [
+        str(row.get(answer_keys[key], "")).strip()
+        for key in keys
+        if key in answer_keys and str(row.get(answer_keys[key], "")).strip()
+    ]
 
-    for xml_path in sorted(repository_path.rglob("*.xml")):
-        task, split, canonical = _mediqa_file_description(xml_path)
-        if not canonical or split == "test":
+
+def _mediqal_test_question_keys(repository_path: Path) -> set[str]:
+    keys: set[str] = set()
+    for config_name in ("mcqu", "mcqm", "oeq"):
+        test_path = repository_path / config_name / "test.json"
+        if not test_path.is_file():
             continue
-        try:
-            root = ET.parse(xml_path).getroot()
-        except ET.ParseError:
-            continue
-        relative_path = xml_path.relative_to(repository_path).as_posix()
-        if task == "rqe":
-            for row_number, pair in enumerate(root.findall(".//pair"), start=1):
-                if pair.get("value") != "true":
+        for row in _iter_jsonl(test_path):
+            key = normalize_for_deduplication(str(row.get("question") or ""))
+            if key:
+                keys.add(key)
+    return keys
+
+
+def iter_mediqal_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
+    """Yield MediQAl MCQ anchors from train/validation, never test or OEQ rows."""
+
+    test_question_keys = _mediqal_test_question_keys(repository_path)
+    for config_name in ("mcqu", "mcqm"):
+        for split in ("train", "validation"):
+            source_path = repository_path / config_name / f"{split}.json"
+            if not source_path.is_file():
+                raise ValueError(f"Missing required MediQAl file: {source_path}.")
+            for line_number, row in enumerate(_iter_jsonl(source_path), start=1):
+                clinical_case = str(row.get("clinical_case") or "").strip()
+                question = str(row.get("question") or "").strip()
+                correct_answers = _mediqal_correct_answers(row)
+                if (
+                    not question
+                    or not correct_answers
+                    or normalize_for_deduplication(question) in test_question_keys
+                ):
                     continue
-                question = (pair.findtext("chq") or "").strip()
-                answer = (pair.findtext("faq") or "").strip()
-                if not question or not answer:
-                    continue
-                locator = f"{relative_path}:{pair.get('pid') or row_number}"
-                yield SourceAnchor(
-                    source_name="mediqa2019",
-                    source_record_id=_stable_source_id(locator),
-                    source_locator=locator,
-                    question=question,
-                    answer=answer,
+                grounded_question = "\n\n".join(
+                    part for part in (clinical_case, question) if part
                 )
-        else:
-            for row_number, question_node in enumerate(root.findall(".//Question"), start=1):
-                question = (question_node.findtext("QuestionText") or "").strip()
-                answers = [
-                    (answer.findtext("AnswerText") or "").strip()
-                    for answer in question_node.findall(".//Answer")
-                    if answer.get("ReferenceScore") in {"3", "4"}
-                ]
-                answer = "\n".join(value for value in answers if value)
-                if not question or not answer:
-                    continue
-                locator = f"{relative_path}:{question_node.get('QID') or row_number}"
+                source_id = str(row.get("id") or "").strip()
+                locator = f"{config_name}/{split}.json:{source_id or line_number}"
                 yield SourceAnchor(
-                    source_name="mediqa2019",
+                    source_name="mediqal",
                     source_record_id=_stable_source_id(locator),
                     source_locator=locator,
-                    question=question,
-                    answer=answer,
+                    question=grounded_question,
+                    answer="\n".join(correct_answers),
                 )
 
 
