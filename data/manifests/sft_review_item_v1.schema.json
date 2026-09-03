@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/sft_review_item_v1.schema.json",
+  "title": "SFT authoring review item v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "review_item_id", "bilingual_group_id", "candidate_ids", "requested_languages", "requested_risk_family", "source", "grounding", "review", "clinical_validation_status", "allowed_next_action"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "review_item_id": {"type": "string", "pattern": "^review-[a-f0-9]{20}$"},
+    "bilingual_group_id": {"type": "string", "pattern": "^sft-authoring-group-[a-f0-9]{20}$"},
+    "candidate_ids": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2, "uniqueItems": true},
+    "requested_languages": {"const": ["en", "fr"]},
+    "requested_risk_family": {"enum": ["chest_pain", "respiratory_distress", "neurological_deficit", "pediatric", "pregnancy", "vulnerability", "insufficient_information", "contradictory_information", "other"]},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_manifest_id", "source_dataset", "source_license", "source_record_id", "source_locator", "source_language"],
+      "properties": {
+        "source_manifest_id": {"type": "string", "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$"},
+        "source_dataset": {"type": "string", "minLength": 1},
+        "source_license": {"type": "string", "minLength": 1},
+        "source_record_id": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "source_language": {"enum": ["fr", "en"]}
+      }
+    },
+    "grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "answer", "truncated"],
+      "properties": {
+        "question": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "answer": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "truncated": {"type": "boolean"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_relevance_status", "privacy_review_status", "risk_family_alignment_status", "authoring_suitability_status", "reviewer_role", "reviewer_id", "reviewed_at", "notes"],
+      "properties": {
+        "source_relevance_status": {"enum": ["pending", "relevant", "not_relevant", "uncertain"]},
+        "privacy_review_status": {"enum": ["pending", "passed", "rejected", "uncertain"]},
+        "risk_family_alignment_status": {"enum": ["pending", "aligned", "not_aligned", "uncertain"]},
+        "authoring_suitability_status": {"enum": ["pending", "suitable", "unsuitable", "uncertain"]},
+        "reviewer_role": {"type": ["string", "null"], "maxLength": 128},
+        "reviewer_id": {"type": ["string", "null"], "maxLength": 128},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+        "notes": {"type": ["string", "null"], "maxLength": 2000}
+      }
+    },
+    "clinical_validation_status": {"enum": ["not_started", "pending", "approved", "rejected"]},
+    "allowed_next_action": {"enum": ["manual_review_only", "authoring_candidate", "exclude"]}
+  }
+}
