@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/educational_sft_dataset_v1.schema.json",
+  "title": "Educational SFT dataset manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "manifest_id", "status", "intended_use", "artifact", "source_queue", "protocol", "transformation", "counts", "quality", "clinical_validation", "limits"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "manifest_id": {"const": "src-educational-sft-protocol-v1"},
+    "status": {"const": "approved_for_educational_experiment"},
+    "intended_use": {"const": "educational_poc_training_only"},
+    "artifact": {"$ref": "#/$defs/artifact"},
+    "source_queue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "record_count"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "record_count": {"const": 5000}
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol_id", "sha256", "status"],
+      "properties": {
+        "protocol_id": {"const": "educational-triage-protocol-v1"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "status": {"const": "proposed_educational_only"}
+      }
+    },
+    "transformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pipeline_name", "pipeline_version", "code_revision", "run_id"],
+      "properties": {
+        "pipeline_name": {"const": "educational_sft_generator"},
+        "pipeline_version": {"const": "1.0.0"},
+        "code_revision": {"type": "string", "minLength": 7, "maxLength": 64},
+        "run_id": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_count", "split_counts", "language_counts", "label_counts", "risk_family_counts"],
+      "properties": {
+        "record_count": {"const": 5000},
+        "split_counts": {"$ref": "#/$defs/count_map"},
+        "language_counts": {"$ref": "#/$defs/count_map"},
+        "label_counts": {"$ref": "#/$defs/count_map"},
+        "risk_family_counts": {"$ref": "#/$defs/count_map"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_validation", "group_split_leakage", "duplicate_content_count", "clinical_review_status_counts"],
+      "properties": {
+        "schema_validation": {"const": "passed"},
+        "group_split_leakage": {"const": "passed"},
+        "duplicate_content_count": {"type": "integer", "minimum": 0},
+        "clinical_review_status_counts": {"const": {"pending": 5000}}
+      }
+    },
+    "clinical_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["performed", "claims_allowed"],
+      "properties": {
+        "performed": {"const": false},
+        "claims_allowed": {"const": false}
+      }
+    },
+    "limits": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 3}
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_size", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "byte_size": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "count_map": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    }
+  }
+}
