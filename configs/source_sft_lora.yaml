@@ -1,0 +1,38 @@
+experiment: source-sft-lora-qwen3-1.7b
+status: preflight_passed_micro_run_pending
+base_model: Qwen/Qwen3-1.7B-Base
+base_model_revision: e249956c10337100486d07afb77e3eb2b30906b8
+runtime:
+  accelerator: Apple MLX
+  framework: unsloth
+  distribution: core
+  unsloth_version: 2026.8.22
+data:
+  manifest: data/manifests/derived-source-medical-qa-sft-v1.json
+  sha256: da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347
+  train_records: 4000
+  validation_records: 500
+  test_records_excluded: 500
+  chat_template: qwen3
+reproducibility:
+  seed: 42
+  push_to_hub: false
+lora:
+  rank: 16
+  alpha: 16
+  dropout: 0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+micro_run:
+  max_sequence_length: 2048
+  max_steps: 20
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  validation_sample_size: 50
+  output_directory: artifacts/unsloth-core-source-sft-micro-run
+full_run:
+  status: not_started
+  hyperparameters: decide_after_micro_run
+safety:
+  clinical_validation_required_before_any_clinical_claim: true
+  real_patient_use: forbidden
