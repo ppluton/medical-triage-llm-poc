@@ -216,7 +216,11 @@ def _synthetic_context(risk: str, language: str, group_id: str, level: str) -> d
         "fr": {"maximum": "minutes", "moderate": "heures", "deferred": "semaines"},
         "en": {"maximum": "minutes", "moderate": "hours", "deferred": "weeks"},
     }[language][level]
-    duration = f"{base % 97 + 1} {duration_unit}"
+    duration_prefix = {
+        "fr": ("depuis", "environ", "près de", "approximativement"),
+        "en": ("for", "about", "nearly", "approximately"),
+    }[language][_digest_int(group_id, 56) % 4]
+    duration = f"{duration_prefix} {base % 97 + 1} {duration_unit}"
     evolution = {
         "fr": ("apparition récente", "aggravation rapportée", "stable", "récurrent", "à confirmer"),
         "en": ("recent onset", "reported worsening", "stable", "recurrent", "to be confirmed"),
