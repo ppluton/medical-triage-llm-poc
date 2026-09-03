@@ -132,6 +132,49 @@ LEVEL_COPY = {
     },
 }
 
+CONTEXT_VARIANTS = {
+    "fr": {
+        "medical_history": [
+            [],
+            ["aucun antécédent déclaré"],
+            ["antécédents non précisés"],
+            ["antécédents à confirmer"],
+        ],
+        "medications": [
+            [],
+            ["aucun traitement déclaré"],
+            ["traitements non précisés"],
+            ["traitements à confirmer"],
+        ],
+        "allergies": [
+            [],
+            ["aucune allergie déclarée"],
+            ["allergies non précisées"],
+            ["allergies à confirmer"],
+        ],
+    },
+    "en": {
+        "medical_history": [
+            [],
+            ["no medical history reported"],
+            ["medical history not specified"],
+            ["medical history to be confirmed"],
+        ],
+        "medications": [
+            [],
+            ["no treatment reported"],
+            ["medications not specified"],
+            ["medications to be confirmed"],
+        ],
+        "allergies": [
+            [],
+            ["no allergy reported"],
+            ["allergies not specified"],
+            ["allergies to be confirmed"],
+        ],
+    },
+}
+
 
 def _digest_int(value: str, offset: int = 0) -> int:
     digest = hashlib.sha256(value.encode()).hexdigest()
@@ -201,9 +244,11 @@ def _synthetic_context(risk: str, language: str, group_id: str, level: str) -> d
         "evolution": evolution,
         "intensity": intensity,
         "associated_symptoms": associated_symptoms,
-        "medical_history": [],
-        "medications": [],
-        "allergies": [],
+        "medical_history": CONTEXT_VARIANTS[language]["medical_history"][
+            _digest_int(group_id, 32) % 4
+        ],
+        "medications": CONTEXT_VARIANTS[language]["medications"][_digest_int(group_id, 40) % 4],
+        "allergies": CONTEXT_VARIANTS[language]["allergies"][_digest_int(group_id, 48) % 4],
         "vitals": {
             "heart_rate": None,
             "temperature_c": None,

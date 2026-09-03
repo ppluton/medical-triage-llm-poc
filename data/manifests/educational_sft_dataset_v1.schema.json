@@ -61,7 +61,7 @@
       "properties": {
         "schema_validation": {"const": "passed"},
         "group_split_leakage": {"const": "passed"},
-        "duplicate_content_count": {"type": "integer", "minimum": 0},
+        "duplicate_content_count": {"const": 0},
         "clinical_review_status_counts": {"const": {"pending": 5000}}
       }
     },

@@ -56,6 +56,10 @@ def main() -> int:
         run_id=args.run_id,
         dataset_manifest_id="src-educational-sft-protocol-v1",
     )
+    if summary["duplicate_content_count"]:
+        raise ValueError(
+            f"Exact synthetic content duplicates detected: {summary['duplicate_content_count']}."
+        )
     record_validator = Draft202012Validator(
         json.loads(args.record_schema.read_text(encoding="utf-8"))
     )
