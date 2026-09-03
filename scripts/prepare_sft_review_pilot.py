@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
+import io
 import json
 from pathlib import Path
 
@@ -24,6 +26,55 @@ def _read_jsonl(path: Path) -> list[dict[str, object]]:
 
 def _write_jsonl(path: Path, rows: list[dict[str, object]]) -> str:
     content = "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows)
+    path.write_text(content, encoding="utf-8")
+    return hashlib.sha256(content.encode()).hexdigest()
+
+
+def _write_csv(path: Path, rows: list[dict[str, object]]) -> str:
+    fields = [
+        "review_item_id",
+        "bilingual_group_id",
+        "candidate_ids",
+        "requested_languages",
+        "requested_risk_family",
+        "source_dataset",
+        "source_record_id",
+        "question",
+        "answer",
+        "truncated",
+        "source_relevance_status",
+        "privacy_review_status",
+        "risk_family_alignment_status",
+        "authoring_suitability_status",
+        "reviewer_role",
+        "reviewer_id",
+        "reviewed_at",
+        "notes",
+        "clinical_validation_status",
+        "allowed_next_action",
+    ]
+    stream = io.StringIO(newline="")
+    writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    for item in rows:
+        writer.writerow(
+            {
+                "review_item_id": item["review_item_id"],
+                "bilingual_group_id": item["bilingual_group_id"],
+                "candidate_ids": "|".join(item["candidate_ids"]),
+                "requested_languages": "|".join(item["requested_languages"]),
+                "requested_risk_family": item["requested_risk_family"],
+                "source_dataset": item["source"]["source_dataset"],
+                "source_record_id": item["source"]["source_record_id"],
+                "question": item["grounding"]["question"],
+                "answer": item["grounding"]["answer"],
+                "truncated": item["grounding"]["truncated"],
+                **item["review"],
+                "clinical_validation_status": item["clinical_validation_status"],
+                "allowed_next_action": item["allowed_next_action"],
+            }
+        )
+    content = stream.getvalue()
     path.write_text(content, encoding="utf-8")
     return hashlib.sha256(content.encode()).hexdigest()
 
@@ -67,6 +118,8 @@ def main() -> int:
     args.output_directory.mkdir(parents=True, exist_ok=True)
     review_path = args.output_directory / "review-pilot-001.jsonl"
     review_sha256 = _write_jsonl(review_path, review_items)
+    spreadsheet_path = args.output_directory / "review-pilot-001.csv"
+    spreadsheet_sha256 = _write_csv(spreadsheet_path, review_items)
     summary = summarize_review_items(review_items)
     manifest = {
         "schema_version": "1.0.0",
@@ -85,7 +138,13 @@ def main() -> int:
             "strategy": "proportional_largest_remainder_by_risk_family_and_source",
         },
         **summary,
-        "artifact": {"path": review_path.name, "sha256": review_sha256},
+        "artifacts": {
+            "canonical_jsonl": {"path": review_path.name, "sha256": review_sha256},
+            "editable_csv": {
+                "path": spreadsheet_path.name,
+                "sha256": spreadsheet_sha256,
+            },
+        },
         "limits": [
             "All review decisions remain pending.",
             "This pilot does not constitute clinical review or validation.",
