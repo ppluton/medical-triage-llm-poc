@@ -121,7 +121,13 @@ La file unifiée a été générée localement à partir des sources réelles au
 6. une preuve des 5 000 candidats, 98 rejets PII résiduels rencontrés et 19 doublons exacts ignorés ;
 7. le remplacement traçable de MEDIQA 2019 par MediQAl, avec exclusion des tests et de leurs recouvrements lexicaux.
 
-Le prochain incrément est un pilote de revue humaine sur un seul paquet de 100. Son but est de mesurer la pertinence des ancrages, les faux positifs d'anonymisation et la clarté du protocole avant toute rédaction à grande échelle. La production des réponses et labels reste bloquée sur la désignation et l'approbation des référents cliniques.
+La préparation du pilote a révélé que le premier paquet séquentiel ne couvrait que `chest_pain`. Un échantillon stratifié séparé est donc nécessaire avant toute revue générale. La production des réponses et labels reste bloquée sur la désignation et l'approbation des référents cliniques.
+
+## Incrément réalisé — préparation de la revue pilote 001
+
+Le lot séquentiel initial étant limité à `chest_pain`, un pilote stratifié a été créé à partir de la file v2. Il contient 50 groupes bilingues couvrant les neuf familles et les trois sources. Son schéma et son manifeste sont versionnés ; le texte reste local et toutes les décisions sont `pending`.
+
+La prochaine porte est la revue effective par une personne identifiée. Cette revue documentaire peut être réalisée par l'équipe POC ; l'approbation des cibles de triage reste réservée aux référents cliniques.
 
 ## Décisions externes nécessaires
 

@@ -1,0 +1,53 @@
+{
+  "artifacts": {
+    "canonical_jsonl": {
+      "path": "review-pilot-001.jsonl",
+      "sha256": "4acc97fe628709fff54cf1cd05c51b48ac8aac7d9014bede69f408eef1baedee"
+    },
+    "editable_csv": {
+      "path": "review-pilot-001.csv",
+      "sha256": "6278df5d680f450f72c039489fe5bd9cd82d4b2ce5d0ac5efd67bf432cbadb5b"
+    }
+  },
+  "candidate_count": 100,
+  "code_revision": "eed6a3f",
+  "limits": [
+    "All review decisions remain pending.",
+    "This pilot does not constitute clinical review or validation.",
+    "The local review artifact contains source-grounding text and must stay out of Git."
+  ],
+  "manifest_id": "derived-sft-review-pilot-001-v1",
+  "review_item_count": 50,
+  "review_status_counts": {
+    "pending": 50
+  },
+  "risk_family_counts": {
+    "chest_pain": 6,
+    "contradictory_information": 5,
+    "insufficient_information": 6,
+    "neurological_deficit": 6,
+    "other": 5,
+    "pediatric": 5,
+    "pregnancy": 5,
+    "respiratory_distress": 6,
+    "vulnerability": 6
+  },
+  "run_id": "sft-review-pilot-001-2026-09-03",
+  "schema_version": "1.0.0",
+  "selection": {
+    "group_count": 50,
+    "seed": "sft-review-pilot-v1",
+    "strategy": "proportional_largest_remainder_by_risk_family_and_source"
+  },
+  "source_counts": {
+    "ANR-MALADES/MediQAl": 15,
+    "abachaa/MedQuAD": 21,
+    "qanastek/frenchmedmcqa": 14
+  },
+  "source_queue": {
+    "path": "sft-authoring-queue-v2.jsonl",
+    "record_count": 5000,
+    "sha256": "e4ac60c336aeb24dfb602f8e6f4539217f6f751239ac321946322a9ff68bdd9d"
+  },
+  "status": "manual_review_not_started"
+}

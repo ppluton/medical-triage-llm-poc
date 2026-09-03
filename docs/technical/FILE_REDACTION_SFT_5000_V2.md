@@ -43,6 +43,8 @@ PYTHONPATH=src .venv/bin/python scripts/prepare_sft_authoring_queue.py \
 - 50 fichiers `review-batch-*.jsonl` de 100 lignes ;
 - `data/manifests/derived-sft-authoring-queue-v2.json` : manifeste versionné, hashes et compteurs.
 
+Les fichiers `review-batch-*.jsonl` sont des tranches séquentielles de production. Ils ne constituent pas automatiquement des échantillons représentatifs. Le pilote général utilise la sélection stratifiée décrite dans `REVUE_PILOTE_SFT_001_V1.md`.
+
 ## Limites
 
 La file v2 ne contient toujours ni scénario patient final, ni réponse SFT, ni label de triage, ni split final. Presidio a rejeté les ancrages qui conservaient une détection résiduelle, mais une revue PII humaine reste nécessaire. Le filtre de fuite détecte les égalités normalisées, pas les paraphrases sémantiques.
