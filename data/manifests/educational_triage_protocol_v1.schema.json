@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-train-llm/schemas/educational_triage_protocol_v1.schema.json",
+  "title": "Educational triage protocol v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol_id", "status", "intended_use", "reference_framework", "labels", "precedence", "proposed_warning_signs", "uncertainty_policy", "risk_families", "required_output_fields", "safety_notices", "dataset_plan", "clinical_validation", "prohibited_claims"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "protocol_id": {"const": "educational-triage-protocol-v1"},
+    "status": {"const": "proposed_educational_only"},
+    "intended_use": {"const": "educational_poc_training_and_evaluation"},
+    "reference_framework": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "relationship", "mapping_status", "sources"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "relationship": {"const": "inspiration_not_transcription"},
+        "mapping_status": {"const": "proposed_not_clinically_validated"},
+        "sources": {"type": "array", "items": {"type": "string", "format": "uri"}, "minItems": 2, "uniqueItems": true}
+      }
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "moderate", "deferred"],
+      "properties": {
+        "maximum": {"$ref": "#/$defs/label"},
+        "moderate": {"$ref": "#/$defs/label"},
+        "deferred": {"$ref": "#/$defs/label"}
+      }
+    },
+    "precedence": {"const": ["maximum", "moderate", "deferred"]},
+    "proposed_warning_signs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 5, "uniqueItems": true},
+    "uncertainty_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["insufficient_information_default", "contradictory_information_default", "deferred_due_to_missing_information_allowed", "ask_for_missing_information", "escalate_when_severity_cannot_be_excluded"],
+      "properties": {
+        "insufficient_information_default": {"const": "moderate"},
+        "contradictory_information_default": {"const": "moderate"},
+        "deferred_due_to_missing_information_allowed": {"const": false},
+        "ask_for_missing_information": {"const": true},
+        "escalate_when_severity_cannot_be_excluded": {"const": true}
+      }
+    },
+    "risk_families": {
+      "type": "array",
+      "items": {"enum": ["chest_pain", "respiratory_distress", "neurological_deficit", "pediatric", "pregnancy", "vulnerability", "insufficient_information", "contradictory_information", "other"]},
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true
+    },
+    "required_output_fields": {
+      "const": ["triage_level", "summary", "clinical_rationale", "missing_information", "red_flags", "recommendation", "safety_notice"]
+    },
+    "safety_notices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fr", "en"],
+      "properties": {
+        "fr": {"type": "string", "minLength": 20},
+        "en": {"type": "string", "minLength": 20}
+      }
+    },
+    "dataset_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_records", "split_counts", "split_unit", "test_isolation"],
+      "properties": {
+        "total_records": {"const": 5000},
+        "split_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["train", "validation", "test"],
+          "properties": {
+            "train": {"const": 4000},
+            "validation": {"const": 500},
+            "test": {"const": 500}
+          }
+        },
+        "split_unit": {"const": "bilingual_group_id"},
+        "test_isolation": {"const": "before_training_and_hyperparameter_tuning"}
+      }
+    },
+    "clinical_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["performed", "required_for_clinical_claims", "required_for_educational_training"],
+      "properties": {
+        "performed": {"const": false},
+        "required_for_clinical_claims": {"const": true},
+        "required_for_educational_training": {"const": false}
+      }
+    },
+    "prohibited_claims": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 5, "uniqueItems": true}
+  },
+  "$defs": {
+    "label": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition", "action"],
+      "properties": {
+        "definition": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

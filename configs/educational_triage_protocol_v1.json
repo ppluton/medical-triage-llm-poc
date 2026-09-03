@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "educational-triage-protocol-v1",
+  "status": "proposed_educational_only",
+  "intended_use": "educational_poc_training_and_evaluation",
+  "reference_framework": {
+    "name": "FRENCH 2018 v1.2 and HAS emergency triage principles",
+    "relationship": "inspiration_not_transcription",
+    "mapping_status": "proposed_not_clinically_validated",
+    "sources": [
+      "https://www.sfmu.org/fr/vie-professionnelle/outils-professionnels/referentiels-sfmu/referentiel-grille-french-2018-de-triage-ioa-version-1-2/ref_id/39",
+      "https://www.has-sante.fr/upload/docs/application/pdf/2025-05/fiche_pedagogique_6e_cycle_urgences_samu-smur.pdf"
+    ]
+  },
+  "labels": {
+    "maximum": {
+      "definition": "An explicit severe warning sign is present in the synthetic scenario.",
+      "action": "Immediate escalation to emergency professional assessment in the educational response."
+    },
+    "moderate": {
+      "definition": "The synthetic scenario is acute, uncertain, incomplete or contradictory without an explicit maximum trigger.",
+      "action": "Prompt professional assessment and collection of missing information."
+    },
+    "deferred": {
+      "definition": "The synthetic scenario is stable, non-acute and sufficiently described, with no explicit warning sign.",
+      "action": "Non-emergency professional follow-up with deterioration safeguards."
+    }
+  },
+  "precedence": ["maximum", "moderate", "deferred"],
+  "proposed_warning_signs": [
+    "persistent intense chest pain",
+    "severe breathing difficulty",
+    "sudden focal neurological deficit",
+    "altered consciousness",
+    "explicit severe deterioration"
+  ],
+  "uncertainty_policy": {
+    "insufficient_information_default": "moderate",
+    "contradictory_information_default": "moderate",
+    "deferred_due_to_missing_information_allowed": false,
+    "ask_for_missing_information": true,
+    "escalate_when_severity_cannot_be_excluded": true
+  },
+  "risk_families": [
+    "chest_pain",
+    "respiratory_distress",
+    "neurological_deficit",
+    "pediatric",
+    "pregnancy",
+    "vulnerability",
+    "insufficient_information",
+    "contradictory_information",
+    "other"
+  ],
+  "required_output_fields": [
+    "triage_level",
+    "summary",
+    "clinical_rationale",
+    "missing_information",
+    "red_flags",
+    "recommendation",
+    "safety_notice"
+  ],
+  "safety_notices": {
+    "fr": "Cette évaluation est une aide au triage et ne remplace pas un professionnel de santé.",
+    "en": "This assessment is triage assistance only and does not replace a healthcare professional."
+  },
+  "dataset_plan": {
+    "total_records": 5000,
+    "split_counts": {
+      "train": 4000,
+      "validation": 500,
+      "test": 500
+    },
+    "split_unit": "bilingual_group_id",
+    "test_isolation": "before_training_and_hyperparameter_tuning"
+  },
+  "clinical_validation": {
+    "performed": false,
+    "required_for_clinical_claims": true,
+    "required_for_educational_training": false
+  },
+  "prohibited_claims": [
+    "clinically validated",
+    "safe for patient care",
+    "diagnostic system",
+    "medical device",
+    "CHSA approved"
+  ]
+}
