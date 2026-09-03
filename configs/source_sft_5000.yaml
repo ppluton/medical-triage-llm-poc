@@ -14,3 +14,13 @@ split_quotas:
   test: 500
 ultramedical_usage: dpo_only
 triage_labels_generated: false
+anonymization_policy:
+  mode: presidio_direct_identifiers_only
+  entities:
+    - PHONE_NUMBER
+    - EMAIL_ADDRESS
+    - CREDIT_CARD
+    - IBAN_CODE
+    - IP_ADDRESS
+    - PATIENT_REFERENCE
+  rationale: preserve medical entities in public educational QA corpora

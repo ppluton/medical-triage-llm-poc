@@ -1,0 +1,111 @@
+{
+  "anonymization_policy": {
+    "entities": [
+      "PHONE_NUMBER",
+      "EMAIL_ADDRESS",
+      "CREDIT_CARD",
+      "IBAN_CODE",
+      "IP_ADDRESS",
+      "PATIENT_REFERENCE"
+    ],
+    "excluded_contextual_entities": [
+      "PERSON",
+      "LOCATION",
+      "DATE_TIME"
+    ],
+    "reason": "Generic NER produced destructive false positives on disease, drug, anatomy, and medical organization names in public educational QA corpora."
+  },
+  "artifacts": {
+    "canonical": {
+      "byte_size": 9024613,
+      "path": "source-sft-v1.jsonl",
+      "record_count": 5000,
+      "sha256": "da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347"
+    },
+    "train_qwen3": {
+      "byte_size": 4741953,
+      "path": "train-qwen3.jsonl",
+      "record_count": 4000,
+      "sha256": "854ce4f0458d1d313e77d7e3ff9da2d2dffb6571af728a7237f8aada7ce5525d"
+    },
+    "validation_qwen3": {
+      "byte_size": 580691,
+      "path": "validation-qwen3.jsonl",
+      "record_count": 500,
+      "sha256": "7118258c5fdbfe47d5c11b5c4e4b2c2600c4ed17a1eb4b806b0bf5f7c2c52296"
+    }
+  },
+  "code_revision": "f0431d3",
+  "dpo_source": {
+    "dataset": "TsinghuaC3I/UltraMedical-Preference",
+    "included_in_sft": false,
+    "planned_use": "separate DPO stage"
+  },
+  "language_counts": {
+    "en": 2500,
+    "fr": 2500
+  },
+  "limits": [
+    "The records teach medical question answering, not clinically validated triage labels.",
+    "No clinical review was performed.",
+    "The direct-identifier Presidio scan is a technical privacy control, not RGPD certification or full de-identification.",
+    "The test split is stored only in the canonical artifact and is never rendered for training."
+  ],
+  "manifest_id": "derived-source-medical-qa-sft-v1",
+  "quality_counts": {
+    "clinical_review_not_performed": 5000,
+    "content_truncated": 101,
+    "direct_identifier_anonymization_passed": 5000,
+    "source_provided_answers": 5000,
+    "unique_normalized_questions": 5000,
+    "unique_record_ids": 5000
+  },
+  "record_count": 5000,
+  "run_id": "source-sft-v1-2026-09-04-final",
+  "schema_version": "1.0.0",
+  "source_audits": {
+    "frenchmedmcqa": {
+      "detected_entity_counts": {},
+      "duplicate_questions_skipped": 14,
+      "selected": 1000,
+      "truncated_records": 0
+    },
+    "mediqal": {
+      "detected_entity_counts": {},
+      "duplicate_questions_skipped": 8,
+      "selected": 1500,
+      "truncated_records": 0
+    },
+    "medquad": {
+      "detected_entity_counts": {
+        "EMAIL_ADDRESS": 1,
+        "PHONE_NUMBER": 12
+      },
+      "duplicate_questions_skipped": 83,
+      "selected": 2500,
+      "truncated_records": 101
+    }
+  },
+  "source_counts": {
+    "ANR-MALADES/MediQAl": 1500,
+    "abachaa/MedQuAD": 2500,
+    "qanastek/frenchmedmcqa": 1000
+  },
+  "source_manifest_counts": {
+    "src-frenchmedmcqa-deft-2023-full": 1000,
+    "src-mediqal-5af3494": 1500,
+    "src-medquad-577bd37": 2500
+  },
+  "source_split_policy": {
+    "frenchmedmcqa": "rebuilt train only; rebuilt validation and test excluded",
+    "mediqal": "upstream train only; upstream validation and test excluded",
+    "medquad": "no upstream split; deterministic derived split"
+  },
+  "split_counts": {
+    "test": 500,
+    "train": 4000,
+    "validation": 500
+  },
+  "status": "ready_for_local_educational_sft",
+  "triage_label_count": 0
+}

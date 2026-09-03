@@ -1,9 +1,9 @@
 # Roadmap de réalisation du POC de triage médical
 
-- **Date :** 2026-09-03
-- **Statut :** active — dataset SFT expérimental 5 000 généré ; pré-vol et micro-run suivants
+- **Date :** 2026-09-04
+- **Statut :** active — SFT source-derived 5 000 validé techniquement ; pré-vol LoRA suivant
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
-- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-007 et preuves versionnées dans `docs/evidence/`
+- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
 ## Lecture de l'état
 
@@ -17,11 +17,11 @@ Un statut technique vert ne constitue jamais une validation clinique.
 
 ## État par rapport aux quatre semaines du cadrage
 
-| Phase du cadrage | État au 2026-09-03 | Résultat prouvé | Écart à fermer |
+| Phase du cadrage | État au 2026-09-04 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
-| Semaine 1 — données | `partially proven` | Les sources, la file candidate v2, le protocole et les 5 000 exemples SFT expérimentaux sont versionnés ou manifestés ; les splits 4 000/500/500 sont figés. | Produire les paires DPO de sécurité expérimentales et documenter la limite de grounding sémantique. |
-| Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. | Entraîner sur le dataset synthétique expérimental, conserver checkpoint, logs et métriques, puis comparer à la baseline. |
-| Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT expérimental et mesurer gains et régressions. |
+| Semaine 1 — données | `proven` pour le SFT, DPO restant | Les 5 000 paires source-derived sont générées et vérifiées : 2 500 FR/2 500 EN, splits 4 000/500/500, réponses sources et zéro label de triage inventé. | Constituer le DPO depuis UltraMedical après le premier SFT LoRA. |
+| Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. | Entraîner sur le dataset source-derived, conserver checkpoint, logs et métriques, puis comparer à la baseline. |
+| Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT source-derived et mesurer gains et régressions. |
 | Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
 
 La durée de quatre semaines du mandat n'est pas déclarée tenue. La roadmap est pilotée par preuves. L'absence de validation clinique limite les conclusions et tout usage patient, mais ne bloque plus le chemin technique du projet scolaire.
@@ -30,14 +30,13 @@ La durée de quatre semaines du mandat n'est pas déclarée tenue. La roadmap es
 
 ```mermaid
 flowchart TD
-  A[Sources réelles auditées] --> B[File de rédaction de scénarios]
-  B --> C[Protocole expérimental proposé]
-  C --> D[Dataset SFT bilingue synthétique]
-  D --> E[SFT + LoRA Qwen3 Base]
+  A[MedQuAD + MediQAl + FrenchMedMCQA] --> B[SFT médical bilingue source-derived]
+  B --> E[SFT + LoRA Qwen3 Base]
   E --> F{SFT meilleur et sans régression de sûreté ?}
   F -- non --> F1[Analyser données et configuration]
-  F1 --> D
-  F -- oui --> G[Paires DPO sécurité proposées]
+  F1 --> B
+  U[UltraMedical Preference] --> G[Paires DPO de sécurité]
+  F -- oui --> G
   G --> H[DPO depuis checkpoint SFT]
   H --> I[Évaluation identique Base / SFT / DPO]
   I --> J{Go technique ?}
@@ -49,13 +48,13 @@ flowchart TD
 
 ## Plan d'exécution actualisé
 
-### Jalon 1 — Dataset SFT gouverné
+### Jalon 1 — Dataset SFT médical gouverné
 
-- **Statut :** dataset SFT expérimental de 5 000 lignes `proven` techniquement ; validation clinique `not performed`.
-- **Entrées :** MedQuAD, MediQAl et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
-- **Travail :** transformer la file de 5 000 candidats en scénarios synthétiques, produire des cibles proposées avec le protocole versionné et assigner les splits par groupe bilingue.
-- **Porte de sortie expérimentale :** chaque ligne porte `data_origin: synthetic`, une cible `proposed_protocol_generated`, `clinical_review_status: pending`, le hash du protocole, une provenance et un split sans fuite. La porte clinique reste fermée.
-- **Preuve attendue :** manifeste du dataset, checksums, distribution FR/EN et par risque, rapport de revue, tests de contrats et de fuite.
+- **Statut :** dataset source-derived `proven` techniquement ; validation clinique `not performed`.
+- **Entrées :** questions et réponses MedQuAD, MediQAl et FrenchMedMCQA ; UltraMedical est réservé au DPO.
+- **Travail :** sélectionner 5 000 paires sources, les dédupliquer et anonymiser, puis assigner 4 000/500/500 sans créer de label de triage.
+- **Porte de sortie :** 2 500 FR, 2 500 EN, toutes les réponses `source_provided`, provenance et licence présentes, zéro label de triage inventé et test non rendu pour l'entraînement.
+- **Preuve :** manifeste, SHA-256, distributions, contrôles de schéma, doublons, identifiants directs et isolation du test dans `GENERATION_SFT_SOURCE_5000_2026-09-04.md`.
 
 ### Jalon 2 — Baseline de référence figée
 
@@ -64,9 +63,9 @@ flowchart TD
 - **Porte de sortie :** versions, prompt, seed, garde-fous, sorties et métriques enregistrés pour chaque scénario.
 - **Preuve attendue :** rapport Base avec conformité JSON, rappel des cas `maximum`, sous-triage, sur-triage, réponses dangereuses et limites de la revue.
 
-### Jalon 3 — SFT + LoRA réel
+### Jalon 3 — SFT + LoRA sur les sources
 
-- **Statut :** `not started` sur les 5 000 données expérimentales.
+- **Statut :** `not started` sur les 5 000 paires source-derived.
 - **Travail :** exécuter d'abord un court run contrôlé, puis le run SFT complet ; suivre loss entraînement/validation, stabilité, mémoire et durée ; sauvegarder adaptateur et état de reprise.
 - **Porte de sortie :** checkpoint reproductible et amélioration mesurée par rapport à Base sans hausse non acceptée des erreurs dangereuses.
 - **Preuve attendue :** configuration figée, hash du code et des données, logs, checkpoint, métriques et comparaison au même jeu de test.
@@ -132,11 +131,17 @@ La revue documentaire peut être réalisée par l'équipe POC. Elle informe la q
 
 ADR-007 autorise l'entraînement local sur des cibles synthétiques `proposed_protocol_generated`. Le protocole machine-readable fixe les trois niveaux, la précédence conservatrice, la politique d'incertitude, les neuf familles et les splits 4 000/500/500. Il conserve explicitement `clinical_review_status: pending`.
 
-## Incrément réalisé — dataset SFT expérimental 5 000
+## Incrément historique — dataset SFT template 5 000
 
-Le générateur canonique a produit 4 000 lignes train, 500 validation et 500 test, toutes synthétiques et liées au protocole et à leur candidat source. Les contrôles finaux trouvent zéro doublon exact et zéro fuite de groupe bilingue. Les fichiers Qwen3 train/validation sont prêts ; le test reste isolé.
+Le générateur canonique a produit 4 000 lignes train, 500 validation et 500 test, toutes synthétiques et liées au protocole et à leur candidat source. Il reste une preuve technique reproductible du pipeline.
 
-La génération est template-based : elle démontre le pipeline et l'apprentissage futur du comportement de triage proposé, sans prouver un grounding sémantique complet sur les réponses des corpus médicaux.
+ADR-008 le reclasse comme fixture supplantée pour le SFT principal : la génération est template-based et ne prouve pas un grounding sémantique sur les réponses des corpus. Le nouveau dataset conserve directement les questions-réponses sources et ne génère aucun label de triage.
+
+## Incrément réalisé — SFT source-derived 5 000
+
+Le pipeline utilise MedQuAD pour 2 500 exemples anglais, MediQAl pour 1 500 exemples français et FrenchMedMCQA pour 1 000 exemples français. UltraMedical-Preference reste séparé pour le DPO. La sélection, l'anonymisation des identifiants directs, la déduplication et les splits sont déterministes et manifestés.
+
+La première passe complète a été refusée car le NER généraliste masquait des termes médicaux. La version finale préserve ces entités, masque 1 email et 12 téléphones, conserve 5 000 questions uniques et déclare 101 réponses MedQuAD tronquées. Le dataset est prêt pour le pré-vol d'un SFT local, sans être cliniquement validé.
 
 ## Décisions externes nécessaires au-delà du POC scolaire
 
