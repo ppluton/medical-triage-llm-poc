@@ -1,7 +1,7 @@
 # Roadmap de réalisation du POC de triage médical
 
 - **Date :** 2026-09-03
-- **Statut :** active — protocole expérimental scolaire versionné ; génération SFT canonique suivante
+- **Statut :** active — dataset SFT expérimental 5 000 généré ; pré-vol et micro-run suivants
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-007 et preuves versionnées dans `docs/evidence/`
 
@@ -19,7 +19,7 @@ Un statut technique vert ne constitue jamais une validation clinique.
 
 | Phase du cadrage | État au 2026-09-03 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
-| Semaine 1 — données | `partially proven` | MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference sont acquis à des révisions immuables. La file candidate v2 et le protocole expérimental sont versionnés. | Générer les 5 000 cibles proposées, figer les splits et produire les paires DPO de sécurité expérimentales. |
+| Semaine 1 — données | `partially proven` | Les sources, la file candidate v2, le protocole et les 5 000 exemples SFT expérimentaux sont versionnés ou manifestés ; les splits 4 000/500/500 sont figés. | Produire les paires DPO de sécurité expérimentales et documenter la limite de grounding sémantique. |
 | Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. | Entraîner sur le dataset synthétique expérimental, conserver checkpoint, logs et métriques, puis comparer à la baseline. |
 | Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT expérimental et mesurer gains et régressions. |
 | Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
@@ -51,7 +51,7 @@ flowchart TD
 
 ### Jalon 1 — Dataset SFT gouverné
 
-- **Statut :** file de 5 000 candidats et protocole expérimental `proven` techniquement ; génération du dataset canonique `not started`.
+- **Statut :** dataset SFT expérimental de 5 000 lignes `proven` techniquement ; validation clinique `not performed`.
 - **Entrées :** MedQuAD, MediQAl et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
 - **Travail :** transformer la file de 5 000 candidats en scénarios synthétiques, produire des cibles proposées avec le protocole versionné et assigner les splits par groupe bilingue.
 - **Porte de sortie expérimentale :** chaque ligne porte `data_origin: synthetic`, une cible `proposed_protocol_generated`, `clinical_review_status: pending`, le hash du protocole, une provenance et un split sans fuite. La porte clinique reste fermée.
@@ -131,6 +131,12 @@ La revue documentaire peut être réalisée par l'équipe POC. Elle informe la q
 ## Incrément réalisé — protocole expérimental scolaire
 
 ADR-007 autorise l'entraînement local sur des cibles synthétiques `proposed_protocol_generated`. Le protocole machine-readable fixe les trois niveaux, la précédence conservatrice, la politique d'incertitude, les neuf familles et les splits 4 000/500/500. Il conserve explicitement `clinical_review_status: pending`.
+
+## Incrément réalisé — dataset SFT expérimental 5 000
+
+Le générateur canonique a produit 4 000 lignes train, 500 validation et 500 test, toutes synthétiques et liées au protocole et à leur candidat source. Les contrôles finaux trouvent zéro doublon exact et zéro fuite de groupe bilingue. Les fichiers Qwen3 train/validation sont prêts ; le test reste isolé.
+
+La génération est template-based : elle démontre le pipeline et l'apprentissage futur du comportement de triage proposé, sans prouver un grounding sémantique complet sur les réponses des corpus médicaux.
 
 ## Décisions externes nécessaires au-delà du POC scolaire
 
