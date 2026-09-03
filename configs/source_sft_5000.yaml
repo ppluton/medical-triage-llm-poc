@@ -1,0 +1,16 @@
+dataset_id: source-medical-qa-sft-v1
+seed: source-sft-v1
+target_records: 5000
+language_quotas:
+  fr: 2500
+  en: 2500
+source_quotas:
+  abachaa/MedQuAD: 2500
+  ANR-MALADES/MediQAl: 1500
+  qanastek/frenchmedmcqa: 1000
+split_quotas:
+  train: 4000
+  validation: 500
+  test: 500
+ultramedical_usage: dpo_only
+triage_labels_generated: false
