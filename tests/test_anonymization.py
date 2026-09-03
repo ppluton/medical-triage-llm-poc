@@ -75,6 +75,18 @@ def test_anonymize_fails_closed_when_detector_raises():
         TextAnonymizer(BrokenAnalyzer(), FakeAnonymizer()).anonymize("synthetic text", "fr")
 
 
+def test_anonymize_supports_a_bounded_entity_policy():
+    analyzer = FakeAnalyzer([[], []])
+    TextAnonymizer(
+        analyzer,
+        FakeAnonymizer(),
+        entities=("EMAIL_ADDRESS", "PHONE_NUMBER"),
+    ).anonymize("No direct identifier", "en")
+
+    with pytest.raises(AnonymizationConfigurationError, match="Invalid PII entity policy"):
+        TextAnonymizer(analyzer, FakeAnonymizer(), entities=("UNKNOWN",))
+
+
 def test_contract_rejects_an_approved_manifest_with_a_skipped_pii_check():
     manifest = {
         "schema_version": "1.0.0",

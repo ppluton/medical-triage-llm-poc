@@ -31,7 +31,7 @@
       "properties": {
         "pipeline_name": {"const": "source_medical_qa_sft"},
         "pipeline_version": {"const": "1.0.0"},
-        "operations": {"const": ["deterministic_selection", "exact_normalized_question_deduplication", "presidio_anonymization"]},
+        "operations": {"const": ["deterministic_selection", "exact_normalized_question_deduplication", "presidio_direct_identifier_anonymization"]},
         "content_truncated": {"type": "boolean"},
         "code_revision": {"type": "string", "minLength": 7},
         "run_id": {"type": "string", "minLength": 1}
@@ -42,7 +42,7 @@
       "additionalProperties": false,
       "required": ["pii_anonymization_status", "answer_origin", "clinical_review_status"],
       "properties": {
-        "pii_anonymization_status": {"const": "passed"},
+        "pii_anonymization_status": {"const": "passed_direct_identifiers_only"},
         "answer_origin": {"const": "source_provided"},
         "clinical_review_status": {"const": "not_performed"}
       }

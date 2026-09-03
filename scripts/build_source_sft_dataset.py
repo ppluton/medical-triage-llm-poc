@@ -18,7 +18,11 @@ from triage_poc.sft_authoring_queue import (
     iter_medquad_anchors,
     normalize_for_deduplication,
 )
-from triage_poc.source_sft import build_source_sft_dataset, render_source_sft_conversation
+from triage_poc.source_sft import (
+    SOURCE_DIRECT_IDENTIFIER_ENTITIES,
+    build_source_sft_dataset,
+    render_source_sft_conversation,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -66,7 +70,7 @@ def main() -> int:
             "mediqal": mediqa_train,
             "frenchmedmcqa": french_train,
         },
-        TextAnonymizer(),
+        TextAnonymizer(entities=SOURCE_DIRECT_IDENTIFIER_ENTITIES),
         code_revision=args.code_revision,
         run_id=args.run_id,
     )
@@ -104,7 +108,7 @@ def main() -> int:
         "triage_label_count": summary["triage_label_count"],
         "quality_counts": {
             "source_provided_answers": len(records),
-            "pii_anonymization_passed": len(records),
+            "direct_identifier_anonymization_passed": len(records),
             "clinical_review_not_performed": len(records),
             "content_truncated": sum(
                 bool(record["transformation"]["content_truncated"]) for record in records
@@ -123,6 +127,14 @@ def main() -> int:
             "frenchmedmcqa": "rebuilt train only; rebuilt validation and test excluded",
             "medquad": "no upstream split; deterministic derived split",
         },
+        "anonymization_policy": {
+            "entities": list(SOURCE_DIRECT_IDENTIFIER_ENTITIES),
+            "excluded_contextual_entities": ["PERSON", "LOCATION", "DATE_TIME"],
+            "reason": (
+                "Generic NER produced destructive false positives on disease, drug, anatomy, "
+                "and medical organization names in public educational QA corpora."
+            ),
+        },
         "dpo_source": {
             "dataset": "TsinghuaC3I/UltraMedical-Preference",
             "included_in_sft": False,
@@ -131,7 +143,8 @@ def main() -> int:
         "limits": [
             "The records teach medical question answering, not clinically validated triage labels.",
             "No clinical review was performed.",
-            "Presidio passing is a technical privacy control, not RGPD certification.",
+            "The direct-identifier Presidio scan is a technical privacy control, not RGPD "
+            "certification or full de-identification.",
             "The test split is stored only in the canonical artifact and is never "
             "rendered for training.",
         ],

@@ -107,9 +107,21 @@ def build_presidio_analyzer() -> AnalyzerEngine:
 class TextAnonymizer:
     """Analyze, replace, and re-check PII without retaining source text in audit metadata."""
 
-    def __init__(self, analyzer: Analyzer | None = None, anonymizer: Anonymizer | None = None):
+    def __init__(
+        self,
+        analyzer: Analyzer | None = None,
+        anonymizer: Anonymizer | None = None,
+        *,
+        entities: Sequence[str] = PII_ENTITIES,
+    ):
+        unknown_entities = set(entities) - set(PII_ENTITIES)
+        if not entities or unknown_entities:
+            raise AnonymizationConfigurationError(
+                f"Invalid PII entity policy: {sorted(unknown_entities)}."
+            )
         self._analyzer = analyzer or build_presidio_analyzer()
         self._anonymizer = anonymizer or AnonymizerEngine()
+        self._entities = tuple(entities)
 
     def anonymize(self, text: str, language: str) -> AnonymizationResult:
         """Return anonymized text or fail if detection/anonymization cannot complete safely."""
@@ -123,10 +135,12 @@ class TextAnonymizer:
             raise ValueError("Text to anonymize must not be empty.")
 
         try:
-            detections = self._analyzer.analyze(text=text, entities=PII_ENTITIES, language=language)
+            detections = self._analyzer.analyze(
+                text=text, entities=self._entities, language=language
+            )
             operators = {
                 entity: OperatorConfig("replace", {"new_value": f"<{entity}>"})
-                for entity in PII_ENTITIES
+                for entity in self._entities
             }
             output = self._anonymizer.anonymize(
                 text=text,
@@ -135,7 +149,7 @@ class TextAnonymizer:
             )
             residual = self._analyzer.analyze(
                 text=output.text,
-                entities=PII_ENTITIES,
+                entities=self._entities,
                 language=language,
             )
         except Exception as exc:  # Presidio configuration and runtime errors must stop ingestion.

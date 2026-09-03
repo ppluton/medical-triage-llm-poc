@@ -24,6 +24,14 @@ SOURCE_SPLIT_QUOTAS = {
     "mediqal": {"train": 1_200, "validation": 150, "test": 150},
     "frenchmedmcqa": {"train": 800, "validation": 100, "test": 100},
 }
+SOURCE_DIRECT_IDENTIFIER_ENTITIES = (
+    "PHONE_NUMBER",
+    "EMAIL_ADDRESS",
+    "CREDIT_CARD",
+    "IBAN_CODE",
+    "IP_ADDRESS",
+    "PATIENT_REFERENCE",
+)
 SYSTEM_PROMPT = (
     "You are a medical question-answering assistant used for an educational AI project. "
     "Answer from the provided training example. Do not claim that this answer is a diagnosis, "
@@ -176,14 +184,14 @@ def build_source_sft_dataset(
                         "operations": [
                             "deterministic_selection",
                             "exact_normalized_question_deduplication",
-                            "presidio_anonymization",
+                            "presidio_direct_identifier_anonymization",
                         ],
                         "content_truncated": item["truncated"],
                         "code_revision": code_revision,
                         "run_id": run_id,
                     },
                     "quality": {
-                        "pii_anonymization_status": "passed",
+                        "pii_anonymization_status": "passed_direct_identifiers_only",
                         "answer_origin": "source_provided",
                         "clinical_review_status": "not_performed",
                     },

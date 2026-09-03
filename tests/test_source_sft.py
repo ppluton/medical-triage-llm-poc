@@ -65,6 +65,11 @@ def test_builds_source_provided_records_without_triage_labels(monkeypatch):
     assert len(records) == 6
     assert summary["triage_label_count"] == 0
     assert all(record["quality"]["answer_origin"] == "source_provided" for record in records)
+    assert all(
+        record["quality"]["pii_anonymization_status"]
+        == "passed_direct_identifiers_only"
+        for record in records
+    )
     assert all(record["quality"]["clinical_review_status"] == "not_performed" for record in records)
     assert {record["language"] for record in records} == {"fr", "en"}
     assert {record["split"] for record in records} == {"train", "validation", "test"}
