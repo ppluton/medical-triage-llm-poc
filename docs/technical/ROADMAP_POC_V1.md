@@ -1,9 +1,9 @@
 # Roadmap de réalisation du POC de triage médical
 
 - **Date :** 2026-09-03
-- **Statut :** active — source MediQAl corrigée et file candidate v2 générée
+- **Statut :** active — protocole expérimental scolaire versionné ; génération SFT canonique suivante
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
-- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-006 et preuves versionnées dans `docs/evidence/`
+- **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-007 et preuves versionnées dans `docs/evidence/`
 
 ## Lecture de l'état
 
@@ -11,7 +11,7 @@
 - `partially proven` : une partie technique est observée, mais le livrable attendu n'est pas terminé.
 - `implemented only` : code ou contrat présent, sans preuve directe du comportement final.
 - `not started` : aucun résultat exécutable correspondant au livrable final.
-- `blocked by clinical decision` : la suite exige une décision ou une validation qui ne peut pas être inventée par l'équipe technique.
+- `blocked for clinical claims` : l'expérimentation technique peut continuer, mais aucune conclusion clinique n'est autorisée.
 
 Un statut technique vert ne constitue jamais une validation clinique.
 
@@ -19,55 +19,54 @@ Un statut technique vert ne constitue jamais une validation clinique.
 
 | Phase du cadrage | État au 2026-09-03 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
-| Semaine 1 — données | `partially proven` | MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference sont acquis à des révisions immuables. La file candidate v2 contient 5 000 lignes ; les fuites lexicales connues sont filtrées ou reconstruites. | Rédiger et approuver les cibles SFT ; produire les paires DPO spécifiques au triage ; isoler le test clinique. |
-| Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. La configuration Unsloth Core/MLX est reproductible. | Entraîner sur le dataset réel approuvé, conserver checkpoint, logs et métriques de validation, puis comparer à la baseline avec le même protocole. |
-| Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Sélectionner des préférences compatibles avec le triage, les anonymiser et les faire valider ; entraîner depuis le checkpoint SFT validé ; mesurer le gain et les régressions. |
+| Semaine 1 — données | `partially proven` | MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference sont acquis à des révisions immuables. La file candidate v2 et le protocole expérimental sont versionnés. | Générer les 5 000 cibles proposées, figer les splits et produire les paires DPO de sécurité expérimentales. |
+| Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. | Entraîner sur le dataset synthétique expérimental, conserver checkpoint, logs et métriques, puis comparer à la baseline. |
+| Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT expérimental et mesurer gains et régressions. |
 | Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
 
-La durée de quatre semaines du mandat n'est pas déclarée tenue. La roadmap est désormais pilotée par preuves et portes de décision, car la disponibilité d'une validation clinique conditionne le chemin critique.
+La durée de quatre semaines du mandat n'est pas déclarée tenue. La roadmap est pilotée par preuves. L'absence de validation clinique limite les conclusions et tout usage patient, mais ne bloque plus le chemin technique du projet scolaire.
 
 ## Chemin critique
 
 ```mermaid
 flowchart TD
   A[Sources réelles auditées] --> B[File de rédaction de scénarios]
-  B --> C{Revue clinique approuvée ?}
-  C -- non --> C1[Corriger ou exclure]
-  C1 --> B
-  C -- oui --> D[Dataset SFT bilingue isolé]
+  B --> C[Protocole expérimental proposé]
+  C --> D[Dataset SFT bilingue synthétique]
   D --> E[SFT + LoRA Qwen3 Base]
   E --> F{SFT meilleur et sans régression de sûreté ?}
   F -- non --> F1[Analyser données et configuration]
   F1 --> D
-  F -- oui --> G[Paires DPO triage approuvées]
+  F -- oui --> G[Paires DPO sécurité proposées]
   G --> H[DPO depuis checkpoint SFT]
   H --> I[Évaluation identique Base / SFT / DPO]
-  I --> J{Go technique et clinique ?}
+  I --> J{Go technique ?}
   J -- non --> J1[POC non concluant ou nouvelle itération]
-  J -- oui --> K[API vLLM conteneurisée]
-  K --> L[Pilote restreint et rapport final]
+  J -- oui --> K[API de démonstration conteneurisée]
+  K --> L[Démo scolaire et rapport final]
+  L -. hors périmètre .-> M[Validation clinique future]
 ```
 
 ## Plan d'exécution actualisé
 
 ### Jalon 1 — Dataset SFT gouverné
 
-- **Statut :** file de 5 000 candidats `proven` techniquement ; dataset SFT `blocked by clinical decision` pour les scénarios et cibles.
+- **Statut :** file de 5 000 candidats et protocole expérimental `proven` techniquement ; génération du dataset canonique `not started`.
 - **Entrées :** MedQuAD, MediQAl et FrenchMedMCQA comme sources documentaires ; scénarios synthétiques pour éviter toute donnée patient réelle.
-- **Travail :** construire une file d'environ 5 000 candidats bilingues avec provenance ; laisser `triage_level` vide tant qu'il n'est pas approuvé ; appliquer Presidio ; dédupliquer ; reconstruire les splits par groupe de scénario.
-- **Porte de sortie :** chaque ligne utilisée par le SFT porte `clinical_review_status: approved`, `pii_anonymization_status: passed`, une licence, une provenance et un split sans fuite.
+- **Travail :** transformer la file de 5 000 candidats en scénarios synthétiques, produire des cibles proposées avec le protocole versionné et assigner les splits par groupe bilingue.
+- **Porte de sortie expérimentale :** chaque ligne porte `data_origin: synthetic`, une cible `proposed_protocol_generated`, `clinical_review_status: pending`, le hash du protocole, une provenance et un split sans fuite. La porte clinique reste fermée.
 - **Preuve attendue :** manifeste du dataset, checksums, distribution FR/EN et par risque, rapport de revue, tests de contrats et de fuite.
 
 ### Jalon 2 — Baseline de référence figée
 
 - **Statut :** `partially proven`.
-- **Travail :** conserver la baseline actuelle comme preuve de faisabilité, puis exécuter Qwen3-1.7B-Base sur le jeu de test clinique approuvé sans ajuster le modèle à ses résultats.
+- **Travail :** conserver la baseline actuelle comme preuve de faisabilité, puis exécuter Qwen3-1.7B-Base sur le jeu de test expérimental isolé sans ajuster le modèle à ses résultats.
 - **Porte de sortie :** versions, prompt, seed, garde-fous, sorties et métriques enregistrés pour chaque scénario.
 - **Preuve attendue :** rapport Base avec conformité JSON, rappel des cas `maximum`, sous-triage, sur-triage, réponses dangereuses et limites de la revue.
 
 ### Jalon 3 — SFT + LoRA réel
 
-- **Statut :** `not started` sur données approuvées.
+- **Statut :** `not started` sur les 5 000 données expérimentales.
 - **Travail :** exécuter d'abord un court run contrôlé, puis le run SFT complet ; suivre loss entraînement/validation, stabilité, mémoire et durée ; sauvegarder adaptateur et état de reprise.
 - **Porte de sortie :** checkpoint reproductible et amélioration mesurée par rapport à Base sans hausse non acceptée des erreurs dangereuses.
 - **Preuve attendue :** configuration figée, hash du code et des données, logs, checkpoint, métriques et comparaison au même jeu de test.
@@ -76,8 +75,8 @@ flowchart TD
 
 - **Statut :** reconstruction de source `proven`, sélection triage `not started`.
 - **Entrées :** index UltraMedical reconstruit et préférences créées ou revues pour le contrat de triage.
-- **Travail :** exclure le benchmark de test, filtrer les préférences génériques, anonymiser le sous-ensemble retenu et documenter pourquoi `chosen` est plus sûr que `rejected`.
-- **Porte de sortie :** toutes les préférences d'entraînement sont approuvées et le DPO démarre depuis le checkpoint SFT validé.
+- **Travail :** exclure le benchmark de test, filtrer ou générer les préférences de sûreté et documenter pourquoi `chosen` est préférable à `rejected` selon le protocole expérimental.
+- **Porte de sortie expérimentale :** les préférences portent un statut proposé explicite et le DPO démarre depuis le checkpoint SFT retenu ; aucune approbation clinique n'est déclarée.
 - **Preuve attendue :** manifeste DPO, distribution des types de préférence, checkpoint et comparaison Base/SFT/DPO.
 
 ### Jalon 5 — Évaluation de sûreté
@@ -85,13 +84,13 @@ flowchart TD
 - **Statut :** protocole `implemented`, validation clinique `not started`.
 - **Périmètre minimal :** douleur thoracique, détresse respiratoire, déficit neurologique, pédiatrie, grossesse, vulnérabilité, données insuffisantes ou contradictoires, français et anglais.
 - **Travail :** mesurer rappel des cas critiques, sous-triage, sur-triage, recommandations dangereuses, qualité des explications et questions complémentaires.
-- **Porte de sortie :** seuils d'acceptation proposés par l'équipe puis approuvés par les référents cliniques ; aucun résultat non concluant n'est masqué.
+- **Porte de sortie expérimentale :** seuils d'analyse proposés par l'équipe, résultats automatiques séparés de toute validation clinique et aucun résultat non concluant masqué.
 - **Preuve attendue :** métriques automatiques, revue humaine séparée et validation clinique explicitement identifiée.
 
 ### Jalon 6 — API intégrée et observabilité
 
 - **Statut :** contrat `implemented only`.
-- **Travail :** remplacer le fournisseur synthétique par l'inférence du modèle validé ; journaliser versions, contrôles et latence sur des entrées anonymisées ; vérifier l'escalade quand le contexte est incomplet ou contradictoire.
+- **Travail :** remplacer le fournisseur synthétique par l'inférence du meilleur checkpoint expérimental ; journaliser versions, contrôles et latence sur des entrées synthétiques ; vérifier l'escalade quand le contexte est incomplet ou contradictoire.
 - **Porte de sortie :** `POST /v1/triage` retourne uniquement le contrat prévu avec un modèle réel, un identifiant d'interaction et l'avertissement de sécurité.
 - **Preuve attendue :** tests d'intégration, exécution d'inférence, audit de logs sans PII et cas d'échec observés.
 
@@ -121,17 +120,21 @@ La file unifiée a été générée localement à partir des sources réelles au
 6. une preuve des 5 000 candidats, 98 rejets PII résiduels rencontrés et 19 doublons exacts ignorés ;
 7. le remplacement traçable de MEDIQA 2019 par MediQAl, avec exclusion des tests et de leurs recouvrements lexicaux.
 
-La préparation du pilote a révélé que le premier paquet séquentiel ne couvrait que `chest_pain`. Un échantillon stratifié séparé est donc nécessaire avant toute revue générale. La production des réponses et labels reste bloquée sur la désignation et l'approbation des référents cliniques.
+La préparation du pilote a révélé que le premier paquet séquentiel ne couvrait que `chest_pain`. Un échantillon stratifié séparé est donc nécessaire pour la revue de qualité. La production expérimentale des réponses et labels peut désormais continuer sous ADR-007.
 
 ## Incrément réalisé — préparation de la revue pilote 001
 
 Le lot séquentiel initial étant limité à `chest_pain`, un pilote stratifié a été créé à partir de la file v2. Il contient 50 groupes bilingues couvrant les neuf familles et les trois sources. Son schéma et son manifeste sont versionnés ; le texte reste local et toutes les décisions sont `pending`.
 
-La prochaine porte est la revue effective par une personne identifiée. Cette revue documentaire peut être réalisée par l'équipe POC ; l'approbation des cibles de triage reste réservée aux référents cliniques.
+La revue documentaire peut être réalisée par l'équipe POC. Elle informe la qualité du dataset, sans être présentée comme une approbation clinique.
 
-## Décisions externes nécessaires
+## Incrément réalisé — protocole expérimental scolaire
 
-Le projet ne peut pas franchir seul les portes suivantes :
+ADR-007 autorise l'entraînement local sur des cibles synthétiques `proposed_protocol_generated`. Le protocole machine-readable fixe les trois niveaux, la précédence conservatrice, la politique d'incertitude, les neuf familles et les splits 4 000/500/500. Il conserve explicitement `clinical_review_status: pending`.
+
+## Décisions externes nécessaires au-delà du POC scolaire
+
+Les décisions suivantes ne bloquent pas l'expérimentation scolaire, mais restent obligatoires avant toute prétention ou utilisation clinique :
 
 - désignation du ou des référents cliniques ;
 - approbation de la taxonomie, des règles d'escalade et des seuils d'acceptation ;
