@@ -16,6 +16,7 @@ from triage_poc.sft_authoring_queue import (
     iter_frenchmedmcqa_anchors,
     iter_mediqal_anchors,
     iter_medquad_anchors,
+    normalize_for_deduplication,
 )
 from triage_poc.source_sft import build_source_sft_dataset, render_source_sft_conversation
 
@@ -73,8 +74,7 @@ def main() -> int:
         validator.validate(record)
 
     normalized_questions = [
-        "".join(character.casefold() for character in record["instruction"] if character.isalnum())
-        for record in records
+        normalize_for_deduplication(record["instruction"]) for record in records
     ]
     if len(set(normalized_questions)) != len(records):
         raise ValueError("Post-anonymization question duplicates detected.")

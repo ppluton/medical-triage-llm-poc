@@ -53,6 +53,7 @@ def _select_source_records(
     anonymizer: AnonymizerLike,
     quota: int,
     globally_seen_questions: set[str],
+    globally_seen_anonymized_questions: set[str],
 ) -> tuple[list[dict[str, object]], dict[str, object]]:
     selected: list[dict[str, object]] = []
     counters: Counter[str] = Counter()
@@ -80,8 +81,13 @@ def _select_source_records(
         if not anonymized_question.strip() or not anonymized_answer.strip():
             counters["empty_after_transformation"] += 1
             continue
+        anonymized_question_key = normalize_for_deduplication(anonymized_question)
+        if anonymized_question_key in globally_seen_anonymized_questions:
+            counters["post_anonymization_duplicates_skipped"] += 1
+            continue
 
         globally_seen_questions.add(question_key)
+        globally_seen_anonymized_questions.add(anonymized_question_key)
         selected.append(
             {
                 "anchor": anchor,
@@ -131,6 +137,7 @@ def build_source_sft_dataset(
     """Return exactly 5,000 source-derived records with isolated splits."""
 
     globally_seen_questions: set[str] = set()
+    globally_seen_anonymized_questions: set[str] = set()
     records: list[dict[str, object]] = []
     audits: dict[str, object] = {}
 
@@ -138,7 +145,11 @@ def build_source_sft_dataset(
         if source_name not in source_anchors:
             raise ValueError(f"Missing required source iterator: {source_name}.")
         selected, audit = _select_source_records(
-            source_anchors[source_name], anonymizer, quota, globally_seen_questions
+            source_anchors[source_name],
+            anonymizer,
+            quota,
+            globally_seen_questions,
+            globally_seen_anonymized_questions,
         )
         source_records: list[dict[str, object]] = []
         metadata = SOURCE_METADATA[source_name]

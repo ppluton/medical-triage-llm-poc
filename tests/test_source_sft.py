@@ -21,7 +21,8 @@ class _Result:
 class _FakeAnonymizer:
     def anonymize(self, text: str, language: str) -> _Result:
         status = "manual_review_required" if "reject" in text else "passed"
-        return _Result(text.replace("Pierre", "<PERSON>"), _Audit({}, status))
+        transformed = text.replace("Pierre", "<PERSON>").replace("Paul", "<PERSON>")
+        return _Result(transformed, _Audit({}, status))
 
 
 def _anchors(source: str, count: int, *, rejected_first: bool = False):
@@ -105,6 +106,41 @@ def test_deduplicates_questions_across_sources(monkeypatch):
     )
     assert len(records) == 6
     assert len({record["instruction"] for record in records}) == 6
+
+
+def test_replenishes_when_anonymization_creates_a_duplicate(monkeypatch):
+    monkeypatch.setattr(
+        "triage_poc.source_sft.SOURCE_QUOTAS",
+        {"medquad": 3, "mediqal": 1, "frenchmedmcqa": 1},
+    )
+    monkeypatch.setattr(
+        "triage_poc.source_sft.SOURCE_SPLIT_QUOTAS",
+        {
+            "medquad": {"train": 2, "validation": 1, "test": 0},
+            "mediqal": {"train": 1, "validation": 0, "test": 0},
+            "frenchmedmcqa": {"train": 1, "validation": 0, "test": 0},
+        },
+    )
+    records, summary = build_source_sft_dataset(
+        {
+            "medquad": [
+                SourceAnchor("medquad", "a", "train:a", "Patient Pierre", "answer a"),
+                SourceAnchor("medquad", "b", "train:b", "Patient Paul", "answer b"),
+                SourceAnchor("medquad", "c", "train:c", "Distinct question", "answer c"),
+                SourceAnchor("medquad", "d", "train:d", "Another question", "answer d"),
+            ],
+            "mediqal": _anchors("mediqal", 3),
+            "frenchmedmcqa": _anchors("frenchmedmcqa", 3),
+        },
+        _FakeAnonymizer(),
+        code_revision="abcdef1",
+        run_id="test-run",
+    )
+
+    assert len(records) == 5
+    assert summary["source_audits"]["medquad"][
+        "post_anonymization_duplicates_skipped"
+    ] == 1
 
 
 def test_refuses_to_render_test_split(monkeypatch):
