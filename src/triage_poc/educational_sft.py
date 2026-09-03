@@ -357,6 +357,7 @@ def generate_educational_sft_records(
                     "protocol_sha256": protocol_sha256,
                     "label_status": "proposed_protocol_generated",
                     "intended_use": "educational_poc_training_only",
+                    "scenario_category": risk,
                     "grounding_candidate_id": candidate["candidate_id"],
                     "grounding_source_manifest_id": candidate["source"]["source_manifest_id"],
                     "grounding_source_record_id": candidate["source"]["source_record_id"],

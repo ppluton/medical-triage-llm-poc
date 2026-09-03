@@ -63,6 +63,11 @@ def test_generates_proposed_synthetic_records_with_traceability():
     assert all(
         record["protocol"]["label_status"] == "proposed_protocol_generated" for record in records
     )
+    assert {record["protocol"]["scenario_category"] for record in records} == {
+        "chest_pain",
+        "insufficient_information",
+        "other",
+    }
     assert all(record["quality"]["clinical_review_status"] == "pending" for record in records)
     assert all(
         record["source"]["source_manifest_id"] == "src-educational-sft-protocol-v1"

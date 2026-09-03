@@ -81,12 +81,13 @@
     "protocol": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["protocol_id", "protocol_sha256", "label_status", "intended_use", "grounding_candidate_id", "grounding_source_manifest_id", "grounding_source_record_id"],
+      "required": ["protocol_id", "protocol_sha256", "label_status", "intended_use", "scenario_category", "grounding_candidate_id", "grounding_source_manifest_id", "grounding_source_record_id"],
       "properties": {
         "protocol_id": {"const": "educational-triage-protocol-v1"},
         "protocol_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "label_status": {"const": "proposed_protocol_generated"},
         "intended_use": {"const": "educational_poc_training_only"},
+        "scenario_category": {"enum": ["chest_pain", "respiratory_distress", "neurological_deficit", "pediatric", "pregnancy", "vulnerability", "insufficient_information", "contradictory_information", "other"]},
         "grounding_candidate_id": {"type": "string", "minLength": 1, "maxLength": 256},
         "grounding_source_manifest_id": {"type": "string", "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$"},
         "grounding_source_record_id": {"type": "string", "minLength": 1, "maxLength": 256}
