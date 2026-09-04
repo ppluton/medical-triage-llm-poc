@@ -1,0 +1,76 @@
+experiment: source-sft-lora-qwen3-1.7b-kaggle
+status: full_run_configuration_approved
+base_model: unsloth/Qwen3-1.7B-Base
+base_model_revision: e249956c10337100486d07afb77e3eb2b30906b8
+runtime:
+  accelerator: NVIDIA CUDA
+  framework: unsloth
+  distribution: kaggle_private_notebook
+  unsloth_version: 2026.8.22
+data:
+  manifest: data/manifests/derived-source-medical-qa-sft-v1.json
+  sha256: da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347
+  train_records: 4000
+  validation_records: 500
+  test_records_excluded: 500
+  chat_template: qwen3
+reproducibility:
+  seed: 42
+  push_to_hub: false
+lora:
+  rank: 16
+  alpha: 16
+  dropout: 0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+micro_run:
+  required_before_full_run: true
+  max_sequence_length: 2048
+  max_steps: 20
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  validation_sample_size: 50
+full_run:
+  purpose: private_kaggle_educational_source_sft
+  output_directory: /kaggle/working/source-sft-cuda-full
+  max_sequence_length: 2048
+  load_in_4bit: true
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  effective_batch_size: 8
+  num_train_epochs: 2
+  expected_optimizer_steps: 1000
+  learning_rate: 0.0001
+  lr_scheduler_type: linear
+  warmup_steps: 50
+  optim: adamw
+  weight_decay: 0.001
+  logging_steps: 10
+  eval_steps: 250
+  validation_sample_size: 500
+  save_steps: 250
+  save_total_limit: 2
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  early_stopping_patience: 0
+  packing: false
+  train_on_completions: false
+  completion_only_loss: false
+  test_records_used: 0
+  push_to_hub: false
+kaggle:
+  visibility_required: private
+  accelerator_required: NVIDIA CUDA
+  gpu_count_used: 1
+  supported_free_accelerators: [Tesla T4]
+  dataset_slug: chsa-source-sft-v1
+  notebook_slug: chsa-source-sft-qwen3
+  notebook_version: 5
+  script_version_id: 347238567
+  test_records_in_bundle: 0
+  internet_required_for_setup_and_model_download: true
+safety:
+  clinical_validation_required_before_any_clinical_claim: true
+  real_patient_use: forbidden
