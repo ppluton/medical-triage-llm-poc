@@ -1,5 +1,5 @@
 experiment: source-sft-lora-qwen3-1.7b
-status: preflight_passed_micro_run_pending
+status: source_micro_run_completed_full_run_pending
 base_model: Qwen/Qwen3-1.7B-Base
 base_model_revision: e249956c10337100486d07afb77e3eb2b30906b8
 runtime:

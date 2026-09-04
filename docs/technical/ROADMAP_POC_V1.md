@@ -1,7 +1,7 @@
 # Roadmap de réalisation du POC de triage médical
 
 - **Date :** 2026-09-04
-- **Statut :** active — SFT source-derived 5 000 validé techniquement ; pré-vol LoRA suivant
+- **Statut :** active — micro-run SFT source-derived terminé ; entraînement complet suivant
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
@@ -20,7 +20,7 @@ Un statut technique vert ne constitue jamais une validation clinique.
 | Phase du cadrage | État au 2026-09-04 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
 | Semaine 1 — données | `proven` pour le SFT, DPO restant | Les 5 000 paires source-derived sont générées et vérifiées : 2 500 FR/2 500 EN, splits 4 000/500/500, réponses sources et zéro label de triage inventé. | Constituer le DPO depuis UltraMedical après le premier SFT LoRA. |
-| Semaine 2 — SFT/LoRA | `partially proven` | Qwen3-1.7B-Base est accessible localement. La baseline synthétique et un micro-run LoRA synthétique de 20 étapes sont observés. | Entraîner sur le dataset source-derived, conserver checkpoint, logs et métriques, puis comparer à la baseline. |
+| Semaine 2 — SFT/LoRA | `partially proven` | Le pré-vol des 4 000/500 lignes et un micro-run LoRA source-derived de 20 étapes sont terminés ; l'adaptateur est sauvegardé. | Définir puis exécuter le run complet, évaluer tout le split validation et comparer à la baseline. |
 | Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT source-derived et mesurer gains et régressions. |
 | Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
 
@@ -65,8 +65,8 @@ flowchart TD
 
 ### Jalon 3 — SFT + LoRA sur les sources
 
-- **Statut :** `not started` sur les 5 000 paires source-derived.
-- **Travail :** exécuter d'abord un court run contrôlé, puis le run SFT complet ; suivre loss entraînement/validation, stabilité, mémoire et durée ; sauvegarder adaptateur et état de reprise.
+- **Statut :** micro-run `proven` techniquement ; entraînement complet `not started`.
+- **Travail :** le micro-run contrôlé est terminé ; définir puis exécuter le run SFT complet, suivre loss entraînement/validation, stabilité, mémoire et durée, puis sauvegarder adaptateur et état de reprise.
 - **Porte de sortie :** checkpoint reproductible et amélioration mesurée par rapport à Base sans hausse non acceptée des erreurs dangereuses.
 - **Preuve attendue :** configuration figée, hash du code et des données, logs, checkpoint, métriques et comparaison au même jeu de test.
 
@@ -142,6 +142,10 @@ ADR-008 le reclasse comme fixture supplantée pour le SFT principal : la génér
 Le pipeline utilise MedQuAD pour 2 500 exemples anglais, MediQAl pour 1 500 exemples français et FrenchMedMCQA pour 1 000 exemples français. UltraMedical-Preference reste séparé pour le DPO. La sélection, l'anonymisation des identifiants directs, la déduplication et les splits sont déterministes et manifestés.
 
 La première passe complète a été refusée car le NER généraliste masquait des termes médicaux. La version finale préserve ces entités, masque 1 email et 12 téléphones, conserve 5 000 questions uniques et déclare 101 réponses MedQuAD tronquées. Le dataset est prêt pour le pré-vol d'un SFT local, sans être cliniquement validé.
+
+## Incrément réalisé — micro-run SFT source-derived
+
+Le pré-vol Qwen3 couvre 4 000 lignes train et 500 validation, avec zéro test rendu et aucune séquence au-dessus de 2 048 tokens. Unsloth Core/MLX a ensuite terminé 20 étapes LoRA, traité 40 574 tokens et sauvegardé l'adaptateur local. Les métriques portent sur un smoke test et ne permettent pas de conclure à une amélioration du triage.
 
 ## Décisions externes nécessaires au-delà du POC scolaire
 
