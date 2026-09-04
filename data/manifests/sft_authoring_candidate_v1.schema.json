@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ppluton/medical-train-llm/schemas/sft_authoring_candidate_v1.schema.json",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/sft_authoring_candidate_v1.schema.json",
   "title": "Non-trainable SFT authoring candidate v1",
   "description": "A source-grounded writing task with no clinical target, split, or training approval.",
   "type": "object",

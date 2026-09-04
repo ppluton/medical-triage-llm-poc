@@ -9,7 +9,7 @@
     "retrieved_at": "2026-09-03T00:44:00Z",
     "byte_size": 16328634,
     "sha256": "1261de046189f45f3f22a91c13928886d9d3abf17778cb6d04c87abf26fd1f81",
-    "local_storage_uri": "file:///Volumes/MacExternalDrive/Dev/CodexWorktrees/medical_train_llm/mediqal-source-correction/data/raw/mediqal"
+    "local_storage_uri": "repo://data/raw/mediqal"
   },
   "license": {
     "identifier": "CC-BY-4.0",

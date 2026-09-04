@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ppluton/medical-train-llm/schemas/triage_record_v1.schema.json",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/triage_record_v1.schema.json",
   "title": "Triage training and evaluation record v1",
   "description": "Metadata and structured content for an anonymized or synthetic SFT, DPO, or evaluation record. This schema does not establish clinical validity.",
   "type": "object",

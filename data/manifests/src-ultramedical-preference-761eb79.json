@@ -9,7 +9,7 @@
     "retrieved_at": "2026-08-31T00:00:00Z",
     "byte_size": 1019500856,
     "sha256": "d40f19d8feb6f56e2310207e065716eb791449e2acd215b5705726869cdc926c",
-    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/ultramedical-preference"
+    "local_storage_uri": "repo://data/raw/ultramedical-preference"
   },
   "license": {
     "identifier": "MIT",

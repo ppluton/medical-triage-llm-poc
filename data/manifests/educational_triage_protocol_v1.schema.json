@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ppluton/medical-train-llm/schemas/educational_triage_protocol_v1.schema.json",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/educational_triage_protocol_v1.schema.json",
   "title": "Educational triage protocol v1",
   "type": "object",
   "additionalProperties": false,

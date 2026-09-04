@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ppluton/medical-train-llm/schemas/source_manifest_v1.schema.json",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/source_manifest_v1.schema.json",
   "title": "Source artifact manifest v1",
   "description": "Traceability manifest for one source artifact. It must never contain raw records or patient data.",
   "type": "object",
@@ -32,7 +32,7 @@
         "retrieved_at": { "type": "string", "format": "date-time" },
         "byte_size": { "type": "integer", "minimum": 0 },
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-        "local_storage_uri": { "type": "string", "pattern": "^(file|s3|gs)://" }
+        "local_storage_uri": { "type": "string", "pattern": "^(repo|file|s3|gs)://" }
       }
     },
     "license": {

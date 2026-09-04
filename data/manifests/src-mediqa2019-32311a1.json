@@ -9,7 +9,7 @@
     "retrieved_at": "2026-08-31T00:00:00Z",
     "byte_size": 14735360,
     "sha256": "4a2690a6bb973e32c016c2039e18f4c0831588959adae31d6a9d510320110b18",
-    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/mediqa2019"
+    "local_storage_uri": "repo://data/raw/mediqa2019"
   },
   "license": {
     "identifier": "CC-BY-4.0",

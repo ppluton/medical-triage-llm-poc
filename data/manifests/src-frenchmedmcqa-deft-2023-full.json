@@ -9,7 +9,7 @@
     "retrieved_at": "2026-08-28T00:00:00Z",
     "byte_size": 550466,
     "sha256": "58724ce1ac97b01b89ad5a6d4d1d9b9de3379d36feaaa11058d88aad8a2af4c9",
-    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/raw/frenchmedmcqa/DEFT-2023-FULL.zip"
+    "local_storage_uri": "repo://data/raw/frenchmedmcqa/DEFT-2023-FULL.zip"
   },
   "license": {
     "identifier": "Apache-2.0",

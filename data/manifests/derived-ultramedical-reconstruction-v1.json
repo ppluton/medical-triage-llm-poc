@@ -15,7 +15,7 @@
     "test_use": "evaluation_only"
   },
   "artifact": {
-    "local_storage_uri": "file:///Users/ppluton/Documents/ChatGPT/Medical_train_llm/data/processed/ultramedical-preference-reconstruction-index-v1.jsonl",
+    "local_storage_uri": "repo://data/processed/ultramedical-preference-reconstruction-index-v1.jsonl",
     "byte_size": 45117408,
     "sha256": "6cfc7c8190e0d195354614b2a4b53684eb6e20155c9bf73684d99d6372dca58b",
     "contains_source_text": false

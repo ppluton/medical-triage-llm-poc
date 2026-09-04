@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ppluton/medical-train-llm/schemas/source_medical_qa_sft_v1.schema.json",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/source_medical_qa_sft_v1.schema.json",
   "title": "Source-derived medical QA SFT record v1",
   "type": "object",
   "additionalProperties": false,
