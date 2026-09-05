@@ -1,0 +1,134 @@
+{
+  "status": "completed",
+  "purpose": "development_validation_comparison",
+  "base_model": "unsloth/Qwen3-1.7B-Base",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "sft_sha256": "3f050ae77a4b66ecf4a254a407a463a046143437198ac5dfbd7922b75b28a940",
+  "validation_sha256": "7118258c5fdbfe47d5c11b5c4e4b2c2600c4ed17a1eb4b806b0bf5f7c2c52296",
+  "metadata_sha256": "c186d219bdb45914aa5f0e6cc1acf48fb1e7bdec7812e1f751352bd43772f0ce",
+  "dpo_sha256": null,
+  "code_sha256": {
+    "run_model_comparison.py": "e2d16d73ff83eeb97d4caa5b2790a96e4d461c47db40264b75d4ca14ea3d3d46",
+    "comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c"
+  },
+  "template_sha256": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb",
+  "seed": 42,
+  "count": 500,
+  "generate_count": 30,
+  "generation": {
+    "max_new_tokens": 256,
+    "do_sample": false
+  },
+  "quantization": "bitsandbytes_4bit_default",
+  "device": "Tesla T4",
+  "package_versions": {
+    "torch": "2.10.0+cu128",
+    "transformers": "5.5.0",
+    "peft": "0.18.1",
+    "bitsandbytes": "0.50.2"
+  },
+  "test_records_used": 0,
+  "comparison": {
+    "base": {
+      "metrics": {
+        "all": {
+          "records": 500,
+          "completion_tokens": 67591,
+          "completion_nll": 2.104441135313541,
+          "completion_perplexity": 8.202517630968053,
+          "sequence_nll": 3.1033726335095286
+        },
+        "language:fr": {
+          "records": 250,
+          "completion_tokens": 6196,
+          "completion_nll": 3.604759255095864,
+          "completion_perplexity": 36.77282992010289,
+          "sequence_nll": 3.9360741060399804
+        },
+        "source:qanastek/frenchmedmcqa": {
+          "records": 100,
+          "completion_tokens": 3178,
+          "completion_nll": 3.27067647301378,
+          "completion_perplexity": 26.329144275887252,
+          "sequence_nll": 4.213461579220349
+        },
+        "language:en": {
+          "records": 250,
+          "completion_tokens": 61395,
+          "completion_nll": 1.9530286250086093,
+          "completion_perplexity": 7.050007107703829,
+          "sequence_nll": 2.6919333661685907
+        },
+        "source:abachaa/MedQuAD": {
+          "records": 250,
+          "completion_tokens": 61395,
+          "completion_nll": 1.9530286250086093,
+          "completion_perplexity": 7.050007107703829,
+          "sequence_nll": 2.6919333661685907
+        },
+        "source:ANR-MALADES/MediQAl": {
+          "records": 150,
+          "completion_tokens": 3018,
+          "completion_nll": 3.9565535166786554,
+          "completion_perplexity": 52.27684384306815,
+          "sequence_nll": 3.811785646065874
+        }
+      },
+      "lower_nll_than_base_count": 0
+    },
+    "sft": {
+      "metrics": {
+        "all": {
+          "records": 500,
+          "completion_tokens": 67591,
+          "completion_nll": 1.526236839363288,
+          "completion_perplexity": 4.600830539962768,
+          "sequence_nll": 1.6095654191837467
+        },
+        "language:fr": {
+          "records": 250,
+          "completion_tokens": 6196,
+          "completion_nll": 2.3400505977418824,
+          "completion_perplexity": 10.381761843148755,
+          "sequence_nll": 1.9055016316520854
+        },
+        "source:qanastek/frenchmedmcqa": {
+          "records": 100,
+          "completion_tokens": 3178,
+          "completion_nll": 2.2089644897801834,
+          "completion_perplexity": 9.106281861174486,
+          "sequence_nll": 1.6568653631139498
+        },
+        "language:en": {
+          "records": 250,
+          "completion_tokens": 61395,
+          "completion_nll": 1.4441065348284923,
+          "completion_perplexity": 4.238063888256903,
+          "sequence_nll": 1.46334281425954
+        },
+        "source:abachaa/MedQuAD": {
+          "records": 250,
+          "completion_tokens": 61395,
+          "completion_nll": 1.4441065348284923,
+          "completion_perplexity": 4.238063888256903,
+          "sequence_nll": 1.46334281425954
+        },
+        "source:ANR-MALADES/MediQAl": {
+          "records": 150,
+          "completion_tokens": 3018,
+          "completion_nll": 2.4780862674245463,
+          "completion_perplexity": 11.918433883876675,
+          "sequence_nll": 2.0169075958652534
+        }
+      },
+      "lower_nll_than_base_count": 500
+    }
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Validation guides development; it is not the final test.",
+    "Source-reference likelihood is not medical correctness.",
+    "Generation review is pending; no safety gain is established.",
+    "Latency includes no warmup exclusion and is descriptive only."
+  ]
+}

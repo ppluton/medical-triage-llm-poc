@@ -1,0 +1,155 @@
+{
+  "status": "completed",
+  "purpose": "development_validation_comparison",
+  "base_model": "unsloth/Qwen3-1.7B-Base",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "sft_sha256": "3f050ae77a4b66ecf4a254a407a463a046143437198ac5dfbd7922b75b28a940",
+  "validation_sha256": "7118258c5fdbfe47d5c11b5c4e4b2c2600c4ed17a1eb4b806b0bf5f7c2c52296",
+  "metadata_sha256": "c186d219bdb45914aa5f0e6cc1acf48fb1e7bdec7812e1f751352bd43772f0ce",
+  "dpo_sha256": null,
+  "code_sha256": {
+    "run_model_comparison.py": "33468822cd5c235d74630949891bf57410a96e13d9d6e3fc2e01cd3b93a54fa2",
+    "comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c"
+  },
+  "template_sha256": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb",
+  "seed": 42,
+  "count": 3,
+  "generate_count": 3,
+  "generation": {
+    "max_new_tokens": 256,
+    "do_sample": false,
+    "eos_token_id": [
+      151643,
+      151645
+    ]
+  },
+  "quantization": "4bit-nf4",
+  "quantization_config": {
+    "quant_method": "bitsandbytes",
+    "_load_in_8bit": false,
+    "_load_in_4bit": true,
+    "llm_int8_threshold": 6.0,
+    "llm_int8_skip_modules": null,
+    "llm_int8_enable_fp32_cpu_offload": false,
+    "llm_int8_has_fp16_weight": false,
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_use_double_quant": true,
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_quant_storage": "uint8",
+    "load_in_4bit": true,
+    "load_in_8bit": false
+  },
+  "device": "Tesla T4",
+  "package_versions": {
+    "torch": "2.10.0+cu128",
+    "transformers": "5.5.0",
+    "peft": "0.18.1",
+    "bitsandbytes": "0.50.2"
+  },
+  "scenario_protocol_sha256": null,
+  "synthetic_schema_probe": {},
+  "test_records_used": 0,
+  "comparison": {
+    "base": {
+      "metrics": {
+        "all": {
+          "records": 3,
+          "completion_tokens": 167,
+          "completion_nll": 2.2895335580060583,
+          "completion_perplexity": 9.870332669620003,
+          "sequence_nll": 3.6950433091154316
+        },
+        "language:fr": {
+          "records": 2,
+          "completion_tokens": 33,
+          "completion_nll": 3.197660272771662,
+          "completion_perplexity": 24.475197865390584,
+          "sequence_nll": 3.836475204839939
+        },
+        "source:qanastek/frenchmedmcqa": {
+          "records": 1,
+          "completion_tokens": 22,
+          "completion_nll": 3.203613974831321,
+          "completion_perplexity": 24.62135054436792,
+          "sequence_nll": 4.944262947003866
+        },
+        "language:en": {
+          "records": 1,
+          "completion_tokens": 134,
+          "completion_nll": 2.0658904118324393,
+          "completion_perplexity": 7.8923221869963625,
+          "sequence_nll": 3.4107929304534315
+        },
+        "source:abachaa/MedQuAD": {
+          "records": 1,
+          "completion_tokens": 134,
+          "completion_nll": 2.0658904118324393,
+          "completion_perplexity": 7.8923221869963625,
+          "sequence_nll": 3.4107929304534315
+        },
+        "source:ANR-MALADES/MediQAl": {
+          "records": 1,
+          "completion_tokens": 11,
+          "completion_nll": 3.1857528686523438,
+          "completion_perplexity": 24.18549005056213,
+          "sequence_nll": 3.493167182507987
+        }
+      },
+      "lower_nll_than_base_count": 0
+    },
+    "sft": {
+      "metrics": {
+        "all": {
+          "records": 3,
+          "completion_tokens": 167,
+          "completion_nll": 1.81610668776278,
+          "completion_perplexity": 6.147876193353984,
+          "sequence_nll": 1.6413562538569448
+        },
+        "language:fr": {
+          "records": 2,
+          "completion_tokens": 33,
+          "completion_nll": 2.1704510486487187,
+          "completion_perplexity": 8.762235343970508,
+          "sequence_nll": 1.7397069791468178
+        },
+        "source:qanastek/frenchmedmcqa": {
+          "records": 1,
+          "completion_tokens": 22,
+          "completion_nll": 2.771510037508878,
+          "completion_perplexity": 15.982750349445466,
+          "sequence_nll": 1.2402389369060083
+        },
+        "language:en": {
+          "records": 1,
+          "completion_tokens": 134,
+          "completion_nll": 1.7288427779923623,
+          "completion_perplexity": 5.634130195008416,
+          "sequence_nll": 1.443690580480239
+        },
+        "source:abachaa/MedQuAD": {
+          "records": 1,
+          "completion_tokens": 134,
+          "completion_nll": 1.7288427779923623,
+          "completion_perplexity": 5.634130195008416,
+          "sequence_nll": 1.443690580480239
+        },
+        "source:ANR-MALADES/MediQAl": {
+          "records": 1,
+          "completion_tokens": 11,
+          "completion_nll": 0.9683330709284003,
+          "completion_perplexity": 2.6335508559755483,
+          "sequence_nll": 1.8944941999051517
+        }
+      },
+      "lower_nll_than_base_count": 3
+    }
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Validation guides development; it is not the final test.",
+    "Source-reference likelihood is not medical correctness.",
+    "Generation review is pending; no safety gain is established.",
+    "Latency includes no warmup exclusion and is descriptive only."
+  ]
+}

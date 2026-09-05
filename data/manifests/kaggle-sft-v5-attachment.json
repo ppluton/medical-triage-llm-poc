@@ -1,0 +1,36 @@
+{
+  "purpose": "private_reproducible_sft_v5_attachment",
+  "status": "uploaded_private_roundtrip_verified",
+  "files": {
+    "adapter_model.safetensors": {
+      "sha256": "3f050ae77a4b66ecf4a254a407a463a046143437198ac5dfbd7922b75b28a940",
+      "bytes": 69782384
+    },
+    "adapter_config.json": {
+      "sha256": "5cfaf55d4741221efb4e6552dec8eb1b48df20aaec85ee606f6a02b8439149df",
+      "bytes": 1190
+    },
+    "tokenizer.json": {
+      "sha256": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09",
+      "bytes": 11422924
+    },
+    "tokenizer_config.json": {
+      "sha256": "8afc76e17070a6a722817babaf72189e1e9022f1ba94566226811a9c242c7708",
+      "bytes": 5104
+    },
+    "chat_template.jinja": {
+      "sha256": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb",
+      "bytes": 4718
+    }
+  },
+  "contains_patient_text": false,
+  "source": "pierrepluton/chsa-source-sft-qwen3 version 5",
+  "date": "2026-09-05",
+  "dataset": "pierrepluton/chsa-sft-v5-adapter",
+  "dataset_id": 11908435,
+  "is_private": true,
+  "kaggle_license_label": "other",
+  "license_note": "Original model and source restrictions remain applicable; this private attachment grants no new usage rights.",
+  "scope": "Existing private chsa-source-sft-qwen3 notebook only",
+  "verification": "Kaggle metadata isPrivate true; all five downloaded files match source SHA256"
+}
