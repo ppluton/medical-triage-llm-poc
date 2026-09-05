@@ -1,0 +1,7 @@
+# CUDA runtime supplied by private Kaggle; run only after the review gates pass.
+transformers==4.57.6
+trl==0.23.1
+peft==0.18.1
+accelerate==1.14.0
+bitsandbytes==0.50.2
+datasets==4.3.0
