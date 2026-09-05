@@ -68,3 +68,5 @@ Après les mesures QA, le runner active chaque checkpoint à son tour et génèr
 Ajouter `--count 3 --generate-count 3 --stop-on-message-end` au builder. `--precision` accepte `4bit-default`, `4bit-nf4` (NF4, double quantification, calcul FP16) et `float16`. Les paramètres et la configuration de quantification effective sont archivés dans le résumé. Changer de répertoire de sortie entre les runs ; les anciens résultats ne sont jamais écrasés.
 
 Le diagnostic v10 a réfuté la correction par le seul arrêt de message sur trois exemples : zéro token de fin émis par SFT avant le plafond. Voir la preuve comparative pour les résultats des expériences suivantes.
+
+Le diagnostic original utilise `diagnose_sft_unsloth.py --validation … --sft-adapter … --output …` avec les dépendances du SFT v5. Le run v13 confirme les défauts avec Unsloth. La cause précise et la correction du SFT restent à établir ; une comparaison ne doit pas être déclarée acceptable sur la seule loss.

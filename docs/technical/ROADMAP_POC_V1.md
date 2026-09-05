@@ -1,7 +1,7 @@
 # Roadmap de réalisation du POC de triage médical
 
-- **Date :** 2026-09-04
-- **Statut :** active — micro-run SFT source-derived terminé ; entraînement complet suivant
+- **Date :** 2026-09-05
+- **Statut :** active — SFT complet terminé ; comparaison, DPO et intégration en cours
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
@@ -65,7 +65,7 @@ flowchart TD
 
 ### Jalon 3 — SFT + LoRA sur les sources
 
-- **Statut :** micro-run `proven` techniquement ; entraînement complet `not started`.
+- **Statut :** SFT complet `proven` techniquement ; comparaison Base/SFT `proven` sur validation QA ; génération à diagnostiquer.
 - **Travail :** le micro-run contrôlé est terminé ; définir puis exécuter le run SFT complet, suivre loss entraînement/validation, stabilité, mémoire et durée, puis sauvegarder adaptateur et état de reprise.
 - **Porte de sortie :** checkpoint reproductible et amélioration mesurée par rapport à Base sans hausse non acceptée des erreurs dangereuses.
 - **Preuve attendue :** configuration figée, hash du code et des données, logs, checkpoint, métriques et comparaison au même jeu de test.
@@ -88,21 +88,21 @@ flowchart TD
 
 ### Jalon 6 — API intégrée et observabilité
 
-- **Statut :** contrat `implemented only`.
+- **Statut :** contrat et transport simulé `proven` localement ; inférence réelle `not proven`.
 - **Travail :** remplacer le fournisseur synthétique par l'inférence du meilleur checkpoint expérimental ; journaliser versions, contrôles et latence sur des entrées synthétiques ; vérifier l'escalade quand le contexte est incomplet ou contradictoire.
 - **Porte de sortie :** `POST /v1/triage` retourne uniquement le contrat prévu avec un modèle réel, un identifiant d'interaction et l'avertissement de sécurité.
 - **Preuve attendue :** tests d'intégration, exécution d'inférence, audit de logs sans PII et cas d'échec observés.
 
 ### Jalon 7 — Packaging, vLLM, CI/CD et pilote
 
-- **Statut :** CI présente ; build Docker, vLLM et déploiement `not proven`.
+- **Statut :** build Docker et smoke sans réseau `proven` localement ; CI distante, vLLM et déploiement `not proven`.
 - **Travail :** prouver le build et le démarrage du conteneur ; configurer vLLM dans un environnement compatible ; mesurer p50/p95, taux d'erreur et débit ; définir la cible cloud avant toute mutation externe.
 - **Porte de sortie :** pipeline vert, endpoint pilote restreint, smoke test et monitoring observés sur la même version.
 - **Preuve attendue :** digest d'image, version du déploiement, logs de CI, mesures de performance et smoke test autorisé.
 
 ### Jalon 8 — Rapport final et décision go / no-go
 
-- **Statut :** squelette `implemented`, contenu final `not started`.
+- **Statut :** rapport intermédiaire renseigné ; clôture finale dépendante des preuves manquantes.
 - **Travail :** consolider uniquement les preuves versionnées, y compris résultats négatifs, limites juridiques et cliniques, coûts, contraintes d'hébergement et conditions de passage à l'échelle.
 - **Porte de sortie :** rapport de 20 pages maximum, relu, sans affirmation clinique non étayée.
 - **Décision :** le POC peut être techniquement démontré sans être autorisé pour un usage clinique réel.
@@ -157,3 +157,7 @@ Les décisions suivantes ne bloquent pas l'expérimentation scolaire, mais reste
 - décision juridique et RGPD finale ;
 - autorisation et cible exacte d'un déploiement pilote ;
 - décision go / no-go au-delà du POC.
+
+## Incrément post-SFT du 5 septembre 2026
+
+Voir [la preuve locale](../evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [la comparaison](COMPARAISON_POST_SFT_V1.md) et [le contrat API privé](API_MODELE_PRIVE_V2.md). Le SFT v5 et la comparaison v8 sont archivés. Le SFT réduit la loss mais ses générations nécessitent un diagnostic avant DPO. Le diagnostic v9 n’a pas atteint l’inférence à cause de l’attachement des poids. Le lot DPO v2 contient 512/64 candidats, sans approbation clinique. L'API a un fournisseur compatible vLLM, mais son inférence réelle reste à prouver. Le rapport conserve ces écarts explicitement.

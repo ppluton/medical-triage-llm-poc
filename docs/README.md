@@ -13,3 +13,14 @@ La roadmap active et son état de preuve sont dans [`technical/ROADMAP_POC_V1.md
 | `governance/` | Licences, provenance, anonymisation, risques | Jeux de données bruts |
 
 Le rapport final public est dans `../reports/`. Les données lourdes ou sensibles ne sont pas versionnées : seuls les manifestes, schémas, échantillons synthétiques et checksums peuvent l'être.
+
+## Suite du SFT — 5 septembre 2026
+
+- [Comparaison et préparation DPO](technical/COMPARAISON_POST_SFT_V1.md)
+- [API privée et contrat du fournisseur](technical/API_MODELE_PRIVE_V2.md)
+- [Décision proposée post-SFT](decisions/ADR-010-comparaison-et-demonstration-post-sft.md)
+- [Preuves locales](evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md)
+- [Apprentissage : comparer avant DPO](learning/29-comparer-avant-aligner.md)
+- [Apprentissage : API et preuves](learning/30-relier-modele-api-et-preuves.md)
+
+- [Comparaison Kaggle Base/SFT et diagnostic](evidence/BASE_SFT_KAGGLE_2026-09-05.md)

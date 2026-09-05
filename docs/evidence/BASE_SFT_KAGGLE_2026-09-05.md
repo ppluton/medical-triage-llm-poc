@@ -77,3 +77,13 @@ Le run v11 est terminé : en NF4/double quantification/FP16 comme en FP16 sans q
 Résumés sans textes : [NF4](BASE_SFT_KAGGLE_V11_NF4_SUMMARY.json), [FP16](BASE_SFT_KAGGLE_V11_FP16_SUMMARY.json). Artefacts et code exécuté : `artifacts/kaggle/diagnostic-v11/`. Cette mesure réfute une correction par la seule quantification ; elle n'identifie pas encore la cause d'entraînement ou de backend.
 
 La version 12 exécute le même contrôle avec Unsloth et les versions de dépendances du run SFT original. Le runner `scripts/diagnose_sft_unsloth.py` conserve également les normes des embeddings des marqueurs. Aucun nouvel entraînement n'est lancé à cette étape.
+
+### Diagnostic v13 : backend original
+
+La version 12 avait échoué avant génération : placement automatique sur deux GPU et entrée sur un seul. Le script de diagnostic impose désormais `CUDA_VISIBLE_DEVICES=0` et `device_map={"":0}`. Le run v13 a terminé avec Unsloth 2026.8.22 / Unsloth Zoo 2026.8.16 et les dépendances originales.
+
+Les trois sorties SFT atteignent 256 tokens sans EOS/message-end et restent répétitives. Le défaut persiste donc avec le backend original. [Résumé v13](BASE_SFT_KAGGLE_V13_SUMMARY.json) ; artefacts et code réellement exécuté : `artifacts/kaggle/diagnostic-v13/`.
+
+La sonde des marqueurs observe une norme de 1,88322 pour EOS et 0,37484 pour chacun des marqueurs de conversation. Ces normes seules ne prouvent pas une cause. L'entrée de sonde non spéciale présente un `token_id: null` et une norme de matrice entière : elle est invalide et exclue de toute conclusion. Le script est corrigé pour exiger exactement un identifiant encodé ; cette correction de sonde n'a pas été rejouée sur GPU.
+
+**Décision :** conserver le SFT v5 comme résultat expérimental négatif en génération. Revoir le format et l'apprentissage de fin de réponse dans un SFT court avant tout nouveau run complet ou DPO. Les diagnostics n'établissent pas encore une cause unique. Aucune exécution GPU n'est active après v13.

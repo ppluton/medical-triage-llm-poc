@@ -42,7 +42,10 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(str(args.sft_adapter))
     token_probe = {}
     for token in ["<|endoftext|>", "<|im_start|>", "<|im_end|>", "完整热"]:
-        token_id = tokenizer.convert_tokens_to_ids(token)
+        token_ids = tokenizer.encode(token, add_special_tokens=False)
+        if len(token_ids) != 1:
+            raise ValueError(f"Probe must encode as one token: {token!r}")
+        token_id = token_ids[0]
         token_probe[token] = {"token_id": token_id,
             "input_norm": base.get_input_embeddings().weight[token_id].float().norm().item(),
             "output_norm": base.get_output_embeddings().weight[token_id].float().norm().item()}
