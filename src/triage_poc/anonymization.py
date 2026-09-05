@@ -13,8 +13,10 @@ from typing import Protocol
 
 from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer, RecognizerResult
 from presidio_analyzer.nlp_engine import NlpEngineProvider
+from presidio_analyzer.predefined_recognizers import EmailRecognizer
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
+from tldextract import TLDExtract
 
 SUPPORTED_LANGUAGES = frozenset({"fr", "en"})
 PII_ENTITIES = (
@@ -72,6 +74,15 @@ class AnonymizationResult:
     audit: AnonymizationAudit
 
 
+class OfflineEmailRecognizer(EmailRecognizer):
+    """Use the bundled public suffix snapshot without network or writable caches."""
+
+    _extract = TLDExtract(suffix_list_urls=(), cache_dir=None)
+
+    def validate_result(self, pattern_text: str):
+        return self._extract(pattern_text).fqdn != ""
+
+
 def build_presidio_analyzer() -> AnalyzerEngine:
     """Build a bilingual Presidio analyzer with a French patient-reference recognizer.
 
@@ -100,6 +111,9 @@ def build_presidio_analyzer() -> AnalyzerEngine:
         ],
     )
     analyzer = AnalyzerEngine(nlp_engine=provider.create_engine(), supported_languages=["fr", "en"])
+    analyzer.registry.remove_recognizer("EmailRecognizer")
+    for language in SUPPORTED_LANGUAGES:
+        analyzer.registry.add_recognizer(OfflineEmailRecognizer(supported_language=language))
     analyzer.registry.add_recognizer(registry_recognizer)
     return analyzer
 
