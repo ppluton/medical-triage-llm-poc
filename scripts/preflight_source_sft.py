@@ -10,7 +10,8 @@ from pathlib import Path
 from transformers import AutoTokenizer
 
 from triage_poc.source_sft_preflight import (
-    token_length_summary,
+    preflight_failures,
+    rendered_token_summary,
     validate_source_sft_artifacts,
 )
 
@@ -35,22 +36,21 @@ def main() -> int:
         args.manifest, args.artifact_directory
     )
     tokenizer = AutoTokenizer.from_pretrained(str(args.model_path), local_files_only=True)
+    summaries = {split: rendered_token_summary(rows, tokenizer,
+        max_sequence_length=args.max_sequence_length)
+        for split, rows in [("train", train), ("validation", validation)]}
+    failures = preflight_failures(summaries)
     result = {
-        "status": "passed",
+        "status": "blocked" if failures else "passed",
+        "failures": failures,
         "dataset_manifest_id": manifest["manifest_id"],
         "dataset_sha256": manifest["artifacts"]["canonical"]["sha256"],
         "model_path_name": args.model_path.name,
         "max_sequence_length": args.max_sequence_length,
-        "train": token_length_summary(
-            train, tokenizer, max_sequence_length=args.max_sequence_length
-        ),
-        "validation": token_length_summary(
-            validation, tokenizer, max_sequence_length=args.max_sequence_length
-        ),
+        **summaries,
         "test_rendered_count": 0,
         "limits": [
-            "Token lengths are a content proxy; exact Qwen3 chat-template overhead is measured "
-            "by the trainer runtime.",
+            "Exact rendered text is checked; actual trainer labels require a runtime audit.",
             "This preflight proves data compatibility, not model quality or clinical safety.",
         ],
     }
@@ -59,12 +59,9 @@ def main() -> int:
         json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    print(
-        "Source SFT preflight passed: "
-        f"train={len(train)}, validation={len(validation)}, test_rendered=0, "
-        f"train_p95={result['train']['p95']} tokens."
-    )
-    return 0
+    print(json.dumps({"status": result["status"], "failures": failures,
+                      "train": len(train), "validation": len(validation)}))
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

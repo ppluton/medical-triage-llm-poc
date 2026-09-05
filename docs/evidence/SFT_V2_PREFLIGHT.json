@@ -1,0 +1,31 @@
+{
+  "dataset_manifest_id": "derived-source-medical-qa-sft-v2",
+  "dataset_sha256": "3f754a9a4d34a15d06094b2190c0f906c71826c0998c6814109f3c8b122bd2c2",
+  "failures": [],
+  "limits": [
+    "Exact rendered text is checked; actual trainer labels require a runtime audit.",
+    "This preflight proves data compatibility, not model quality or clinical safety."
+  ],
+  "max_sequence_length": 2048,
+  "model_path_name": "native-eos-tokenizer-v1",
+  "status": "passed",
+  "test_rendered_count": 0,
+  "train": {
+    "count": 4000,
+    "max_sequence_length": 2048,
+    "maximum": 1072,
+    "method": "exact_training_chat_template",
+    "missing_terminal_native_eos": 0,
+    "over_max_sequence_length": 0,
+    "pad_equals_eos": false
+  },
+  "validation": {
+    "count": 500,
+    "max_sequence_length": 2048,
+    "maximum": 939,
+    "method": "exact_training_chat_template",
+    "missing_terminal_native_eos": 0,
+    "over_max_sequence_length": 0,
+    "pad_equals_eos": false
+  }
+}

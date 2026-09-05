@@ -1,0 +1,53 @@
+{
+  "status": "audit_completed_training_blocked",
+  "dataset_sha256": "da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347",
+  "checks": {
+    "artifacts": {
+      "hashes": "passed",
+      "counts": {
+        "train": 4000,
+        "validation": 500,
+        "test": 500
+      },
+      "canonical_unique_ids": 5000,
+      "normalized_questions_unique": 5000,
+      "rendered_content_mismatches": 0,
+      "truncated_by_split": {
+        "train": 80,
+        "validation": 7,
+        "test": 14
+      }
+    },
+    "train_rendering": {
+      "records": 4000,
+      "max_tokens": 1267,
+      "over_2048": 0,
+      "native_eos_present": 0,
+      "pad_token_present": 0,
+      "assistant_ends_message_end": 4000
+    },
+    "validation_rendering": {
+      "records": 500,
+      "max_tokens": 1199,
+      "over_2048": 0,
+      "native_eos_present": 0,
+      "pad_token_present": 0,
+      "assistant_ends_message_end": 500
+    },
+    "mcq_context": {
+      "mcq_records": 2250,
+      "records_with_missing_options": 2249,
+      "deictic_question_and_missing_options": 1119,
+      "review_sample_ids": [
+        "sft-source-00071f3cf46893b1b08a20a9",
+        "sft-source-0009617fb670810e75bbceab",
+        "sft-source-000e4aa8dff147ae71f76413",
+        "sft-source-0011cd6021a0385936c4f264",
+        "sft-source-0024380221ed8efbb35a4085",
+        "sft-source-0030479ae50f51fbef792c78"
+      ],
+      "limitation": "Pattern flags require content review; omission alone does not make every converted QA invalid."
+    }
+  },
+  "test_rendered_count": 0
+}

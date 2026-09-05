@@ -29,11 +29,14 @@ def main():
     if sha256(args.sft_adapter / "adapter_model.safetensors") != SFT_SHA256:
         raise ValueError("Archived SFT checksum mismatch")
     rows = select_rows(load_validation(args.validation), 3, 42)
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    # Unsloth must patch Transformers and PEFT before they are imported.
+    # isort: off
+    from unsloth import FastLanguageModel
     import torch
     from peft import PeftModel
     from transformers import AutoTokenizer, set_seed
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-    from unsloth import FastLanguageModel
+    # isort: on
 
     set_seed(42)
     base, _ = FastLanguageModel.from_pretrained(

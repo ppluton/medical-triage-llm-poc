@@ -1,9 +1,13 @@
 # Roadmap de réalisation du POC de triage médical
 
 - **Date :** 2026-09-05
-- **Statut :** active — SFT complet terminé ; comparaison, DPO et intégration en cours
+- **Statut :** active — SFT v5 terminé mais générations dégradées ; audit et corrections avant nouvel entraînement
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
+
+## Priorité actuelle — audit préalable
+
+Les preuves de génération du SFT v5 invalident le passage direct au DPO. L’audit révèle un défaut de terminaison et des choix QCM omis. Le corpus v2 et le tokenizer candidat passent les contrôles locaux sur 5 000 exemples et 4 500 rendus. Les labels v2 dans le runtime cible et la sauvegarde/recharge après micro-run restent à vérifier avant un nouveau run long. Voir [audit complet](../evidence/PIPELINE_AUDIT_2026-09-05.md) et [ADR-011](../decisions/ADR-011-verifier-pipeline-avant-entrainement.md). Les tableaux historiques ci-dessous ne constituent pas une autorisation de réentraînement.
 
 ## Lecture de l'état
 

@@ -24,3 +24,7 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 - [Apprentissage : API et preuves](learning/30-relier-modele-api-et-preuves.md)
 
 - [Comparaison Kaggle Base/SFT et diagnostic](evidence/BASE_SFT_KAGGLE_2026-09-05.md)
+
+- [Audit de pipeline avant nouvel entraînement](evidence/PIPELINE_AUDIT_2026-09-05.md)
+- [Décision de vérification préalable](decisions/ADR-011-verifier-pipeline-avant-entrainement.md)
+- [Apprentissage : auditer la pipeline](learning/31-auditer-la-pipeline-avant-entrainer.md)

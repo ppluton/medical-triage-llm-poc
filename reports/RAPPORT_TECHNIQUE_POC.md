@@ -1,5 +1,8 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
+> Actualisation du 5 septembre 2026 : le SFT v5 présente des générations répétitives malgré une meilleure loss. Les entraînements longs et le DPO restent bloqués pendant la correction du format EOS et des données QCM. Voir [audit de pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md). Aucun gain clinique n’est établi.
+
+
 - **Date :** 2026-09-05
 - **Statut :** draft — rapport intermédiaire fondé sur les preuves disponibles
 - **Sources :** cadrage, spécification, manifestes versionnés, preuves SFT du 4 septembre et validation post-SFT du 5 septembre.

@@ -1,0 +1,41 @@
+{
+  "status": "audit_completed",
+  "dataset_sha256": "3f754a9a4d34a15d06094b2190c0f906c71826c0998c6814109f3c8b122bd2c2",
+  "checks": {
+    "artifacts": {
+      "hashes": "passed",
+      "counts": {
+        "train": 4000,
+        "validation": 500,
+        "test": 500
+      },
+      "canonical_unique_ids": 5000,
+      "normalized_questions_unique": 5000,
+      "rendered_content_mismatches": 0,
+      "truncated_by_split": {}
+    },
+    "train_rendering": {
+      "records": 4000,
+      "max_tokens": 1072,
+      "over_2048": 0,
+      "native_eos_present": 4000,
+      "pad_token_present": 0,
+      "assistant_ends_message_end": 0
+    },
+    "validation_rendering": {
+      "records": 500,
+      "max_tokens": 939,
+      "over_2048": 0,
+      "native_eos_present": 500,
+      "pad_token_present": 0,
+      "assistant_ends_message_end": 0
+    },
+    "mcq_context": {
+      "mcq_records": 2250,
+      "records_with_missing_options": 0,
+      "review_sample_ids": [],
+      "limitation": "Pattern flags require content review; omission alone does not make every converted QA invalid."
+    }
+  },
+  "test_rendered_count": 0
+}
