@@ -1,0 +1,20 @@
+{
+  "status": "prepared_locally_not_uploaded_not_launched",
+  "date": "2026-09-11",
+  "train_records": 3721,
+  "validation_records": 479,
+  "test_records": 0,
+  "files_sha256": {
+    "configs/sft-v2.1-pilot.json": "f54882f4a39e90aff28de7bc20e4ced6045b0c0baa75fc35c9f8361188f5b7da",
+    "data/train-qwen3.jsonl": "70270d659db975a1f3547392c4681791c59d408360ec77a6104808018b4c4f9b",
+    "data/validation-qwen3.jsonl": "554ee8ad2b8349f7df024796ad58d2bd27464b6dd5a7de56a3b760a305c74f25",
+    "scripts/run_source_sft_pilot.py": "fd187805894969c5e0a02562abdf907d91064682499fc24b0c66383e374dd9bc",
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/sft_pilot.py": "712a8023ff96b6d00041b718d7aada413d674168e1761dbf450dc7cb90ca6841",
+    "src/triage_poc/sft_termination.py": "007fcbadb2f34dd293468829cbdec6fb67af5fa4ead6bf8afa62fb53abdc7e57",
+    "tokenizer/chat_template.jinja": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb",
+    "tokenizer/tokenizer.json": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09",
+    "tokenizer/tokenizer_config.json": "8afc76e17070a6a722817babaf72189e1e9022f1ba94566226811a9c242c7708"
+  }
+}

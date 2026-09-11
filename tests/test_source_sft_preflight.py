@@ -159,3 +159,13 @@ def test_rejects_incomplete_rendered_split_even_with_matching_hash(tmp_path):
     manifest_path.write_text(json.dumps(manifest))
     with pytest.raises(SourceSftPreflightError, match="does not cover"):
         validate_source_sft_artifacts(manifest_path, tmp_path)
+
+
+def test_candidate_audit_does_not_grant_training_admission(tmp_path):
+    manifest_path = _fixture(tmp_path)
+    manifest = json.loads(manifest_path.read_text())
+    manifest['status'] = 'candidate_pending_pilot'
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(SourceSftPreflightError, match='not approved'):
+        validate_source_sft_artifacts(manifest_path, tmp_path)
+    validate_source_sft_artifacts(manifest_path, tmp_path, audit_candidate=True)

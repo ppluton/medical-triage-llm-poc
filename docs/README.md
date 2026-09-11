@@ -33,3 +33,9 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 
 - [Résultats techniques et limites qualitatives v15–v17](evidence/SFT_MICRO_RUNS_2026-09-11.md)
 - [Apprentissage : micro-run et recharge](learning/32-verifier-un-micro-run-et-sa-recharge.md)
+
+## Préparation contrôlée du pilote SFT v2
+
+- [Audit final des données et du trainer](evidence/SFT_V2_READINESS_2026-09-11.md)
+- [Comprendre le nettoyage et le pilote](learning/33-donnees-propres-et-pilote-avant-sft.md)
+- [Isolation documentaire et budget](decisions/ADR-012-isoler-les-groupes-et-borner-le-pilote-sft.md)

@@ -169,3 +169,7 @@ Voir [la preuve locale](../evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [la 
 ## Point de contrôle — 11 septembre 2026
 
 Statut : draft. Source : [micro-runs v15–v17](../evidence/SFT_MICRO_RUNS_2026-09-11.md). Trois micro-runs de 20 étapes sont terminés et leur recharge est vérifiée. La terminaison passe sur les trois diagnostics ; les réponses QCM restent incorrectes face aux références en v16/v17. La comparaison v2 élargie est préparée mais non exécutée. Aucun entraînement long supplémentaire ni DPO n'est validé par ces résultats.
+
+## Audit avant pilote — 11 septembre 2026
+
+Source : [preuve de préparation](../evidence/SFT_V2_READINESS_2026-09-11.md). Candidat local revu : 4 700 lignes (3 721 train, 479 validation, 500 test inchangés). Isolation de groupes, fidélité aux sources, rescan des identifiants directs et labels TRL vérifiés. Reprise prouvée sur modèle miniature CPU. Pilote T4 préparé, non lancé ; reprise CUDA et qualité restent à mesurer. Le protocole historique v2 à 500 validations est remplacé pour ce pilote par les 479 validations conservées.

@@ -59,7 +59,7 @@ def _validate_rendered(rows: list[dict[str, object]], split: str) -> set[str]:
 
 
 def validate_source_sft_artifacts(
-    manifest_path: Path, artifact_directory: Path
+    manifest_path: Path, artifact_directory: Path, *, audit_candidate: bool = False
 ) -> tuple[
     dict[str, object],
     list[dict[str, object]],
@@ -69,7 +69,10 @@ def validate_source_sft_artifacts(
     """Validate hashes, counts, conversations, and test isolation."""
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("status") != "ready_for_local_educational_sft":
+    allowed = {"ready_for_local_educational_sft"}
+    if audit_candidate:
+        allowed.add("candidate_pending_pilot")
+    if manifest.get("status") not in allowed:
         raise SourceSftPreflightError("The derived dataset is not approved for local SFT.")
     if manifest.get("triage_label_count") != 0:
         raise SourceSftPreflightError("Source QA SFT must not contain triage labels.")
