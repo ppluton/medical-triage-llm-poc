@@ -16,7 +16,10 @@ parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--metadata", type=Path, required=True)
 parser.add_argument("--report", type=Path, required=True)
 parser.add_argument("--verify-pilot-summary", type=Path)
+parser.add_argument("--memorization-manifest", type=Path)
 args = parser.parse_args()
+if args.memorization_manifest and args.verify_pilot_summary:
+    parser.error("Choose memorization or reload, not both")
 root = Path(__file__).resolve().parents[1]
 out = args.output
 out.mkdir(parents=True, exist_ok=False)
@@ -31,6 +34,10 @@ files = {
         "configs/sft-v2.1-pilot.json",
     ]
 }
+if args.memorization_manifest:
+    files["src/triage_poc/memorization.py"] = (root / "src/triage_poc/memorization.py").read_text()
+    files["src/triage_poc/pilot_report.py"] = (root / "src/triage_poc/pilot_report.py").read_text()
+    files["configs/sft-memorization-12.json"] = args.memorization_manifest.read_text()
 payload = {}
 expected = {}
 system = None
@@ -120,6 +127,17 @@ archive=Path('/kaggle/working/source-sft-v2-pilot')
 shutil.copytree(source,archive)
 subprocess.run(command+['--execute-pilot','--verify-pilot-from',str(checkpoint)],cwd=root,env=env,check=True,timeout=2700)
 """
+if args.memorization_manifest:
+    bootstrap = bootstrap.split("subprocess.run(command,cwd=root,env=env,check=True)")[0]
+    bootstrap += """import shutil
+matches=[p for p in Path('/kaggle/input').rglob('source-sft-v2-pilot/summary.json') if hashlib.sha256(p.read_bytes()).hexdigest()=='099979378a042473ec910194bec48d54ed02a6fba206c97d0558c04f5da447c9']
+if len(matches)!=1: raise ValueError('Expected one preserved pilot archive')
+shutil.copytree(matches[0].parent,Path('/kaggle/working/source-sft-v2-pilot'))
+command[-1]='/kaggle/working/train-memorization-12'
+command+=['--memorization-manifest','configs/sft-memorization-12.json']
+subprocess.run(command,cwd=root,env=env,check=True)
+subprocess.run(command+['--execute-pilot'],cwd=root,env=env,check=True,timeout=2400)
+"""
 install = {
     "cell_type": "code",
     "metadata": {},
@@ -159,6 +177,10 @@ if args.verify_pilot_summary:
     nb["cells"][0]["source"] = [
         "# Vérification du pilote sauvegardé\nRecharge finale puis comparaison des checkpoints 50/100/150 sur 479 références et 30 générations par checkpoint. Zéro étape d’entraînement."
     ]
+if args.memorization_manifest:
+    nb["cells"][0]["source"] = [
+        "# Diagnostic de mémorisation sur 12 exemples train\n300 étapes ou 900 secondes d’entraînement. Aucun score de généralisation, aucun SFT complet."
+    ]
 p = out / "chsa-source-sft-qwen3.ipynb"
 p.write_text(json.dumps(nb, ensure_ascii=False))
 assert p.stat().st_size < 1_000_000, p.stat().st_size
@@ -169,7 +191,7 @@ if (
     or meta["machine_shape"] != "NvidiaTeslaT4"
 ):
     raise ValueError("Builder restricted to the authorized private T4 notebook")
-if args.verify_pilot_summary:
+if args.verify_pilot_summary or args.memorization_manifest:
     meta["kernel_sources"] = ["pierrepluton/chsa-source-sft-qwen3"]
 (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
 report = {
@@ -188,5 +210,9 @@ if args.verify_pilot_summary:
     report["mode"] = "read_only_pilot_reload"
     report["source_pilot_summary_sha256"] = summary_hash
     report["optimizer_steps_to_execute"] = 0
+if args.memorization_manifest:
+    report["mode"] = "train_only_memorization"
+    report["manifest_sha256"] = hashlib.sha256(args.memorization_manifest.read_bytes()).hexdigest()
+    report["optimizer_steps_cap"] = 300
 args.report.write_text(json.dumps(report, indent=2) + "\n")
 print(json.dumps(report, indent=2))

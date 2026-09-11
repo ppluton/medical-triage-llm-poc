@@ -25,7 +25,12 @@ def main():
     p.add_argument("--mechanics-smoke", action="store_true")
     p.add_argument("--resume-smoke-from", type=Path)
     p.add_argument("--verify-pilot-from", type=Path)
+    p.add_argument("--memorization-manifest", type=Path)
     a = p.parse_args()
+    if a.memorization_manifest and (
+        a.mechanics_smoke or a.resume_smoke_from or a.verify_pilot_from
+    ):
+        p.error("Memorization is separate from pilot and reload modes")
     if a.verify_pilot_from and (a.mechanics_smoke or a.resume_smoke_from):
         p.error("Pilot reload verification is read-only and separate from smoke training")
     if a.resume_smoke_from and not a.mechanics_smoke:
@@ -58,6 +63,37 @@ def main():
         {r["record_id"] for r in generation}
     ) != len(generation):
         raise ValueError("Invalid frozen generation selection")
+    memorization = None
+    if a.memorization_manifest:
+        from triage_poc.memorization import select_memorization_rows
+
+        memorization = json.loads(a.memorization_manifest.read_text())
+        if memorization["parent_config_sha256"] != sha256(a.config):
+            raise ValueError("Memorization parent configuration changed")
+        train = select_memorization_rows(train, validation, memorization)
+        # Deliberately measure the training cohort, never held-out quality.
+        validation = deepcopy(train)
+        generation = deepcopy(train)
+        cfg = deepcopy(cfg)
+        cfg.update(
+            learning_rate=2e-4,
+            warmup_steps=5,
+            scheduler_horizon_steps=300,
+            pilot_stop_after_steps=300,
+            pilot_training_wall_seconds=900,
+            gradient_accumulation_steps=1,
+            save_steps=100,
+        )
+        cfg["training_records"] = 12
+        cfg["validation_records"] = 0
+        cfg["experiment_id"] = "train-only-memorization-12"
+        cfg["evaluation"] = {
+            "scope": "training_memorization_only",
+            "loss_records": 12,
+            "generation_records": 12,
+            "max_new_tokens": 256,
+        }
+
     if a.output.exists():
         raise ValueError("Fresh output required; continuation is a separate reviewed operation")
     if not a.execute_pilot:
@@ -66,7 +102,8 @@ def main():
                 {
                     "status": "preflight_passed_not_launched",
                     "train": len(train),
-                    "validation": len(validation),
+                    "validation": 0 if memorization else len(validation),
+                    "in_sample_evaluation_records": 12 if memorization else 0,
                     "test_records_used": 0,
                     "training_steps": 0,
                 }
@@ -281,7 +318,7 @@ def main():
                 ids = model.generate(
                     **inputs,
                     do_sample=False,
-                    max_new_tokens=512,
+                    max_new_tokens=cfg["evaluation"]["max_new_tokens"],
                     eos_token_id=tokenizer.eos_token_id,
                     pad_token_id=tokenizer.pad_token_id,
                 )[0, inputs.input_ids.shape[1] :].tolist()
@@ -390,11 +427,40 @@ def main():
     exported = deepcopy(tokenizer)
     exported.chat_template = native_eos_template(tokenizer.chat_template)
     exported.save_pretrained(str(a.output / "inference-tokenizer"))
+    memorization_result = None
+    if memorization:
+        from triage_poc.pilot_report import normalize_answer
+
+        stages = {}
+        expected = {r["record_id"]: r["messages"][-1]["content"] for r in train}
+        for stage in ("base", "pilot_end"):
+            records = json.loads((a.output / f"{stage}.json").read_text())["records"]
+            stages[stage] = {
+                "exact_answers": sum(
+                    normalize_answer(r["output"]) == normalize_answer(expected[r["record_id"]])
+                    for r in records
+                ),
+                "eos_terminated": sum(
+                    r["generated_token_ids"][-1] == tokenizer.eos_token_id for r in records
+                ),
+                "records": len(records),
+            }
+        memorization_result = {
+            "manifest": memorization,
+            "stages": stages,
+            "generalization_measured": False,
+            "validation_records_used": 0,
+        }
     summary = {
-        "status": "mechanics_smoke_completed"
+        "memorization": memorization_result,
+        "status": "memorization_completed"
+        if memorization
+        else "mechanics_smoke_completed"
         if a.mechanics_smoke
         else "pilot_completed_pending_quality_review",
-        "mode": "resume_smoke"
+        "mode": "training_memorization"
+        if memorization
+        else "resume_smoke"
         if a.resume_smoke_from
         else "mechanics_smoke"
         if a.mechanics_smoke
@@ -412,7 +478,12 @@ def main():
         "test_records_used": 0,
         "automatic_full_training": False,
         "limits": [
-            "Intermediate checkpoint evaluation and CUDA resume/reload equivalence still required."
+            "Training memorization only, no held-out or clinical evaluation."
+            if memorization
+            else (
+                "Intermediate checkpoint evaluation and CUDA "
+                "resume/reload equivalence still required."
+            )
         ],
     }
     (a.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
