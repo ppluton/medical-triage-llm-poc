@@ -93,9 +93,9 @@ La comparaison finale devra utiliser un protocole identique pour Base, SFT et DP
 
 ## 10. La suite, dans l'ordre
 
-1. Diagnostiquer et vérifier le défaut FP16 du pilote avec une exécution courte.
-2. Obtenir une comparaison Base/Pilote exploitable et examiner les réponses, pas seulement les métriques.
-3. Vérifier la recharge et la reprise sur la pile GPU réelle avant toute prolongation.
+1. Fait : défaut FP16 localisé, corrigé et vérifié sur GPU.
+2. Fait : comparaison Base/50/100/150, loss et réponses examinées ; qualité encore insuffisante.
+3. Fait dans le périmètre testé : reprise courte 2 → 4 et recharge finale reproduisant 30 générations.
 4. Décider d'une poursuite SFT à partir de ces preuves, puis préparer et tester le DPO.
 5. Comparer Base/SFT/DPO, intégrer le vrai modèle à l'API et mesurer les garde-fous et la latence.
 6. Finaliser la démonstration autorisée et le rapport à partir des résultats, y compris négatifs.

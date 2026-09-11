@@ -1,13 +1,17 @@
 # Roadmap de réalisation du POC de triage médical
 
-- **Date :** 2026-09-05
-- **Statut :** active — SFT v5 terminé mais générations dégradées ; audit et corrections avant nouvel entraînement
+- **Date :** 2026-09-11
+- **Statut :** draft — pilote v19 et vérification v20 terminés ; qualité insuffisante, aucun nouveau SFT long lancé
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
-## Priorité actuelle — audit préalable
+## Priorité actuelle — traiter les limites qualitatives après le pilote
 
-Les preuves de génération du SFT v5 invalident le passage direct au DPO. L’audit révèle un défaut de terminaison et des choix QCM omis. Le corpus v2 et le tokenizer candidat passent les contrôles locaux sur 5 000 exemples et 4 500 rendus. Les labels v2 dans le runtime cible et la sauvegarde/recharge après micro-run restent à vérifier avant un nouveau run long. Voir [audit complet](../evidence/PIPELINE_AUDIT_2026-09-05.md) et [ADR-011](../decisions/ADR-011-verifier-pipeline-avant-entrainement.md). Les tableaux historiques ci-dessous ne constituent pas une autorisation de réentraînement.
+Le corpus v2.1-reviewed contient 3 721 exemples train, 479 validation et 500 test réservés. L'[audit final](../evidence/SFT_V2_READINESS_2026-09-11.md) vérifie les transformations et l'isolation documentaire selon les clés définies ; il ne valide pas la vérité clinique des réponses sources.
+
+Le pilote v18 a échoué après la baseline à cause d'une conversion FP16 lors de l'évaluation. La [correction v19](../evidence/SFT_FP16_FIX_2026-09-11.md) conserve les paramètres entraînables en FP32. Les logs GPU montrent deux étapes, une recharge identique sur deux générations, la restauration de l'optimiseur et une reprise jusqu'à quatre étapes. Le pilote borné de 150 étapes a terminé. La v20 prouve ensuite 30 générations identiques après recharge finale et compare les checkpoints 50/100/150. La loss baisse, mais les réponses anglaises se dégradent entre 50 et 150 étapes ; aucun checkpoint ne satisfait la revue qualitative. Voir le [bilan v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md).
+
+La comparaison Base/Pilote est acquise. La prochaine décision porte sur un essai contrôlé de qualité, avant toute prolongation SFT ou DPO. L'[historique complet](HISTORIQUE_PROJET_2026-09-11.md) distingue les versions de corpus, les runs et leurs résultats négatifs.
 
 ## Lecture de l'état
 
@@ -21,12 +25,12 @@ Un statut technique vert ne constitue jamais une validation clinique.
 
 ## État par rapport aux quatre semaines du cadrage
 
-| Phase du cadrage | État au 2026-09-04 | Résultat prouvé | Écart à fermer |
+| Phase du cadrage | État au 2026-09-11 | Résultat prouvé | Écart à fermer |
 |---|---|---|---|
-| Semaine 1 — données | `proven` pour le SFT, DPO restant | Les 5 000 paires source-derived sont générées et vérifiées : 2 500 FR/2 500 EN, splits 4 000/500/500, réponses sources et zéro label de triage inventé. | Constituer le DPO depuis UltraMedical après le premier SFT LoRA. |
-| Semaine 2 — SFT/LoRA | `partially proven` | Le pré-vol des 4 000/500 lignes et un micro-run LoRA source-derived de 20 étapes sont terminés ; l'adaptateur est sauvegardé. | Définir puis exécuter le run complet, évaluer tout le split validation et comparer à la baseline. |
-| Semaine 3 — DPO | `not started` pour l'entraînement | Les 112 362 préférences UltraMedical sont auditées ; un index sans texte reconstruit les splits et protège le test. | Créer ou sélectionner des préférences de sûreté proposées, entraîner depuis le checkpoint SFT source-derived et mesurer gains et régressions. |
-| Semaine 4 — API et pilote | `implemented only` | Contrat FastAPI, garde-fous de schéma, audit minimal, tests, Dockerfile et CI sont présents. | Brancher le modèle validé, prouver le build Docker, servir avec vLLM, mesurer latence et débit, déployer sur une cible explicitement autorisée et réaliser un smoke test. |
+| Semaine 1 — données | `partially proven` | Corpus SFT revu et figé ; 4 200 exemples de développement contrôlés, groupes isolés, 500 test réservés. | Limites de qualité des sources ; revue du lot DPO candidat. |
+| Semaine 2 — SFT/LoRA | `partially proven` | Ancien SFT complet, diagnostics et micro-runs archivés ; mécanique FP16 et reprise courte vérifiées sur GPU. | Défauts de génération EN/FR à traiter ; décision de prolongation puis évaluation finale. |
+| Semaine 3 — DPO | `not started` pour l'entraînement | Sources auditées et lot de 512 paires train / 64 validations préparé, encore candidat. | Revoir les préférences, entraîner depuis un SFT retenu et mesurer les régressions. |
+| Semaine 4 — API et pilote | `partially proven` | API, garde-fous de schéma, transport simulé, audit et Docker hors réseau vérifiés localement. | Servir le vrai modèle, mesurer les performances, effectuer une exposition pilote autorisée et finaliser le rapport. |
 
 La durée de quatre semaines du mandat n'est pas déclarée tenue. La roadmap est pilotée par preuves. L'absence de validation clinique limite les conclusions et tout usage patient, mais ne bloque plus le chemin technique du projet scolaire.
 
@@ -54,11 +58,11 @@ flowchart TD
 
 ### Jalon 1 — Dataset SFT médical gouverné
 
-- **Statut :** dataset source-derived `proven` techniquement ; validation clinique `not performed`.
-- **Entrées :** questions et réponses MedQuAD, MediQAl et FrenchMedMCQA ; UltraMedical est réservé au DPO.
-- **Travail :** sélectionner 5 000 paires sources, les dédupliquer et anonymiser, puis assigner 4 000/500/500 sans créer de label de triage.
-- **Porte de sortie :** 2 500 FR, 2 500 EN, toutes les réponses `source_provided`, provenance et licence présentes, zéro label de triage inventé et test non rendu pour l'entraînement.
-- **Preuve :** manifeste, SHA-256, distributions, contrôles de schéma, doublons, identifiants directs et isolation du test dans `GENERATION_SFT_SOURCE_5000_2026-09-04.md`.
+- **Statut :** transformations et isolation définie `proven` techniquement ; validation clinique `not performed`.
+- **Entrées :** questions et réponses MedQuAD, MediQAl et FrenchMedMCQA ; UltraMedical réservé au DPO.
+- **Résultat :** 4 700 lignes retenues après reconstruction, exclusion de groupes recouvrants et quarantaine de trois QCM ambigus ; splits 3 721/479/500.
+- **Limites :** absence de fuite selon les clés contrôlées, pas garantie d'absence de paraphrases ; exactitude des sources médicales non certifiée.
+- **Preuve :** [audit final v2.1-reviewed](../evidence/SFT_V2_READINESS_2026-09-11.md).
 
 ### Jalon 2 — Baseline de référence figée
 
@@ -69,8 +73,8 @@ flowchart TD
 
 ### Jalon 3 — SFT + LoRA sur les sources
 
-- **Statut :** SFT complet `proven` techniquement ; comparaison Base/SFT `proven` sur validation QA ; génération à diagnostiquer.
-- **Travail :** le micro-run contrôlé est terminé ; définir puis exécuter le run SFT complet, suivre loss entraînement/validation, stabilité, mémoire et durée, puis sauvegarder adaptateur et état de reprise.
+- **Statut :** ancien SFT complet `proven` techniquement ; pilote corrigé en cours ; qualité du nouveau SFT `not proven`.
+- **Travail :** terminer le pilote corrigé et comparer ses sorties à la base ; décider ensuite d’une prolongation éventuelle, avec sauvegarde et état de reprise.
 - **Porte de sortie :** checkpoint reproductible et amélioration mesurée par rapport à Base sans hausse non acceptée des erreurs dangereuses.
 - **Preuve attendue :** configuration figée, hash du code et des données, logs, checkpoint, métriques et comparaison au même jeu de test.
 
@@ -172,4 +176,4 @@ Statut : draft. Source : [micro-runs v15–v17](../evidence/SFT_MICRO_RUNS_2026-
 
 ## Audit avant pilote — 11 septembre 2026
 
-Source : [preuve de préparation](../evidence/SFT_V2_READINESS_2026-09-11.md). Candidat local revu : 4 700 lignes (3 721 train, 479 validation, 500 test inchangés). Isolation de groupes, fidélité aux sources, rescan des identifiants directs et labels TRL vérifiés. Reprise prouvée sur modèle miniature CPU. Pilote T4 préparé, non lancé ; reprise CUDA et qualité restent à mesurer. Le protocole historique v2 à 500 validations est remplacé pour ce pilote par les 479 validations conservées.
+Source : [preuve de préparation](../evidence/SFT_V2_READINESS_2026-09-11.md). Candidat local revu : 4 700 lignes (3 721 train, 479 validation, 500 test inchangés). Isolation de groupes, fidélité aux sources, rescan des identifiants directs et labels TRL vérifiés. Reprise prouvée sur modèle miniature CPU. État historique avant v18 : pilote T4 alors préparé, non lancé. Mise à jour : v19 termine 150 étapes et v20 vérifie la recharge ; la qualité reste insuffisante. Le protocole historique v2 à 500 validations est remplacé pour ce pilote par les 479 validations conservées.

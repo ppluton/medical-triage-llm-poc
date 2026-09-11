@@ -1,8 +1,8 @@
 # Historique du projet — étapes, décisions et preuves au 11 septembre 2026
 
 - **Date :** 2026-09-11
-- **Statut :** draft — synthèse historique ; pilote Kaggle v18 terminé en erreur avant la première étape optimiseur
-- **Périmètre :** du cadrage aux vérifications du corpus corrigé et au lancement du pilote borné.
+- **Statut :** draft — synthèse historique ; pilote v19 et recharge/comparaison v20 terminés
+- **Périmètre :** du cadrage aux vérifications du corpus corrigé et aux résultats du pilote borné et à sa recharge vérifiée.
 - **Sources :** cadrage et spécification, ADR-001 à ADR-012, preuves et notes pédagogiques liées dans chaque étape. Les statuts historiques sont datés et ne remplacent pas les résultats ultérieurs.
 
 ## 1. La mission et ce que nous devons réellement livrer
@@ -167,6 +167,22 @@ La comparaison prévoit 479 mesures de loss et 30 générations fixes, dont 15 F
 
 Sources : [configuration](../../configs/sft-v2.1-pilot.json), [preuve de lancement v18](../evidence/SFT_V2_PILOT_LAUNCH_2026-09-11.json).
 
+### 11 septembre — correction FP16 et pilote v19 terminé
+
+La cause v18 est localisée : le trainer Unsloth réactive la conversion FP16 d’évaluation, puis le scaler refuse les gradients des paramètres ainsi convertis. La correction conserve les paramètres LoRA en FP32 après construction du trainer. Un smoke GPU vérifie deux étapes, une recharge exacte et une reprise de l’optimiseur jusqu’à quatre étapes. Le pilote depuis la base termine ensuite 150 étapes, avec sauvegarde complète et empreintes vérifiées localement.
+
+Sur 479 validations, la loss moyenne par exemple passe de 1,4569 à 0,7121. La revue des choix QCM donne 5/15 accords source pour Base et 7/15 à 150 étapes, avec quatre gains et deux régressions. Les réponses anglaises restent répétitives et parfois contradictoires avec leurs références.
+
+Source : [résultat v19](../evidence/SFT_V19_PILOT_RESULT_2026-09-11.md).
+
+### 11 septembre — v20, recharge et comparaison sans entraînement
+
+Une nouvelle session GPU recharge le checkpoint 150 : les 30 générations sont identiques et la loss diffère de seulement 5,96 × 10⁻⁸. Les checkpoints 50 et 100 sont également évalués. Les terminaisons EOS sont respectivement 26/30, 25/30 et 22/30 aux étapes 50/100/150. Les accords de choix QCM sont 6/15, 5/15 et 7/15. Des réponses courtes aux étapes précoces se limitent à recopier la question : la terminaison seule ne suffit pas.
+
+**Décision :** la mécanique testée est prouvée, mais aucun checkpoint n’est retenu comme modèle final satisfaisant. Aucun SFT long ou DPO supplémentaire n’est lancé. La prochaine expérience doit comparer une hypothèse explicite, avec validation figée et test toujours réservé.
+
+Source : [bilan v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md).
+
 ## 4. Travaux parallèles : API, audit et préparation du DPO
 
 L'API a évolué vers un contrat de fournisseur compatible vLLM, avec validation de schéma, traitement de réponses invalides/tronquées et audit minimisant les textes. Des tests locaux et un conteneur hors réseau ont permis de vérifier plusieurs comportements. Une tentative de téléchargement de suffixes publics par un composant d'anonymisation a été supprimée au profit de ressources embarquées.
@@ -193,8 +209,8 @@ Source : [preuve locale post-SFT](../evidence/POST_SFT_IMPLEMENTATION_2026-09-05
 
 | Étape | Action suivante | Condition avant de passer plus loin |
 |---|---|---|
-| Pilote interrompu | Corriger et vérifier le défaut FP16, puis reprendre un essai borné | Optimisation GPU effective avant comparaison Base/Pilote |
-| Reprise GPU | Vérifier la recharge et la reprise réelle du checkpoint | État complet et comportement observé, pas seulement fichiers présents |
+| Pilote terminé | Analyser les limites qualitatives persistantes | Correction FP16 et optimisation GPU prouvées par v19 |
+| Recharge/reprise GPU | Conserver les preuves v19/v20 | Reprise courte observée ; checkpoint final rechargé avec 30 générations identiques |
 | SFT prolongé | Décider si poursuivre le pilote ou ajuster | Signal qualitatif suffisant ; aucune prolongation automatique |
 | DPO | Revoir et figer les préférences, faire un essai court | SFT de référence et données DPO admissibles |
 | Comparaison finale | Base/SFT/DPO, robustesse et scénarios spécifiés | Protocole identique, test réservé pour l'évaluation finale |

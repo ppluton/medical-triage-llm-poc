@@ -45,3 +45,15 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 - [Audit final des données et du trainer](evidence/SFT_V2_READINESS_2026-09-11.md)
 - [Comprendre le nettoyage et le pilote](learning/33-donnees-propres-et-pilote-avant-sft.md)
 - [Isolation documentaire et budget](decisions/ADR-012-isoler-les-groupes-et-borner-le-pilote-sft.md)
+
+## Correction de précision numérique et pilote v19
+
+- [Diagnostic, correction et preuves FP16](evidence/SFT_FP16_FIX_2026-09-11.md)
+- [Comprendre la précision numérique et l’évaluation](learning/35-evaluation-et-precision-numerique.md)
+
+## Résultats du pilote borné
+
+- [Résultats v19, progrès et régressions](evidence/SFT_V19_PILOT_RESULT_2026-09-11.md)
+- [Comprendre la loss, le format et la qualité](learning/36-lire-le-pilote-sans-confondre-loss-et-qualite.md)
+
+- [V20 : recharge et comparaison des checkpoints](evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md) — preuve GPU finale et limites qualitatives avant prolongation.

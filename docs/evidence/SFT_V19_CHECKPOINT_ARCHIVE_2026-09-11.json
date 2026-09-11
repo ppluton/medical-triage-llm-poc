@@ -1,0 +1,44 @@
+{
+  "status": "archived_and_hash_verified",
+  "kaggle_version": 19,
+  "global_step": 150,
+  "finite_logged_optimizer_steps": 150,
+  "training_runtime_seconds_rounded_from_log": 701.0,
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "9674c6a12a903eb969d70eae089d915a52e04b5ea0c50f875b090297b9ccbb01",
+    "optimizer.pt": "c673504809ca422709334345e44c69a7148628be892b33af17f41947be76bb28",
+    "scheduler.pt": "59d1892f669811bc189b9c419cb70133abb580519a56b3fbdcfff78366625416",
+    "rng_state.pth": "718a0f3db00824213036a2c0441849791319b7d9cf189065873bb26a7020738e",
+    "trainer_state.json": "d398bb3c80113f8ea662d751edcdcaede6c9cbe1ecb48308d7753ca20f127a39"
+  },
+  "scaler_sha256": "b7a646a858b71ab76099f4dca96d8db39ffde2f88258f5a4b082ff62947bcc11",
+  "evaluation_history": [
+    {
+      "epoch": 0.10749798441279226,
+      "eval_loss": 0.8215776681900024,
+      "eval_model_preparation_time": 0.0231,
+      "eval_runtime": 76.3516,
+      "eval_samples_per_second": 6.274,
+      "eval_steps_per_second": 6.274,
+      "step": 50
+    },
+    {
+      "epoch": 0.21499596882558453,
+      "eval_loss": 0.7305812835693359,
+      "eval_model_preparation_time": 0.0231,
+      "eval_runtime": 76.4015,
+      "eval_samples_per_second": 6.27,
+      "eval_steps_per_second": 6.27,
+      "step": 100
+    },
+    {
+      "epoch": 0.32249395323837676,
+      "eval_loss": 0.7121326923370361,
+      "eval_model_preparation_time": 0.0231,
+      "eval_runtime": 76.3765,
+      "eval_samples_per_second": 6.272,
+      "eval_steps_per_second": 6.272,
+      "step": 150
+    }
+  ]
+}
