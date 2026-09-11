@@ -33,10 +33,11 @@ for stage in ("base", "pilot_end"):
     data = json.loads((a.run / (stage + ".json")).read_text())
     if [r["record_id"] for r in data["records"]] != m["record_ids"]:
         raise ValueError("Generation cohort changed")
-    exact, eos = 0, 0
+    exact, eos, strict = 0, 0, 0
     for r in data["records"]:
         agrees = normalize_answer(r["output"]) == normalize_answer(refs[r["record_id"]]["response"])
         ended = r["generated_token_ids"][-1] == 151643
+        strict += r["output"].strip() == refs[r["record_id"]]["response"].strip()
         exact += agrees
         eos += ended
         records.append(
@@ -50,6 +51,7 @@ for stage in ("base", "pilot_end"):
     stages[stage] = {
         "mean_example_train_nll": data["mean_example_response_nll"],
         "exact_answers": exact,
+        "strict_stripped_text_matches": strict,
         "eos_terminated": eos,
         "records": len(data["records"]),
     }
