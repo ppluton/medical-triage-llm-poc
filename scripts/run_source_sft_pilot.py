@@ -22,7 +22,11 @@ def main():
     for name in ("config", "data", "tokenizer", "output"):
         p.add_argument("--" + name, type=Path, required=True)
     p.add_argument("--execute-pilot", action="store_true")
+    p.add_argument("--mechanics-smoke", action="store_true")
+    p.add_argument("--resume-smoke-from", type=Path)
     a = p.parse_args()
+    if a.resume_smoke_from and not a.mechanics_smoke:
+        p.error("Resume is restricted to the bounded mechanics smoke")
     cfg = json.loads(a.config.read_text())
     validate_pilot_config(cfg)
     loaded = []
@@ -124,11 +128,45 @@ def main():
         k: value.detach().cpu().clone() for k, value in get_peft_model_state_dict(model).items()
     }
     a.output.mkdir(parents=True)
-    budget = PilotBudget(cfg["pilot_stop_after_steps"], cfg["pilot_training_wall_seconds"])
+    stop_step = (
+        (4 if a.resume_smoke_from else 2) if a.mechanics_smoke else cfg["pilot_stop_after_steps"]
+    )
+    budget = PilotBudget(
+        stop_step, 180 if a.mechanics_smoke else cfg["pilot_training_wall_seconds"]
+    )
+    precision_events = []
+
+    def check_precision(stage):
+        counts = {}
+        for name, parameter in model.named_parameters():
+            if parameter.requires_grad:
+                counts[str(parameter.dtype)] = counts.get(str(parameter.dtype), 0) + 1
+                if parameter.dtype != torch.float32:
+                    raise ValueError(f"Trainable parameter lost FP32 precision at {stage}: {name}")
+        if not counts:
+            raise ValueError("No trainable parameters")
+        event = {"stage": stage, "trainable_tensor_dtypes": counts}
+        precision_events.append(event)
+        print(json.dumps(event), flush=True)
 
     class BoundedTraining(TrainerCallback):
         def on_train_begin(self, args, state, control, **kwargs):
             budget.start()
+            if a.resume_smoke_from:
+                optimizer = kwargs["optimizer"]
+                saved_steps = {int(v["step"]) for v in optimizer.state.values() if "step" in v}
+                if state.global_step != 2 or saved_steps != {2}:
+                    raise ValueError("Resume did not restore optimizer steps")
+                print(
+                    json.dumps(
+                        {
+                            "stage": "optimizer_resume_verified",
+                            "global_step": state.global_step,
+                            "optimizer_steps": sorted(saved_steps),
+                        }
+                    ),
+                    flush=True,
+                )
 
         def on_step_end(self, args, state, control, **kwargs):
             if budget.reached(state.global_step):
@@ -145,7 +183,7 @@ def main():
         model=model,
         processing_class=tokenizer,
         train_dataset=Dataset.from_list(train_pairs),
-        eval_dataset=Dataset.from_list(val_pairs),
+        eval_dataset=Dataset.from_list(val_pairs[:2] if a.mechanics_smoke else val_pairs),
         args=SFTConfig(
             output_dir=str(a.output / "trainer"),
             max_steps=cfg["scheduler_horizon_steps"],
@@ -179,8 +217,25 @@ def main():
         ),
         callbacks=[BoundedTraining()],
     )
+    # Unsloth overrides these flags in its constructor. Full-eval casting mutates
+    # FP32 adapter storage before AMP training, so override after construction.
+    trainer.args.fp16_full_eval = False
+    trainer.args.bf16_full_eval = False
+    check_precision("trainer_ready")
+    if a.mechanics_smoke:
+        generation = generation[:2]
+    if a.resume_smoke_from:
+        from peft import set_peft_model_state_dict
+        from safetensors.torch import load_file
+
+        require_complete_checkpoint(a.resume_smoke_from, 2)
+        if not (a.resume_smoke_from / "scaler.pt").is_file():
+            raise ValueError("Smoke resume requires its AMP scaler")
+        set_peft_model_state_dict(
+            model, load_file(str(a.resume_smoke_from / "adapter_model.safetensors"))
+        )
     for dataset, pairs in [(trainer.train_dataset, train_pairs), (trainer.eval_dataset, val_pairs)]:
-        for i, pair in enumerate(pairs):
+        for i, pair in enumerate(pairs[: len(dataset)]):
             ids = tokenizer.encode(pair["prompt"] + pair["completion"], add_special_tokens=False)
             if dataset[i]["input_ids"] != ids:
                 raise ValueError("Trainer tokenization changed")
@@ -191,7 +246,10 @@ def main():
                 raise ValueError("EOS was not supervised exactly once")
 
     def evaluate(stage):
+        print(json.dumps({"stage": stage, "action": "evaluation_started"}), flush=True)
+        check_precision(stage + "_before_evaluation")
         loss = trainer.evaluate()["eval_loss"]
+        check_precision(stage + "_after_loss")
         if not math.isfinite(loss):
             raise ValueError("Non-finite validation loss")
         FastLanguageModel.for_inference(model)
@@ -224,10 +282,42 @@ def main():
             )
             + "\n"
         )
+        print(
+            json.dumps(
+                {
+                    "stage": stage,
+                    "action": "evaluation_completed",
+                    "loss": loss,
+                    "generated_tokens": [len(r["generated_token_ids"]) for r in outputs],
+                }
+            ),
+            flush=True,
+        )
         FastLanguageModel.for_training(model, use_gradient_checkpointing="unsloth")
+        check_precision(stage + "_after_generation")
 
+    print(
+        json.dumps(
+            {
+                "stage": "all_labels_verified",
+                "records": len(trainer.train_dataset) + len(trainer.eval_dataset),
+            }
+        ),
+        flush=True,
+    )
     evaluate("base")
-    trainer.train()
+    if a.resume_smoke_from:
+        previous = json.loads((a.resume_smoke_from.parent.parent / "pilot_end.json").read_text())
+        reloaded = json.loads((a.output / "base.json").read_text())
+        if previous["records"] != reloaded["records"]:
+            raise ValueError("Fresh-process smoke reload changed greedy generations")
+        print(
+            json.dumps({"stage": "fresh_reload_verified", "records": len(generation)}), flush=True
+        )
+    trainer.train(resume_from_checkpoint=str(a.resume_smoke_from) if a.resume_smoke_from else None)
+    if a.mechanics_smoke and trainer.state.global_step != stop_step:
+        raise ValueError("Smoke failed to complete the required optimizer steps")
+    check_precision("training_completed")
     checkpoint = a.output / "trainer" / f"checkpoint-{trainer.state.global_step}"
     hashes = require_complete_checkpoint(checkpoint, trainer.state.global_step)
     if trainer.accelerator.scaler is not None and not (checkpoint / "scaler.pt").is_file():
@@ -246,7 +336,18 @@ def main():
     exported.chat_template = native_eos_template(tokenizer.chat_template)
     exported.save_pretrained(str(a.output / "inference-tokenizer"))
     summary = {
-        "status": "pilot_completed_pending_quality_review",
+        "status": "mechanics_smoke_completed"
+        if a.mechanics_smoke
+        else "pilot_completed_pending_quality_review",
+        "mode": "resume_smoke"
+        if a.resume_smoke_from
+        else "mechanics_smoke"
+        if a.mechanics_smoke
+        else "pilot",
+        "precision_events": precision_events,
+        "resume_checkpoint": str(a.resume_smoke_from) if a.resume_smoke_from else None,
+        "evaluated_records": len(trainer.eval_dataset),
+        "generation_records": len(generation),
         "steps": trainer.state.global_step,
         "changed_adapter_tensors": changed,
         "checkpoint": str(checkpoint),
