@@ -191,6 +191,12 @@ Pour départager un défaut d’apprentissage et une difficulté de généralisa
 
 Source : [résultat v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md).
 
+### 11 septembre — reprise générale v22 lancée
+
+Après accord du porteur, reprise préparée depuis le checkpoint général v19 à 150 étapes, jusqu’à 500 étapes au total ou 30 minutes de phase entraînement. Corpus et scheduler inchangés ; les poids du diagnostic v21 sont exclus. Les contrôles locaux passent et Kaggle confirme `RUNNING`. La restauration GPU effective, la fin de l’entraînement et la comparaison qualitative ne sont pas encore observées.
+
+Source : [protocole et preuve de lancement](SFT_CONTINUATION_150_500_2026-09-11.md).
+
 ## 4. Travaux parallèles : API, audit et préparation du DPO
 
 L'API a évolué vers un contrat de fournisseur compatible vLLM, avec validation de schéma, traitement de réponses invalides/tronquées et audit minimisant les textes. Des tests locaux et un conteneur hors réseau ont permis de vérifier plusieurs comportements. Une tentative de téléchargement de suffixes publics par un composant d'anonymisation a été supprimée au profit de ressources embarquées.

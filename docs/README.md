@@ -62,3 +62,6 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 - [Mémorisation et généralisation](learning/37-memorisation-et-generalisation.md) — ce que cet essai peut prouver.
 
 - [Résultat v21 : mémorisation réussie](evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md) — 12/12 réponses train reproduites, sans mesure de généralisation.
+
+- [Reprise générale v22 : 150 vers 500](technical/SFT_CONTINUATION_150_500_2026-09-11.md) — protocole, preuve de lancement et limites.
+- [Comprendre la reprise](learning/38-reprendre-le-sft-sans-repartir-de-zero.md) — poids, optimiseur et scheduler.
