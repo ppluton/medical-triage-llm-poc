@@ -14,6 +14,12 @@ La roadmap active et son état de preuve sont dans [`technical/ROADMAP_POC_V1.md
 
 Le rapport final public est dans `../reports/`. Les données lourdes ou sensibles ne sont pas versionnées : seuls les manifestes, schémas, échantillons synthétiques et checksums peuvent l'être.
 
+## Lire le parcours complet — 11 septembre 2026
+
+- [Historique : étapes, hypothèses, corrections et preuves](technical/HISTORIQUE_PROJET_2026-09-11.md)
+- [Lecture pédagogique : comprendre les changements de méthode](learning/34-retour-sur-la-demarche-du-projet.md)
+- [Dernier état du pilote v18 : baseline puis erreur FP16](evidence/SFT_V2_PILOT_V18_2026-09-11.md)
+
 ## Suite du SFT — 5 septembre 2026
 
 - [Comparaison et préparation DPO](technical/COMPARAISON_POST_SFT_V1.md)
