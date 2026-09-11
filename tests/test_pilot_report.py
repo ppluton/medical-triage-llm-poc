@@ -33,6 +33,8 @@ def test_paired_improvement_does_not_approve_full_training():
     assert report["response_nll_delta"] == -1
     assert report["stages"]["pilot_end"]["native_eos_terminated"] == 1
     assert report["stages"]["pilot_end"]["exact_normalized_reference_matches"] == 1
+    assert report["stages"]["base"]["by_source"]["synthetic"]["reached_token_cap"] == 1
+    assert report["stages"]["pilot_end"]["by_source"]["synthetic"]["native_eos_terminated"] == 1
     assert report["full_training_approved"] is False
 
 
