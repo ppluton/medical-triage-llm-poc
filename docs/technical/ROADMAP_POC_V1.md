@@ -1,7 +1,7 @@
 # Roadmap de réalisation du POC de triage médical
 
 - **Date :** 2026-09-11
-- **Statut :** draft — pilote v19 et vérification v20 terminés ; qualité insuffisante, aucun nouveau SFT long lancé
+- **Statut :** draft — v19/v20 terminés, mémorisation v21 réussie ; généralisation à améliorer, aucun nouveau SFT long lancé
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
@@ -11,7 +11,7 @@ Le corpus v2.1-reviewed contient 3 721 exemples train, 479 validation et 500 tes
 
 Le pilote v18 a échoué après la baseline à cause d'une conversion FP16 lors de l'évaluation. La [correction v19](../evidence/SFT_FP16_FIX_2026-09-11.md) conserve les paramètres entraînables en FP32. Les logs GPU montrent deux étapes, une recharge identique sur deux générations, la restauration de l'optimiseur et une reprise jusqu'à quatre étapes. Le pilote borné de 150 étapes a terminé. La v20 prouve ensuite 30 générations identiques après recharge finale et compare les checkpoints 50/100/150. La loss baisse, mais les réponses anglaises se dégradent entre 50 et 150 étapes ; aucun checkpoint ne satisfait la revue qualitative. Voir le [bilan v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md).
 
-La comparaison Base/Pilote est acquise. La prochaine décision porte sur un essai contrôlé de qualité, avant toute prolongation SFT ou DPO. L'[historique complet](HISTORIQUE_PROJET_2026-09-11.md) distingue les versions de corpus, les runs et leurs résultats négatifs.
+La comparaison Base/Pilote est acquise. Le [diagnostic v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md) reproduit les douze réponses train attendues avec EOS après répétition. La prochaine expérience proposée porte sur une reprise bornée du pilote général, sans réécriture spéculative du corpus, afin de mesurer la généralisation après davantage d’exposition. Cette reprise reste à implémenter et exécuter. L'[historique complet](HISTORIQUE_PROJET_2026-09-11.md) distingue les versions de corpus, les runs et leurs résultats négatifs.
 
 ## Lecture de l'état
 

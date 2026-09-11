@@ -1,7 +1,7 @@
 # Historique du projet — étapes, décisions et preuves au 11 septembre 2026
 
 - **Date :** 2026-09-11
-- **Statut :** draft — synthèse historique ; pilote v19 et recharge/comparaison v20 terminés
+- **Statut :** draft — synthèse historique ; pilote v19, recharge/comparaison v20 et diagnostic de mémorisation v21 terminés
 - **Périmètre :** du cadrage aux vérifications du corpus corrigé et aux résultats du pilote borné et à sa recharge vérifiée.
 - **Sources :** cadrage et spécification, ADR-001 à ADR-012, preuves et notes pédagogiques liées dans chaque étape. Les statuts historiques sont datés et ne remplacent pas les résultats ultérieurs.
 
@@ -182,6 +182,14 @@ Une nouvelle session GPU recharge le checkpoint 150 : les 30 générations sont 
 **Décision :** la mécanique testée est prouvée, mais aucun checkpoint n’est retenu comme modèle final satisfaisant. Aucun SFT long ou DPO supplémentaire n’est lancé. La prochaine expérience doit comparer une hypothèse explicite, avec validation figée et test toujours réservé.
 
 Source : [bilan v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md).
+
+### 11 septembre — v21, diagnostic de mémorisation réussi
+
+Pour départager un défaut d’apprentissage et une difficulté de généralisation, un lot figé de douze exemples train (quatre par source, réponses courtes) est appris depuis la base. Après 300 étapes, soit 25 passages, les douze réponses sont reproduites textuellement et s’arrêtent par EOS. La loss sur ce lot passe de 1,15525 à 0,000078016.
+
+**Réflexion corrigée :** les sources ne doivent pas être modifiées sur la seule hypothèse que leur style cause les répétitions. La pipeline est capable d’apprendre ce lot ; la suite porte sur la généralisation et l’exposition au corpus complet. Les hyperparamètres et la taille du lot diffèrent du pilote général, et ces poids diagnostiques ne deviennent pas un SFT final.
+
+Source : [résultat v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md).
 
 ## 4. Travaux parallèles : API, audit et préparation du DPO
 

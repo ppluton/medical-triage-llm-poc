@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-11",
+  "status": "complete_local_archive_hashes_verified",
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "168688368228daa13c455e749835bb73e433e877ff6028dc5e702203e50c5e0b",
+    "optimizer.pt": "037f9a6765134a938f219af490440091c50ace32baf586d868d976d4c2da69e9",
+    "scheduler.pt": "d15d3d1b8bb19162d239033d431d77f4eba28beb04ec2c0ba04b41fbc223a133",
+    "rng_state.pth": "8553d3987609520495680f36a4682a760a418a930648ce46178a1399cde440b0",
+    "trainer_state.json": "befde194d162d7c85c1d539c2c2d5f3f253449278e4659e704b6963c7234c678"
+  },
+  "scaler_sha256": "30af866df24edce708e1eb20700878b402fa05707fa9bc5f332496baf440dbbb",
+  "files": {
+    "adapter_model.safetensors": {
+      "bytes": 69782384,
+      "sha256": "168688368228daa13c455e749835bb73e433e877ff6028dc5e702203e50c5e0b"
+    },
+    "rng_state.pth": {
+      "bytes": 14645,
+      "sha256": "8553d3987609520495680f36a4682a760a418a930648ce46178a1399cde440b0"
+    },
+    "tokenizer_config.json": {
+      "bytes": 378,
+      "sha256": "99edf6e0f078f19ec1be394705811708c274663768997ca32b9e4c0cbf4447f5"
+    },
+    "optimizer.pt": {
+      "bytes": 139790651,
+      "sha256": "037f9a6765134a938f219af490440091c50ace32baf586d868d976d4c2da69e9"
+    },
+    "scheduler.pt": {
+      "bytes": 1465,
+      "sha256": "d15d3d1b8bb19162d239033d431d77f4eba28beb04ec2c0ba04b41fbc223a133"
+    },
+    "tokenizer.json": {
+      "bytes": 11422924,
+      "sha256": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09"
+    },
+    "README.md": {
+      "bytes": 5222,
+      "sha256": "4ad72c3933a91c6864b33a55c064dbfdbd2afca3097945f76f884f24fd560ec3"
+    },
+    "training_args.bin": {
+      "bytes": 5777,
+      "sha256": "1394b82ddc52d91296d60ddeb257a8fc5a995449e4b977e153aa8f0476021991"
+    },
+    "adapter_config.json": {
+      "bytes": 1188,
+      "sha256": "a6c16cf26aa363dffa14b49c4e85e906913c46eb2cbc70587682137461647fb8"
+    },
+    "chat_template.jinja": {
+      "bytes": 4718,
+      "sha256": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb"
+    },
+    "scaler.pt": {
+      "bytes": 1383,
+      "sha256": "30af866df24edce708e1eb20700878b402fa05707fa9bc5f332496baf440dbbb"
+    },
+    "trainer_state.json": {
+      "bytes": 56999,
+      "sha256": "befde194d162d7c85c1d539c2c2d5f3f253449278e4659e704b6963c7234c678"
+    }
+  },
+  "limits": [
+    "Archive integrity, not a fresh GPU reload of this diagnostic.",
+    "General pilot final reload was verified separately in v20."
+  ]
+}

@@ -57,3 +57,8 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 - [Comprendre la loss, le format et la qualité](learning/36-lire-le-pilote-sans-confondre-loss-et-qualite.md)
 
 - [V20 : recharge et comparaison des checkpoints](evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md) — preuve GPU finale et limites qualitatives avant prolongation.
+
+- [Diagnostic sur douze exemples train](technical/SFT_MEMORIZATION_DIAGNOSTIC_2026-09-11.md) — protocole borné de mémorisation.
+- [Mémorisation et généralisation](learning/37-memorisation-et-generalisation.md) — ce que cet essai peut prouver.
+
+- [Résultat v21 : mémorisation réussie](evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md) — 12/12 réponses train reproduites, sans mesure de généralisation.

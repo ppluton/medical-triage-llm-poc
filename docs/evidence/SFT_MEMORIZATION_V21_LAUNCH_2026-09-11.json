@@ -1,0 +1,29 @@
+{
+  "status": "completed_target_met",
+  "notebook_bytes": 967733,
+  "notebook_sha256": "7c272f7a3c0415149206be93c9efcc28689c0d42e465e981f5afb23b51594e5b",
+  "files_sha256": {
+    "scripts/run_source_sft_pilot.py": "36a90aad34cbfc1a6c108135159559e5fcefab55b3caaef2358dcb5015d89d33",
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/sft_pilot.py": "712a8023ff96b6d00041b718d7aada413d674168e1761dbf450dc7cb90ca6841",
+    "src/triage_poc/sft_termination.py": "007fcbadb2f34dd293468829cbdec6fb67af5fa4ead6bf8afa62fb53abdc7e57",
+    "configs/sft-v2.1-pilot.json": "f54882f4a39e90aff28de7bc20e4ced6045b0c0baa75fc35c9f8361188f5b7da",
+    "src/triage_poc/memorization.py": "9c78430cb73b232d655f4461e9a083bb8f2c218e6a5330accf89c0793a33578e",
+    "src/triage_poc/pilot_report.py": "015c9a3aeeb1f650643143cd6bd45d6e17d4e288442d47876f989196d45b07f9",
+    "configs/sft-memorization-12.json": "f5357e9b147738f12d3d76c4b53014d29caf149f7466b9e099cf0381a77c1acb"
+  },
+  "data_sha256": {
+    "train-qwen3.jsonl": "70270d659db975a1f3547392c4681791c59d408360ec77a6104808018b4c4f9b",
+    "validation-qwen3.jsonl": "554ee8ad2b8349f7df024796ad58d2bd27464b6dd5a7de56a3b760a305c74f25"
+  },
+  "codec": "lzma_base85_compact_rows_exact_reconstruction_verified",
+  "test_records_used": 0,
+  "kernel": "pierrepluton/chsa-source-sft-qwen3",
+  "private": true,
+  "gpu": "NvidiaTeslaT4",
+  "mode": "train_only_memorization",
+  "manifest_sha256": "f5357e9b147738f12d3d76c4b53014d29caf149f7466b9e099cf0381a77c1acb",
+  "optimizer_steps_cap": 300,
+  "kaggle_version": 21
+}
