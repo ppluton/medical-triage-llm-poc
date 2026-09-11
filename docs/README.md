@@ -28,3 +28,8 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 - [Audit de pipeline avant nouvel entraînement](evidence/PIPELINE_AUDIT_2026-09-05.md)
 - [Décision de vérification préalable](decisions/ADR-011-verifier-pipeline-avant-entrainement.md)
 - [Apprentissage : auditer la pipeline](learning/31-auditer-la-pipeline-avant-entrainer.md)
+
+## Micro-runs du 11 septembre 2026
+
+- [Résultats techniques et limites qualitatives v15–v17](evidence/SFT_MICRO_RUNS_2026-09-11.md)
+- [Apprentissage : micro-run et recharge](learning/32-verifier-un-micro-run-et-sa-recharge.md)

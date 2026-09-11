@@ -165,3 +165,7 @@ Les décisions suivantes ne bloquent pas l'expérimentation scolaire, mais reste
 ## Incrément post-SFT du 5 septembre 2026
 
 Voir [la preuve locale](../evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [la comparaison](COMPARAISON_POST_SFT_V1.md) et [le contrat API privé](API_MODELE_PRIVE_V2.md). Le SFT v5 et la comparaison v8 sont archivés. Le SFT réduit la loss mais ses générations nécessitent un diagnostic avant DPO. Le diagnostic v9 n’a pas atteint l’inférence à cause de l’attachement des poids. Le lot DPO v2 contient 512/64 candidats, sans approbation clinique. L'API a un fournisseur compatible vLLM, mais son inférence réelle reste à prouver. Le rapport conserve ces écarts explicitement.
+
+## Point de contrôle — 11 septembre 2026
+
+Statut : draft. Source : [micro-runs v15–v17](../evidence/SFT_MICRO_RUNS_2026-09-11.md). Trois micro-runs de 20 étapes sont terminés et leur recharge est vérifiée. La terminaison passe sur les trois diagnostics ; les réponses QCM restent incorrectes face aux références en v16/v17. La comparaison v2 élargie est préparée mais non exécutée. Aucun entraînement long supplémentaire ni DPO n'est validé par ces résultats.

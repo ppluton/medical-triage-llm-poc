@@ -1,0 +1,55 @@
+{
+  "status": "termination_smoke_passed",
+  "dataset_version": "v2",
+  "training_steps": 20,
+  "changed_adapter_tensors": 392,
+  "reload_tokens_identical": true,
+  "stages": {
+    "before": {
+      "records": 3,
+      "token_lengths": [
+        256,
+        256,
+        256
+      ],
+      "terminated_with_eos": 0,
+      "reached_256_tokens": 3,
+      "mean_repeated_token_4gram_fraction": 0.47299077733860345
+    },
+    "after": {
+      "records": 3,
+      "token_lengths": [
+        20,
+        105,
+        25
+      ],
+      "terminated_with_eos": 3,
+      "reached_256_tokens": 0,
+      "mean_repeated_token_4gram_fraction": 0.029411764705882356
+    },
+    "reloaded": {
+      "records": 3,
+      "token_lengths": [
+        20,
+        105,
+        25
+      ],
+      "terminated_with_eos": 3,
+      "reached_256_tokens": 0,
+      "mean_repeated_token_4gram_fraction": 0.029411764705882356
+    }
+  },
+  "test_records_used": 0,
+  "full_training_approved": false,
+  "limits": [
+    "Three development examples only; inspect response content separately.",
+    "A short continuation does not establish full-corpus training readiness.",
+    "No clinical evaluation or DPO acceptance is established."
+  ],
+  "input_sha256": {
+    "summary.json": "fe1ba12ce1067860e1d9cc68edf18adffd1293b257f6c9d48c3c01459ce1a99e",
+    "before.jsonl": "c58618e360ce9b5406d71d1828423345eef1016c1b8ab218c7ec07a88450cad1",
+    "after.jsonl": "87cc75b9d28429e12dd0549dc23beec0ff2609079d6c310760e50a3d9e0773bf",
+    "reloaded.jsonl": "f84823777a07d01c0120dfb119cc51236376967715c376bcf58c1c03a6568f40"
+  }
+}
