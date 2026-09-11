@@ -47,3 +47,14 @@ def test_rejects_incomparable_or_test_records():
     refs["v"]["split"] = "test"
     with pytest.raises(ValueError, match="validation"):
         summarize_pilot(cfg, stages, refs)
+
+
+def test_terminated_empty_output_is_not_treated_as_an_answer():
+    cfg, stages, refs = fixture()
+    stages["base"]["records"][0].update(output=" \n", generated_token_ids=[12, 151643])
+    report = summarize_pilot(cfg, stages, refs)
+    base = report["stages"]["base"]
+    assert base["native_eos_terminated"] == 1
+    assert base["empty_outputs"] == 1
+    assert base["exact_normalized_reference_matches"] == 0
+    assert base["by_source"]["synthetic"]["empty_outputs"] == 1

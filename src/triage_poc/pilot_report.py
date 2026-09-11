@@ -35,12 +35,14 @@ def summarize_pilot(cfg, stages, references):
             ref = references[row["record_id"]]
             src = ref["source"]["source_dataset"]
             exact = normalize_answer(row["output"]) == normalize_answer(ref["response"])
+            metrics["empty_outputs"] += not row["output"].strip()
             metrics["records"] += 1
             metrics["native_eos_terminated"] += ids[-1] == 151643
             metrics["reached_token_cap"] += len(ids) == cfg["evaluation"]["max_new_tokens"]
             metrics["exact_normalized_reference_matches"] += exact
             by_source[src]["native_eos_terminated"] += ids[-1] == 151643
             by_source[src]["reached_token_cap"] += len(ids) == cfg["evaluation"]["max_new_tokens"]
+            by_source[src]["empty_outputs"] += not row["output"].strip()
             by_source[src]["records"] += 1
             by_source[src]["exact_normalized_reference_matches"] += exact
             grams = Counter(tuple(ids[i : i + 4]) for i in range(len(ids) - 3))

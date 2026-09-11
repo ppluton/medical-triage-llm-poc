@@ -24,7 +24,10 @@ def main():
     p.add_argument("--execute-pilot", action="store_true")
     p.add_argument("--mechanics-smoke", action="store_true")
     p.add_argument("--resume-smoke-from", type=Path)
+    p.add_argument("--verify-pilot-from", type=Path)
     a = p.parse_args()
+    if a.verify_pilot_from and (a.mechanics_smoke or a.resume_smoke_from):
+        p.error("Pilot reload verification is read-only and separate from smoke training")
     if a.resume_smoke_from and not a.mechanics_smoke:
         p.error("Resume is restricted to the bounded mechanics smoke")
     cfg = json.loads(a.config.read_text())
@@ -224,15 +227,30 @@ def main():
     check_precision("trainer_ready")
     if a.mechanics_smoke:
         generation = generation[:2]
-    if a.resume_smoke_from:
+    if a.resume_smoke_from or a.verify_pilot_from:
         from peft import set_peft_model_state_dict
         from safetensors.torch import load_file
 
-        require_complete_checkpoint(a.resume_smoke_from, 2)
-        if not (a.resume_smoke_from / "scaler.pt").is_file():
-            raise ValueError("Smoke resume requires its AMP scaler")
+        source_checkpoint = a.resume_smoke_from or a.verify_pilot_from
+        if a.verify_pilot_from:
+            prior_summary = json.loads(
+                (source_checkpoint.parent.parent / "summary.json").read_text()
+            )
+            if (
+                prior_summary["configuration"] != cfg
+                or prior_summary.get("mode") != "pilot"
+                or prior_summary["steps"] != cfg["pilot_stop_after_steps"]
+            ):
+                raise ValueError("Reload source does not match the completed frozen pilot")
+            verified_hashes = require_complete_checkpoint(source_checkpoint, prior_summary["steps"])
+            if verified_hashes != prior_summary["checkpoint_hashes"]:
+                raise ValueError("Pilot checkpoint hashes changed")
+        else:
+            require_complete_checkpoint(source_checkpoint, 2)
+        if not (source_checkpoint / "scaler.pt").is_file():
+            raise ValueError("Source checkpoint requires its AMP scaler")
         set_peft_model_state_dict(
-            model, load_file(str(a.resume_smoke_from / "adapter_model.safetensors"))
+            model, load_file(str(source_checkpoint / "adapter_model.safetensors"))
         )
     for dataset, pairs in [(trainer.train_dataset, train_pairs), (trainer.eval_dataset, val_pairs)]:
         for i, pair in enumerate(pairs[: len(dataset)]):
@@ -305,6 +323,43 @@ def main():
         ),
         flush=True,
     )
+    if a.verify_pilot_from:
+        evaluate("reloaded")
+        previous = json.loads((a.verify_pilot_from.parent.parent / "pilot_end.json").read_text())
+        reloaded = json.loads((a.output / "reloaded.json").read_text())
+        if previous["records"] != reloaded["records"]:
+            raise ValueError("Fresh-process pilot reload changed greedy generations")
+        loss_delta = abs(
+            previous["mean_example_response_nll"] - reloaded["mean_example_response_nll"]
+        )
+        if loss_delta > 1e-5:
+            raise ValueError("Fresh-process pilot reload changed validation loss")
+        intermediate_hashes = {}
+        for step in (50, 100):
+            candidate = a.verify_pilot_from.parent / f"checkpoint-{step}"
+            intermediate_hashes[str(step)] = require_complete_checkpoint(candidate, step)
+            set_peft_model_state_dict(
+                model, load_file(str(candidate / "adapter_model.safetensors"))
+            )
+            evaluate(f"checkpoint_{step}")
+        report = {
+            "intermediate_checkpoint_hashes": intermediate_hashes,
+            "intermediate_checkpoints_evaluated": [50, 100],
+            "status": "pilot_fresh_reload_verified",
+            "optimizer_steps_executed": 0,
+            "identical_generations": len(generation),
+            "loss_records": len(trainer.eval_dataset),
+            "absolute_loss_delta": loss_delta,
+            "checkpoint_hashes": verified_hashes,
+            "configuration": cfg,
+            "script_sha256": sha256(Path(__file__)),
+            "precision_events": precision_events,
+            "test_records_used": 0,
+            "limits": ["Read-only reload; long training and clinical quality are not approved."],
+        }
+        (a.output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
+        print(json.dumps(report), flush=True)
+        return
     evaluate("base")
     if a.resume_smoke_from:
         previous = json.loads((a.resume_smoke_from.parent.parent / "pilot_end.json").read_text())

@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--metadata", type=Path, required=True)
 parser.add_argument("--report", type=Path, required=True)
+parser.add_argument("--verify-pilot-summary", type=Path)
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
 out = args.output
@@ -100,6 +101,25 @@ print('GPU_SMOKE_AND_RESUME_PASSED_STARTING_BOUNDED_PILOT',flush=True)
 subprocess.run(command+['--execute-pilot'],cwd=root,env=env,check=True,timeout=5400)
 """
 )
+if args.verify_pilot_summary:
+    prior = json.loads(args.verify_pilot_summary.read_text())
+    config = json.loads(files["configs/sft-v2.1-pilot.json"])
+    if prior.get("mode") != "pilot" or prior["configuration"] != config or prior["steps"] != 150:
+        raise ValueError("Expected the completed frozen 150-step pilot")
+    summary_hash = hashlib.sha256(args.verify_pilot_summary.read_bytes()).hexdigest()
+    bootstrap = bootstrap.split("subprocess.run(command,cwd=root,env=env,check=True)")[0]
+    bootstrap += f"expected_summary_hash={summary_hash!r}\n"
+    bootstrap += """import shutil
+matches=[p for p in Path('/kaggle/input').rglob('summary.json') if hashlib.sha256(p.read_bytes()).hexdigest()==expected_summary_hash]
+if len(matches)!=1: raise ValueError('Expected exactly one pinned completed pilot input')
+source=matches[0].parent
+checkpoint=source/'trainer/checkpoint-150'
+command[-1]='/kaggle/working/pilot-reload-verification'
+# Preserve checkpoints even if the subsequent verification fails.
+archive=Path('/kaggle/working/source-sft-v2-pilot')
+shutil.copytree(source,archive)
+subprocess.run(command+['--execute-pilot','--verify-pilot-from',str(checkpoint)],cwd=root,env=env,check=True,timeout=2700)
+"""
 install = {
     "cell_type": "code",
     "metadata": {},
@@ -135,6 +155,10 @@ nb = {
         },
     ],
 }
+if args.verify_pilot_summary:
+    nb["cells"][0]["source"] = [
+        "# Vérification du pilote sauvegardé\nRecharge finale puis comparaison des checkpoints 50/100/150 sur 479 références et 30 générations par checkpoint. Zéro étape d’entraînement."
+    ]
 p = out / "chsa-source-sft-qwen3.ipynb"
 p.write_text(json.dumps(nb, ensure_ascii=False))
 assert p.stat().st_size < 1_000_000, p.stat().st_size
@@ -145,6 +169,8 @@ if (
     or meta["machine_shape"] != "NvidiaTeslaT4"
 ):
     raise ValueError("Builder restricted to the authorized private T4 notebook")
+if args.verify_pilot_summary:
+    meta["kernel_sources"] = ["pierrepluton/chsa-source-sft-qwen3"]
 (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
 report = {
     "status": "prepared_for_authorized_private_launch",
@@ -158,5 +184,9 @@ report = {
     "private": meta["is_private"],
     "gpu": meta["machine_shape"],
 }
+if args.verify_pilot_summary:
+    report["mode"] = "read_only_pilot_reload"
+    report["source_pilot_summary_sha256"] = summary_hash
+    report["optimizer_steps_to_execute"] = 0
 args.report.write_text(json.dumps(report, indent=2) + "\n")
 print(json.dumps(report, indent=2))
