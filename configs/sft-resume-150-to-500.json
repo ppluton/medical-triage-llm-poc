@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-11",
+  "status": "prepared",
+  "start_step": 150,
+  "stop_step": 500,
+  "training_seconds": 1800,
+  "source_summary_sha256": "099979378a042473ec910194bec48d54ed02a6fba206c97d0558c04f5da447c9",
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "9674c6a12a903eb969d70eae089d915a52e04b5ea0c50f875b090297b9ccbb01",
+    "optimizer.pt": "c673504809ca422709334345e44c69a7148628be892b33af17f41947be76bb28",
+    "scheduler.pt": "59d1892f669811bc189b9c419cb70133abb580519a56b3fbdcfff78366625416",
+    "rng_state.pth": "718a0f3db00824213036a2c0441849791319b7d9cf189065873bb26a7020738e",
+    "trainer_state.json": "d398bb3c80113f8ea662d751edcdcaede6c9cbe1ecb48308d7753ca20f127a39"
+  },
+  "scaler_sha256": "b7a646a858b71ab76099f4dca96d8db39ffde2f88258f5a4b082ff62947bcc11",
+  "parent_config_sha256": "f54882f4a39e90aff28de7bc20e4ced6045b0c0baa75fc35c9f8361188f5b7da",
+  "policy": "Keep data, order, seed, optimizer, scheduler horizon, RNG and AMP scaler. Stop at 500 total steps or 1800 training seconds. No automatic continuation.",
+  "evaluation": "Verify all 30 checkpoint-150 generations before optimizer steps, then compare the same 479 validation losses and 30 prompts at end. Preserve true base results separately.",
+  "test_records_used": 0
+}

@@ -26,7 +26,15 @@ def main():
     p.add_argument("--resume-smoke-from", type=Path)
     p.add_argument("--verify-pilot-from", type=Path)
     p.add_argument("--memorization-manifest", type=Path)
+    p.add_argument("--continue-pilot-from", type=Path)
+    p.add_argument("--continuation-plan", type=Path)
     a = p.parse_args()
+    if bool(a.continue_pilot_from) != bool(a.continuation_plan):
+        p.error("Continuation checkpoint and plan must be provided together")
+    if a.continue_pilot_from and (
+        a.memorization_manifest or a.mechanics_smoke or a.resume_smoke_from or a.verify_pilot_from
+    ):
+        p.error("Continuation must not use diagnostic or reload modes")
     if a.memorization_manifest and (
         a.mechanics_smoke or a.resume_smoke_from or a.verify_pilot_from
     ):
@@ -63,6 +71,14 @@ def main():
         {r["record_id"] for r in generation}
     ) != len(generation):
         raise ValueError("Invalid frozen generation selection")
+    continuation = None
+    if a.continue_pilot_from:
+        from triage_poc.sft_continuation import validate_continuation
+
+        continuation = json.loads(a.continuation_plan.read_text())
+        if sha256(a.config) != continuation["parent_config_sha256"]:
+            raise ValueError("Continuation configuration changed")
+        validate_continuation(a.continue_pilot_from, cfg, continuation)
     memorization = None
     if a.memorization_manifest:
         from triage_poc.memorization import select_memorization_rows
@@ -171,6 +187,8 @@ def main():
     stop_step = (
         (4 if a.resume_smoke_from else 2) if a.mechanics_smoke else cfg["pilot_stop_after_steps"]
     )
+    if continuation:
+        stop_step = continuation["stop_step"]
     budget = PilotBudget(
         stop_step, 180 if a.mechanics_smoke else cfg["pilot_training_wall_seconds"]
     )
@@ -192,11 +210,45 @@ def main():
     class BoundedTraining(TrainerCallback):
         def on_train_begin(self, args, state, control, **kwargs):
             budget.start()
-            if a.resume_smoke_from:
+            if a.resume_smoke_from or continuation:
                 optimizer = kwargs["optimizer"]
                 saved_steps = {int(v["step"]) for v in optimizer.state.values() if "step" in v}
-                if state.global_step != 2 or saved_steps != {2}:
+                expected_step = 150 if continuation else 2
+                if state.global_step != expected_step or saved_steps != {expected_step}:
                     raise ValueError("Resume did not restore optimizer steps")
+                if continuation:
+                    restored_scheduler = kwargs["lr_scheduler"].state_dict()
+                    saved_scheduler = torch.load(
+                        a.continue_pilot_from / "scheduler.pt",
+                        map_location="cpu",
+                        weights_only=True,
+                    )
+                    saved_scaler = torch.load(
+                        a.continue_pilot_from / "scaler.pt", map_location="cpu", weights_only=True
+                    )
+                    if (
+                        restored_scheduler != saved_scheduler
+                        or restored_scheduler["last_epoch"] != 150
+                    ):
+                        raise ValueError("Scheduler was not restored exactly")
+                    if [g["lr"] for g in optimizer.param_groups] != saved_scheduler["_last_lr"]:
+                        raise ValueError("Optimizer learning rates were not restored")
+                    if (
+                        trainer.accelerator.scaler.state_dict() != saved_scaler
+                        or args.ignore_data_skip
+                    ):
+                        raise ValueError("Scaler or data-skip policy changed")
+                    print(
+                        json.dumps(
+                            {
+                                "stage": "continuation_scheduler_scaler_verified",
+                                "scheduler_last_epoch": 150,
+                                "learning_rates": saved_scheduler["_last_lr"],
+                                "data_skip_enabled": True,
+                            }
+                        ),
+                        flush=True,
+                    )
                 print(
                     json.dumps(
                         {
@@ -264,11 +316,11 @@ def main():
     check_precision("trainer_ready")
     if a.mechanics_smoke:
         generation = generation[:2]
-    if a.resume_smoke_from or a.verify_pilot_from:
+    if a.resume_smoke_from or a.verify_pilot_from or continuation:
         from peft import set_peft_model_state_dict
         from safetensors.torch import load_file
 
-        source_checkpoint = a.resume_smoke_from or a.verify_pilot_from
+        source_checkpoint = a.resume_smoke_from or a.verify_pilot_from or a.continue_pilot_from
         if a.verify_pilot_from:
             prior_summary = json.loads(
                 (source_checkpoint.parent.parent / "summary.json").read_text()
@@ -282,6 +334,8 @@ def main():
             verified_hashes = require_complete_checkpoint(source_checkpoint, prior_summary["steps"])
             if verified_hashes != prior_summary["checkpoint_hashes"]:
                 raise ValueError("Pilot checkpoint hashes changed")
+        elif continuation:
+            require_complete_checkpoint(source_checkpoint, 150)
         else:
             require_complete_checkpoint(source_checkpoint, 2)
         if not (source_checkpoint / "scaler.pt").is_file():
@@ -289,6 +343,10 @@ def main():
         set_peft_model_state_dict(
             model, load_file(str(source_checkpoint / "adapter_model.safetensors"))
         )
+    if continuation:
+        initial_adapter = {
+            k: v.detach().cpu().clone() for k, v in get_peft_model_state_dict(model).items()
+        }
     for dataset, pairs in [(trainer.train_dataset, train_pairs), (trainer.eval_dataset, val_pairs)]:
         for i, pair in enumerate(pairs[: len(dataset)]):
             ids = tokenizer.encode(pair["prompt"] + pair["completion"], add_special_tokens=False)
@@ -397,7 +455,22 @@ def main():
         (a.output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
         print(json.dumps(report), flush=True)
         return
-    evaluate("base")
+    evaluate("resume_start" if continuation else "base")
+    if continuation:
+        before = json.loads((a.continue_pilot_from.parent.parent / "pilot_end.json").read_text())
+        reloaded = json.loads((a.output / "resume_start.json").read_text())
+        if (
+            before["records"] != reloaded["records"]
+            or abs(before["mean_example_response_nll"] - reloaded["mean_example_response_nll"])
+            > 1e-5
+        ):
+            raise ValueError("Checkpoint-150 reload changed before continuation")
+        print(
+            json.dumps(
+                {"stage": "continuation_reload_verified", "identical_generations": len(generation)}
+            ),
+            flush=True,
+        )
     if a.resume_smoke_from:
         previous = json.loads((a.resume_smoke_from.parent.parent / "pilot_end.json").read_text())
         reloaded = json.loads((a.output / "base.json").read_text())
@@ -406,7 +479,8 @@ def main():
         print(
             json.dumps({"stage": "fresh_reload_verified", "records": len(generation)}), flush=True
         )
-    trainer.train(resume_from_checkpoint=str(a.resume_smoke_from) if a.resume_smoke_from else None)
+    resume_path = a.resume_smoke_from or a.continue_pilot_from
+    trainer.train(resume_from_checkpoint=str(resume_path) if resume_path else None)
     if a.mechanics_smoke and trainer.state.global_step != stop_step:
         raise ValueError("Smoke failed to complete the required optimizer steps")
     check_precision("training_completed")
@@ -452,13 +526,18 @@ def main():
             "validation_records_used": 0,
         }
     summary = {
+        "continuation": continuation,
+        "optimizer_steps_executed": trainer.state.global_step
+        - (150 if continuation else 2 if a.resume_smoke_from else 0),
         "memorization": memorization_result,
         "status": "memorization_completed"
         if memorization
         else "mechanics_smoke_completed"
         if a.mechanics_smoke
         else "pilot_completed_pending_quality_review",
-        "mode": "training_memorization"
+        "mode": "general_pilot_continuation"
+        if continuation
+        else "training_memorization"
         if memorization
         else "resume_smoke"
         if a.resume_smoke_from
@@ -466,7 +545,7 @@ def main():
         if a.mechanics_smoke
         else "pilot",
         "precision_events": precision_events,
-        "resume_checkpoint": str(a.resume_smoke_from) if a.resume_smoke_from else None,
+        "resume_checkpoint": str(resume_path) if resume_path else None,
         "evaluated_records": len(trainer.eval_dataset),
         "generation_records": len(generation),
         "steps": trainer.state.global_step,

@@ -17,7 +17,10 @@ parser.add_argument("--metadata", type=Path, required=True)
 parser.add_argument("--report", type=Path, required=True)
 parser.add_argument("--verify-pilot-summary", type=Path)
 parser.add_argument("--memorization-manifest", type=Path)
+parser.add_argument("--continue-pilot", action="store_true")
 args = parser.parse_args()
+if args.continue_pilot and (args.memorization_manifest or args.verify_pilot_summary):
+    parser.error("Continuation is separate from diagnostic and reload modes")
 if args.memorization_manifest and args.verify_pilot_summary:
     parser.error("Choose memorization or reload, not both")
 root = Path(__file__).resolve().parents[1]
@@ -38,6 +41,9 @@ if args.memorization_manifest:
     files["src/triage_poc/memorization.py"] = (root / "src/triage_poc/memorization.py").read_text()
     files["src/triage_poc/pilot_report.py"] = (root / "src/triage_poc/pilot_report.py").read_text()
     files["configs/sft-memorization-12.json"] = args.memorization_manifest.read_text()
+if args.continue_pilot:
+    for name in ("src/triage_poc/sft_continuation.py", "configs/sft-resume-150-to-500.json"):
+        files[name] = (root / name).read_text()
 payload = {}
 expected = {}
 system = None
@@ -138,6 +144,20 @@ command+=['--memorization-manifest','configs/sft-memorization-12.json']
 subprocess.run(command,cwd=root,env=env,check=True)
 subprocess.run(command+['--execute-pilot'],cwd=root,env=env,check=True,timeout=2400)
 """
+if args.continue_pilot:
+    bootstrap = bootstrap.split("subprocess.run(command,cwd=root,env=env,check=True)")[0]
+    bootstrap += """import shutil
+plan=json.loads((root/'configs/sft-resume-150-to-500.json').read_text())
+matches=[p for p in Path('/kaggle/input').rglob('source-sft-v2-pilot/summary.json') if hashlib.sha256(p.read_bytes()).hexdigest()==plan['source_summary_sha256']]
+if len(matches)!=1: raise ValueError('Expected exactly one verified general pilot')
+source=matches[0].parent
+shutil.copytree(source,Path('/kaggle/working/source-sft-v2-pilot'))
+command[-1]='/kaggle/working/source-sft-v2-continuation-500'
+command+=['--continue-pilot-from',str(source/'trainer/checkpoint-150'),'--continuation-plan','configs/sft-resume-150-to-500.json']
+subprocess.run(command,cwd=root,env=env,check=True)
+subprocess.run(command+['--execute-pilot'],cwd=root,env=env,check=True,timeout=5400)
+shutil.copy2(source/'base.json',Path('/kaggle/working/source-sft-v2-continuation-500/base.json'))
+"""
 install = {
     "cell_type": "code",
     "metadata": {},
@@ -181,6 +201,10 @@ if args.memorization_manifest:
     nb["cells"][0]["source"] = [
         "# Diagnostic de mémorisation sur 12 exemples train\n300 étapes ou 900 secondes d’entraînement. Aucun score de généralisation, aucun SFT complet."
     ]
+if args.continue_pilot:
+    nb["cells"][0]["source"] = [
+        "# Reprise SFT générale 150 vers 500\nMême corpus et scheduler, 350 nouvelles étapes au maximum ou 1800 secondes de phase entraînement. Vérification de recharge avant optimisation. Aucun poids du diagnostic de mémorisation."
+    ]
 p = out / "chsa-source-sft-qwen3.ipynb"
 p.write_text(json.dumps(nb, ensure_ascii=False))
 assert p.stat().st_size < 1_000_000, p.stat().st_size
@@ -191,7 +215,7 @@ if (
     or meta["machine_shape"] != "NvidiaTeslaT4"
 ):
     raise ValueError("Builder restricted to the authorized private T4 notebook")
-if args.verify_pilot_summary or args.memorization_manifest:
+if args.verify_pilot_summary or args.memorization_manifest or args.continue_pilot:
     meta["kernel_sources"] = ["pierrepluton/chsa-source-sft-qwen3"]
 (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
 report = {
@@ -214,5 +238,11 @@ if args.memorization_manifest:
     report["mode"] = "train_only_memorization"
     report["manifest_sha256"] = hashlib.sha256(args.memorization_manifest.read_bytes()).hexdigest()
     report["optimizer_steps_cap"] = 300
+if args.continue_pilot:
+    report["mode"] = "general_pilot_continuation"
+    report["start_step"] = 150
+    report["stop_step"] = 500
+    report["new_steps_cap"] = 350
+    report["training_seconds_cap"] = 1800
 args.report.write_text(json.dumps(report, indent=2) + "\n")
 print(json.dumps(report, indent=2))
