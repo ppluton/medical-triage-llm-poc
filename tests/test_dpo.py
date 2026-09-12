@@ -101,3 +101,36 @@ def test_new_sft_handoff_succeeds_and_rejects_old_comparison(tmp_path):
     assert len(loaded["train"]) == 1
     with pytest.raises(ValueError, match="matching"):
         load_dpo_handoff(tmp_path, summary, decision, sft_sha256=SFT_SHA256)
+
+
+def test_real_tensor_fingerprints_detect_reference_mutation_and_unchanged_policy():
+    import torch
+
+    from triage_poc.dpo import adapter_fingerprint, verify_dpo_weight_changes
+
+    model = torch.nn.Module()
+    model.lora_A = torch.nn.ModuleDict({
+        name: torch.nn.Linear(3, 2, bias=False) for name in ("policy", "reference")
+    })
+    with torch.no_grad():
+        for layer in model.lora_A.values():
+            layer.weight.fill_(1)
+    def snapshot():
+        return {name: adapter_fingerprint(model, name) for name in ("policy", "reference")}
+
+    before = snapshot()
+    with pytest.raises(ValueError, match="did not change"):
+        verify_dpo_weight_changes(before, snapshot())
+    with torch.no_grad():
+        model.lora_A["policy"].weight.add_(0.25)
+    assert verify_dpo_weight_changes(before, snapshot())["policy_changed_tensors"] == 1
+    with torch.no_grad():
+        model.lora_A["reference"].weight.add_(0.25)
+    with pytest.raises(ValueError, match="reference weights changed"):
+        verify_dpo_weight_changes(before, snapshot())
+    with torch.no_grad():
+        model.lora_A["policy"].weight.fill_(float("nan"))
+    with pytest.raises(ValueError, match="Non-finite"):
+        adapter_fingerprint(model, "policy")
+    with pytest.raises(ValueError, match="No LoRA"):
+        adapter_fingerprint(model, "missing")

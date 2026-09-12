@@ -69,3 +69,22 @@ Reproduction locale : le script archivé `artifacts/dpo-context-review/scan.py`
 utilise `build_presidio_analyzer()` et `PII_ENTITIES` sur les champs `prompt`,
 `chosen`, `rejected`, sans seuil ajouté, sans réécriture des données. Sa version,
 les empreintes d'entrée et celle des résultats sont consignées dans le rapport.
+
+## Candidat filtré et vérification des poids
+
+Le [filtrage contextuel](DPO_FILTERING_2026-09-12.md) remplace le candidat initial
+par 426 paires train et 54 validation, sans modification des lignes retenues.
+Les 96 exclusions et l'ajout des prompts SFT courants à la protection sont tracés.
+Ce lot reste candidat ; les descriptions précédentes de 576 paires sont historiques.
+
+Le runner calcule désormais les empreintes des tenseurs LoRA policy/reference après
+construction du trainer, exige leur égalité initiale, puis vérifie après entraînement
+que la référence n'a pas changé et que la politique a changé. Les valeurs non finies
+et les inventaires incohérents sont refusés. Les empreintes et résultats sont archivés
+dans `weight_checks.json` avant toute déclaration de succès.
+
+Preuve locale : `PYTHONPATH=src python -m pytest tests/test_dpo.py -q`, six tests
+réussis, dont de vrais tenseurs CPU modifiés volontairement pour vérifier le refus
+d'une référence modifiée, d'une politique inchangée et de NaN. Ce contrôle ne prouve
+pas encore le comportement de PEFT/TRL sur GPU ni la qualité après DPO. Il compare
+les états initial/final ; il ne prétend pas observer chaque instant intermédiaire.

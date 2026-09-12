@@ -104,3 +104,39 @@ def load_dpo_handoff(directory: Path, comparison: Path, decision: Path,
     validate_preferences(loaded["train"], loaded["validation"],
                          set(manifest["protected_prompt_hashes"]))
     return manifest, loaded
+
+
+def adapter_fingerprint(model, adapter: str) -> dict:
+    """Hash actual finite LoRA tensors, normalizing the adapter name for comparison."""
+    import torch
+
+    tensors = {}
+    for name, parameter in model.named_parameters():
+        if "lora_" not in name or f".{adapter}." not in name:
+            continue
+        value = parameter.detach().cpu().contiguous()
+        if not torch.isfinite(value).all():
+            raise ValueError(f"Non-finite adapter tensor: {name}")
+        key = name.replace(f".{adapter}.", ".adapter.")
+        tensors[key] = {
+            "shape": list(value.shape), "dtype": str(value.dtype),
+            "sha256": hashlib.sha256(value.view(torch.uint8).numpy().tobytes()).hexdigest(),
+        }
+    if not tensors:
+        raise ValueError(f"No LoRA tensors found for adapter: {adapter}")
+    return tensors
+
+
+def verify_dpo_weight_changes(before: dict, after: dict) -> dict:
+    """Fail rather than claim completed DPO with a changed reference or unchanged policy."""
+    if before["policy"] != before["reference"]:
+        raise ValueError("Policy and reference must start from identical SFT tensors")
+    if before["reference"] != after["reference"]:
+        raise ValueError("DPO reference weights changed")
+    if before["policy"].keys() != after["policy"].keys():
+        raise ValueError("DPO policy tensor inventory changed")
+    changed = sum(before["policy"][key] != after["policy"][key] for key in before["policy"])
+    if not changed:
+        raise ValueError("DPO policy weights did not change")
+    return {"reference_unchanged": True, "policy_changed_tensors": changed,
+            "policy_total_tensors": len(before["policy"])}

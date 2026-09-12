@@ -34,3 +34,12 @@ de manière incertaine. Une paire avec citation altérée est également exclue.
 Le nouveau candidat contient 426/54 paires ; les lignes retenues sont inchangées.
 Les exclusions sont tracées sans publier les éléments personnels. Cette décision
 ne transforme pas les préférences restantes en annotations cliniquement validées.
+
+### Vérifier que la référence reste une référence
+
+Le DPO compare une politique qui apprend à une copie du SFT qui sert de repère.
+Si les deux changent, le repère bouge et le résultat ne correspond plus à la recette
+annoncée. Le runner prend maintenant des empreintes des vrais tenseurs avant/après,
+et refuse de déclarer un succès si la référence a changé ou si la politique n'a pas
+bougé. Les tests CPU provoquent volontairement ces erreurs. La preuve sur le futur
+entraînement GPU reste à obtenir : un contrôle implémenté n'est pas un résultat de run.

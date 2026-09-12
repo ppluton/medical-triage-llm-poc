@@ -6,7 +6,12 @@ import json
 from pathlib import Path
 
 from triage_poc.comparison import sha256
-from triage_poc.dpo import load_dpo_handoff, load_sft_identity
+from triage_poc.dpo import (
+    adapter_fingerprint,
+    load_dpo_handoff,
+    load_sft_identity,
+    verify_dpo_weight_changes,
+)
 
 
 def main():
@@ -84,13 +89,22 @@ def main():
     )
     trainer = DPOTrainer(model=model, args=config, processing_class=tokenizer,
                          train_dataset=datasets["train"], eval_dataset=datasets["validation"])
+    before = {name: adapter_fingerprint(model, name) for name in ("policy", "reference")}
+    if before["policy"] != before["reference"]:
+        raise ValueError("Policy/reference initialization mismatch")
     result = trainer.train()
+    after = {name: adapter_fingerprint(model, name) for name in ("policy", "reference")}
+    weight_checks = verify_dpo_weight_changes(before, after)
+    (args.output / "weight_checks.json").write_text(
+        json.dumps({"checks": weight_checks, "before": before, "after": after}, indent=2)
+    )
     model.save_pretrained(args.output / "adapter", selected_adapters=["policy"])
     tokenizer.save_pretrained(args.output / "adapter" / "policy")
     summary = {
         "status": "completed_educational_dpo", "clinical_validation": "not_performed",
         "base_model": identity["base_model"], "base_revision": identity["base_revision"],
         "sft_sha256": sft_sha256, "reference": "frozen_selected_sft",
+        "weight_checks": weight_checks,
         "sft_manifest_sha256": sha256(args.sft_manifest),
         "dataset_manifest_sha256": sha256(args.dataset / "manifest.json"),
         "comparison_sha256": sha256(args.comparison), "decision_sha256": sha256(args.decision),
