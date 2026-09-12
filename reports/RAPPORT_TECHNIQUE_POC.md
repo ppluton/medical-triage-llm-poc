@@ -1,64 +1,100 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
-> Actualisation du 5 septembre 2026 : le SFT v5 présente des générations répétitives malgré une meilleure loss. Les entraînements longs et le DPO restent bloqués pendant la correction du format EOS et des données QCM. Voir [audit de pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md). Aucun gain clinique n’est établi.
+- **Date :** 2026-09-12
+- **Statut :** draft — rapport intermédiaire, livrables incomplets
+- **Sources :** [cadrage](../CADRAGE_MISSION.md), [spécification](../SPEC_POC_TRIAGE_MEDICAL.md), [audit de mission](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md) et preuves liées ci-dessous.
+- **Format final :** PDF de vingt pages maximum ; ce document Markdown n'est pas encore le PDF final.
 
+## 1. Objectif et état du POC
 
-- **Date :** 2026-09-05
-- **Statut :** draft — rapport intermédiaire fondé sur les preuves disponibles
-- **Sources :** cadrage, spécification, manifestes versionnés, preuves SFT du 4 septembre et validation post-SFT du 5 septembre.
-- **Limite éditoriale :** maximum 20 pages lors de la clôture.
+Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-## 1. Résumé exécutif
+La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Le DPO n'a pas été exécuté. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
-Le projet démontre à ce stade une chaîne de données traçable et un entraînement SFT complet de Qwen3-1.7B-Base sur Kaggle privé. Il dispose d'une API testée localement et d'un conteneur fonctionnel sans serveur de modèle configuré. La comparaison Base/SFT montre une loss réponse réduite de 2,10444 à 1,52624 sur 500 validations. Toutefois, les 30 générations SFT atteignent le plafond de tokens et plusieurs sont répétitives. Aucun gain clinique n’est déclaré ; le passage DPO est suspendu au diagnostic de génération.
-
-La clôture du POC nécessite encore un DPO exécuté et comparé, une évaluation de sûreté revue, une inférence réelle via l'API et les mesures de latence. Le projet n'est ni un dispositif médical, ni un outil de diagnostic ou de prescription, ni une décision clinique autonome.
+| Livrable demandé | Preuve disponible | Écart restant |
+|---|---|---|
+| Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO encore candidat ; revue finale et limites à expliciter |
+| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Recharge indépendante du SFT 500, comparaison de triage, DPO et test final |
+| Endpoint cloud vLLM/API | Contrats FastAPI, transport simulé, packaging local | Vrai modèle, cible cloud autorisée, démonstration et latence |
+| GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
+| Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
 
 ## 2. Données et gouvernance
 
-Les sources ouvertes, licences, révisions et transformations sont décrites dans les manifestes et data cards du dépôt. Le corpus SFT source contient 5 000 exemples, répartis en 4 000 entraînements, 500 validations et 500 tests. Le test final reste isolé. Les données et poids lourds restent hors Git.
+Les sources retenues sont MediQAl, FrenchMedMCQA et MedQuAD pour le SFT, et UltraMedical-Preference pour le DPO. La provenance, les licences et les transformations sont décrites dans les manifestes et documents de gouvernance. Les liens de l'école vers FrenchMedMCQA et MedQuAD sont mal formés ; les familles de sources correspondent, mais l'équivalence exacte des reconditionnements n'est pas établie par l'audit. Les données brutes et les poids restent hors Git.
 
-Les réponses sources de QA ne sont pas des annotations de priorités de triage. De même, les préférences biomédicales ne prouvent pas une préférence cliniquement valide pour le contrat du POC. Les scans automatiques d'identifiants n'établissent pas à eux seuls l'anonymisation exhaustive.
+Le premier corpus comptait 5 000 lignes. Notre transformation perdait des propositions QCM dans 2 249 des 2 250 QCM de développement, tronquait 101 réponses et n'enseignait pas correctement l'arrêt natif de la réponse. Ces erreurs relèvent de notre préparation, pas d'une défaillance démontrée des sources. Les corrections et exclusions documentées conduisent au corpus v2.1 :
 
-## 3. Méthode et SFT observé
+| Split | Lignes | Usage |
+|---|---:|---|
+| Train | 3 721 | Optimisation SFT |
+| Validation | 479 | Suivi, comparaison et choix de développement |
+| Test | 500 | Évaluation finale réservée ; non utilisée pour régler le modèle |
 
-Base : `unsloth/Qwen3-1.7B-Base`, révision `e249956c10337100486d07afb77e3eb2b30906b8`. Le SFT v5 a terminé 1 000 étapes, deux epochs, batch effectif 8 et contexte maximal 2 048 tokens. LoRA : rang/alpha 16 ; LR initial `1e-4` ; seed 42 ; chargement 4 bits et calcul FP16.
+Les choix et réponses complets, le masquage du prompt et la présence d'un EOS supervisé ont été contrôlés sur les 4 200 exemples de développement. Le corpus reste bilingue, sans imposer l'égalité du nombre de tokens français et anglais. Les réponses MedQuAD sont souvent longues ; l'équilibre des lignes ne garantit donc pas l'équilibre des tokens. La cible scolaire est d'environ 5 000 paires, avec priorité à la qualité.
 
-Le run sur Tesla T4 a duré environ 3 h 41 min au total. L'adaptateur retenu correspond au checkpoint 1 000 ; son SHA-256 est `3f050ae77a4b66ecf4a254a407a463a046143437198ac5dfbd7922b75b28a940`. L'archive a été téléchargée et contrôlée. La loss d'évaluation du trainer vaut environ 1,2815 ; elle ne mesure ni un taux de réponses exactes ni la sûreté du triage.
+Les réponses QA sources ne sont pas des annotations de priorité de triage. Les scans d'identifiants et la revue technique ne sont pas une validation clinique ni une preuve d'anonymisation exhaustive. Les scénarios de démonstration sont synthétiques et leurs références portent le statut `proposed_educational_only`.
 
-Preuve : [SFT complet](../docs/evidence/SFT_KAGGLE_FULL_RUN_2026-09-04.md).
+Preuves : [audit de pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [audit de réalignement](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), [manifeste SFT corrigé](../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json).
 
-## 4. Comparaison et DPO
+## 3. Méthode et entraînements SFT
 
-La comparaison QA applique aux modèles le même tokenizer archivé, les mêmes 500 conversations de validation et les mêmes paramètres. Elle mesure la vraisemblance des références, avec agrégation pondérée par token, et conserve 30 générations par modèle pour revue. Une sonde additionnelle couvre huit catégories synthétiques et le respect du schéma JSON ; elle est préparée mais non exécutée dans le run v8.
+La base est `unsloth/Qwen3-1.7B-Base`, révision `e249956c10337100486d07afb77e3eb2b30906b8`. La recette corrigée utilise le chargement 4 bits, LoRA de rang et alpha 16, batch effectif 8, contexte de 2 048 tokens, learning rate initial `1e-4` et seed 42. La loss supervise uniquement la réponse et son EOS. Le calcul utilise FP16 AMP, avec paramètres entraînables LoRA maintenus en FP32. Les versions CUDA et bibliothèques sont consignées dans la configuration du run.
 
-Le runner DPO utilise une politique initialisée depuis le SFT et une copie de référence figée. Il refuse l'absence de comparaison terminée, de décision tracée et de données approuvées pour l'expérimentation. La recette initiale prévoit 20 étapes, beta 0,1, LR `5e-6`, batch effectif 8. Ce code n'est pas une preuve d'entraînement DPO terminé.
+L'entraînement historique v5 du 4 septembre a exécuté 1 000 étapes sur le premier corpus. Son exécution technique a abouti, mais ses répétitions et les défauts de préparation empêchent d'en faire la référence courante. Les résultats historiques restent archivés ; ils ne sont pas directement comparables aux pertes recalculées avec un corpus et une agrégation différents.
 
-512 paires train et 64 validations sont préparées en anglais. Le premier lot a été rejeté pour masquages NER erronés ; le second reste candidat avec revue de confidentialité et de contenu à réaliser. Aucun test final n'a servi à ajuster le modèle.
+Le SFT corrigé a progressé jusqu'à 150 puis 500 étapes. La continuation v22 a restauré optimiseur, scheduler, scaler et RNG ; elle a ajouté 350 étapes en environ 26 min 41 s, évaluations périodiques incluses. Le checkpoint atteint environ 1,073 époque. Ses fichiers ont été archivés et leurs empreintes contrôlées. Le diagnostic distinct de mémorisation sur douze exemples ne sert pas de modèle général ni de point de départ au DPO.
 
-La comparaison Kaggle v8 a été téléchargée et ses agrégats recalculés à l'identique. Six sorties SFT sur 30 contiennent des caractères CJK ; Base en compte zéro. L'agrégat de loss pondéré est dominé par les tokens EN. La baisse de loss n'établit pas une meilleure qualité de génération. Les diagnostics v10/v11 n'ont pas corrigé les répétitions par un arrêt de message explicite, NF4 ou FP16 sans quantification, sur trois exemples. Le contrôle v13 avec Unsloth reproduit également le défaut. Une correction du SFT doit être testée avant le DPO. Voir [la preuve comparative et ses limites](../docs/evidence/BASE_SFT_KAGGLE_2026-09-05.md).
+L'adaptateur SFT 500 a pour SHA-256 `5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d`. Une archive correcte ne prouve pas à elle seule que l'inférence dans un nouveau processus reproduit les sorties.
 
-## 5. API, audit et packaging
+Preuves : [SFT historique](../docs/evidence/SFT_KAGGLE_FULL_RUN_2026-09-04.md), [résultat v22](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [identité du checkpoint](../configs/sft-v22-handoff.json).
 
-`POST /v1/triage` valide et normalise les champs, limite les sorties à `maximum`, `moderate`, `deferred`, ajoute l'avertissement FR/EN et un identifiant d'interaction. Le fournisseur compatible vLLM anonymise le contexte avant transport et refuse un résultat invalide ou tronqué. La factory privée exige un jeton ; l'application par défaut n'a aucun modèle et retourne 503 pour le triage.
+## 4. Évaluation Base/SFT et résultats négatifs
 
-L'audit enregistre identifiant, versions, statut et durée, sans texte médical. Cette minimisation ne satisfait pas encore l'exigence du brief de conserver des entrées anonymisées et des sorties auditables : le contenu et la conservation doivent être décidés.
+La comparaison courante utilise les mêmes 479 exemples de validation pour la loss et les mêmes trente prompts pour les générations, en décodage greedy avec plafond de 512 tokens. La loss ci-dessous est une moyenne par exemple ; elle ne doit pas être confondue avec l'ancienne agrégation pondérée par token. Quinze des trente générations sont des QCM français. Ces lots sont des outils de développement, pas un test final indépendant.
 
-Les tests prouvent les contrats locaux avec transport simulé. L'image Docker corrigée a été construite et testée sans réseau avec les vrais modèles d'anonymisation. Le job CI de conteneur est écrit mais n'a pas été observé sur GitHub. Aucune preuve d'inférence vLLM réelle ni de pilote hospitalier n'est disponible.
+| Mesure | Base | SFT 150 | SFT 500 |
+|---|---:|---:|---:|
+| Loss réponse moyenne par exemple, 479 validations | 1,456922 | 0,712133 | 0,673777 |
+| Réponses terminées par EOS natif, sur 30 | 20 | 22 | 26 |
+| Réponses atteignant le plafond, sur 30 | 10 | 8 | 4 |
+| Accord exact des choix QCM, sur 15 | 5 | 7 | 6 |
+| Fraction moyenne de 4-grammes répétés | 0,3447 | 0,2426 | 0,1525 |
 
-Preuve : [validation post-SFT](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md).
+La baisse de loss et l'amélioration des arrêts sont observées. Elles ne démontrent pas une amélioration générale de la justesse. Les quatre plafonds anglais du SFT 500 correspondent à de vraies répétitions ; d'autres réponses contredisent les références sources. Le petit lot QCM ne permet pas de conclure à une régression statistique générale entre 150 et 500 étapes.
 
-## 6. Limites et résultats négatifs
+La mission exige également d'évaluer le parcours de triage. Dix-huit scénarios de développement couvrent neuf familles en français et anglais : douleur thoracique, détresse respiratoire, déficit neurologique, pédiatrie, grossesse, vulnérabilité, informations insuffisantes, contradictions et cas stable. Le protocole distingue validité JSON, accord avec les références proposées, présence de questions complémentaires et sorties invalides. La présence d'une question ne prouve pas sa pertinence ; le questionnaire adaptatif au fil d'un échange reste à vérifier.
 
-- Validation de développement distincte d'un test final indépendant.
-- Loss QA distincte de justesse médicale et de qualité de triage.
-- Préférences candidates uniquement anglaises, non revues cliniquement.
-- Faux positifs de masquage observés et lot initial rejeté.
-- Garde-fous cliniques proposés, non validés ; une instruction de prompt ne prouve pas leur respect.
-- Rappel critique, sous-triage, sur-triage, réponses dangereuses et latences p50/p95 non établis sur une référence cliniquement validée.
+La v23 s'est arrêtée au contrôle de recharge, avec 14/30 générations identiques. Les sorties de triage SFT n'ont donc pas été produites. Une différence d'ordre d'import des bibliothèques a été corrigée ; la v24 est en cours au moment de cette rédaction pour tester cette hypothèse et conserver les divergences détaillées. Ni la fidélité de recharge ni le résultat comparatif de triage ne sont encore affirmés.
 
-## 7. Décision de poursuite
+Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec v23](../docs/evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), [contrôle v24](../docs/evidence/TRIAGE_V24_LAUNCH_2026-09-12.md).
 
-La poursuite technique est possible dans le périmètre privé et expérimental. La clôture documentaire doit attendre les résultats manquants ; l'usage clinique réel reste hors périmètre et non autorisé.
+## 5. DPO : préparation et limites
 
-Étapes restantes : revue des comparaisons, revue et expérimentation DPO, comparaison figée incluant DPO, évaluation finale indépendante, démonstration API avec modèle réel, performances et revue du rapport. Les décisions et preuves doivent rester séparées de toute validation clinique.
+Le lot UltraMedical candidat contient 512 paires train et 64 validations, toutes anglaises. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
+
+Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La confidentialité et le contenu restent à revoir ; aucune approbation clinique n'a été créée.
+
+Le runner prévoit une politique initialisée depuis le SFT et une référence gelée. La recette initiale est un essai de vingt étapes, beta 0,1, learning rate `5e-6`, batch effectif 8. La référence effectivement immuable pendant l'entraînement, la sauvegarde/recharge et les effets du DPO doivent être mesurés sur GPU. Aucun entraînement DPO n'est présenté comme effectué.
+
+Preuves : [raccord DPO](../docs/evidence/DPO_HANDOFF_2026-09-12.md), [revue descriptive](../docs/evidence/DPO_CANDIDATE_REVIEW_2026-09-12.json).
+
+## 6. API, audit et déploiement
+
+`POST /v1/triage` valide le contrat, retourne un niveau parmi les trois autorisés, ajoute un avertissement FR/EN et un identifiant d'interaction. Le fournisseur compatible vLLM anonymise les entrées avant transport et demande une sortie conforme au schéma. La factory privée exige un jeton. L'application par défaut n'a aucun modèle configuré et retourne 503 au triage.
+
+Les tests locaux avec transport simulé prouvent les contrats et les chemins d'erreur couverts. Ils ne prouvent pas une génération du vrai modèle. Le conteneur a été vérifié localement sans serveur de modèle. Le programme d'évaluation de l'endpoint mesure les réponses valides, les identifiants uniques et les latences p50/p95 ; son existence ne constitue pas une mesure distante.
+
+L'audit courant conserve identifiant, versions, statut et durée sans contenu médical. Il reste un écart explicite avec la spécification, qui demande entrée anonymisée et sortie exploitables pour l'audit. La politique de contenu et de conservation doit être définie et implémentée avant de clore ce point. Un identifiant reçu ne prouve pas sa persistance dans le journal.
+
+La configuration GitHub Actions couvre tests et conteneur ; le déploiement automatisé et son exécution distante restent à terminer. L'unique autorisation GPU actuelle est le notebook Kaggle privé sur quota gratuit. Un endpoint cloud nécessite une cible et un coût explicitement autorisés, puis une démonstration du modèle via vLLM et FastAPI. Aucun endpoint ni modèle public n'est annoncé.
+
+Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md).
+
+## 7. Conditions de clôture et limites
+
+La clôture nécessite une recharge reproductible du SFT retenu, un DPO exécuté puis comparé selon le même protocole, une évaluation finale réservée après gel des choix et une démonstration de bout en bout. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+
+Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
+
+L'évaluation doit documenter les résultats négatifs aussi bien que les gains. Le POC peut produire une comparaison expérimentale utile même si le DPO n'améliore pas tous les indicateurs ; cela ne dispense pas de réaliser les livrables ni de signaler les limites. L'usage clinique autonome demeure hors périmètre.
