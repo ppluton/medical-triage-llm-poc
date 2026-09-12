@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-12",
+  "status": "descriptive_review_not_approval",
+  "source_manifest_sha256": "c990549ba648b60f047f17db664e43865755691de86c2bbe0b5e225fb76a59d1",
+  "structural_validation": "passed_with_privacy_review_still_required",
+  "splits": {
+    "train": {
+      "records": 512,
+      "sha256": "3caba7bb477db6ef404a672e671d6ce5cacb081877cdf6f867ff190fda3af6f4",
+      "languages": {
+        "en": 512
+      },
+      "label_types": {
+        "length": 206,
+        "easy": 105,
+        "hard": 201
+      },
+      "chosen_longer_characters": 358,
+      "median_chosen_characters": 1849.0,
+      "median_rejected_characters": 1457.5
+    },
+    "validation": {
+      "records": 64,
+      "sha256": "af75d9da42d8268ccb255085df222d41122f7982150ef5263c16ebf9af133623",
+      "languages": {
+        "en": 64
+      },
+      "label_types": {
+        "hard": 25,
+        "length": 29,
+        "easy": 10
+      },
+      "chosen_longer_characters": 41,
+      "median_chosen_characters": 1852.0,
+      "median_rejected_characters": 1803.0
+    }
+  },
+  "limits": [
+    "Character lengths are descriptive, not quality or token measurements.",
+    "Source preferences are not labelled triage safety preferences.",
+    "A shared answer choice does not imply equivalent rationale.",
+    "No clinical review performed."
+  ]
+}

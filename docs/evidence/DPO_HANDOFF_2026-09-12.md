@@ -29,3 +29,9 @@ PYTHONPATH=src python scripts/run_dpo.py \
 ```
 
 Les chemins de dataset revu et de décision sont volontairement des paramètres, pas des approbations créées artificiellement. Le lot existant reste candidat. L'essai GPU, la référence gelée pendant l'entraînement, la sauvegarde/recharge DPO et l'effet sur les réponses ne sont pas prouvés par les vérifications locales ci-dessus. Le checkpoint 500 reste un candidat expérimental, pas un choix déclaré optimal ni cliniquement validé.
+
+## Revue descriptive du lot existant
+
+Le [contrôle complémentaire](DPO_CANDIDATE_REVIEW_2026-09-12.json) vérifie à nouveau les 512/64 paires contre les hashes de prompts protégés, sans lever l'exigence de revue de confidentialité. Le lot est entièrement anglais. Les étiquettes source du train sont `length=206`, `easy=105`, `hard=201` ; celles de validation sont `length=29`, `easy=10`, `hard=25`.
+
+Dans 358/512 paires train et 41/64 paires validation, la réponse préférée est plus longue en caractères. Ce constat ne démontre ni biais causal ni supériorité de contenu. La lecture exploratoire d'une paire par type et par split montre des questions de connaissances, des cas cliniques et des sujets biologiques généraux. Certaines paires donnent le même choix final avec des explications différentes. Il serait donc incorrect de traduire systématiquement `chosen/rejected` par « décision de triage correcte/incorrecte » ou de promettre des réponses plus courtes après DPO. La revue exploratoire ne vaut pas validation exhaustive des 576 préférences.
