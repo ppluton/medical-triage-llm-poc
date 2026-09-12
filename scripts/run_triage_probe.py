@@ -9,7 +9,7 @@ from pathlib import Path
 
 from triage_poc.comparison import sha256
 from triage_poc.dpo import load_sft_identity
-from triage_poc.triage_probe import messages_for_scenario, score_outputs
+from triage_poc.triage_probe import compare_reload, messages_for_scenario, score_outputs
 
 
 def main():
@@ -26,11 +26,14 @@ def main():
     if args.output.exists():
         raise ValueError("Fresh output required")
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    # Import Unsloth first so its patches match the training runtime.
+    # isort: off
+    from unsloth import FastLanguageModel
     import torch
     from peft import set_peft_model_state_dict
     from safetensors.torch import load_file
     from transformers import AutoTokenizer, set_seed
-    from unsloth import FastLanguageModel
+    # isort: on
 
     if not torch.cuda.is_available() or "T4" not in torch.cuda.get_device_name(0):
         raise ValueError("Authorized T4 required")
@@ -106,13 +109,8 @@ def main():
             checks = []
             for item in prior:
                 observed = generate(validation[item["record_id"]]["messages"][:-1])
-                checks.append(
-                    {
-                        "id": item["record_id"],
-                        "identical": observed["generated_token_ids"] == item["generated_token_ids"],
-                    }
-                )
-            (args.output / "reload.json").write_text(json.dumps(checks, indent=2))
+                checks.append(compare_reload(item, observed))
+                (args.output / "reload.json").write_text(json.dumps(checks, indent=2))
             if not all(c["identical"] for c in checks):
                 raise ValueError(
                     "Reload generations differ; inspect runtime before interpreting results"

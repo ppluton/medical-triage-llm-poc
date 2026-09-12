@@ -40,3 +40,22 @@ def test_invalid_json_is_not_silently_removed_from_agreement():
     assert result["valid_only_metrics"]["exact_match_rate"] == 1
     with pytest.raises(ValueError, match="alignment"):
         score_outputs(rows, list(reversed(outputs)))
+
+
+def test_reload_diagnostic_preserves_difference_and_truncation():
+    from triage_poc.triage_probe import compare_reload
+
+    prior = {"record_id": "synthetic-reload", "generated_token_ids": [10, 20, 30]}
+    observed = {"generated_token_ids": [10, 21], "output": "Synthetic output"}
+    result = compare_reload(prior, observed)
+    assert result["identical"] is False
+    assert result["first_different_token"] == 1
+    assert result["expected_token_ids"] == [10, 20, 30]
+    assert result["observed"]["generated_token_ids"] == [10, 21]
+    assert result["observed"]["output"] == "Synthetic output"
+    assert compare_reload(prior, {"generated_token_ids": [10, 20]})[
+        "first_different_token"
+    ] == 2
+    equal = compare_reload(prior, {"generated_token_ids": [10, 20, 30]})
+    assert equal["identical"] is True
+    assert equal["first_different_token"] is None

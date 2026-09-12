@@ -1,7 +1,7 @@
 # Évaluation de développement du parcours de triage — v23
 
 - Date : 2026-09-12
-- Statut : draft — v23 acceptée et observée RUNNING ; résultats en attente
+- Statut : draft — v23 terminée en erreur au contrôle de recharge
 - Environnement : Kaggle privé `pierrepluton/chsa-source-sft-qwen3`, T4 gratuite, même image et versions ML que v22 ; FastAPI 0.141.1 et ijson 3.5.1 pour les contrats locaux.
 - Sources : [mission auditée](AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), [protocole proposé](../../configs/educational_triage_protocol_v1.json), [scénarios](../../data/samples/synthetic-triage-development-v2.json), [identité SFT](../../configs/sft-v22-handoff.json).
 
@@ -40,3 +40,24 @@ kaggle kernels status pierrepluton/chsa-source-sft-qwen3
 La CLI a confirmé la version 23 puis `RUNNING`. Notebook : 29 645 octets ; SHA-256 `b48ce9011d1473058d1efbf20353d17aecd2aad0cc722d41c3afb751b5d1d5d1`. Résumé v22 attendu : `45d6c88ef5e17e150a38f5ca7593212619ff854febe10901635f98913a6edb75`.
 
 Les artefacts de sortie attendus sont `triage-base-sft-v23/base.json`, `sft.json`, `reload.json` et `summary.json`. Aucun résultat GPU n'est encore affirmé dans cette note de lancement.
+
+## Résultat terminal et diagnostic du 12 septembre
+
+La version Kaggle 23 (`scriptVersionId=349313211`) a terminé en erreur :
+`ValueError: Reload generations differ; inspect runtime before interpreting results`.
+Les sorties Base sont présentes ; la génération de triage SFT et le résumé comparatif
+n'ont pas été exécutés. Le contrôle retrouve 14/30 séquences identiques : les quinze
+réponses EN et une FR diffèrent. Il n'enregistrait que les booléens, ce qui empêche
+de localiser les divergences. SHA-256 du `reload.json` téléchargé :
+`70710bf2fd26995c79f229c5b2ec4f6fb3e5523e4a0bc75f0b1a6229c539b4a2`.
+
+Les logs signalent explicitement l'import tardif d'Unsloth après Transformers/PEFT.
+Le script d'entraînement importe au contraire Unsloth en premier. Le script
+comparatif rétablit désormais cet ordre. Cette divergence est établie ; son rôle
+causal dans les différences de génération n'est pas encore prouvé.
+
+La prochaine exécution ne change ni données, ni poids, ni consignes, ni génération.
+Elle teste cet ordre d'import et sauvegarde après chaque QA les tokens attendus,
+observés et la première différence. Le contrôle d'arrêt reste strict. Le test local
+couvre différences de tokens, troncature et égalité (trois tests du module passants,
+Ruff passant). Cela valide le diagnostic local, pas la recharge GPU.

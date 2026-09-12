@@ -67,3 +67,23 @@ def score_outputs(scenarios: list[dict], outputs: list[dict]) -> dict:
             "Raw generation, no constrained decoding or API guardrails.",
         ],
     }
+
+
+def compare_reload(prior: dict, observed: dict) -> dict:
+    """Preserve exact reload evidence, including prefix-only and length mismatches."""
+    expected = prior["generated_token_ids"]
+    actual = observed["generated_token_ids"]
+    identical = actual == expected
+    first_difference = None
+    if not identical:
+        first_difference = next(
+            (i for i, (a, b) in enumerate(zip(expected, actual)) if a != b),
+            min(len(expected), len(actual)),
+        )
+    return {
+        "id": prior["record_id"],
+        "identical": identical,
+        "first_different_token": first_difference,
+        "expected_token_ids": expected,
+        "observed": observed,
+    }

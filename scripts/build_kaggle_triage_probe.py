@@ -65,7 +65,7 @@ command=[sys.executable,str(root/'scripts/run_triage_probe.py'),
     '--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
     '--prior-qa',str(source/'pilot_end.json'),
     '--qa-validation',str(root/'data/qa-validation.jsonl'),
-    '--output','/kaggle/working/triage-base-sft-v23']
+    '--output','/kaggle/working/triage-base-sft-v24']
 subprocess.run(command,env=dict(os.environ,PYTHONPATH=str(root/'src'),PYTHONUNBUFFERED='1'),check=True,timeout=5400)
 """
     meta = json.loads(args.metadata.read_text())
