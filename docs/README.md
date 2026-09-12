@@ -65,3 +65,6 @@ Le rapport final public est dans `../reports/`. Les données lourdes ou sensible
 
 - [Reprise générale v22 : 150 vers 500](technical/SFT_CONTINUATION_150_500_2026-09-11.md) — protocole, preuve de lancement et limites.
 - [Comprendre la reprise](learning/38-reprendre-le-sft-sans-repartir-de-zero.md) — poids, optimiseur et scheduler.
+
+- [Évaluation du SFT à 500 étapes](evidence/SFT_V22_RESULT_2026-09-12.md) — reprise vérifiée, résultats et limites.
+- [Comprendre le résultat à 500 étapes](learning/39-comprendre-les-resultats-du-sft-a-500-etapes.md) — loss, arrêts et exactitude.

@@ -1,7 +1,7 @@
-# Historique du projet — étapes, décisions et preuves au 11 septembre 2026
+# Historique du projet — étapes, décisions et preuves au 12 septembre 2026
 
-- **Date :** 2026-09-11
-- **Statut :** draft — synthèse historique ; pilote v19, recharge/comparaison v20 et diagnostic de mémorisation v21 terminés
+- **Date :** 2026-09-12
+- **Statut :** draft — synthèse historique ; pilote v19, v20/v21 et évaluation de la reprise v22 terminés
 - **Périmètre :** du cadrage aux vérifications du corpus corrigé et aux résultats du pilote borné et à sa recharge vérifiée.
 - **Sources :** cadrage et spécification, ADR-001 à ADR-012, preuves et notes pédagogiques liées dans chaque étape. Les statuts historiques sont datés et ne remplacent pas les résultats ultérieurs.
 
@@ -196,6 +196,14 @@ Source : [résultat v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md).
 Après accord du porteur, reprise préparée depuis le checkpoint général v19 à 150 étapes, jusqu’à 500 étapes au total ou 30 minutes de phase entraînement. Corpus et scheduler inchangés ; les poids du diagnostic v21 sont exclus. Les contrôles locaux passent et Kaggle confirme `RUNNING`. La restauration GPU effective, la fin de l’entraînement et la comparaison qualitative ne sont pas encore observées.
 
 Source : [protocole et preuve de lancement](SFT_CONTINUATION_150_500_2026-09-11.md).
+
+### 12 septembre — évaluation de la reprise v22
+
+La reprise atteint 500 étapes (350 nouvelles), avec restauration vérifiée de l’optimiseur, du scheduler et du scaler à 150. Sur le lot figé, la loss baisse à 0,673777, les EOS passent de 22/30 à 26/30, mais l’accord des choix QCM passe de 7/15 à 6/15. Les quatre plafonds anglais correspondent à des boucles ; des contradictions aux références persistent.
+
+Le résultat est mitigé : mécanique vérifiée et forme améliorée, exactitude non acquise. Une évaluation plus large sur validation est recommandée avant le choix d’un SFT de référence. Aucun nouvel entraînement ni DPO n’est lancé pendant cette évaluation.
+
+Source : [bilan v22](../evidence/SFT_V22_RESULT_2026-09-12.md).
 
 ## 4. Travaux parallèles : API, audit et préparation du DPO
 

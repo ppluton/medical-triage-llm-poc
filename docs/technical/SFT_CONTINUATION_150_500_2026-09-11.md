@@ -1,7 +1,7 @@
 # Reprise bornée du SFT général : 150 vers 500 étapes
 
 - Date : 2026-09-11
-- Statut : draft — version Kaggle 22 lancée, résultat en attente
+- Statut : draft — version Kaggle 22 terminée, résultat analysé le 12 septembre
 - Sources : [plan figé](../../configs/sft-resume-150-to-500.json), [pilote v19](../evidence/SFT_V19_PILOT_RESULT_2026-09-11.md), [recharge v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md), [mémorisation v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md).
 
 ## Question
@@ -31,3 +31,7 @@ La [version 22](../evidence/SFT_CONTINUATION_V22_LAUNCH_2026-09-11.json) a été
 Onze tests ciblés passent, notamment le refus des mauvais checkpoints/budgets et la distinction entre Base et reprise dans le rapport. Le préflight local valide l’archive générale réelle et les 3 721/479 lignes figées ; le notebook reconstruit les fichiers exactement et son Python est analysé sans erreur. Ruff et le contrôle de diff passent. La suite locale complète a obtenu le créneau partagé et terminé avant la demande d’arrêt : `val_390a682bd5ca`, **122 tests réussis en 4,57 secondes**, avec une dépréciation Starlette/httpx. Le statut terminal est `completed`, code 0.
 
 La synthèse après téléchargement utilisera `scripts/summarize_sft_pilot.py` avec les arguments habituels et `--continuation-plan configs/sft-resume-150-to-500.json`. Elle publiera les métriques de Base et de fin, ainsi que celles de `resume_start` sous une clé distincte. La restauration et la qualité restent à établir dans les sorties v22.
+
+## Résultat final
+
+Le [bilan du 12 septembre](../evidence/SFT_V22_RESULT_2026-09-12.md) confirme la restauration GPU et 350 nouvelles étapes jusqu’à 500. La forme progresse, mais les choix QCM n’améliorent pas leur accord aux sources. Les statuts de lancement ci-dessus sont conservés comme observations historiques.

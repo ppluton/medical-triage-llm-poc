@@ -1,5 +1,5 @@
 {
-  "status": "running",
+  "status": "completed",
   "notebook_bytes": 968879,
   "notebook_sha256": "85cb7a3ca2028dd3c7323d519fb970d131e4021302fba09e5ee6f414283a9ada",
   "files_sha256": {
@@ -28,7 +28,9 @@
   "training_seconds_cap": 1800,
   "kaggle_version": 22,
   "local_targeted_tests_passed": 11,
-  "gpu_restoration": "not_yet_observed",
+  "gpu_restoration": "observed_in_v22_logs",
   "local_full_tests_passed": 122,
-  "local_validation_id": "val_390a682bd5ca"
+  "local_validation_id": "val_390a682bd5ca",
+  "final_step": 500,
+  "result_evidence": "SFT_V22_EXECUTION_2026-09-12.json"
 }

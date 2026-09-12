@@ -1,7 +1,7 @@
 # Roadmap de réalisation du POC de triage médical
 
-- **Date :** 2026-09-11
-- **Statut :** draft — reprise générale v22 lancée de 150 vers 500 étapes ; résultats en attente
+- **Date :** 2026-09-12
+- **Statut :** draft — v22 terminée à 500 étapes ; forme améliorée, exactitude encore insuffisante
 - **Périmètre :** réalisation du POC défini par `CADRAGE_MISSION.md` et `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Sources :** cadrage de mission, spécification, manifestes de données, ADR-001 à ADR-008 et preuves versionnées dans `docs/evidence/`
 
@@ -11,7 +11,7 @@ Le corpus v2.1-reviewed contient 3 721 exemples train, 479 validation et 500 tes
 
 Le pilote v18 a échoué après la baseline à cause d'une conversion FP16 lors de l'évaluation. La [correction v19](../evidence/SFT_FP16_FIX_2026-09-11.md) conserve les paramètres entraînables en FP32. Les logs GPU montrent deux étapes, une recharge identique sur deux générations, la restauration de l'optimiseur et une reprise jusqu'à quatre étapes. Le pilote borné de 150 étapes a terminé. La v20 prouve ensuite 30 générations identiques après recharge finale et compare les checkpoints 50/100/150. La loss baisse, mais les réponses anglaises se dégradent entre 50 et 150 étapes ; aucun checkpoint ne satisfait la revue qualitative. Voir le [bilan v20](../evidence/SFT_V20_CHECKPOINT_RESULT_2026-09-11.md).
 
-La comparaison Base/Pilote est acquise. Le [diagnostic v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md) reproduit les douze réponses train attendues avec EOS après répétition. La prochaine expérience proposée porte sur une reprise bornée du pilote général, sans réécriture spéculative du corpus, afin de mesurer la généralisation après davantage d’exposition. Cette reprise est maintenant implémentée et lancée en [v22](SFT_CONTINUATION_150_500_2026-09-11.md), avec arrêt à 500 étapes ou 1 800 secondes de phase entraînement. Ses résultats GPU restent en attente. L'[historique complet](HISTORIQUE_PROJET_2026-09-11.md) distingue les versions de corpus, les runs et leurs résultats négatifs.
+La comparaison Base/Pilote est acquise. Le [diagnostic v21](../evidence/SFT_MEMORIZATION_V21_RESULT_2026-09-11.md) reproduit les douze réponses train attendues avec EOS après répétition. La prochaine expérience proposée porte sur une reprise bornée du pilote général, sans réécriture spéculative du corpus, afin de mesurer la généralisation après davantage d’exposition. Cette reprise est maintenant implémentée et lancée en [v22](SFT_CONTINUATION_150_500_2026-09-11.md), avec arrêt à 500 étapes ou 1 800 secondes de phase entraînement. Le [bilan v22](../evidence/SFT_V22_RESULT_2026-09-12.md) confirme 500 étapes, 26/30 EOS et 6/15 accords QCM (contre 7/15 à 150). La prochaine étape recommandée est une évaluation de validation plus large avant choix du SFT de référence ; aucun DPO lancé. L'[historique complet](HISTORIQUE_PROJET_2026-09-11.md) distingue les versions de corpus, les runs et leurs résultats négatifs.
 
 ## Lecture de l'état
 
