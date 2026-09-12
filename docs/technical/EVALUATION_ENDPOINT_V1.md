@@ -24,3 +24,24 @@ Le runner appelle `POST /v1/triage` pour chaque scénario. Il vérifie le contra
 Les p50/p95 portent sur les latences observées côté client de toutes les requêtes, succès et échecs, en série, démarrage à froid inclus ; calcul par rang le plus proche. Ce n'est ni un test de charge concurrente ni un score de qualité médicale. Les identifiants reçus devront être rapprochés des vrais logs serveur pour prouver leur persistance.
 
 Deux tests avec transport simulé passent : comptabilisation d'un échec HTTP et d'un UUID réutilisé ; refus de données non marquées avant tout appel. Ruff passe. Cela valide le runner local, pas le serveur, vLLM ou le déploiement cloud. Aucun endpoint externe n'a été appelé dans cette étape.
+
+## Rapprocher les réponses et l'audit
+
+Après récupération autorisée du journal privé de la même exécution, utiliser :
+
+```sh
+PYTHONPATH=src python scripts/verify_endpoint_audit.py \
+  --report artifacts/endpoint-evaluation/run-001.json \
+  --audit /chemin/prive/audit.jsonl \
+  --output artifacts/endpoint-evaluation/audit-001.json
+```
+
+Le contrôle exige une seule entrée par réponse réussie, l'égalité intégrale de la
+réponse avec la sortie auditée, les versions de prompt/contrôles et la présence de
+l'entrée anonymisée avec statut de confidentialité `passed`. Il refuse un lot sans
+réponse réussie. Les requêtes HTTP échouées restent comptées séparément ; un rapprochement
+réussi ne les transforme pas en succès. Le résultat contient des empreintes des deux
+fichiers et des motifs de divergence, sans recopier le contenu de l'audit.
+
+Cela prouve la correspondance avec l'export fourni. La persistance durable sur le vrai
+serveur, la rétention et l'efficacité de l'anonymisation restent des preuves distinctes.
