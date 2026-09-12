@@ -134,3 +134,73 @@ def test_real_tensor_fingerprints_detect_reference_mutation_and_unchanged_policy
         adapter_fingerprint(model, "policy")
     with pytest.raises(ValueError, match="No LoRA"):
         adapter_fingerprint(model, "missing")
+
+
+def test_saved_adapter_fingerprint_matches_runtime_and_detects_alteration(tmp_path):
+    import torch
+    from safetensors.torch import save_file
+
+    from triage_poc.dpo import adapter_fingerprint, saved_adapter_fingerprint
+
+    model = torch.nn.Module()
+    model.layer = torch.nn.Module()
+    model.layer.lora_A = torch.nn.ModuleDict({"policy": torch.nn.Linear(3, 2, bias=False)})
+    value = model.layer.lora_A["policy"].weight.detach().clone()
+    path = tmp_path / "adapter.safetensors"
+    save_file({"layer.lora_A.weight": value}, str(path))
+    assert saved_adapter_fingerprint(path) == adapter_fingerprint(model, "policy")
+    save_file({"layer.lora_A.weight": value + 1}, str(path))
+    assert saved_adapter_fingerprint(path) != adapter_fingerprint(model, "policy")
+    save_file({"layer.lora_A.weight": torch.full_like(value, float("nan"))}, str(path))
+    with pytest.raises(ValueError, match="non-finite"):
+        saved_adapter_fingerprint(path)
+
+
+def test_completed_dpo_is_bound_to_saved_policy_and_selected_reference(tmp_path):
+    import torch
+    from safetensors.torch import save_file
+
+    from triage_poc.dpo import (
+        saved_adapter_fingerprint,
+        verify_completed_dpo,
+        verify_dpo_weight_changes,
+    )
+
+    sft = tmp_path / "sft"
+    adapter = tmp_path / "run/adapter/policy"
+    sft.mkdir()
+    adapter.mkdir(parents=True)
+    for directory, value in ((sft, 1.0), (adapter, 2.0)):
+        save_file({"layer.lora_A.weight": torch.full((2, 3), value)},
+                  str(directory / "adapter_model.safetensors"))
+        for name in ("tokenizer.json", "tokenizer_config.json", "chat_template.jinja"):
+            (directory / name).write_text("synthetic fixture")
+        (directory / "adapter_config.json").write_text(json.dumps({
+            "base_model_name_or_path": "synthetic/base"}))
+    identity = {"schema_version": "sft-handoff-v1", "base_model": "synthetic/base",
+                "base_revision": "a" * 40,
+                "files": {p.name: sha256(p) for p in sft.iterdir()}}
+    manifest = tmp_path / "identity.json"
+    manifest.write_text(json.dumps(identity))
+    before = saved_adapter_fingerprint(sft / "adapter_model.safetensors")
+    after = saved_adapter_fingerprint(adapter / "adapter_model.safetensors")
+    snapshots = {"before": {"policy": before, "reference": before},
+                 "after": {"policy": after, "reference": before}}
+    measured = verify_dpo_weight_changes(snapshots["before"], snapshots["after"])
+    run = tmp_path / "run"
+    (run / "weight_checks.json").write_text(json.dumps({**snapshots, "checks": measured}))
+    summary = {"status": "completed_educational_dpo", "test_records_used": 0,
+               "sft_manifest_sha256": sha256(manifest),
+               "sft_sha256": identity["files"]["adapter_model.safetensors"],
+               "base_model": identity["base_model"], "base_revision": identity["base_revision"],
+               "weight_checks": measured}
+    (run / "run_summary.json").write_text(json.dumps(summary))
+    assert verify_completed_dpo(run, manifest, sft)["status"] == "saved_weights_verified"
+    save_file({"layer.lora_A.weight": torch.full((2, 3), 3.0)},
+              str(adapter / "adapter_model.safetensors"))
+    with pytest.raises(ValueError, match="final policy"):
+        verify_completed_dpo(run, manifest, sft)
+    summary["sft_sha256"] = "b" * 64
+    (run / "run_summary.json").write_text(json.dumps(summary))
+    with pytest.raises(ValueError, match="selected SFT"):
+        verify_completed_dpo(run, manifest, sft)

@@ -65,3 +65,11 @@ Le test miniature CPU montrait seulement que le mécanisme des deux adaptateurs
 fonctionne. Le nouveau run doit encore prouver ce fonctionnement en FP16/4 bits sur
 T4, puis la sauvegarde et la qualité. Il n'est pas un nouveau SFT et ne garantit pas
 que les erreurs de triage disparaîtront.
+
+### Sauvegarder les bons poids
+
+Un entraînement terminé peut être suivi d'une mauvaise sauvegarde. Le contrôle
+ajouté compare donc le fichier sauvegardé aux poids réellement présents après
+l'entraînement, puis la référence initiale au SFT d'origine. Le test modifie
+volontairement un fichier pour vérifier que cette divergence est détectée. Même
+une sauvegarde exacte devra ensuite être rechargée pour produire des réponses.

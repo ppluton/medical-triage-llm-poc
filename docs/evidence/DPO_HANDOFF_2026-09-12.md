@@ -102,3 +102,27 @@ Contrôle direct local du manifeste v2.1-reviewed et de son dossier : 4 700 lign
 Ruff passe. La reconstruction complète depuis UltraMedical n'est pas relancée ;
 le candidat filtré existant reste intact. Cette correction rend le futur préparateur
 cohérent avec la protection déjà ajoutée au candidat filtré.
+
+## Vérification de l'artefact sauvegardé
+
+`scripts/verify_dpo_artifact.py` permet, après un run terminé, de relier le fichier
+safetensors sauvegardé aux empreintes réelles des tenseurs enregistrées après le
+trainer. Il relie également les empreintes initiales de la référence au fichier SFT
+vérifié, recalcule les contrôles policy/reference, et vérifie le vocabulaire et le
+chat template. Le changement intentionnel du padding dans le runner est distinct
+du vocabulaire et ne vaut pas changement des textes d'entrée.
+
+```sh
+PYTHONPATH=src python scripts/verify_dpo_artifact.py \
+  --run /path/to/completed-source-dpo-v27 \
+  --sft-manifest configs/sft-v22-handoff.json \
+  --sft-adapter artifacts/kaggle/continuation-v22-reports/source-sft-v2-continuation-500/trainer/checkpoint-500 \
+  --output /path/to/fresh-artifact-check.json
+```
+
+Preuve locale : huit tests DPO passent, avec de vrais fichiers safetensors
+synthétiques. Ils couvrent l'égalité fichier/mémoire, un fichier altéré, des valeurs
+non finies et un résumé associé au mauvais SFT. Une erreur d'insertion locale a été
+détectée par les tests et corrigée avant validation ; elle n'a pas été envoyée dans
+le notebook v27 déjà figé. Ruff passe. Le vérificateur n'affirme pas encore une
+recharge d'inférence identique ni une qualité DPO : ces preuves restent séparées.

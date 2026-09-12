@@ -140,3 +140,58 @@ def verify_dpo_weight_changes(before: dict, after: dict) -> dict:
         raise ValueError("DPO policy weights did not change")
     return {"reference_unchanged": True, "policy_changed_tensors": changed,
             "policy_total_tensors": len(before["policy"])}
+
+
+def saved_adapter_fingerprint(path: Path) -> dict:
+    """Read saved LoRA tensors in the same namespace as the runtime fingerprint."""
+    import torch
+    from safetensors.torch import load_file
+
+    tensors = {}
+    for name, value in load_file(str(path), device="cpu").items():
+        key = re.sub(r"(\.lora_[AB])\.weight$", r"\1.adapter.weight", name)
+        if key == name or not torch.isfinite(value).all():
+            raise ValueError("Unexpected or non-finite saved LoRA tensor")
+        value = value.contiguous()
+        tensors[key] = {
+            "shape": list(value.shape), "dtype": str(value.dtype),
+            "sha256": hashlib.sha256(value.view(torch.uint8).numpy().tobytes()).hexdigest(),
+        }
+    if not tensors:
+        raise ValueError("Empty saved adapter")
+    return tensors
+
+
+def verify_completed_dpo(directory: Path, sft_manifest: Path, sft_adapter: Path) -> dict:
+    """Bind the saved policy to its actual training tensors and selected SFT reference."""
+    identity = load_sft_identity(sft_manifest, sft_adapter)
+    summary = json.loads((directory / "run_summary.json").read_text())
+    checks = json.loads((directory / "weight_checks.json").read_text())
+    if (summary.get("status") != "completed_educational_dpo"
+            or summary.get("test_records_used") != 0
+            or summary.get("sft_manifest_sha256") != sha256(sft_manifest)
+            or summary.get("sft_sha256") != identity["files"]["adapter_model.safetensors"]
+            or summary.get("base_model") != identity["base_model"]
+            or summary.get("base_revision") != identity["base_revision"]):
+        raise ValueError("DPO summary does not match the selected SFT experiment")
+    measured = verify_dpo_weight_changes(checks["before"], checks["after"])
+    if measured != checks["checks"] or measured != summary.get("weight_checks"):
+        raise ValueError("DPO declared weight checks disagree with actual fingerprints")
+    if saved_adapter_fingerprint(sft_adapter / "adapter_model.safetensors") != checks["before"][
+        "reference"
+    ]:
+        raise ValueError("DPO reference fingerprints differ from the actual SFT file")
+    adapter = directory / "adapter/policy"
+    saved_policy = saved_adapter_fingerprint(adapter / "adapter_model.safetensors")
+    if saved_policy != checks["after"]["policy"]:
+        raise ValueError("Saved DPO adapter differs from the final policy tensors")
+    for name in ("tokenizer.json", "chat_template.jinja"):
+        if sha256(adapter / name) != identity["files"][name]:
+            raise ValueError("DPO tokenizer vocabulary or template differs from SFT")
+    config = json.loads((adapter / "adapter_config.json").read_text())
+    if config.get("base_model_name_or_path") != identity["base_model"]:
+        raise ValueError("Saved DPO adapter has a different base model")
+    return {"status": "saved_weights_verified", "weight_checks": measured,
+            "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
+            "run_summary_sha256": sha256(directory / "run_summary.json"),
+            "limits": ["Exact saved weights do not prove inference reload or quality."]}
