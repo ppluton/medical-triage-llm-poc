@@ -16,6 +16,8 @@
 
 ## Ordre de travail
 
+**Exécution en cours :** [v23 de comparaison de triage](../evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), dix-huit scénarios synthétiques FR/EN avec références proposées et vérification de recharge du SFT 500. Zéro entraînement ; résultats GPU en attente.
+
 1. Conserver le corpus corrigé et les checkpoints. Aucun nouveau SFT long décidé.
 2. Terminer la comparaison Base/SFT avec une partie QA et une partie parcours de triage. Un protocole commun, un budget borné, puis une décision explicite ; les résultats imparfaits sont documentés.
 3. Raccorder DPO au SFT retenu, revoir les paires UltraMedical et vérifier un essai court avec référence gelée. Ne pas déduire des préférences biomédicales une validation des niveaux de triage.
