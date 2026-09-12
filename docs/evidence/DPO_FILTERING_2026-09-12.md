@@ -45,3 +45,17 @@ Les durées, noms de médicaments, protéines, auteurs bibliographiques et épon
 ne sont pas supprimés aveuglément. Les préférences demeurent des préférences
 biomédicales sources, pas des labels cliniques de triage. La décision d'usage
 éducatif et la revue de contenu restantes doivent être explicites avant le DPO.
+
+## Revue des alertes conservées
+
+Une seconde lecture des valeurs uniques signalées sur les 480 lignes conservées
+recense 801 valeurs `PERSON` et 212 valeurs `LOCATION`. Ces nombres comptent les
+chaînes distinctes détectées, pas des personnes ni des lieux identifiés.
+La lecture des noms ambigus et de leurs contextes retrouve des auteurs bibliographiques,
+des éponymes, des protéines, des options de QCM et des destinations dans des vignettes
+pédagogiques. Par exemple, `Tailor` est un verbe dans une consigne, `Bradford` désigne
+un dosage, et certaines initiales appartiennent aux références bibliographiques.
+
+Cette passe n'applique aucune substitution ni nouvelle exclusion. Elle ne constitue
+pas une certification de confidentialité ou une vérification scientifique exhaustive
+des réponses préférées. Les contextes restent dans le fichier privé du scan original.
