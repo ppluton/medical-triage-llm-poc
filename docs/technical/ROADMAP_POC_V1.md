@@ -16,7 +16,7 @@
 
 ## Ordre de travail
 
-**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le DPO médical reste à exécuter après revue du candidat 426/54.
+**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) a été lancée. Résultat GPU en attente ; validation clinique absente.
 
 1. Conserver le corpus corrigé et les checkpoints. Aucun nouveau SFT long décidé.
 2. Terminer la comparaison Base/SFT avec une partie QA et une partie parcours de triage. Un protocole commun, un budget borné, puis une décision explicite ; les résultats imparfaits sont documentés.

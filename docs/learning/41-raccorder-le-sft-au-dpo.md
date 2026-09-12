@@ -51,3 +51,17 @@ un modèle aléatoire minuscule. Les quatre tenseurs de la politique changent et
 de la référence restent identiques. Cela vérifie la mécanique TRL/PEFT sans consommer
 le quota GPU ni entraîner sur des données non approuvées. Cela ne remplace ni l'essai
 CUDA en précision réduite ni l'entraînement du modèle médical.
+
+### Du candidat filtré à l'essai pédagogique
+
+La décision ADR-014 admet les 480 paires filtrées pour une expérience technique,
+après les contrôles et exclusions décrits. Les textes ne changent pas : on ne réécrit
+pas une préférence pour faire gagner notre modèle. Les métadonnées indiquent une
+revue assistée, sans revue clinique indépendante. L'écart avec l'exigence clinique
+de la mission demeure ouvert et devra figurer dans le rapport.
+
+La v27 lance vingt étapes sur les vraies préférences sources, depuis le SFT 500.
+Le test miniature CPU montrait seulement que le mécanisme des deux adaptateurs
+fonctionne. Le nouveau run doit encore prouver ce fonctionnement en FP16/4 bits sur
+T4, puis la sauvegarde et la qualité. Il n'est pas un nouveau SFT et ne garantit pas
+que les erreurs de triage disparaîtront.

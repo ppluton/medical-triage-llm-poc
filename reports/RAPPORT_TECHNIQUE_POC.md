@@ -9,7 +9,7 @@
 
 Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Le DPO n'a pas été exécuté. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
+La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Un essai DPO de vingt étapes a été lancé (v27), sans résultat encore disponible. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
@@ -71,7 +71,7 @@ Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec 
 
 ## 5. DPO : préparation et limites
 
-Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes anglaises. Après revue contextuelle, 95 récits personnels non vérifiés et une paire altérée ont été exclus. Le candidat filtré contient 426 train et 54 validation ; son approbation finale reste à effectuer. Les statistiques suivantes décrivent le lot initial. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
+Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes anglaises. Après revue contextuelle, 95 récits personnels non vérifiés et une paire altérée ont été exclus. Le candidat filtré contient 426 train et 54 validation ; son usage expérimental est consigné dans ADR-014, sans approbation clinique ni revue humaine indépendante. Les statistiques suivantes décrivent le lot initial. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
 
 Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La confidentialité et le contenu restent à revoir ; aucune approbation clinique n'a été créée.
 

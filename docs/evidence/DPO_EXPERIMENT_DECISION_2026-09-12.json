@@ -1,0 +1,10 @@
+{
+  "date": "2026-09-12",
+  "decision": "accepted_for_educational_dpo",
+  "comparison_sha256": "afa939e4dc5c22392e8ac7d21d0c8e290e560271f0fa9fad8707e7406f15214c",
+  "triage_comparison_sha256": "45a61d22d8e1a3b55ff645ac8e835857b2bf9977ff3065a8792db102e14cbc44",
+  "reviewer": "Codex assisted technical review; no independent human or clinical review",
+  "rationale": "SFT500 reload is exact; QA and triage development baselines are measured. Triage quality remains insufficient. Continue the required educational DPO experiment without claiming clinical acceptance or guaranteed improvement.",
+  "decision_document_sha256": "4a1f599774718147ecb2e5d9ec3384da4fc9d0bbd302bb911de9fec134d08402",
+  "clinical_validation": "not_performed"
+}

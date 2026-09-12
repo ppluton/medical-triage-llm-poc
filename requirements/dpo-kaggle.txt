@@ -5,3 +5,4 @@ peft==0.18.1
 accelerate==1.14.0
 bitsandbytes==0.50.2
 datasets==4.3.0
+ijson==3.5.1
