@@ -43,3 +43,11 @@ annoncée. Le runner prend maintenant des empreintes des vrais tenseurs avant/ap
 et refuse de déclarer un succès si la référence a changé ou si la politique n'a pas
 bougé. Les tests CPU provoquent volontairement ces erreurs. La preuve sur le futur
 entraînement GPU reste à obtenir : un contrôle implémenté n'est pas un résultat de run.
+
+### Premier vrai passage dans le trainer, sur un modèle miniature
+
+Le diagnostic CPU a fait deux étapes de DPO sur des préférences synthétiques, avec
+un modèle aléatoire minuscule. Les quatre tenseurs de la politique changent et ceux
+de la référence restent identiques. Cela vérifie la mécanique TRL/PEFT sans consommer
+le quota GPU ni entraîner sur des données non approuvées. Cela ne remplace ni l'essai
+CUDA en précision réduite ni l'entraînement du modèle médical.
