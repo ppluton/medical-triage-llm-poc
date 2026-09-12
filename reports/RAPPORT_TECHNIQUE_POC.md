@@ -14,7 +14,7 @@ La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qw
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO encore candidat ; revue finale et limites à expliciter |
-| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Comparaison avec consigne corrigée, DPO et test final |
+| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | DPO, comparaison finale et test réservé |
 | Endpoint cloud vLLM/API | Contrats FastAPI, transport simulé, packaging local | Vrai modèle, cible cloud autorisée, démonstration et latence |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
@@ -65,7 +65,7 @@ La baisse de loss et l'amélioration des arrêts sont observées. Elles ne démo
 
 La mission exige également d'évaluer le parcours de triage. Dix-huit scénarios de développement couvrent neuf familles en français et anglais : douleur thoracique, détresse respiratoire, déficit neurologique, pédiatrie, grossesse, vulnérabilité, informations insuffisantes, contradictions et cas stable. Le protocole distingue validité JSON, accord avec les références proposées, présence de questions complémentaires et sorties invalides. La présence d'une question ne prouve pas sa pertinence ; le questionnaire adaptatif au fil d'un échange reste à vérifier.
 
-Les v23 et v24 ont échoué au contrôle de recharge. La [v25](../docs/evidence/TRIAGE_V25_RESULT_2026-09-12.md) confirme un cache Unsloth périmé : après invalidation, 30/30 générations sont reproduites. Sur 18 scénarios de triage, Base et SFT produisent respectivement 0 et 10 JSON conformes, et 0 et 4 priorités conformes aux références proposées. Le SFT réussit 2 des 6 cas critiques en comptant les sorties invalides comme échecs. La consigne omettait les définitions explicites des niveaux ; la comparaison finale doit utiliser la consigne commune corrigée. Ces résultats restent insuffisants et sans validation clinique.
+Les v23 et v24 ont échoué au contrôle de recharge. La [v25](../docs/evidence/TRIAGE_V25_RESULT_2026-09-12.md) confirme un cache Unsloth périmé : après invalidation, 30/30 générations sont reproduites. Sur 18 scénarios de triage, Base et SFT produisent respectivement 0 et 10 JSON conformes, et 0 et 4 priorités conformes aux références proposées. Le SFT réussit 2 des 6 cas critiques en comptant les sorties invalides comme échecs. La consigne omettait les définitions explicites des niveaux. La [v26 corrigée](../docs/evidence/TRIAGE_V26_RESULT_2026-09-12.md) donne 12/18 JSON conformes et 6/18 priorités conformes pour le SFT, contre 0/18 pour la Base. Le résultat sur les six cas critiques reste 2/6 ; des faits inventés persistent malgré une priorité parfois correcte. Ces résultats restent insuffisants et sans validation clinique.
 
 Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec v23](../docs/evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), [contrôle v24](../docs/evidence/TRIAGE_V24_LAUNCH_2026-09-12.md).
 

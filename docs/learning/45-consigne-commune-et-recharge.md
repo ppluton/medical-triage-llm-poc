@@ -21,3 +21,11 @@ la référence attendue n'y apparaît pas. Ils ne prouvent pas que le modèle la
 Il reste à mesurer cet effet sur GPU, puis à comparer le DPO dans les mêmes conditions.
 Les catégories restent pédagogiques, sans approbation clinique. Les résultats v25
 sont conservés : changer la consigne ne permet pas de réécrire une mesure passée.
+
+## Ce que la mesure v26 nous apprend
+
+La consigne explicite améliore le format (12/18 au lieu de 10/18) et les priorités
+conformes aux références proposées (6/18 au lieu de 4/18). Elle ne résout pas les
+faits inventés ni les erreurs de priorité. Un cas reçoit même la bonne priorité en
+inventant des antécédents : compter uniquement les catégories masquerait ce défaut.
+La suite doit donc conserver des évaluations de fidélité et de sûreté, en plus du format.
