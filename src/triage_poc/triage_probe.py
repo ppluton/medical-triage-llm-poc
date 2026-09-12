@@ -1,9 +1,8 @@
 """Development-only raw triage evaluation, without post-generation corrections."""
 
-import json
-
 from triage_poc.api import ModelResult, TriageRequest
 from triage_poc.evaluation import TriageComparison, calculate_triage_metrics
+from triage_poc.triage_prompt import SYSTEM_PROMPT
 
 
 def messages_for_scenario(row: dict) -> list[dict]:
@@ -11,13 +10,7 @@ def messages_for_scenario(row: dict) -> list[dict]:
     return [
         {
             "role": "system",
-            "content": (
-                "You are an educational medical triage assistant. Do not diagnose or prescribe. "
-                "Use only supplied facts. Ask relevant follow-up questions when information is "
-                "missing. Request professional assessment for concerning or uncertain symptoms. "
-                "Reply in the requested language with only a JSON object matching this schema: "
-                + json.dumps(ModelResult.model_json_schema())
-            ),
+            "content": SYSTEM_PROMPT,
         },
         {"role": "user", "content": request.model_dump_json()},
     ]

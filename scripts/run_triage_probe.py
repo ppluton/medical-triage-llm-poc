@@ -15,6 +15,7 @@ from triage_poc.triage_probe import (
     messages_for_scenario,
     score_outputs,
 )
+from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT
 
 
 def main():
@@ -149,6 +150,8 @@ def main():
         json.dumps(
             {
                 "status": "completed",
+                "prompt_version": PROMPT_VERSION,
+                "system_prompt": SYSTEM_PROMPT,
                 "optimizer_steps": 0,
                 "test_records_used": 0,
                 "sft_manifest_sha256": sha256(args.sft_manifest),

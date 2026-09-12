@@ -14,7 +14,7 @@ La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qw
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO encore candidat ; revue finale et limites à expliciter |
-| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Recharge indépendante du SFT 500, comparaison de triage, DPO et test final |
+| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Comparaison avec consigne corrigée, DPO et test final |
 | Endpoint cloud vLLM/API | Contrats FastAPI, transport simulé, packaging local | Vrai modèle, cible cloud autorisée, démonstration et latence |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
@@ -65,13 +65,13 @@ La baisse de loss et l'amélioration des arrêts sont observées. Elles ne démo
 
 La mission exige également d'évaluer le parcours de triage. Dix-huit scénarios de développement couvrent neuf familles en français et anglais : douleur thoracique, détresse respiratoire, déficit neurologique, pédiatrie, grossesse, vulnérabilité, informations insuffisantes, contradictions et cas stable. Le protocole distingue validité JSON, accord avec les références proposées, présence de questions complémentaires et sorties invalides. La présence d'une question ne prouve pas sa pertinence ; le questionnaire adaptatif au fil d'un échange reste à vérifier.
 
-La v23 s'est arrêtée au contrôle de recharge, avec 14/30 générations identiques. Les sorties de triage SFT n'ont donc pas été produites. Une différence d'ordre d'import des bibliothèques a été corrigée, mais la v24 échoue également avec 14/30 séquences identiques. La v25 teste l'invalidation des copies de poids mises en cache lors du passage Base/SFT, en mesurant leur état. Ni la fidélité de recharge ni le résultat comparatif de triage ne sont encore affirmés.
+Les v23 et v24 ont échoué au contrôle de recharge. La [v25](../docs/evidence/TRIAGE_V25_RESULT_2026-09-12.md) confirme un cache Unsloth périmé : après invalidation, 30/30 générations sont reproduites. Sur 18 scénarios de triage, Base et SFT produisent respectivement 0 et 10 JSON conformes, et 0 et 4 priorités conformes aux références proposées. Le SFT réussit 2 des 6 cas critiques en comptant les sorties invalides comme échecs. La consigne omettait les définitions explicites des niveaux ; la comparaison finale doit utiliser la consigne commune corrigée. Ces résultats restent insuffisants et sans validation clinique.
 
 Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec v23](../docs/evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), [contrôle v24](../docs/evidence/TRIAGE_V24_LAUNCH_2026-09-12.md).
 
 ## 5. DPO : préparation et limites
 
-Le lot UltraMedical candidat contient 512 paires train et 64 validations, toutes anglaises. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
+Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes anglaises. Après revue contextuelle, 95 récits personnels non vérifiés et une paire altérée ont été exclus. Le candidat filtré contient 426 train et 54 validation ; son approbation finale reste à effectuer. Les statistiques suivantes décrivent le lot initial. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
 
 Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La confidentialité et le contenu restent à revoir ; aucune approbation clinique n'a été créée.
 
@@ -93,7 +93,7 @@ Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATIO
 
 ## 7. Conditions de clôture et limites
 
-La clôture nécessite une recharge reproductible du SFT retenu, un DPO exécuté puis comparé selon le même protocole, une évaluation finale réservée après gel des choix et une démonstration de bout en bout. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+La recharge du SFT est établie par v25. La clôture nécessite un DPO exécuté puis comparé selon le même protocole, une évaluation finale réservée après gel des choix et une démonstration de bout en bout. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 

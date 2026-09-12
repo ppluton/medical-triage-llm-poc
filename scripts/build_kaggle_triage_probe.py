@@ -40,6 +40,7 @@ def main():
             "api",
             "evaluation",
             "triage_probe",
+            "triage_prompt",
             "comparison",
             "dpo",
             "ultramedical_audit",

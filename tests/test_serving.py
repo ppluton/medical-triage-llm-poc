@@ -27,6 +27,14 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
         assert b"alice@example.org" not in request.content
         assert b"EMAIL_ADDRESS" in request.content
         assert json.loads(request.content)["response_format"]["type"] == "json_schema"
+        from triage_poc.triage_probe import messages_for_scenario
+        from triage_poc.triage_prompt import PROMPT_VERSION
+
+        assert json.loads(request.content)["messages"][0] == messages_for_scenario(
+            {"request": BODY}
+        )[0]
+        assert PROMPT_VERSION == "triage-demo-v3-proposed"
+
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
             "content": json.dumps({**RESULT, "summary": "Contact alice@example.org"})}}]})
     with httpx.Client(transport=httpx.MockTransport(handler)) as transport:

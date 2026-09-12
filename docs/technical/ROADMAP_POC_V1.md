@@ -16,7 +16,7 @@
 
 ## Ordre de travail
 
-**État courant :** [v23 arrêtée au contrôle de recharge](../evidence/TRIAGE_V23_LAUNCH_2026-09-12.md) : 14/30 générations identiques ; comparaison de triage SFT non exécutée. Ordre d’import corrigé et diagnostic enrichi localement ; [v24 échouée également](../evidence/TRIAGE_V24_LAUNCH_2026-09-12.md). La v25 teste explicitement l’invalidation des copies de poids mises en cache, sans entraînement.
+**État courant :** [v25 terminée](../evidence/TRIAGE_V25_RESULT_2026-09-12.md) : cache corrigé et 30/30 générations reproduites. Triage brut SFT : 10/18 JSON conformes, 4/18 priorités conformes aux références proposées. La consigne commune est corrigée localement ; son effet GPU reste à mesurer. Le [candidat DPO filtré](../evidence/DPO_FILTERING_2026-09-12.md) contient 426 train et 54 validation, encore sans approbation finale.
 
 1. Conserver le corpus corrigé et les checkpoints. Aucun nouveau SFT long décidé.
 2. Terminer la comparaison Base/SFT avec une partie QA et une partie parcours de triage. Un protocole commun, un budget borné, puis une décision explicite ; les résultats imparfaits sont documentés.
@@ -28,7 +28,7 @@
 
 Les 15 QCM et 30 générations déjà observés ne suffisent pas à conclure à une amélioration générale. Le test final reste isolé. Les scénarios synthétiques et seuils proposés ne sont pas une validation clinique. Le niveau de validation clinique attendu par l'école doit être clarifié avec le mentor, sans confondre cette question et les tâches techniques réalisables.
 
-Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Cette correction locale ne signifie pas que le DPO a été entraîné ni que le checkpoint 500 a été rechargé sur GPU dans un nouveau processus.
+Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO reste à exécuter.
 
 ## Historique
 
