@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Train a bounded DPO adapter from the archived SFT, with a frozen SFT reference."""
+"""Train a bounded DPO adapter from a verified SFT, with a frozen SFT reference."""
 import argparse
 import importlib.metadata
 import json
 from pathlib import Path
 
-from triage_poc.comparison import BASE_MODEL, BASE_REVISION, SFT_SHA256, sha256
-from triage_poc.dpo import load_dpo_handoff
+from triage_poc.comparison import sha256
+from triage_poc.dpo import load_dpo_handoff, load_sft_identity
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("dataset", "comparison", "decision", "sft-adapter", "output"):
+    for name in ("dataset", "comparison", "decision", "sft-adapter", "sft-manifest", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--max-steps", type=int, default=20)
     parser.add_argument("--dry-run", action="store_true")
@@ -20,9 +20,10 @@ def main():
         raise ValueError("A bounded run requires 1 to 500 optimizer steps.")
     if args.output.exists():
         raise ValueError("Use a fresh DPO output directory.")
-    if sha256(args.sft_adapter / "adapter_model.safetensors") != SFT_SHA256:
-        raise ValueError("DPO must start from the archived SFT.")
-    manifest, rows = load_dpo_handoff(args.dataset, args.comparison, args.decision)
+    identity = load_sft_identity(args.sft_manifest, args.sft_adapter)
+    sft_sha256 = identity["files"]["adapter_model.safetensors"]
+    manifest, rows = load_dpo_handoff(args.dataset, args.comparison, args.decision,
+                                     sft_sha256=sft_sha256)
     from transformers import AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained(str(args.sft_adapter))
@@ -60,7 +61,8 @@ def main():
         raise RuntimeError("This recipe requires TRL 0.23.1.")
     set_seed(42)
     base = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, revision=BASE_REVISION, device_map={"": 0}, torch_dtype=torch.float16,
+        identity["base_model"], revision=identity["base_revision"],
+        device_map={"": 0}, torch_dtype=torch.float16,
         quantization_config=BitsAndBytesConfig(load_in_4bit=True))
     base = prepare_model_for_kbit_training(base)
     # Two copies of the same SFT: policy is trainable; reference stays frozen.
@@ -87,8 +89,9 @@ def main():
     tokenizer.save_pretrained(args.output / "adapter" / "policy")
     summary = {
         "status": "completed_educational_dpo", "clinical_validation": "not_performed",
-        "base_model": BASE_MODEL, "base_revision": BASE_REVISION,
-        "sft_sha256": SFT_SHA256, "reference": "frozen_archived_sft",
+        "base_model": identity["base_model"], "base_revision": identity["base_revision"],
+        "sft_sha256": sft_sha256, "reference": "frozen_selected_sft",
+        "sft_manifest_sha256": sha256(args.sft_manifest),
         "dataset_manifest_sha256": sha256(args.dataset / "manifest.json"),
         "comparison_sha256": sha256(args.comparison), "decision_sha256": sha256(args.decision),
         "script_sha256": sha256(Path(__file__)), "config": config.to_dict(),

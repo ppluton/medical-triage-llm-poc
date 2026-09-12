@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-12",
+  "status": "data_preflight_only",
+  "tokenizer_verified": true,
+  "splits": {
+    "train": {
+      "records": 512,
+      "over_length_limit": 0,
+      "max_sequence_tokens": 1639,
+      "over_length_ids": [],
+      "phone_mask_ids": [
+        "ultramedical-train-232"
+      ]
+    },
+    "validation": {
+      "records": 64,
+      "over_length_limit": 0,
+      "max_sequence_tokens": 1116,
+      "over_length_ids": [],
+      "phone_mask_ids": []
+    }
+  }
+}

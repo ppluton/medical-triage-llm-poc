@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
-from triage_poc.comparison import SFT_SHA256, sha256
+from triage_poc.comparison import sha256
 from triage_poc.ultramedical_audit import normalize_text
 
 
@@ -51,11 +52,38 @@ def validate_preferences(
                 raise ValueError("Explicit clinical review status required.")
 
 
-def load_dpo_handoff(directory: Path, comparison: Path, decision: Path):
+def load_sft_identity(manifest_path: Path, adapter: Path) -> dict:
+    """Verify the selected weights and tokenizer before loading a model."""
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("schema_version") != "sft-handoff-v1":
+        raise ValueError("Unsupported SFT handoff schema.")
+    if (not manifest.get("base_model")
+            or not re.fullmatch(r"[0-9a-f]{40}", manifest.get("base_revision", ""))):
+        raise ValueError("Pinned SFT base identity required.")
+    files = manifest.get("files", {})
+    required = {"adapter_model.safetensors", "adapter_config.json", "tokenizer.json",
+                "tokenizer_config.json", "chat_template.jinja"}
+    if not required <= files.keys():
+        raise ValueError("SFT weights and tokenizer hashes are required.")
+    for name, digest in files.items():
+        if Path(name).name != name or not isinstance(digest, str) or len(digest) != 64:
+            raise ValueError("Invalid SFT artifact entry.")
+        if not (adapter / name).is_file() or sha256(adapter / name) != digest:
+            raise ValueError(f"SFT artifact checksum mismatch: {name}")
+    config = json.loads((adapter / "adapter_config.json").read_text())
+    if config.get("base_model_name_or_path") != manifest["base_model"]:
+        raise ValueError("Adapter base differs from the selected SFT base.")
+    return manifest
+
+
+def load_dpo_handoff(directory: Path, comparison: Path, decision: Path,
+                     *, sft_sha256: str):
+    if not re.fullmatch(r"[0-9a-f]{64}", sft_sha256):
+        raise ValueError("Explicit SFT checksum required.")
     summary = json.loads(comparison.read_text())
     review = json.loads(decision.read_text())
     if (summary.get("status") != "completed" or summary.get("test_records_used") != 0
-            or summary.get("sft_sha256") != SFT_SHA256
+            or summary.get("sft_sha256") != sft_sha256
             or not {"base", "sft"} <= set(summary.get("comparison", {}))):
         raise ValueError("A completed matching Base/SFT validation comparison is required.")
     if (review.get("comparison_sha256") != sha256(comparison)

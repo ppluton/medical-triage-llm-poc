@@ -3,7 +3,8 @@
 experiment: dpo-qwen3-1.7b-educational-v1
 status: proposed
 runner: scripts/run_dpo.py
-base_checkpoint: archived-source-sft-v5-best-adapter
+base_checkpoint: selected-sft-verified-by-manifest
+sft_manifest_argument: required
 reference_checkpoint: same-sft-frozen
 mode: direct_preference_optimization
 dataset_manifest_status_required: approved_for_educational_dpo

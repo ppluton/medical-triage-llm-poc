@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "date": "2026-09-12",
+  "sft_sha256": "5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d",
+  "test_records_used": 0,
+  "comparison": {
+    "base": {
+      "mean_example_response_nll": 1.456921935081482,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 20,
+      "reached_token_cap": 10,
+      "exact_normalized_reference_matches": 0,
+      "mean_repeated_token_4gram_fraction": 0.34466439593316733,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 6,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 3,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 0
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 5,
+          "reached_token_cap": 1,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 0
+        }
+      }
+    },
+    "sft": {
+      "mean_example_response_nll": 0.6737771034240723,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 26,
+      "reached_token_cap": 4,
+      "exact_normalized_reference_matches": 6,
+      "mean_repeated_token_4gram_fraction": 0.15252402083279676,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 11,
+          "reached_token_cap": 4,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 5
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 1
+        }
+      }
+    }
+  },
+  "source_metrics_sha256": "cebc5face048e3109dc0f3962a748ba58b2f9dc8a40e139368e80f83613dddb7",
+  "source_run_sha256": "45d6c88ef5e17e150a38f5ca7593212619ff854febe10901635f98913a6edb75",
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Existing descriptive QA comparison; no additional inference performed.",
+    "Not an approval to train DPO or a clinical quality claim."
+  ]
+}
