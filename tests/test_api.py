@@ -1,18 +1,18 @@
 from fastapi.testclient import TestClient
 
-from triage_poc.api import ModelResult, TriageRequest, create_app
+from triage_poc.api import ModelResult, ProviderResult, TriageRequest, create_app
 
 
 class FakeProvider:
     def triage(self, request: TriageRequest):
-        return (
-            ModelResult(
+        return ProviderResult(
+            result=ModelResult(
                 triage_level="moderate",
                 summary="Synthetic fixture.",
                 clinical_rationale=["Synthetic only."],
                 missing_information=["Vitals"],
             ),
-            "fake-model-v1",
+            model_version="fake-model-v1", anonymized_input=request,
         )
 
 

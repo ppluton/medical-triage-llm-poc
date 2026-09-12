@@ -55,8 +55,14 @@ class TriageResponse(ModelResult):
     latency_ms: float
 
 
+class ProviderResult(StrictModel):
+    result: ModelResult
+    model_version: str
+    anonymized_input: TriageRequest
+
+
 class TriageProvider(Protocol):
-    def triage(self, request: TriageRequest) -> tuple[ModelResult, str]: ...
+    def triage(self, request: TriageRequest) -> ProviderResult: ...
 
 
 class AuditSink(Protocol):
@@ -77,17 +83,21 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
         interaction_id = str(uuid4())
         status = "provider_unavailable"
         model_version = None
+        content = {}
         try:
             if provider is None:
                 raise HTTPException(503, "No model provider configured for this POC.")
-            result, model_version = provider.triage(request)
-            result = ModelResult.model_validate(result)
+            inference = ProviderResult.model_validate(provider.triage(request))
+            result, model_version = inference.result, inference.model_version
             status = "schema_validated_not_clinically_validated"
-            return TriageResponse(
+            response = TriageResponse(
                 interaction_id=interaction_id, model_version=model_version,
                 safety_notice=SAFETY_NOTICES[request.language],
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
                 **result.model_dump())
+            content = {"anonymized_input": inference.anonymized_input.model_dump(),
+                       "output": response.model_dump(), "privacy_status": "passed"}
+            return response
         except HTTPException:
             raise
         except Exception:
@@ -101,7 +111,8 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                         "timestamp": datetime.now(UTC).isoformat(),
                         "language": request.language, "model_version": model_version,
                         "prompt_version": getattr(provider, "prompt_version", "unconfigured"),
-                        "controls_version": "schema-privacy-v2", "status": status,
+                        "controls_version": "schema-privacy-v3", "status": status,
+                        **content,
                         "latency_ms": round((time.perf_counter() - started) * 1000, 2),
                     })
                 except Exception:

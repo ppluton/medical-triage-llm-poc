@@ -22,13 +22,13 @@ class Redactor:
                                audit=SimpleNamespace(status="passed"))
 
 
-def test_provider_transport_receives_redacted_context_and_audit_is_text_free(tmp_path):
+def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
     def handler(request):
         assert b"alice@example.org" not in request.content
         assert b"EMAIL_ADDRESS" in request.content
         assert json.loads(request.content)["response_format"]["type"] == "json_schema"
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
-            "content": json.dumps(RESULT)}}]})
+            "content": json.dumps({**RESULT, "summary": "Contact alice@example.org"})}}]})
     with httpx.Client(transport=httpx.MockTransport(handler)) as transport:
         provider = VllmProvider("http://localhost:8001/v1", "sft", "sha256:fixture",
                                 anonymizer=Redactor(), client=transport)
@@ -40,7 +40,13 @@ def test_provider_transport_receives_redacted_context_and_audit_is_text_free(tmp
     assert response.json()["latency_ms"] >= 0
     record = json.loads(audit.read_text())
     assert record["interaction_id"] == response.json()["interaction_id"]
-    assert "alice" not in audit.read_text() and "symptoms" not in record
+    assert "alice@example.org" not in audit.read_text()
+    assert "alice@example.org" not in response.text
+    assert record["anonymized_input"]["patient_context"]["symptoms"] == [
+        "synthetic contact: <EMAIL_ADDRESS>"
+    ]
+    assert record["output"] == response.json()
+    assert record["output"]["summary"] == "Contact <EMAIL_ADDRESS>"
 
 
 @pytest.mark.parametrize("reply", [
@@ -85,7 +91,7 @@ def test_blank_and_extra_fields_rejected():
 
 
 def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp_path):
-    from triage_poc.api import ModelResult
+    from triage_poc.api import ModelResult, ProviderResult
     from triage_poc.serving import create_serving_app
 
     calls = []
@@ -98,7 +104,8 @@ def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp
 
         def triage(self, request):
             calls.append(request)
-            return ModelResult.model_validate(RESULT), "synthetic-model"
+            return ProviderResult(result=ModelResult.model_validate(RESULT),
+                                  model_version="synthetic-model", anonymized_input=request)
 
     monkeypatch.setattr("triage_poc.serving.VllmProvider", Provider)
     for key, value in {"TRIAGE_API_TOKEN": "x" * 32, "TRIAGE_VLLM_URL": "http://vllm/v1",
@@ -114,3 +121,44 @@ def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp
     assert response.status_code == 200
     assert len(calls) == 1
     assert len((tmp_path / "audit.jsonl").read_text().splitlines()) == 1
+
+
+def test_failed_output_privacy_check_keeps_audit_content_free(tmp_path):
+    class OutputBlocked(Redactor):
+        def anonymize(self, text, language):
+            if text == "Synthetic example.":
+                return SimpleNamespace(text=text, audit=SimpleNamespace(status="review_required"))
+            return super().anonymize(text, language)
+
+    with httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(
+        200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(RESULT)}}]}
+    ))) as transport:
+        provider = VllmProvider("http://localhost:8001/v1", "sft", "fixture",
+                                anonymizer=OutputBlocked(), client=transport)
+        path = tmp_path / "audit.jsonl"
+        response = TestClient(create_app(provider, JsonlAudit(path))).post("/v1/triage", json=BODY)
+    assert response.status_code == 502
+    record = json.loads(path.read_text())
+    assert record["status"] == "provider_or_schema_failure"
+    assert "output" not in record and "anonymized_input" not in record
+    assert "alice@example.org" not in path.read_text()
+    assert "Synthetic example." not in response.text
+
+
+def test_successful_inference_is_withheld_when_audit_write_fails():
+    class BrokenAudit:
+        def write(self, record):
+            raise OSError("sensitive storage failure")
+
+    with httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(
+        200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(RESULT)}}]}
+    ))) as transport:
+        provider = VllmProvider("http://localhost:8001/v1", "sft", "fixture",
+                                anonymizer=Redactor(), client=transport)
+        response = TestClient(create_app(provider, BrokenAudit())).post("/v1/triage", json=BODY)
+    assert response.status_code == 503
+    assert "Audit unavailable" in response.json()["detail"]
+    assert "sensitive storage" not in response.text
+    assert "Synthetic example." not in response.text

@@ -1,4 +1,4 @@
-"""Private vLLM-compatible demonstration provider and text-free audit sink."""
+"""Private vLLM-compatible demonstration provider and anonymized interaction audit sink."""
 from __future__ import annotations
 
 import hmac
@@ -12,7 +12,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from triage_poc.anonymization import TextAnonymizer
-from triage_poc.api import ModelResult, TriageRequest, create_app
+from triage_poc.api import ModelResult, ProviderResult, TriageRequest, create_app
 
 PROMPT_VERSION = "triage-demo-v2-proposed"
 SYSTEM_PROMPT = (
@@ -83,7 +83,18 @@ class VllmProvider:
         if choice.get("finish_reason") != "stop":
             raise ValueError("Incomplete model generation.")
         result = ModelResult.model_validate_json(choice["message"]["content"])
-        return result, self.version
+        clean_result = result.model_dump()
+        for field, value in clean_result.items():
+            if field == "triage_level":
+                continue
+            clean_result[field] = (
+                [self._clean(text, request.language) for text in value]
+                if isinstance(value, list) else self._clean(value, request.language)
+            )
+        return ProviderResult(
+            result=ModelResult.model_validate(clean_result), model_version=self.version,
+            anonymized_input=TriageRequest(language=request.language, patient_context=context),
+        )
 
     def _clean(self, text: str, language: str) -> str:
         result = self.anonymizer.anonymize(text, language)
