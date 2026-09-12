@@ -24,3 +24,13 @@ Nous avons aussi comparé les prompts DPO au corpus SFT corrigé : aucun doublon
 exact normalisé. L'ancienne liste de protection était liée à la v1 et devra être
 actualisée dans le manifeste final. Cette vérification n'utilise pas les réponses
 du test final et ne détecte pas toutes les paraphrases.
+
+## Filtrer les récits personnels au lieu d'abîmer les connaissances
+
+La revue a effectivement retrouvé des noms et signatures que le premier scan
+n'avait pas tous retirés. Pour ce POC, nous avons écarté les récits personnels dont
+la gouvernance n'est pas établie, au lieu de conserver des comptes rendus nettoyés
+de manière incertaine. Une paire avec citation altérée est également exclue.
+Le nouveau candidat contient 426/54 paires ; les lignes retenues sont inchangées.
+Les exclusions sont tracées sans publier les éléments personnels. Cette décision
+ne transforme pas les préférences restantes en annotations cliniquement validées.

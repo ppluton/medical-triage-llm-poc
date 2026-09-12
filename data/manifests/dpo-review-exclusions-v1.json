@@ -1,0 +1,584 @@
+{
+  "date": "2026-09-12",
+  "status": "exclusions_reviewed_remaining_rows_not_approved",
+  "reviewer": "Codex assisted technical review",
+  "parent_manifest_sha256": "c990549ba648b60f047f17db664e43865755691de86c2bbe0b5e225fb76a59d1",
+  "exclusions": [
+    {
+      "record_id": "ultramedical-train-3",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "b23a8eab6d9e1fda58cbb07b2fb42c527e6218a6bb69dccd461556928748b8b0"
+    },
+    {
+      "record_id": "ultramedical-train-20",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6cb9e005281cb1c8a714671b9b5644f3ef2381721661272ade18499e6f7f8187"
+    },
+    {
+      "record_id": "ultramedical-train-33",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6859866b468348ed24e6f6d7f06f6b32cfac47dbfc1490f84fa008c56b6cf6c2"
+    },
+    {
+      "record_id": "ultramedical-train-47",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "882610be709f0bf25f45e09044c64e95f2003a6cfaa3a2136b6d6e38f5cdf0d0"
+    },
+    {
+      "record_id": "ultramedical-train-59",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "f90e5724ef74110d09a68cd2fe9af46700915b75e499c09ceb52e3e203c6d5f5"
+    },
+    {
+      "record_id": "ultramedical-train-68",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "340207feebdf4ab6c76af11b30f0c33373f519b686efdb5255e1179c63ffa2e5"
+    },
+    {
+      "record_id": "ultramedical-train-69",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "0ef8b9dbec973cc3fd4b3be1a16ec959ab40e1517116317e174368d5e106c185"
+    },
+    {
+      "record_id": "ultramedical-train-74",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "b579ae83370916aec0692c80c3f2c564fc88114fd1cfd490878beb69465c58f2"
+    },
+    {
+      "record_id": "ultramedical-train-84",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "646fb73533af15ca6503eb406b43a7e863aadf9e9554f3de01e14846292105f8"
+    },
+    {
+      "record_id": "ultramedical-train-88",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "7d7c1aadb049c9cea7ca55985f3bac471a2ae82598c9abf543faab16ad3c8323"
+    },
+    {
+      "record_id": "ultramedical-train-92",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "5b1b2dbe7a8587a55859a9f3968a7db8c3b338895ff94c4912c588c9dd3a5bee"
+    },
+    {
+      "record_id": "ultramedical-train-97",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "0c6e2e22d88ea21969e5cdadd98de15528e3a80e2183e3becb10e37dbcb2d8d9"
+    },
+    {
+      "record_id": "ultramedical-train-114",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "39a96401e44ef577ed646812251efa6a29eb45294416f36ee17815f3fe722533"
+    },
+    {
+      "record_id": "ultramedical-train-116",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "e68c80446ff1b8e5c1cba04cb27611bb10a61456adc61ea1a1a97870e1d4c968"
+    },
+    {
+      "record_id": "ultramedical-train-128",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "3e48fa66ae8f615d1d75f700179e34ebfa2551618a9e7574dea3d268211fe4df"
+    },
+    {
+      "record_id": "ultramedical-train-135",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "21e71260b5afdc9cc69b4290116e0b8a64aae3b93ae76dff12416b2098e51ff3"
+    },
+    {
+      "record_id": "ultramedical-train-138",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "bcd2f1a9af618145ee331ecf7534b6a4688e90ce5a1dfaab05d7f4aba2aab96f"
+    },
+    {
+      "record_id": "ultramedical-train-139",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "d56709506afe6c0f43b460364954fbc4c417a8002befa3c7c8db8fb24bf42dc5"
+    },
+    {
+      "record_id": "ultramedical-train-141",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6edba4c6cf75803a6cb5c4d7e261114083fc8fdd0bb54529b4405ac7b3cabd33"
+    },
+    {
+      "record_id": "ultramedical-train-149",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "2eedd0f28756de85177b02ca3faa6da92153caa00836088dc7f6ca702f6ccaf8"
+    },
+    {
+      "record_id": "ultramedical-train-162",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6726f57b43005da21dc4ec88bbc151a98c90bda1ae467d596dbf2615df705ca0"
+    },
+    {
+      "record_id": "ultramedical-train-174",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "4339a545fda7f05e9f087e9fb1196c35dec9022c87c56880448d172ddc30c917"
+    },
+    {
+      "record_id": "ultramedical-train-180",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "bec91eaa2ef1f8b2dfbb332bdbf5bd4bede32e01109733f7b416ddf4d4248b5c"
+    },
+    {
+      "record_id": "ultramedical-train-181",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "aa4b404bd222317085ce235e1439da060e123f7376dc7b17c2e1466fdd4ba4c1"
+    },
+    {
+      "record_id": "ultramedical-train-189",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "c83881c2a9ffa0f1088a009082721e42719af3a8bd22041ca8173d888b0f1fef"
+    },
+    {
+      "record_id": "ultramedical-train-201",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "2116ae61d48ddaa039d308c3e98ed0cee69225d7ae2178a34481f24a209b7ca5"
+    },
+    {
+      "record_id": "ultramedical-train-205",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1a2dccc8004f1f2a054497a3f9916f7e3796fee59d643eab82a99a7e3343a865"
+    },
+    {
+      "record_id": "ultramedical-train-207",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "273122c0653ee96da29e2ec86383be46639b7028891d4d492318708972db1fe4"
+    },
+    {
+      "record_id": "ultramedical-train-217",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6225a4004690089ba14224fde0b633f241888e07fb44d4bdcfdd8b203536f737"
+    },
+    {
+      "record_id": "ultramedical-train-219",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "41ff4d1b66305a7362c15235bde6f9555633c4612fd7028fa91698a301b50733"
+    },
+    {
+      "record_id": "ultramedical-train-226",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a803993755b527c7bd0eddb2ca194cfd485c9c469f1cc328989ea8773d2ce055"
+    },
+    {
+      "record_id": "ultramedical-train-227",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "814f591e3621cb44491baba6fe043f0732612ab60eca72aca3caf4a30b2e0623"
+    },
+    {
+      "record_id": "ultramedical-train-232",
+      "split": "train",
+      "reason": "bibliographic_text_corrupted_by_identifier_mask",
+      "source_line_sha256": "c509c6a9e6603027c86cbec2ef6a8ad4f6426451e02da183344c8d75a28b3455"
+    },
+    {
+      "record_id": "ultramedical-train-233",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "ab9e74071c8b35110b9c5830aff1b077e73555b14650807e17b079f1f1b71d74"
+    },
+    {
+      "record_id": "ultramedical-train-235",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1da9a19b2697c35096d7089835b0317b8e4de8cbe0536b1d63c6d698d6309dff"
+    },
+    {
+      "record_id": "ultramedical-train-243",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1c2bf5e9e0cdab3c6321a8e945cfafd08ae4705bb2a4cf92eb35a40408b1ce29"
+    },
+    {
+      "record_id": "ultramedical-train-254",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "8345e0b2b83a7c129d5118c2900388627ba309613a7271f8f716c6bbb17b36b6"
+    },
+    {
+      "record_id": "ultramedical-train-262",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1533dd9cb3cc262af678f2a6dc6e45c0cdf343b98fd8cba1caf74c5426f845bc"
+    },
+    {
+      "record_id": "ultramedical-train-270",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "3d92cb7ff3f6d5f27f84bf556c93e4af148f9a38c5863d6bf6bae5544ace2e2d"
+    },
+    {
+      "record_id": "ultramedical-train-273",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "bd4051e9ea5bec0a24f7d95bafe99445ca6350e37d810a3bb5a3a5ef43c80b14"
+    },
+    {
+      "record_id": "ultramedical-train-274",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "01bfeb550a4d4277f12b6810662614a3d65c956f4f0b110340ee8e562df4ff24"
+    },
+    {
+      "record_id": "ultramedical-train-280",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1e37d87bd233d4a230326526783ad82328cca4a71d02b6cb0fc9517e2e8a7188"
+    },
+    {
+      "record_id": "ultramedical-train-281",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "187e7490d38cc6126bce6ce2fb40b3c6ab2acd7a3de2367c5e9ee8adc6b2bcac"
+    },
+    {
+      "record_id": "ultramedical-train-284",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "017574870feef526219683abfb5d3c21e7a69c9f26462adc85ae4a9bbb775743"
+    },
+    {
+      "record_id": "ultramedical-train-287",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a8b2b49369c146def456e9a37ec254179284f35cdb80f66f149786d059a2f3f2"
+    },
+    {
+      "record_id": "ultramedical-train-307",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "03260b293e610b2792ebfcca0ef12275f1838d8242e42b4009f1a3f763359716"
+    },
+    {
+      "record_id": "ultramedical-train-312",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "98a88a1d72fea1c8e6903899c49e44ee1394e69030879dd7a1e53712dc4f1e19"
+    },
+    {
+      "record_id": "ultramedical-train-313",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "294ae35cd8bdb86827f9c36a00420ae7b86064ea2f0b616809a38e959ee8f89d"
+    },
+    {
+      "record_id": "ultramedical-train-319",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "59123788ef707b523b1dae3459e724512915b942debb8706dd24ad6ddcdf9859"
+    },
+    {
+      "record_id": "ultramedical-train-324",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "bbe8fec93f7ecb7be2a459d0ace9c4ff2a272b4a051207269b0e21d83d7d2a54"
+    },
+    {
+      "record_id": "ultramedical-train-332",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "f20df11921ce414d75fca83ceba1fcf0842935c7b114186e9eb0a1c3fe2703b8"
+    },
+    {
+      "record_id": "ultramedical-train-333",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "b0fdc1b31cb2a6ea4fe587db7f6c26ad8b5b411cb2eb516e91a634d26365597b"
+    },
+    {
+      "record_id": "ultramedical-train-337",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "70ffa4f7c185be6627483592a931b2133f87bd0916d004a5be2ac97ba65033d4"
+    },
+    {
+      "record_id": "ultramedical-train-340",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "204fd13517c2c136b37df5eb593f5ca5aa586561313252f92c496ce30b97ac19"
+    },
+    {
+      "record_id": "ultramedical-train-350",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "838a8b0e6d252adfcc70512ca800bb213a48a36fdc608dd0ca705a91e3e0940d"
+    },
+    {
+      "record_id": "ultramedical-train-353",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "3a867890e2938fe1c36d882fb32693c8e41f990ab3c4fd0bbe2402fcc1b56a40"
+    },
+    {
+      "record_id": "ultramedical-train-359",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "1baf0c04fc6106cbb30d378589c4796932f84c71c4a9493ce79a738470ea36bd"
+    },
+    {
+      "record_id": "ultramedical-train-363",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "9fdefe8325d196684a2ae628558aceeb04397f72cc744636adcf28d8fc70becf"
+    },
+    {
+      "record_id": "ultramedical-train-364",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "b7a742b0ec7f81341aac05db21ef37c07e7fc45b18ec01711d40f1e20ed1ec4d"
+    },
+    {
+      "record_id": "ultramedical-train-385",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "45ee3563d45fdc53a0145e2e4380d4cc36cc746055379b13d13feffb9142f2c9"
+    },
+    {
+      "record_id": "ultramedical-train-388",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "4ad87699f6f7b10175629d186f3f9783af57bddfe1097c6607d8d20c96bec3ca"
+    },
+    {
+      "record_id": "ultramedical-train-391",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "2ed5cd4d835d20104b68673b1f7ed12b36a314da4627992a027dcda3d675a889"
+    },
+    {
+      "record_id": "ultramedical-train-398",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "8a33dccba6c990317424185d774370d773274eaa422682e150c69ecc7b16ba2e"
+    },
+    {
+      "record_id": "ultramedical-train-402",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "af674a7f251aaa468c23a8cb8992ead8edd37c8f4974f1476d7431d6fc8a8470"
+    },
+    {
+      "record_id": "ultramedical-train-414",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "bfd476c921932fd6add9c5511cbe0f89c79b989b8ca8e3b324e42f38476780e7"
+    },
+    {
+      "record_id": "ultramedical-train-415",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "e421d0166ce903b1588b41b82eca9a8f367b1420e6f57d418713c2bbbc0793e8"
+    },
+    {
+      "record_id": "ultramedical-train-416",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a0bc4b888f8fe07d5a3736c86dd84fd35765d64c1e0d90809d50b82b2c8ddbf9"
+    },
+    {
+      "record_id": "ultramedical-train-419",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "ff554948d5b99685bf309befdb9757e20c0b0bc12fb33513ac8b330cf60a34ee"
+    },
+    {
+      "record_id": "ultramedical-train-427",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "8f947c8e5bf86a1118100689d1bc537cfb89f44e9831acd5fc265ae894006d56"
+    },
+    {
+      "record_id": "ultramedical-train-432",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "380668c0ef9d823be3f01ae8e9dc891dfbd86368c3b1595814a6d2567d211008"
+    },
+    {
+      "record_id": "ultramedical-train-433",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "b4bdc4cde43bfe42ef2dd0002fa5ef7cd2962d37ac9e0de618550aec0ab708e8"
+    },
+    {
+      "record_id": "ultramedical-train-445",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "2900d9958ee0da07e21aec2946872cd2b68892cd7628090882a79b9a83a1116f"
+    },
+    {
+      "record_id": "ultramedical-train-452",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "026cb498cf06a0e6d943c9f59935772af0f0b2eae440162b67e3e778602431a5"
+    },
+    {
+      "record_id": "ultramedical-train-475",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "4dc354bef45b4f8e81489a2d25b8925e640a3b88edee861c6ea03bea08ec567c"
+    },
+    {
+      "record_id": "ultramedical-train-485",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a5c855bbe1c8dd2059fca99babe8f24dcaee325e072ee9403728fdca0211fa53"
+    },
+    {
+      "record_id": "ultramedical-train-486",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "fe160455de2f4e24e480d1483963906181ee6336b4abaaea47ba4955cabf240a"
+    },
+    {
+      "record_id": "ultramedical-train-491",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "99b3403717ec87c26b1cea6b4f048a15f45e39173dde855c09d73c462f06b04b"
+    },
+    {
+      "record_id": "ultramedical-train-492",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "db5c3b7bf7eccf98b10881a5f6539013a31716e1a24518228e4b69596b6b69ba"
+    },
+    {
+      "record_id": "ultramedical-train-494",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6c9f7a99cdc14deb557d012dcb5a49ee40171d19db2c56d69a25729a7017c67a"
+    },
+    {
+      "record_id": "ultramedical-train-498",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "ca1b3a1b3192042f78131b9313a7ee7893fac7ed96d44590f563df252d55116f"
+    },
+    {
+      "record_id": "ultramedical-train-499",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "effd689ad405d7358ea42b8cafe3362f5c456391001f3c79a8d5d12b57b568e8"
+    },
+    {
+      "record_id": "ultramedical-train-503",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "0bb6e297dbc3dc62f8a9d89e8a303ee27f2bc57866a74c198afb5b99964f4510"
+    },
+    {
+      "record_id": "ultramedical-train-505",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a5504762a594f7cc9694208dc7790c9ae70676303eee063ab44758875c5ce1e3"
+    },
+    {
+      "record_id": "ultramedical-train-508",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "5b3b281e4ed6476b733b54d13977ab57c0d32135f1793446bf84a5ff1ac62c17"
+    },
+    {
+      "record_id": "ultramedical-train-516",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "a42124b0a579c716f84fa3e42cb0e7a35c2485146d7460c7abc90dd297e69868"
+    },
+    {
+      "record_id": "ultramedical-train-519",
+      "split": "train",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "45dbdc38c8ab880d80090dd4c9671fc33acd277053e06bf8f59e6febf9e53255"
+    },
+    {
+      "record_id": "ultramedical-dev-2",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "8a70656767fc25dffb732fef33fc6d2ac4423d1c344bbad2a7b327f4264a6338"
+    },
+    {
+      "record_id": "ultramedical-dev-4",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "2b1ce35da71053a24a525af45e612c0fd5016fa59a722d4656820d53b9c2b3e7"
+    },
+    {
+      "record_id": "ultramedical-dev-13",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "4dbb9da90bfe674735b7d05bf4872b2326cec4137ddba8dce5961b03abb235eb"
+    },
+    {
+      "record_id": "ultramedical-dev-21",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "e0fb48b803a4c1a559bc66532b2cb6b09e814502c5566aba36b28cf276f83785"
+    },
+    {
+      "record_id": "ultramedical-dev-25",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "e9f3280025cccd60e481bd2a41e083df91fc6938ba2236ecfd5092d39797d471"
+    },
+    {
+      "record_id": "ultramedical-dev-27",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "8e74913b1f785f7504fbbd9b4aa191eafb1f047cef4d928b95e7f2a6187903d2"
+    },
+    {
+      "record_id": "ultramedical-dev-32",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "14104ebb377a2af374e147593fa885529e50794d2f7a2259c3baf7b6dbfed241"
+    },
+    {
+      "record_id": "ultramedical-dev-36",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "6d2fcf2ecf8eb0999a5244d5cdf5235e59c49cfc0f498ffdedb01e0ceaf5d943"
+    },
+    {
+      "record_id": "ultramedical-dev-46",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "03011595e5637e316b4260a3f643841b363f5d6ca462e8606eaa174020d9247a"
+    },
+    {
+      "record_id": "ultramedical-dev-60",
+      "split": "validation",
+      "reason": "unverified_personal_health_narrative",
+      "source_line_sha256": "5771599e1e00e58c503049d787a88214ea60a1b0091c9861a315e2316fe73b6f"
+    }
+  ]
+}

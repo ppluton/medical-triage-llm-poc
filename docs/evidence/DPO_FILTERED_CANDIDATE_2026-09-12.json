@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-12",
+  "status": "filtered_candidate_not_approved",
+  "manifest_sha256": "991dce270eede8715ec668255fafa79e2b08491c0be74e574a5797ee9700de31",
+  "parent_manifest_sha256": "c990549ba648b60f047f17db664e43865755691de86c2bbe0b5e225fb76a59d1",
+  "exclusion_review_sha256": "e34729b90f614dd6ed4c7662d82d92e749f42316991c815ec3f65da9c6ffdc10",
+  "retained_lines_byte_identical": true,
+  "excluded_records": 96,
+  "protected_sft_canonical_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+  "artifacts": {
+    "train": {
+      "records": 426,
+      "sha256": "1bc486fedf51266b47c32b0fb26f5861939c06363a939800c9dfe5bb71a83798"
+    },
+    "validation": {
+      "records": 54,
+      "sha256": "b3f96636ea0fdbbbed0c61bdf1d80871bcacdfe2d2c663ad2fa8be38ca9ca38d"
+    }
+  },
+  "labels": {
+    "train": {
+      "length": 168,
+      "hard": 171,
+      "easy": 87
+    },
+    "validation": {
+      "hard": 23,
+      "easy": 8,
+      "length": 23
+    }
+  }
+}
