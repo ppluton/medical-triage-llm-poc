@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="POC scolaire bilingue de triage médical par LLM : données gouvernées, SFT/LoRA, DPO, évaluation et API.">
+  <meta name="theme-color" content="#07111f">
+  <title>Medical Triage LLM POC — Pierre Pluton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Retour en haut">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>TRIAGE<em>/LLM</em></span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <a href="#pipeline">Pipeline</a>
+      <a href="#preuves">Preuves</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <a class="github-link" href="https://github.com/ppluton/medical-triage-llm-poc" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> Proof of Concept · AI Engineering</div>
+        <h1>Entraîner un LLM médical.<br><strong>Mesurer avant de promettre.</strong></h1>
+        <p class="lede">Une chaîne bilingue et reproductible, des corpus médicaux ouverts jusqu’à une API de démonstration — avec gouvernance, traçabilité et garde-fous documentés.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/ppluton/medical-triage-llm-poc" target="_blank" rel="noreferrer">Explorer le dépôt <span aria-hidden="true">↗</span></a>
+          <a class="button secondary" href="#preuves">Voir l’état réel</a>
+        </div>
+      </div>
+
+      <aside class="status-card" aria-label="État du projet">
+        <div class="card-kicker"><span class="pulse"></span> ÉTAT DU POC</div>
+        <div class="model-name">Qwen3 <span>1.7B Base</span></div>
+        <div class="metric-grid">
+          <div><b>5 000</b><small>paires SFT</small></div>
+          <div><b>FR / EN</b><small>bilingue</small></div>
+          <div><b>20</b><small>étapes LoRA</small></div>
+          <div><b>3</b><small>sources SFT</small></div>
+        </div>
+        <div class="progress-label"><span>Avancement technique</span><span>Micro-run validé</span></div>
+        <div class="progress"><i></i></div>
+        <p>Le run complet, le DPO et la validation clinique ne sont pas encore réalisés.</p>
+      </aside>
+    </section>
+
+    <section class="warning-band" aria-label="Avertissement médical">
+      <div class="shell warning-inner">
+        <div class="warning-icon" aria-hidden="true">!</div>
+        <p><strong>Projet de recherche scolaire.</strong> Ce POC n’est ni un dispositif médical, ni un outil de diagnostic ou de prescription. Il ne doit pas être utilisé avec de vrais patients.</p>
+      </div>
+    </section>
+
+    <section class="section shell" id="pipeline">
+      <div class="section-head">
+        <div><span class="index">01</span><h2>Du corpus à l’API</h2></div>
+        <p>Une architecture pensée pour isoler les preuves, les données et les décisions.</p>
+      </div>
+      <div class="pipeline" role="list" aria-label="Pipeline du projet">
+        <article class="pipe-step" role="listitem"><span>01</span><div class="pipe-icon">DB</div><h3>Sources ouvertes</h3><p>MedQuAD, MediQAl et FrenchMedMCQA, audités et versionnés.</p></article>
+        <div class="connector" aria-hidden="true"></div>
+        <article class="pipe-step" role="listitem"><span>02</span><div class="pipe-icon">SFT</div><h3>SFT + LoRA</h3><p>Adaptation bilingue de Qwen3 sur 5 000 paires source-derived.</p></article>
+        <div class="connector" aria-hidden="true"></div>
+        <article class="pipe-step pending" role="listitem"><span>03</span><div class="pipe-icon">DPO</div><h3>Préférences sûres</h3><p>Étape séparée à partir d’UltraMedical-Preference.</p></article>
+        <div class="connector" aria-hidden="true"></div>
+        <article class="pipe-step pending" role="listitem"><span>04</span><div class="pipe-icon">API</div><h3>Évaluation + API</h3><p>Comparaison Base / SFT / DPO, puis FastAPI avec garde-fous.</p></article>
+      </div>
+    </section>
+
+    <section class="section dark-section" id="preuves">
+      <div class="shell">
+        <div class="section-head light">
+          <div><span class="index">02</span><h2>Ce qui est réellement prouvé</h2></div>
+          <p>Chaque statut distingue implémentation, exécution technique et validation clinique.</p>
+        </div>
+        <div class="evidence-grid">
+          <article><div class="status proven">PROUVÉ</div><h3>Gouvernance des sources</h3><p>Licences, versions, provenance, restrictions et manifestes des quatre sources documentés.</p><small>Audit & data lineage</small></article>
+          <article><div class="status proven">PROUVÉ</div><h3>Dataset SFT bilingue</h3><p>5 000 paires uniques : 2 500 FR / 2 500 EN, avec splits 4 000 / 500 / 500.</p><small>Source-derived dataset</small></article>
+          <article><div class="status partial">PARTIEL</div><h3>Fine-tuning LoRA</h3><p>Pré-vol tokenizer réussi et micro-run de 20 étapes terminé sur Apple MLX.</p><small>Entraînement complet à faire</small></article>
+          <article><div class="status planned">À VENIR</div><h3>DPO & validation</h3><p>112 362 préférences auditées. Sélection sûre, entraînement et validation restent à réaliser.</p><small>Aucune validation clinique</small></article>
+        </div>
+        <div class="split-callout">
+          <div><span class="big-number">0</span><span>label de triage<br>inventé dans le SFT</span></div>
+          <p>Le dataset principal conserve les réponses issues des sources. Les labels expérimentaux restent séparés et explicitement marqués comme proposés.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="roadmap">
+      <div class="section-head">
+        <div><span class="index">03</span><h2>Chemin critique</h2></div>
+        <p>Le projet progresse par portes de sortie vérifiables, jamais par déclaration.</p>
+      </div>
+      <ol class="roadmap">
+        <li class="done"><span class="road-dot"></span><div><small>TERMINÉ</small><h3>Données gouvernées</h3><p>Sources auditées, schémas, anonymisation, déduplication et isolation des splits.</p></div></li>
+        <li class="active"><span class="road-dot"></span><div><small>EN COURS</small><h3>SFT complet + comparaison baseline</h3><p>Exécuter le run complet, suivre la loss et mesurer les régressions sur un protocole identique.</p></div></li>
+        <li><span class="road-dot"></span><div><small>ENSUITE</small><h3>DPO de sûreté</h3><p>Construire les préférences, entraîner depuis le checkpoint SFT et documenter les écarts.</p></div></li>
+        <li><span class="road-dot"></span><div><small>CONDITIONNEL</small><h3>API de démonstration</h3><p>Brancher le modèle retenu, mesurer latence et audit, puis décider d’un go / no-go technique.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="section shell technical">
+      <div class="terminal" aria-label="Exemple de vérification locale">
+        <div class="terminal-bar"><span></span><span></span><span></span><b>reproductibilité</b></div>
+        <pre><code><i>$</i> python -m pytest
+<em>✓ contrats · anonymisation · datasets · API · évaluation</em>
+
+<i>$</i> python scripts/preflight_source_sft.py --config configs/source_sft_lora.yaml
+<em>✓ 4 000 train · 500 validation · test isolé</em></code></pre>
+      </div>
+      <div class="technical-copy">
+        <span class="index">04</span><h2>Reproductible par conception</h2>
+        <p>Configurations, seeds, checksums, schémas, transformations et preuves sont versionnés. Les données brutes et les poids restent hors du dépôt public.</p>
+        <ul>
+          <li>Python 3.13 & FastAPI</li>
+          <li>Qwen3 + MLX / LoRA</li>
+          <li>JSON Schema & data manifests</li>
+          <li>Docker & CI GitHub Actions</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="shell">
+        <p>Open source · MIT</p>
+        <h2>Inspecter le code.<br>Contester les hypothèses.</h2>
+        <a class="button inverse" href="https://github.com/ppluton/medical-triage-llm-poc" target="_blank" rel="noreferrer">Voir sur GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div><strong>Pierre Pluton</strong><span>AI Engineer · 2026</span></div>
+    <p>POC éducatif — aucune utilisation clinique autorisée.</p>
+  </footer>
+</body>
+</html>
