@@ -30,10 +30,11 @@ Le notebook installe Transformers 5.5.0, PEFT 0.18.1, Accelerate 1.14.0, bitsand
 
 ```bash
 PYTHONPATH=src python scripts/prepare_dpo_candidates.py \
+  --sft-manifest data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json \
   --source /path/to/ultramedical-preference/data \
   --index /path/to/ultramedical-preference-reconstruction-index-v1.jsonl \
-  --sft-artifacts /path/to/source-sft-v1 \
-  --output artifacts/dpo-candidates-v2
+  --sft-artifacts data/processed/source-sft-v2.1-reviewed \
+  --output /path/to/fresh-dpo-candidates
 ```
 
 Le script vérifie les checksums de la source et de l'index, sélectionne 64 validations puis 512 candidats train, exclut les prompts SFT et ceux réservés au test UltraMedical, vérifie la correspondance des conversations, applique Presidio aux identifiants directs et refuse les doublons après anonymisation. Il conserve provenance, préférence source et statuts de revue. Les octets du test UltraMedical ne sont lus que pour vérifier le checksum source ; ses réponses ne sont pas utilisées pour construire les candidats.

@@ -88,3 +88,17 @@ réussis, dont de vrais tenseurs CPU modifiés volontairement pour vérifier le 
 d'une référence modifiée, d'une politique inchangée et de NaN. Ce contrôle ne prouve
 pas encore le comportement de PEFT/TRL sur GPU ni la qualité après DPO. Il compare
 les états initial/final ; il ne prétend pas observer chaque instant intermédiaire.
+
+## Préparateur indépendant du corpus historique
+
+`prepare_dpo_candidates.py` exige maintenant `--sft-manifest` et archive son
+empreinte dans le manifeste DPO, avec le nombre d'enregistrements protégés.
+L'ancien chemin v1 implicite est supprimé. Le contrôle des artefacts est exécuté
+avec `audit_candidate=True` car il sert ici à exclure des prompts, pas à autoriser
+un entraînement SFT. Cela ne change aucun statut de revue des préférences.
+
+Contrôle direct local du manifeste v2.1-reviewed et de son dossier : 4 700 lignes,
+4 700 prompts uniques protégés, 3 721 rendus train et 479 validation conformes.
+Ruff passe. La reconstruction complète depuis UltraMedical n'est pas relancée ;
+le candidat filtré existant reste intact. Cette correction rend le futur préparateur
+cohérent avec la protection déjà ajoutée au candidat filtré.

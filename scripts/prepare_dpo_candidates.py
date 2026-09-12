@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--index", required=True, type=Path)
     parser.add_argument("--sft-artifacts", required=True, type=Path)
+    parser.add_argument("--sft-manifest", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--train-count", type=int, default=512)
     parser.add_argument("--validation-count", type=int, default=64)
@@ -42,7 +43,7 @@ def main():
     if digest.hexdigest() != source['artifact']['sha256']:
         raise ValueError("Source version checksum mismatch.")
     _, canonical, _, _ = validate_source_sft_artifacts(
-        root / 'data/manifests/derived-source-medical-qa-sft-v1.json', args.sft_artifacts)
+        args.sft_manifest, args.sft_artifacts, audit_candidate=True)
     # Exclude all SFT prompts, including validation/test; no QA answer is used here.
     protected = {prompt_hash(r['instruction']) for r in canonical}
     index = {'train': {}, 'dev': {}}
@@ -120,6 +121,8 @@ def main():
         'artifacts': artifacts, 'source_manifest_id': source['manifest_id'],
         'source_revision': source['immutable_revision'], 'source_sha256': digest.hexdigest(),
         'index_sha256': sha256(args.index), 'script_sha256': sha256(Path(__file__)),
+        'sft_manifest_sha256': sha256(args.sft_manifest),
+        'sft_protected_records': len(canonical),
         'protected_prompt_hashes': sorted(protected), 'test_answers_used': 0,
         'excluded_counts': dict(excluded), 'language': 'en',
         'anonymization_entities': list(SOURCE_DIRECT_IDENTIFIER_ENTITIES),
