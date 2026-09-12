@@ -23,3 +23,16 @@ Nous rétablissons l'ordre connu et conservons les réponses détaillées lors d
 prochain contrôle. L'idée est de tester une cause précise en gardant les poids et
 les questions constants. Les tests locaux vérifient que le diagnostic sait montrer
 une différence ; seule l'exécution GPU peut vérifier que la recharge est fidèle.
+
+## Mise à jour : pourquoi les poids peuvent être justes et les sorties différentes
+
+La correction d'import ne résout pas la recharge (v24 : 14/30 identiques). Une
+bibliothèque d'inférence peut garder une copie accélérée de certains poids. Si l'on
+charge un nouvel adaptateur sans actualiser cette copie, le fichier est correct,
+mais le calcul peut encore utiliser un état ancien. C'est une hypothèse sur notre
+évaluateur, pas une nouvelle accusation du corpus.
+
+La v25 mesure les copies obsolètes, vérifie les poids chargés puis réinitialise le
+mode d'inférence comme le faisait le script SFT. Le résultat GPU reste nécessaire
+pour confirmer ou réfuter cette explication. Les tests CPU prouvent seulement que
+notre diagnostic sait reconnaître une copie qui ne correspond plus au poids.

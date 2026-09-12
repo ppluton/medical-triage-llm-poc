@@ -59,3 +59,16 @@ def test_reload_diagnostic_preserves_difference_and_truncation():
     equal = compare_reload(prior, {"generated_token_ids": [10, 20, 30]})
     assert equal["identical"] is True
     assert equal["first_different_token"] is None
+
+
+def test_cache_diagnostic_detects_weights_changed_after_cast():
+    import torch
+
+    from triage_poc.triage_probe import inspect_lora_cache
+
+    model = torch.nn.Linear(2, 2)
+    for parameter in model.parameters():
+        parameter._fast_lora = parameter.detach().to(torch.float16).clone()
+    with torch.no_grad():
+        model.weight.add_(1)
+    assert inspect_lora_cache(model) == {"cached_tensors": 2, "stale_tensors": 1}

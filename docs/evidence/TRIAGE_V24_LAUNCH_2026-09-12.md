@@ -1,7 +1,7 @@
 # Contrôle de recharge et comparaison de triage — v24
 
 - Date : 2026-09-12
-- Statut : draft — version 24 acceptée, observée RUNNING ; résultat en attente
+- Statut : draft — version 24 terminée en erreur au contrôle de recharge
 - Sources : [échec v23](TRIAGE_V23_LAUNCH_2026-09-12.md), [runner](../../scripts/run_triage_probe.py).
 - Environnement : notebook privé `pierrepluton/chsa-source-sft-qwen3`, T4 gratuite ; mêmes dépendances et checkpoint v22 que v23.
 
@@ -43,3 +43,23 @@ du jeu de test. Le checkpoint v22 est recopié en sortie avant le contrôle.
 Si les trente réponses sont reproduites, terminer les dix-huit scénarios et
 analyser les résultats Base/SFT. Sinon, exploiter les divergences sauvegardées
 avant une autre modification. Aucun DPO ni nouveau SFT long n'est lancé ici.
+
+## Résultat terminal
+
+La v24 a terminé en erreur, avec 14/30 séquences identiques, comme v23.
+Les quinze réponses EN et une FR diffèrent. Les séquences détaillées sont
+archivées hors Git ; le [résumé sans texte](TRIAGE_V24_RESULT_2026-09-12.json)
+conserve leurs empreintes et la position des premières divergences.
+L'import Unsloth en premier n'a donc pas suffi à résoudre le problème.
+Aucune comparaison de triage SFT n'a été exécutée.
+
+Le code source public d'Unsloth conserve des copies `_fast_lora` pour le décodage
+et sa méthode `for_training` les supprime. Le script SFT effectue cette transition
+entre évaluations ; notre évaluateur v24 ne le faisait pas avant remplacement des
+poids. Cette observation motive une mesure explicite du cache dans v25, pas une
+affirmation anticipée de correction. La lecture de la branche amont `main` ne
+remplace pas la vérification du comportement dans la version GPU épinglée.
+
+Sources techniques consultées le 12 septembre :
+[cache d'inférence](https://github.com/unslothai/unsloth/blob/main/unsloth/kernels/utils.py),
+[réinitialisation](https://github.com/unslothai/unsloth/blob/main/unsloth/models/llama.py).

@@ -65,7 +65,7 @@ La baisse de loss et l'amélioration des arrêts sont observées. Elles ne démo
 
 La mission exige également d'évaluer le parcours de triage. Dix-huit scénarios de développement couvrent neuf familles en français et anglais : douleur thoracique, détresse respiratoire, déficit neurologique, pédiatrie, grossesse, vulnérabilité, informations insuffisantes, contradictions et cas stable. Le protocole distingue validité JSON, accord avec les références proposées, présence de questions complémentaires et sorties invalides. La présence d'une question ne prouve pas sa pertinence ; le questionnaire adaptatif au fil d'un échange reste à vérifier.
 
-La v23 s'est arrêtée au contrôle de recharge, avec 14/30 générations identiques. Les sorties de triage SFT n'ont donc pas été produites. Une différence d'ordre d'import des bibliothèques a été corrigée ; la v24 est en cours au moment de cette rédaction pour tester cette hypothèse et conserver les divergences détaillées. Ni la fidélité de recharge ni le résultat comparatif de triage ne sont encore affirmés.
+La v23 s'est arrêtée au contrôle de recharge, avec 14/30 générations identiques. Les sorties de triage SFT n'ont donc pas été produites. Une différence d'ordre d'import des bibliothèques a été corrigée, mais la v24 échoue également avec 14/30 séquences identiques. La v25 teste l'invalidation des copies de poids mises en cache lors du passage Base/SFT, en mesurant leur état. Ni la fidélité de recharge ni le résultat comparatif de triage ne sont encore affirmés.
 
 Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec v23](../docs/evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), [contrôle v24](../docs/evidence/TRIAGE_V24_LAUNCH_2026-09-12.md).
 

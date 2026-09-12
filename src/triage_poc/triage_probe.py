@@ -87,3 +87,16 @@ def compare_reload(prior: dict, observed: dict) -> dict:
         "expected_token_ids": expected,
         "observed": observed,
     }
+
+
+def inspect_lora_cache(model) -> dict:
+    """Count cached inference tensors that no longer match their current weights."""
+    import torch
+
+    cached = stale = 0
+    for parameter in model.parameters():
+        value = getattr(parameter, "_fast_lora", None)
+        if value is not None:
+            cached += 1
+            stale += not torch.equal(value, parameter.detach().to(value.dtype))
+    return {"cached_tensors": cached, "stale_tensors": stale}

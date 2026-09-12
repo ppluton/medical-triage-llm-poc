@@ -9,7 +9,12 @@ from pathlib import Path
 
 from triage_poc.comparison import sha256
 from triage_poc.dpo import load_sft_identity
-from triage_poc.triage_probe import compare_reload, messages_for_scenario, score_outputs
+from triage_poc.triage_probe import (
+    compare_reload,
+    inspect_lora_cache,
+    messages_for_scenario,
+    score_outputs,
+)
 
 
 def main():
@@ -30,7 +35,7 @@ def main():
     # isort: off
     from unsloth import FastLanguageModel
     import torch
-    from peft import set_peft_model_state_dict
+    from peft import get_peft_model_state_dict, set_peft_model_state_dict
     from safetensors.torch import load_file
     from transformers import AutoTokenizer, set_seed
     # isort: on
@@ -98,9 +103,23 @@ def main():
     summaries = {}
     for stage in ("base", "sft"):
         if stage == "sft":
-            set_peft_model_state_dict(
-                model, load_file(str(args.checkpoint / "adapter_model.safetensors"))
+            cache_report = {"before_load": inspect_lora_cache(model)}
+            saved = load_file(str(args.checkpoint / "adapter_model.safetensors"))
+            set_peft_model_state_dict(model, saved)
+            current = get_peft_model_state_dict(model)
+            cache_report["loaded_weights_identical"] = (
+                current.keys() == saved.keys()
+                and all(torch.equal(current[k].detach().cpu(), saved[k]) for k in saved)
             )
+            cache_report["after_load"] = inspect_lora_cache(model)
+            # Match the training evaluator's transition and invalidate cached LoRA casts.
+            FastLanguageModel.for_training(model, use_gradient_checkpointing="unsloth")
+            cache_report["after_reset"] = inspect_lora_cache(model)
+            FastLanguageModel.for_inference(model)
+            (args.output / "adapter_reload.json").write_text(json.dumps(cache_report, indent=2))
+            if (not cache_report["loaded_weights_identical"]
+                    or cache_report["after_reset"]["cached_tensors"]):
+                raise ValueError("Adapter weights or inference cache did not reset correctly")
             prior = json.loads(args.prior_qa.read_text())["records"]
             validation = {
                 r["record_id"]: r
