@@ -35,3 +35,37 @@ Les chemins de dataset revu et de décision sont volontairement des paramètres,
 Le [contrôle complémentaire](DPO_CANDIDATE_REVIEW_2026-09-12.json) vérifie à nouveau les 512/64 paires contre les hashes de prompts protégés, sans lever l'exigence de revue de confidentialité. Le lot est entièrement anglais. Les étiquettes source du train sont `length=206`, `easy=105`, `hard=201` ; celles de validation sont `length=29`, `easy=10`, `hard=25`.
 
 Dans 358/512 paires train et 41/64 paires validation, la réponse préférée est plus longue en caractères. Ce constat ne démontre ni biais causal ni supériorité de contenu. La lecture exploratoire d'une paire par type et par split montre des questions de connaissances, des cas cliniques et des sujets biologiques généraux. Certaines paires donnent le même choix final avec des explications différentes. Il serait donc incorrect de traduire systématiquement `chosen/rejected` par « décision de triage correcte/incorrecte » ou de promettre des réponses plus courtes après DPO. La revue exploratoire ne vaut pas validation exhaustive des 576 préférences.
+
+## Actualisation de l'isolement avec le corpus corrigé
+
+Le [contrôle du 12 septembre](DPO_CURRENT_SFT_ISOLATION_2026-09-12.json) compare les
+576 prompts DPO candidats aux 4 700 prompts uniques du SFT v2.1 : **aucun recouvrement
+exact normalisé**. La liste historique de protection ne contient toutefois pas
+2 561 hashes de prompts courants. Le manifeste du lot final devra ajouter ces
+hashes à ceux déjà protégés ; la préparation historique est encore liée au corpus
+v1. Ce contrôle utilise les prompts pour l'exclusion, aucune réponse du test final.
+Il ne prouve pas l'absence de paraphrases communes.
+
+La ligne `ultramedical-train-232` contient un masque `PHONE_NUMBER` au milieu d'une
+pagination de référence bibliographique. Ce masque ne prouve pas la présence d'un
+contact patient ; cette altération doit être traitée explicitement lors de la revue,
+sans restaurer des chiffres inventés. Le lot original est conservé.
+
+## Scan contextuel complémentaire
+
+Le [scan Presidio complémentaire](DPO_CONTEXT_SCAN_2026-09-12.json) a traité les
+1 728 champs des 576 paires : 529 lignes portent au moins une alerte, avec 1 544
+occurrences `PERSON`, 1 317 `DATE_TIME` et 614 `LOCATION`. Aucun autre type n'a été
+signalé dans ce scan du lot déjà nettoyé. Le job local `val_a85d4c35d461` est terminé
+avec code 0 ; les extraits détaillés restent hors Git.
+
+Les occurrences fréquentes comprennent notamment `FcRn`, `Treg`, `BRCA1` sous
+`PERSON` et `Warfarin`, `Duphaston`, `acetaminophen` sous `LOCATION`. Ces alertes ne
+doivent pas être transformées automatiquement en suppressions de contenu. Le scan
+ne valide pas la confidentialité des 576 paires ; il produit une file de revue.
+Aucun statut d'approbation et aucune préférence clinique n'ont été créés.
+
+Reproduction locale : le script archivé `artifacts/dpo-context-review/scan.py`
+utilise `build_presidio_analyzer()` et `PII_ENTITIES` sur les champs `prompt`,
+`chosen`, `rejected`, sans seuil ajouté, sans réécriture des données. Sa version,
+les empreintes d'entrée et celle des résultats sont consignées dans le rapport.

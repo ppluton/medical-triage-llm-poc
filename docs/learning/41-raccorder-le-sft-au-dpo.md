@@ -11,3 +11,16 @@ La vérification compare les empreintes des fichiers et relie la comparaison Bas
 Ce travail répare un raccord technique. Il ne prouve pas encore que DPO améliore le modèle : cela nécessite la revue des préférences, un entraînement et une comparaison. Nous conservons ces étapes distinctes pour avancer sans transformer une préparation réussie en résultat inventé.
 
 La première lecture du lot rappelle pourquoi cette distinction compte : une réponse peut être préférée pour son explication alors que les deux réponses choisissent la même option. Les préférences sélectionnées sont anglaises et les réponses choisies sont souvent plus longues. On ne peut donc pas annoncer à l'avance qu'elles rendront l'assistant plus bref, meilleur en français ou compétent en triage ; ce sont des effets à mesurer.
+
+## Revue du 12 septembre : alerte n'est pas suppression
+
+Le scan élargi des 576 paires détecte beaucoup de noms et de durées. Certains noms
+sont des médicaments ou des protéines : les remplacer aveuglément dégraderait le
+contenu médical. Nous conservons donc les alertes pour revue, sans modifier le lot.
+Une pagination bibliographique a déjà subi un faux masquage dans une paire ; sa
+correction ou exclusion doit être tracée plutôt que restaurer des chiffres supposés.
+
+Nous avons aussi comparé les prompts DPO au corpus SFT corrigé : aucun doublon
+exact normalisé. L'ancienne liste de protection était liée à la v1 et devra être
+actualisée dans le manifeste final. Cette vérification n'utilise pas les réponses
+du test final et ne détecte pas toutes les paraphrases.
