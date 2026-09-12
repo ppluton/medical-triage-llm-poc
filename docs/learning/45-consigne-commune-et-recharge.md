@@ -29,3 +29,18 @@ conformes aux références proposées (6/18 au lieu de 4/18). Elle ne résout pa
 faits inventés ni les erreurs de priorité. Un cas reçoit même la bonne priorité en
 inventant des antécédents : compter uniquement les catégories masquerait ce défaut.
 La suite doit donc conserver des évaluations de fidélité et de sûreté, en plus du format.
+
+## Comparer les trois modèles avec la même règle de mesure
+
+La comparaison après DPO doit refaire aussi les mesures Base et SFT. Sinon une
+bibliothèque ou une quantification différente pourrait expliquer un écart attribué
+à tort au DPO. Le nouveau runner garde les mêmes entrées, la même consigne, le même
+tokenizer et les mêmes budgets pour les trois variantes. Le test final reste réservé.
+Sa préparation locale ne vaut pas encore résultat GPU : les résultats v26 restent
+présentés séparément jusqu'à cette mesure commune.
+
+Le contrôle de préparation a aussi évité une comparaison incorrecte : le template
+sauvegardé contient le marqueur de fin historique, tandis que le SFT transforme
+explicitement sa dernière fin de réponse en EOS natif. Réutiliser le helper ancien
+pour calculer la loss aurait évalué une autre cible. Le nouveau runner reprend donc
+exactement le rendu du SFT. Les 479 références passent ce contrôle avant lancement.
