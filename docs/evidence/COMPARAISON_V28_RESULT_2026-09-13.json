@@ -1,0 +1,48 @@
+{
+  "status": "saved_metrics_recomputed",
+  "comparison": {
+    "base": {
+      "mean_example_response_nll": 1.5321250449484973,
+      "qa_eos_terminated": 23,
+      "triage_valid_schema": 0,
+      "triage_agreement_on_all_records": 0.0,
+      "critical_total": 6,
+      "critical_valid_maximum": 0,
+      "triage_eos_terminated": 9,
+      "triage_reached_512": 9
+    },
+    "sft": {
+      "mean_example_response_nll": 0.7869703168971056,
+      "qa_eos_terminated": 26,
+      "triage_valid_schema": 1,
+      "triage_agreement_on_all_records": 0.05555555555555555,
+      "critical_total": 6,
+      "critical_valid_maximum": 0,
+      "triage_eos_terminated": 1,
+      "triage_reached_512": 17
+    },
+    "dpo": {
+      "mean_example_response_nll": 0.7860586693654292,
+      "qa_eos_terminated": 27,
+      "triage_valid_schema": 1,
+      "triage_agreement_on_all_records": 0.05555555555555555,
+      "critical_total": 6,
+      "critical_valid_maximum": 0,
+      "triage_eos_terminated": 1,
+      "triage_reached_512": 17
+    }
+  },
+  "artifact_hashes": {
+    "summary.json": "c7937de7e0de860cc4711fb52af0d3f8ed3efdf32ff04679c7adbe3f53047225",
+    "base.json": "c4903a4beb479d256bb7554458902d48ff7dc9fd33bd28604f27e0bfa5ef9706",
+    "sft.json": "3e2fcd87fb2b14af30b3fb92bab0c1f1e517ea6cd0174100057571160b9b62c8",
+    "dpo.json": "f2a41ddb43638ff3c9c5ee102c8f5df558f4ba5873870e80b2dd8fe214bda106"
+  },
+  "limits": [
+    "Checks saved observations, not independent execution or clinical validity.",
+    "QA EOS flags are reported by the runner; semantic quality requires review."
+  ],
+  "date": "2026-09-13",
+  "kaggle_version": 28,
+  "script_version_id": 349471067
+}

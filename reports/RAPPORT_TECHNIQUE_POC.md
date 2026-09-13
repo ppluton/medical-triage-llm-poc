@@ -9,12 +9,12 @@
 
 Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune Base/SFT/DPO v28 est en cours. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
+La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune v28 est terminée : Base 0/18 JSON conformes, SFT et DPO 1/18 chacun dans le runtime Transformers FP4. Aucun gain de triage DPO n’est démontré. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO 426/54 admis pour expérimentation pédagogique ; validation clinique absente |
-| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Comparaison commune en cours ; test réservé à effectuer |
+| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Écart de runtime à expliquer ; test réservé à effectuer |
 | Endpoint cloud vLLM/API | Contrats FastAPI, transport simulé, packaging local | Vrai modèle, cible cloud autorisée, démonstration et latence |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
@@ -75,7 +75,7 @@ Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes
 
 Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La revue technique et contextuelle a conduit aux exclusions ci-dessus ; aucune approbation clinique n'a été créée.
 
-La v27 a exécuté vingt étapes sur T4 en 464,143 secondes, beta 0,1, learning rate `5e-6`, batch effectif 8. Les 392 tenseurs de la politique ont changé ; la référence est restée identique au SFT initial. Les poids sauvegardés ont été téléchargés et vérifiés contre les empreintes du run. Sur 54 paires de validation, la loss DPO passe de 0,63323 à l'étape 10 à 0,62233 à l'étape 20. Le taux de préférence implicite TRL est 64,8 % ; ce n'est pas une accuracy médicale. La comparaison v28 réévalue Base, SFT et DPO dans un runtime commun ; ses résultats et la recharge en inférence restent attendus.
+La v27 a exécuté vingt étapes sur T4 en 464,143 secondes, beta 0,1, learning rate `5e-6`, batch effectif 8. Les 392 tenseurs de la politique ont changé ; la référence est restée identique au SFT initial. Les poids sauvegardés ont été téléchargés et vérifiés contre les empreintes du run. Sur 54 paires de validation, la loss DPO passe de 0,63323 à l'étape 10 à 0,62233 à l'étape 20. Le taux de préférence implicite TRL est 64,8 % ; ce n'est pas une accuracy médicale. La comparaison v28 terminée donne une NLL de 0,786970 pour SFT contre 0,786059 pour DPO, mais seulement 1/18 JSON de triage conforme pour chacun. Le runtime diffère de v26 ; aucun gain de triage n’est démontré. Voir [résultats v28](../docs/evidence/COMPARAISON_V28_RESULT_2026-09-13.md).
 
 Preuves : [résultat v27](../docs/evidence/DPO_V27_RESULT_2026-09-13.md), [lancement v28](../docs/evidence/COMPARAISON_V28_LAUNCH_2026-09-13.md), [raccord DPO](../docs/evidence/DPO_HANDOFF_2026-09-12.md), [revue descriptive](../docs/evidence/DPO_CANDIDATE_REVIEW_2026-09-12.json).
 
