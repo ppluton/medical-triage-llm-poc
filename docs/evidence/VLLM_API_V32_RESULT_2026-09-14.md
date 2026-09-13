@@ -30,3 +30,9 @@ La liaison CUDA et l’intégration réelle sont désormais prouvées pour ce ru
 ## Suite
 
 Ajouter une classification technique bornée des erreurs, sans texte patient ni détail d’exception, puis reproduire les requêtes en échec. Conserver les contrôles existants : ne pas accepter une réponse incomplète pour améliorer artificiellement le taux de réussite. Terminer ensuite évaluation réservée, déploiement autorisé et rapport.
+
+## Classification ajoutée après le run
+
+Le fournisseur classe désormais les exceptions avec huit codes techniques bornés. L’API ajoute uniquement `failure_code` aux traces d’échec ; le message public 502 reste générique. Aucun corps rejeté ni message brut d’exception n’est persisté. Cette instrumentation ne permet pas de reconstituer rétroactivement la cause des erreurs v32.
+
+Validation : `PYTHONPATH=src python -m pytest tests/test_serving.py -q` : 12 tests réussis ; Ruff sur les deux modules et le fichier de tests : succès. Les tests vérifient le rejet des sorties tronquées/invalides et l’absence du contenu privé dans réponse et audit. Nouvelle exécution GPU nécessaire pour classer les échecs réels.

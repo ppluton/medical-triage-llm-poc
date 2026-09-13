@@ -20,6 +20,20 @@ SAFETY_NOTICES = {
 }
 
 
+class ProviderFailure(ValueError):
+    """A bounded technical category, never a provider's raw exception message."""
+
+    CODES = frozenset({"input_privacy", "input_contract", "transport",
+                       "provider_envelope", "generation_incomplete", "output_contract",
+                       "output_privacy", "cleaned_output_contract"})
+
+    def __init__(self, code: str):
+        if code not in self.CODES:
+            raise ValueError("Unknown provider failure category")
+        self.code = code
+        super().__init__(code)
+
+
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
@@ -100,6 +114,10 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
             return response
         except HTTPException:
             raise
+        except ProviderFailure as error:
+            status = "provider_or_schema_failure"
+            content = {"failure_code": error.code}
+            raise HTTPException(502, "Assessment unavailable; contact a healthcare professional.")
         except Exception:
             status = "provider_or_schema_failure"
             raise HTTPException(502, "Assessment unavailable; contact a healthcare professional.")

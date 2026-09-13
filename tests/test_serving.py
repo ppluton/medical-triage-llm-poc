@@ -170,3 +170,25 @@ def test_successful_inference_is_withheld_when_audit_write_fails():
     assert "Audit unavailable" in response.json()["detail"]
     assert "sensitive storage" not in response.text
     assert "Synthetic example." not in response.text
+
+
+@pytest.mark.parametrize(('reply', 'code'), [
+    ({'finish_reason': 'length', 'message': {'content': 'private fixture'}},
+     'generation_incomplete'),
+    ({'finish_reason': 'stop', 'message': {'content': 'private fixture'}},
+     'output_contract'),
+    ({}, 'generation_incomplete'),
+])
+def test_failure_audit_contains_only_bounded_category(tmp_path, reply, code):
+    with httpx.Client(transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, json={'choices': [reply]}))) as transport:
+        provider = VllmProvider('http://localhost:8001/v1', 'sft', 'fixture',
+                                anonymizer=Redactor(), client=transport)
+        audit = tmp_path / 'audit.jsonl'
+        response = TestClient(create_app(provider, JsonlAudit(audit))).post('/v1/triage', json=BODY)
+    assert response.status_code == 502
+    record = json.loads(audit.read_text())
+    assert record['failure_code'] == code
+    assert 'output' not in record and 'anonymized_input' not in record
+    assert 'private fixture' not in audit.read_text() + response.text
+    assert 'alice@example.org' not in audit.read_text() + response.text

@@ -12,7 +12,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from triage_poc.anonymization import TextAnonymizer
-from triage_poc.api import ModelResult, ProviderResult, TriageRequest, create_app
+from triage_poc.api import ModelResult, ProviderFailure, ProviderResult, TriageRequest, create_app
 from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT
 
 
@@ -46,46 +46,57 @@ class VllmProvider:
         self.client = client
 
     def triage(self, request: TriageRequest):
-        context = request.patient_context.model_dump()
-        for field in ("symptoms", "medical_history", "allergies", "medications"):
-            context[field] = [self._clean(s, request.language) for s in context[field]]
-        if context["duration"]:
-            context["duration"] = self._clean(context["duration"], request.language)
-        # Keys can carry personal text too; use a bounded transport vocabulary.
-        allowed = {"temperature_c", "heart_rate", "respiratory_rate", "spo2",
-                   "systolic_bp", "diastolic_bp"}
-        if set(context["vitals"]) - allowed:
-            raise ValueError("Unsupported vital name.")
-        payload = {
-            "model": self.model, "temperature": 0, "max_tokens": 512,
-            "messages": [{"role": "system", "content": SYSTEM_PROMPT},
-                         {"role": "user", "content": json.dumps({
-                             "language": request.language, "patient_context": context})}],
-            "response_format": {"type": "json_schema", "json_schema": {
-                "name": "triage", "strict": True, "schema": ModelResult.model_json_schema()}},
-        }
-        if self.client is not None:
-            response = self.client.post(self.url, json=payload, timeout=60)
-        else:
-            with httpx.Client(follow_redirects=False, timeout=60) as client:
-                response = client.post(self.url, json=payload)
-        response.raise_for_status()
-        choice = response.json()["choices"][0]
-        if choice.get("finish_reason") != "stop":
-            raise ValueError("Incomplete model generation.")
-        result = ModelResult.model_validate_json(choice["message"]["content"])
-        clean_result = result.model_dump()
-        for field, value in clean_result.items():
-            if field == "triage_level":
-                continue
-            clean_result[field] = (
-                [self._clean(text, request.language) for text in value]
-                if isinstance(value, list) else self._clean(value, request.language)
+        stage = "input_privacy"
+        try:
+            context = request.patient_context.model_dump()
+            for field in ("symptoms", "medical_history", "allergies", "medications"):
+                context[field] = [self._clean(s, request.language) for s in context[field]]
+            if context["duration"]:
+                context["duration"] = self._clean(context["duration"], request.language)
+            # Keys can carry personal text too; use a bounded transport vocabulary.
+            stage = "input_contract"
+            allowed = {"temperature_c", "heart_rate", "respiratory_rate", "spo2",
+                       "systolic_bp", "diastolic_bp"}
+            if set(context["vitals"]) - allowed:
+                raise ValueError("Unsupported vital name.")
+            payload = {
+                "model": self.model, "temperature": 0, "max_tokens": 512,
+                "messages": [{"role": "system", "content": SYSTEM_PROMPT},
+                             {"role": "user", "content": json.dumps({
+                                 "language": request.language, "patient_context": context})}],
+                "response_format": {"type": "json_schema", "json_schema": {
+                    "name": "triage", "strict": True, "schema": ModelResult.model_json_schema()}},
+            }
+            stage = "transport"
+            if self.client is not None:
+                response = self.client.post(self.url, json=payload, timeout=60)
+            else:
+                with httpx.Client(follow_redirects=False, timeout=60) as client:
+                    response = client.post(self.url, json=payload)
+            response.raise_for_status()
+            stage = "provider_envelope"
+            choice = response.json()["choices"][0]
+            stage = "generation_incomplete"
+            if choice.get("finish_reason") != "stop":
+                raise ValueError("Incomplete model generation.")
+            stage = "output_contract"
+            result = ModelResult.model_validate_json(choice["message"]["content"])
+            stage = "output_privacy"
+            clean_result = result.model_dump()
+            for field, value in clean_result.items():
+                if field == "triage_level":
+                    continue
+                clean_result[field] = (
+                    [self._clean(text, request.language) for text in value]
+                    if isinstance(value, list) else self._clean(value, request.language)
+                )
+            stage = "cleaned_output_contract"
+            return ProviderResult(
+                result=ModelResult.model_validate(clean_result), model_version=self.version,
+                anonymized_input=TriageRequest(language=request.language, patient_context=context),
             )
-        return ProviderResult(
-            result=ModelResult.model_validate(clean_result), model_version=self.version,
-            anonymized_input=TriageRequest(language=request.language, patient_context=context),
-        )
+        except Exception:
+            raise ProviderFailure(stage) from None
 
     def _clean(self, text: str, language: str) -> str:
         result = self.anonymizer.anonymize(text, language)
