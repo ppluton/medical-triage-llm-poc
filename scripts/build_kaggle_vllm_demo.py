@@ -48,8 +48,9 @@ sft=locate('summary.json','45d6c88ef5e17e150a38f5ca7593212619ff854febe10901635f9
 dpo=locate('run_summary.json','dd65fa9a7612bc76ca46cd102353ca5b853fe1545569338ed7b42fb7f39a970a')
 shutil.copytree(sft,Path('/kaggle/working/source-sft-v2-continuation-500'))
 shutil.copytree(dpo,Path('/kaggle/working/source-dpo-v27'))
+subprocess.run([sys.executable,'-m','pip','install','-q','virtualenv==20.35.4'],check=True,timeout=180)
 for name in ('vllm','api'):
-    subprocess.run([sys.executable,'-m','venv','/tmp/chsa-'+name],check=True,timeout=120)
+    subprocess.run([sys.executable,'-m','virtualenv','/tmp/chsa-'+name],check=True,timeout=120)
 vpy='/tmp/chsa-vllm/bin/python'; apy='/tmp/chsa-api/bin/python'
 subprocess.run([vpy,'-m','pip','install','--no-cache-dir','vllm==0.15.0'],check=True,timeout=1800)
 subprocess.run([apy,'-m','pip','install','--no-cache-dir','-r',str(root/'requirements/api.txt')],check=True,timeout=900)
@@ -62,7 +63,7 @@ for name,python in (('vllm',vpy),('api',apy)):
 subprocess.run([sys.executable,str(root/'scripts/run_vllm_api_demo.py'),
  '--vllm-python',vpy,'--api-python',apy,'--sft',str(sft/'trainer/checkpoint-500'),
  '--dpo',str(dpo/'adapter/policy'),'--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
- '--output','/kaggle/working/vllm-api-v29'],check=True,timeout=4800)
+ '--output','/kaggle/working/vllm-api-v30'],check=True,timeout=4800)
 """
     )
     compile(code, "vllm-demo-bootstrap", "exec")
