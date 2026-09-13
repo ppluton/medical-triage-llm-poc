@@ -54,3 +54,19 @@ Après correction : 479 frontières exactes, EOS natif final unique pour chaque 
 longueur maximale 939 tokens sur un budget 2 048. Aucun GPU n'a été lancé avec le
 rendu incorrect et aucun résultat historique n'a été réécrit. Le runner DPO concatène
 déjà chaque réponse avec l'EOS natif ; ce défaut concernait la nouvelle comparaison.
+
+## Vérification des sorties sauvegardées — 2026-09-13
+
+`scripts/verify_current_comparison.py` reçoit `--run`, `--validation`, `--prior-qa`,
+`--scenarios` et un `--output` neuf. Il contrôle les empreintes des trois entrées,
+les populations 479/30/18, les identifiants et leur ordre pour chaque modèle, puis
+recalcule la NLL moyenne et les scores de triage depuis les fichiers sauvegardés.
+Un résumé discordant ou des observations manquantes sont refusés. Le nombre de
+cas critiques avec JSON valide et priorité maximum est rapporté sur tous les cas
+critiques, sans écarter les sorties invalides du dénominateur.
+
+Le test synthétique vérifie le recalcul et le refus d'une loss altérée, d'une
+observation supprimée et d'une entrée modifiée. Un test ciblé passe, ainsi que
+Ruff. Cela vérifie le contrôle local ; les résultats GPU v28 restent attendus.
+Les indicateurs de fin EOS sont repris du runner et la qualité sémantique nécessite
+une lecture des réponses. Ce vérificateur ne constitue pas une validation clinique.
