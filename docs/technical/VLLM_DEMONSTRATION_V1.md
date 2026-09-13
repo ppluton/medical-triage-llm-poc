@@ -56,3 +56,25 @@ Le schéma JSON contraint du service peut améliorer la conformité de format : 
 résultat doit être distingué des sorties libres de v28 et de la pertinence du triage.
 La cible cloud, l'accès privé, le budget, la rétention et le déploiement CI/CD
 restent à concrétiser. Aucune publication externe n'est autorisée par cette recette.
+
+## Composition Docker préparée
+
+`compose.demo.yaml` décrit vLLM et la factory API. Renseigner localement
+`SFT_ADAPTER`, `SELECTED_ADAPTER`, `TRIAGE_MODEL_VERSION`, `TRIAGE_API_TOKEN`
+et `TRIAGE_AUDIT_DIRECTORY`. Les chemins doivent exister ; le montage ne crée pas
+silencieusement un dossier vide. Le répertoire d'audit doit être privé et accessible
+à l'UID 10001 de l'image API. Ne pas changer les droits d'un dossier partagé.
+
+Les deux adaptateurs sont montés en lecture seule. Aucun port vLLM n'est publié
+sur l'hôte ; seul le port API 8000 est lié à 127.0.0.1. Le réseau Docker relie les
+deux services. Le premier démarrage doit télécharger le modèle de base : cette
+composition nécessite Linux, NVIDIA Container Toolkit, Internet et un GPU autorisé.
+Le tag vLLM est fixé à 0.15.0 ; disponibilité de l'image et compatibilité matérielle
+restent à vérifier avant le démarrage, puis consigner son digest réel.
+
+Validation effectuée : `docker compose -f compose.demo.yaml config --quiet`
+avec chemins et token synthétiques, sortie 0. Cela prouve uniquement la validité
+de la configuration Compose. Aucun conteneur n'a été construit ni lancé dans
+cette étape. Le démarrage du modèle peut être plus long que celui de l'API : un
+health API ne suffit pas ; attendre et réussir une inférence avant la démonstration.
+Un accès cloud et une procédure CI/CD restent des étapes distinctes.
