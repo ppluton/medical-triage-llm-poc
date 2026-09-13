@@ -43,6 +43,7 @@ def main():
             "comparison",
             "dpo",
             "evaluation",
+            "final_selection",
             "sft_termination",
             "triage_probe",
             "triage_prompt",

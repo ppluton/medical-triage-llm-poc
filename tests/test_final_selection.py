@@ -30,3 +30,31 @@ def test_selection_is_independent_of_input_order_and_rng():
 def test_invalid_selection_is_rejected(identifiers, count, seed):
     with pytest.raises(ValueError):
         select_generation_ids(identifiers, count=count, seed=seed)
+
+
+def test_freeze_rejects_proposals_and_changed_inputs():
+    from triage_poc.final_selection import validate_final_freeze
+
+    hashes = {"test": "a" * 64, "runner": "b" * 64}
+    freeze = {
+        "status": "frozen",
+        "split": "test",
+        "expected_examples": 500,
+        "generation_examples": 50,
+        "selection_seed": 42,
+        "max_new_tokens": 512,
+        "do_sample": False,
+        "optimizer_steps": 0,
+        "variants": ["base", "sft", "dpo"],
+        "input_hashes": hashes,
+        "package_versions": dict.fromkeys(["torch", "transformers", "peft", "bitsandbytes"], "1.0"),
+    }
+    validate_final_freeze(freeze, hashes)
+    for change in (
+        {"status": "proposed"},
+        {"generation_examples": 30},
+        {"package_versions": {}},
+        {"input_hashes": {"test": "changed"}},
+    ):
+        with pytest.raises(ValueError):
+            validate_final_freeze({**freeze, **change}, hashes)

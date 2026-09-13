@@ -36,9 +36,10 @@ de performance clinique reste exclue sans protocole et références cliniques va
 
 ## Exécution et suites
 
-Le runner v28 impose actuellement 479 validations et les 30 prompts historiques :
-il ne doit pas être réutilisé en renommant le test en validation. Adapter explicitement
-le runner et son vérificateur au manifeste final avant de lancer ce protocole.
+Le runner archivé v28 reste inchangé. Le script local propose désormais un mode
+`--test /path/to/test --final-freeze /path/to/freeze.json`, exclusif des arguments
+de développement. Son vérificateur de résultats doit encore être adapté au test
+final avant de lancer ce protocole. Ne jamais renommer le test en validation.
 Vérifier d'abord la fin et les résultats de v28, puis le budget gratuit disponible.
 Une correction motivée par les résultats du test rend ce jeu utilisé pour le
 développement ; ne pas conserver alors la qualification de test indépendant.
@@ -53,3 +54,25 @@ ne modifie pas la sélection ; un autre seed la modifie ; une sélection plus pe
 est le préfixe de la même liste. Aucun fichier de test réservé n'est chargé.
 Cette preuve porte sur la sélection uniquement : raccord au runner et gel final
 restent à réaliser.
+
+
+## Raccord au runner local
+
+Le mode final exige un manifeste avec `status: frozen`, les paramètres fixes du
+protocole, les `package_versions` exactes (torch, transformers, peft, bitsandbytes)
+et les `input_hashes` : test, data_manifest, sft_manifest, dpo_summary, runner,
+selection et termination. Il vérifie les artefacts SFT/DPO avec les contrôles
+existants. Le fichier de test doit correspondre à `test_qwen3` du manifeste source.
+Aucun manifeste final n'a encore été produit : le choix dépend de v28.
+
+La sélection et le manifeste sont sauvegardés avant les calculs. Les trois modèles
+partagent les 500 loss et les 50 prompts ; aucun scénario de développement n'est
+inclus dans ce mode. Le résumé indique explicitement `evaluation_split: test`
+et le nombre d'exemples de test utilisés. Le mode de développement reste disponible.
+Le paquet Kaggle de développement inclut le nouveau module importé ; aucune
+nouvelle version distante n'a été envoyée.
+
+Validation locale : 10 tests ciblés passent (sélection, refus du gel incomplet ou
+altéré et vérificateur des résultats de développement), CLI `--help` et Ruff passent.
+Cela ne prouve pas le mode final complet sur GPU. Le vérificateur final, le gel et
+l'exécution restent à terminer avant d'annoncer une mesure indépendante.
