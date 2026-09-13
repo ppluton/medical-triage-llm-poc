@@ -73,3 +73,12 @@ ajouté compare donc le fichier sauvegardé aux poids réellement présents apr�
 l'entraînement, puis la référence initiale au SFT d'origine. Le test modifie
 volontairement un fichier pour vérifier que cette divergence est détectée. Même
 une sauvegarde exacte devra ensuite être rechargée pour produire des réponses.
+
+### Résultat du premier DPO GPU
+
+La v27 termine ses vingt étapes sans erreur en environ 7 min 44 s, évaluations
+comprises. Les poids de la politique changent, la référence reste fixe. La loss de
+validation baisse entre les étapes 10 et 20. Cela montre que l'optimisation a eu lieu,
+mais pas que le triage s'améliore. L'accuracy TRL de préférence ne doit pas être
+présentée comme un pourcentage de bonnes réponses médicales. La prochaine preuve
+est la comparaison des réponses produites par Base, SFT et DPO dans les mêmes conditions.
