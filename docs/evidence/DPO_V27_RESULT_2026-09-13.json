@@ -1,6 +1,6 @@
 {
   "date": "2026-09-13",
-  "status": "training_completed_saved_adapter_verification_pending",
+  "status": "training_completed_saved_weights_verified",
   "kernel_version": 27,
   "optimizer_steps": 20,
   "train_metrics": {
@@ -61,5 +61,6 @@
     "trl": "0.23.1",
     "datasets": "4.3.0"
   },
-  "clinical_validation": "not_performed"
+  "clinical_validation": "not_performed",
+  "saved_artifact_check": "DPO_V27_ARTIFACT_CHECK_2026-09-13.json"
 }

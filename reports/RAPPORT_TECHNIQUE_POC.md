@@ -9,12 +9,12 @@
 
 Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Un essai DPO de vingt étapes a été lancé (v27), sans résultat encore disponible. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
+La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L'API dispose de contrats et de tests locaux, mais son intégration au vrai modèle via vLLM n'est pas démontrée. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune Base/SFT/DPO v28 est en cours. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
-| Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO encore candidat ; revue finale et limites à expliciter |
-| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | DPO, comparaison finale et test réservé |
+| Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO 426/54 admis pour expérimentation pédagogique ; validation clinique absente |
+| SFT puis DPO comparés | SFT 500 et comparaison QA de développement | Comparaison commune en cours ; test réservé à effectuer |
 | Endpoint cloud vLLM/API | Contrats FastAPI, transport simulé, packaging local | Vrai modèle, cible cloud autorisée, démonstration et latence |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
@@ -73,11 +73,11 @@ Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec 
 
 Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes anglaises. Après revue contextuelle, 95 récits personnels non vérifiés et une paire altérée ont été exclus. Le candidat filtré contient 426 train et 54 validation ; son usage expérimental est consigné dans ADR-014, sans approbation clinique ni revue humaine indépendante. Les statistiques suivantes décrivent le lot initial. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
 
-Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La confidentialité et le contenu restent à revoir ; aucune approbation clinique n'a été créée.
+Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La revue technique et contextuelle a conduit aux exclusions ci-dessus ; aucune approbation clinique n'a été créée.
 
-Le runner prévoit une politique initialisée depuis le SFT et une référence gelée. La recette initiale est un essai de vingt étapes, beta 0,1, learning rate `5e-6`, batch effectif 8. La référence effectivement immuable pendant l'entraînement, la sauvegarde/recharge et les effets du DPO doivent être mesurés sur GPU. Aucun entraînement DPO n'est présenté comme effectué.
+La v27 a exécuté vingt étapes sur T4 en 464,143 secondes, beta 0,1, learning rate `5e-6`, batch effectif 8. Les 392 tenseurs de la politique ont changé ; la référence est restée identique au SFT initial. Les poids sauvegardés ont été téléchargés et vérifiés contre les empreintes du run. Sur 54 paires de validation, la loss DPO passe de 0,63323 à l'étape 10 à 0,62233 à l'étape 20. Le taux de préférence implicite TRL est 64,8 % ; ce n'est pas une accuracy médicale. La comparaison v28 réévalue Base, SFT et DPO dans un runtime commun ; ses résultats et la recharge en inférence restent attendus.
 
-Preuves : [raccord DPO](../docs/evidence/DPO_HANDOFF_2026-09-12.md), [revue descriptive](../docs/evidence/DPO_CANDIDATE_REVIEW_2026-09-12.json).
+Preuves : [résultat v27](../docs/evidence/DPO_V27_RESULT_2026-09-13.md), [lancement v28](../docs/evidence/COMPARAISON_V28_LAUNCH_2026-09-13.md), [raccord DPO](../docs/evidence/DPO_HANDOFF_2026-09-12.md), [revue descriptive](../docs/evidence/DPO_CANDIDATE_REVIEW_2026-09-12.json).
 
 ## 6. API, audit et déploiement
 
@@ -93,7 +93,7 @@ Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATIO
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT est établie par v25. La clôture nécessite un DPO exécuté puis comparé selon le même protocole, une évaluation finale réservée après gel des choix et une démonstration de bout en bout. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+La recharge du SFT est établie par v25. La clôture nécessite une comparaison du DPO exécuté selon le même protocole, une évaluation finale réservée après gel des choix et une démonstration de bout en bout. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 

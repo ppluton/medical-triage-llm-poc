@@ -1,0 +1,13 @@
+{
+  "status": "saved_weights_verified",
+  "weight_checks": {
+    "reference_unchanged": true,
+    "policy_changed_tensors": 392,
+    "policy_total_tensors": 392
+  },
+  "adapter_sha256": "6eda116c8bec89596c83beb09342094758db23abed5fa3391330965713ec85fd",
+  "run_summary_sha256": "dd65fa9a7612bc76ca46cd102353ca5b853fe1545569338ed7b42fb7f39a970a",
+  "limits": [
+    "Exact saved weights do not prove inference reload or quality."
+  ]
+}

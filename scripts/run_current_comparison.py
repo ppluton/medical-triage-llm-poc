@@ -39,6 +39,7 @@ def main():
         raise ValueError("Fresh comparison output required")
     identity = load_sft_identity(args.sft_manifest, args.sft_adapter)
     dpo_proof = verify_completed_dpo(args.dpo_run, args.sft_manifest, args.sft_adapter)
+    print(json.dumps({"stage": "artifact_verified", **dpo_proof}), flush=True)
     manifest = json.loads(args.data_manifest.read_text())
     entry = manifest["artifacts"]["validation_qwen3"]
     if sha256(args.validation) != entry["sha256"]:

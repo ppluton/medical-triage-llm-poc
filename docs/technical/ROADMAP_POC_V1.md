@@ -8,15 +8,15 @@
 
 | Livrable | Acquis | À terminer |
 |---|---|---|
-| Dataset bilingue | Corpus SFT corrigé : 3 721 train, 479 validation, 500 test ; provenance et contrôles documentés. | Finaliser le lot de préférences DPO et expliquer ses limites. |
-| Modèle SFT puis DPO | SFT général à 500 étapes sauvegardé, comparaison QA Base/SFT disponible. | Évaluation du parcours de triage, recharge réelle du checkpoint retenu, essai DPO puis comparaison commune. |
+| Dataset bilingue | Corpus SFT corrigé : 3 721 train, 479 validation, 500 test ; provenance et contrôles documentés. | Lot DPO 426/54 admis pour expérimentation ; validation clinique absente. |
+| Modèle SFT puis DPO | SFT général à 500 étapes sauvegardé, comparaison QA Base/SFT disponible. | DPO v27 exécuté, sauvegarde vérifiée ; comparaison commune v28 en cours. |
 | Endpoint cloud vLLM/API | Contrats API, garde-fous, audit et tests avec transport simulé. | Inférence du vrai modèle, mesures de latence et déploiement sur cible autorisée. |
 | GitHub Actions | Configuration locale et tests disponibles. | Vérifier l'exécution distante et le déploiement du modèle retenu. |
 | Rapport PDF ≤20 pages | Preuves et historique disponibles. | Synthèse finale, résultats comparés, limites et démonstration de soutenance. |
 
 ## Ordre de travail
 
-**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) a été lancée. Résultat GPU en attente ; validation clinique absente.
+**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) est terminée : 20 étapes, 392 tenseurs modifiés, référence inchangée et poids sauvegardés vérifiés. La comparaison commune v28 est en cours ; validation clinique absente.
 
 1. Conserver le corpus corrigé et les checkpoints. Aucun nouveau SFT long décidé.
 2. Terminer la comparaison Base/SFT avec une partie QA et une partie parcours de triage. Un protocole commun, un budget borné, puis une décision explicite ; les résultats imparfaits sont documentés.
@@ -28,7 +28,7 @@
 
 Les 15 QCM et 30 générations déjà observés ne suffisent pas à conclure à une amélioration générale. Le test final reste isolé. Les scénarios synthétiques et seuils proposés ne sont pas une validation clinique. Le niveau de validation clinique attendu par l'école doit être clarifié avec le mentor, sans confondre cette question et les tâches techniques réalisables.
 
-Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO reste à exécuter.
+Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO v27 est exécuté et sa sauvegarde vérifiée. Sa qualité reste à comparer.
 
 ## Historique
 
