@@ -1,6 +1,6 @@
 # Livrables restants du POC de triage médical
 
-- Date : 2026-09-12
+- Date : 2026-09-13
 - Statut : draft — reprise après audit de la mission
 - Sources : [mission](../../CADRAGE_MISSION.md), [audit OpenClassrooms](../evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), [résultat SFT 500](../evidence/SFT_V22_RESULT_2026-09-12.md).
 
@@ -16,19 +16,19 @@
 
 ## Ordre de travail
 
-**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) est terminée : 20 étapes, 392 tenseurs modifiés, référence inchangée et poids sauvegardés vérifiés. La comparaison commune v28 est terminée : SFT et DPO 1/18 JSON conforme chacun dans le runtime Transformers FP4 ; aucun gain de triage DPO. L’écart avec v26 doit être isolé avant de figer le runtime. Validation clinique absente.
+**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) est terminée : 20 étapes, 392 tenseurs modifiés, référence inchangée et poids sauvegardés vérifiés. La comparaison commune v28 est terminée : SFT et DPO 1/18 JSON conforme chacun dans le runtime Transformers FP4 ; aucun gain de triage DPO. Le runtime de démonstration sera évalué directement via vLLM/API ; aucun diagnostic autonome supplémentaire n’est un préalable. Validation clinique absente.
 
-1. Conserver le corpus corrigé et les checkpoints. Aucun nouveau SFT long décidé.
-2. Terminer la comparaison Base/SFT avec une partie QA et une partie parcours de triage. Un protocole commun, un budget borné, puis une décision explicite ; les résultats imparfaits sont documentés.
-3. Raccorder DPO au SFT retenu, revoir les paires UltraMedical et vérifier un essai court avec référence gelée. Ne pas déduire des préférences biomédicales une validation des niveaux de triage.
-4. Comparer Base/SFT/DPO, connecter le vrai modèle à vLLM et à l'API, puis mesurer le parcours complet.
-5. Terminer déploiement, CI/CD, rapport et soutenance. Définir la cible et le coût avant toute publication ; le quota Kaggle gratuit reste la seule autorisation GPU actuelle.
+1. **Acquis :** corpus corrigé, SFT 500, DPO v27 et comparaison commune v28. Conserver les résultats négatifs ; aucun nouveau SFT long décidé.
+2. **En cours :** vérifier vLLM et l’API avec les deux adaptateurs sur 18 scénarios synthétiques. La v30 a échoué à la liaison CUDA après chargement du modèle ; la v31 teste le correctif. Mesurer réponses, erreurs, latence et audit, puis vérifier la persistance après redémarrage.
+3. **À réaliser :** figer le protocole et le runtime, puis exécuter une fois l’évaluation finale sur le test réservé. Les scripts de sélection, export et vérification existent ; ils ne constituent pas des résultats mesurés.
+4. **À concrétiser :** cible cloud, accès et coût autorisés ; exécution GitHub Actions et déploiement de démonstration. Le quota Kaggle gratuit privé reste la seule autorisation GPU actuelle. Une API accessible seulement en boucle locale dans Kaggle ne remplit pas à elle seule ce livrable.
+5. **À finaliser :** rapport PDF de 20 pages maximum et soutenance à partir des preuves obtenues. Le brouillon PDF existe ; la démonstration réelle reste à exécuter.
 
 ## Limites à garder visibles
 
 Les 15 QCM et 30 générations déjà observés ne suffisent pas à conclure à une amélioration générale. Le test final reste isolé. Les scénarios synthétiques et seuils proposés ne sont pas une validation clinique. Le niveau de validation clinique attendu par l'école doit être clarifié avec le mentor, sans confondre cette question et les tâches techniques réalisables.
 
-Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO v27 est exécuté et sa sauvegarde vérifiée. Sa qualité reste à comparer.
+Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO v27 est exécuté et sa sauvegarde vérifiée. La comparaison v28 ne démontre pas de gain de triage après DPO.
 
 ## Historique
 

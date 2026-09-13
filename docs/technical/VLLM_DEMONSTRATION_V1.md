@@ -1,7 +1,7 @@
 # Préparation de la démonstration vLLM
 
 - Date : 2026-09-13
-- Statut : proposed — recette à vérifier sur GPU, aucun serveur lancé
+- Statut : proposed — recette GPU en cours de vérification, API non prouvée
 - Sources : manifeste `configs/sft-v22-handoff.json`, contrôle DPO v27, `serving.py`, documentation officielle [LoRA vLLM](https://docs.vllm.ai/en/v0.15.0/features/lora/) et [serveur compatible](https://docs.vllm.ai/en/v0.15.0/serving/openai_compatible_server/).
 
 ## Identité et séparation des preuves
@@ -10,7 +10,8 @@ Le modèle de base est `unsloth/Qwen3-1.7B-Base`, révision
 `e249956c10337100486d07afb77e3eb2b30906b8`.
 Le SFT porte l'empreinte `5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d`.
 Le DPO porte l'empreinte `6eda116c8bec89596c83beb09342094758db23abed5fa3391330965713ec85fd`.
-Le choix final du modèle reste ouvert en attendant v28.
+La comparaison v28 est terminée sans gain de triage démontré ; le choix final
+reste ouvert jusqu’aux mesures de la chaîne vLLM/API.
 
 vLLM peut charger l'adaptateur LoRA au-dessus du modèle de base : une fusion et
 un nouvel entraînement ne sont pas des prérequis de cette recette. Le serveur
@@ -40,7 +41,7 @@ vllm serve unsloth/Qwen3-1.7B-Base \
 
 Les dépendances CUDA/Torch de cette version doivent être vérifiées dans cet
 environnement avant de figer la recette. Ne pas installer vLLM dans le runtime
-DPO ou interrompre v28. L'écoute locale seule est intentionnelle pour la preuve
+DPO. L'écoute locale seule est intentionnelle pour la preuve
 d'intégration ; elle ne constitue pas l'endpoint cloud accessible du mandat.
 
 ## Vérifications décisives
