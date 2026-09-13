@@ -1,6 +1,6 @@
 # API de démonstration avec fournisseur de modèle privé
 
-- **Date :** 2026-09-05
+- **Date :** 2026-09-13
 - **Statut :** draft — contrat testé, vLLM réel non encore vérifié
 - **Sources :** spécification, ADR-010, `api.py`, `serving.py`, `tests/test_serving.py`.
 
@@ -34,7 +34,7 @@ Toute route de cette factory, y compris docs et health, exige `Authorization: Be
 
 ## Audit
 
-Le journal JSONL contient identifiant, date UTC, langue, version modèle/prompt/contrôles, statut et latence. Il ne contient ni contexte, ni réponse, ni secret. Un nouveau fichier est créé avec permissions 0600. Si l'écriture échoue, l'API ne délivre pas l'évaluation. Le brief demande un audit clinique plus riche ; le contenu et la rétention de cet audit restent à valider selon ADR-010.
+Le journal JSONL contient identifiant, date UTC, langue, version modèle/prompt/contrôles, statut et latence. Pour une inférence réussie, il contient aussi l'entrée anonymisée effectivement transmise au fournisseur, la réponse retournée et le statut de confidentialité. Les échecs conservent uniquement des métadonnées ; aucun secret ne doit être journalisé. Un nouveau fichier est créé avec permissions 0600. Si l'écriture échoue, l'API ne délivre pas l'évaluation. Le contenu enrichi répond techniquement aux champs du brief. La politique de conservation, la durabilité distante et l'adéquation clinique restent à valider. `scripts/verify_endpoint_audit.py` rapproche les réponses réussies d'un export JSONL par identifiant et égalité de sortie ; ce contrôle ne prouve pas la rétention du stockage distant.
 
 ## Docker et CI
 
