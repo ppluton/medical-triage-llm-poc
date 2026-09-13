@@ -69,8 +69,11 @@ Les deux adaptateurs sont montés en lecture seule. Aucun port vLLM n'est publi�
 sur l'hôte ; seul le port API 8000 est lié à 127.0.0.1. Le réseau Docker relie les
 deux services. Le premier démarrage doit télécharger le modèle de base : cette
 composition nécessite Linux, NVIDIA Container Toolkit, Internet et un GPU autorisé.
-Le tag vLLM est fixé à 0.15.0 ; disponibilité de l'image et compatibilité matérielle
-restent à vérifier avant le démarrage, puis consigner son digest réel.
+Le manifeste du registre confirme le tag 0.15.0 pour Linux amd64 et arm64.
+La composition fixe Linux amd64 et le digest
+`sha256:97187c9535fd6d6040444d68bb073f17344fd454e9241cc7a4e998141f244543`.
+Preuve : `docs/evidence/VLLM_IMAGE_MANIFEST_2026-09-13.json`.
+Le téléchargement de l'image et la compatibilité GPU restent à vérifier.
 
 Validation effectuée : `docker compose -f compose.demo.yaml config --quiet`
 avec chemins et token synthétiques, sortie 0. Cela prouve uniquement la validité
