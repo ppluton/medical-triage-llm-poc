@@ -63,7 +63,7 @@ for name,python in (('vllm',vpy),('api',apy)):
 subprocess.run([sys.executable,str(root/'scripts/run_vllm_api_demo.py'),
  '--vllm-python',vpy,'--api-python',apy,'--sft',str(sft/'trainer/checkpoint-500'),
  '--dpo',str(dpo/'adapter/policy'),'--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
- '--output','/kaggle/working/vllm-api-v30'],check=True,timeout=4800)
+ '--output','/kaggle/working/vllm-api-v31'],check=True,timeout=4800)
 """
     )
     compile(code, "vllm-demo-bootstrap", "exec")

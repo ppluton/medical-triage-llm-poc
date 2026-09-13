@@ -15,3 +15,7 @@ Les échecs seront conservés. Aucun résultat n'est encore disponible au lancem
 
 L'accès reste interne au notebook pour cette étape. Un endpoint accessible et
 un déploiement GitHub Actions restent à concrétiser sur une cible autorisée.
+
+## Incident CUDA et correction ciblée
+
+La version 30 charge les poids, puis échoue avant de répondre : le compilateur ne trouve pas le nom de bibliothèque `libcuda` attendu. Cela distingue bien un problème de démarrage du serveur d’un problème de qualité des réponses. La version suivante rend visible au compilateur le pilote déjà installé, via un lien local et un chemin de recherche. Les poids et les données restent identiques. La preuve attendue est maintenant le démarrage réel du serveur puis les requêtes API, pas seulement le contrôle local du correctif.

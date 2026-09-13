@@ -42,6 +42,30 @@ def stop_owned(process):
             process.wait(timeout=10)
 
 
+def configure_cuda_linker(env, output):
+    """Expose the installed driver to JIT linking without changing system libraries."""
+    listing = subprocess.run(
+        ["/sbin/ldconfig", "-p"], capture_output=True, text=True, check=True
+    ).stdout
+    candidates = [
+        Path(line.split("=>", 1)[1].strip())
+        for line in listing.splitlines()
+        if "libcuda.so.1 " in line and "=>" in line
+    ]
+    driver = next((path.resolve() for path in candidates if path.is_file()), None)
+    if driver is None:
+        raise RuntimeError("Installed CUDA driver library not found in linker cache")
+    directory = output / "cuda-linker"
+    directory.mkdir()
+    (directory / "libcuda.so").symlink_to(driver)
+    env["LIBRARY_PATH"] = os.pathsep.join(
+        filter(None, (str(directory.resolve()), env.get("LIBRARY_PATH")))
+    )
+    (output / "cuda-linker.json").write_text(
+        json.dumps({"driver_library": str(driver), "link_directory": str(directory)}, indent=2)
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("vllm-python", "api-python", "sft", "dpo", "output", "scenarios"):
@@ -75,6 +99,7 @@ def main():
         VLLM_NO_USAGE_STATS="1",
         PYTHONUNBUFFERED="1",
     )
+    configure_cuda_linker(env, args.output)
     token = secrets.token_urlsafe(32)
     model_process = api_process = None
     reports = {}
