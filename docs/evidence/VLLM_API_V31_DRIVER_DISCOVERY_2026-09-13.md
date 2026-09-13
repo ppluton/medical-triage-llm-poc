@@ -9,3 +9,9 @@ La CLI confirme ERROR. Les installations aboutissent, mais le contrôle ajouté 
 La correction v32 charge `libcuda.so.1` via le chargeur dynamique puis lit son chemin réel dans `/proc/self/maps`. Elle utilise ce fichier pour le lien local destiné au compilateur. Le pilote ne vient pas d’un téléchargement supplémentaire. Les erreurs de chargement ou de découverte restent bloquantes.
 
 Validation locale : Ruff, génération/compilation du bootstrap et contrôle ciblé avec mappings simulés passent (résolution du lien, conservation de LIBRARY_PATH, rejet du pilote absent). Cela ne prouve pas le démarrage GPU ; v32 doit exécuter la même chaîne SFT/DPO → vLLM → API. Aucun entraînement ou résultat clinique ajouté.
+
+## Contrôle Linux réel du mécanisme de découverte
+
+Exécuté dans l’image locale `chsa-api:1f5693b`, avec `docker run --rm --network none`, runner monté en lecture seule. Une copie de `libm.so.6`, nommée `libcuda.so.1`, sert uniquement de bibliothèque témoin. Le sous-processus Python démarre avec son répertoire dans LD_LIBRARY_PATH ; le runner la charge réellement avec ctypes, retrouve son chemin dans `/proc/self/maps`, crée le lien attendu et préserve LIBRARY_PATH. Assertions réussies, sortie 0.
+
+Le premier essai créait le répertoire après le démarrage de Python et le chargeur ne le trouvait pas ; le montage d’essai a été corrigé pour créer la bibliothèque avant le sous-processus. Aucun changement supplémentaire du runner n’était nécessaire. Ce contrôle prouve la découverte Linux d’une bibliothèque chargée, pas l’initialisation CUDA ou la compilation FlashInfer. Le conteneur temporaire est supprimé automatiquement après exécution.
