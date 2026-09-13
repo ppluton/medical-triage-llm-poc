@@ -102,3 +102,18 @@ ainsi que Ruff : population synthétique de 501 lignes dont 500 test, exclusion 
 train, parent inchangé, hash altéré et sortie existante refusés. Aucun texte du
 corpus réservé n'a été ouvert pendant cette vérification. L'export réel reste à
 exécuter et vérifier avant le gel ; ces tests ne prouvent pas encore cet artefact.
+
+### Vérificateur final implémenté
+
+`scripts/verify_final_comparison.py --run /path/to/run --test /path/to/test.jsonl
+--freeze /path/to/freeze.json --output /path/to/fresh-proof.json` contrôle le
+manifeste figé sauvegardé, les hashes test/code/manifeste SFT/dataset/résumé DPO et
+les versions rapportées. Il exige les 500 mêmes observations de loss, les 50 mêmes
+identifiants sélectionnés et des générations présentes (texte, tokens, durée,
+indicateur EOS), puis recalcule les moyennes et comptes rapportés.
+
+Un test synthétique complet passe le 2026-09-13 : trois variantes de 500/50 lignes,
+recalcul exact, refus d'une loss modifiée ou d'une génération supprimée. Ruff passe.
+Cette vérification rapproche des artefacts sauvegardés ; elle ne rejoue pas
+l'inférence, ne recalcule pas EOS depuis le tokenizer et ne mesure pas une accuracy
+clinique. L'exécution sur les vrais résultats du test final reste à effectuer.
