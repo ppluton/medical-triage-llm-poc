@@ -87,3 +87,18 @@ traçable avec le même transformateur que train/validation et un manifeste dér
 qui lie son hash au canonique, sans modifier le manifeste historique. Le mode final
 refuse explicitement un manifeste qui ne contient pas cet export. Aucun export du
 test n'a été réalisé pendant cette préparation.
+
+### Exporteur prêt, sans exécution sur le corpus réservé
+
+`scripts/export_final_test.py --canonical /path/to/canonical.jsonl
+--source-manifest /path/to/source-manifest.json --output /path/to/fresh-export`
+contrôle le hash et le nombre d'enregistrements du canonique, puis exporte uniquement
+les 500 lignes test avec le rendu partagé. Il écrit un manifeste dérivé avec
+l'empreinte du parent et du code, sans modifier l'historique. Le renderer de train
+continue de refuser le split test ; une fonction explicite d'évaluation le traite.
+
+Dix tests ciblés passent (`tests/test_final_export.py tests/test_source_sft.py`),
+ainsi que Ruff : population synthétique de 501 lignes dont 500 test, exclusion du
+train, parent inchangé, hash altéré et sortie existante refusés. Aucun texte du
+corpus réservé n'a été ouvert pendant cette vérification. L'export réel reste à
+exécuter et vérifier avant le gel ; ces tests ne prouvent pas encore cet artefact.

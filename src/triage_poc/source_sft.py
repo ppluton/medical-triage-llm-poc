@@ -236,6 +236,17 @@ def render_source_sft_conversation(record: Mapping[str, object]) -> dict[str, ob
         raise ValueError("Only medical_qa_sft records can be rendered.")
     if record.get("split") == "test":
         raise ValueError("The test split must remain isolated from training rendering.")
+    return _render_qa_conversation(record)
+
+
+def render_source_test_conversation(record: Mapping[str, object]) -> dict[str, object]:
+    """Render a reserved record explicitly for final evaluation, never training."""
+    if record.get("task_type") != "medical_qa_sft" or record.get("split") != "test":
+        raise ValueError("Final evaluation rendering requires a medical QA test record")
+    return _render_qa_conversation(record)
+
+
+def _render_qa_conversation(record: Mapping[str, object]) -> dict[str, object]:
     return {
         "record_id": record["record_id"],
         "messages": [

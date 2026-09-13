@@ -202,3 +202,17 @@ def test_overlength_source_is_rejected_instead_of_cut(monkeypatch):
     assert summary["source_audits"]["medquad"]["over_length_rejections"] == 1
     assert all(not r["transformation"]["content_truncated"] for r in records)
     assert all(len(r["response"]) < 4000 for r in records)
+
+
+def test_final_test_renderer_preserves_content_and_training_isolation():
+    from triage_poc.source_sft import render_source_test_conversation
+
+    record = {"record_id": "synthetic-reserved", "task_type": "medical_qa_sft",
+              "split": "test", "instruction": "Synthetic question", "response": "Synthetic answer"}
+    output = render_source_test_conversation(record)
+    assert output == render_source_sft_conversation({**record, "split": "validation"})
+    assert record["split"] == "test"
+    with pytest.raises(ValueError):
+        render_source_sft_conversation(record)
+    with pytest.raises(ValueError):
+        render_source_test_conversation({**record, "split": "train"})

@@ -19,3 +19,9 @@ Ce travail est une préparation, pas une mesure. Il reste à figer les modèles 
 le runtime après v28 et à adapter le runner. Les QCM et réponses documentaires
 ne deviennent pas des exemples de priorité de triage ; la démonstration API et
 la validation clinique restent des questions distinctes.
+
+L'exporteur final partage maintenant le format des messages du SFT. Son entrée
+est explicitement réservée à l'évaluation : le code d'entraînement refuse toujours
+ces lignes. Les contrôles utilisent uniquement des données synthétiques et
+vérifient que les exemples train ne passent pas dans l'export final. Le corpus
+réservé réel n'a pas encore été exporté ni évalué.
