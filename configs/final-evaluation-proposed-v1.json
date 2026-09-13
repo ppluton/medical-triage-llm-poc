@@ -1,0 +1,21 @@
+{
+  "schema_version": "final-evaluation-proposal-v1",
+  "status": "proposed_not_frozen",
+  "date": "2026-09-13",
+  "split": "test",
+  "expected_examples": 500,
+  "variants": [
+    "base",
+    "sft",
+    "dpo"
+  ],
+  "response_loss_examples": 500,
+  "generation_examples": 50,
+  "selection_method": "lowest_sha256_of_seed_colon_record_id",
+  "selection_seed": 42,
+  "max_new_tokens": 512,
+  "do_sample": false,
+  "optimizer_steps": 0,
+  "requires_checkpoint_prompt_runtime_freeze": true,
+  "clinical_validation": false
+}
