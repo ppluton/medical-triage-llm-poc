@@ -42,3 +42,14 @@ le runner et son vérificateur au manifeste final avant de lancer ce protocole.
 Vérifier d'abord la fin et les résultats de v28, puis le budget gratuit disponible.
 Une correction motivée par les résultats du test rend ce jeu utilisé pour le
 développement ; ne pas conserver alors la qualification de test indépendant.
+
+## Sélection locale implémentée
+
+`triage_poc.final_selection.select_generation_ids` applique le classement décrit
+ci-dessus, refuse les doublons, identifiants vides et paramètres invalides.
+Vérification : `PYTHONPATH=src python -m pytest tests/test_final_selection.py -q`,
+8 tests passent le 2026-09-13 sur 500 identifiants synthétiques. L'ordre d'entrée
+ne modifie pas la sélection ; un autre seed la modifie ; une sélection plus petite
+est le préfixe de la même liste. Aucun fichier de test réservé n'est chargé.
+Cette preuve porte sur la sélection uniquement : raccord au runner et gel final
+restent à réaliser.
