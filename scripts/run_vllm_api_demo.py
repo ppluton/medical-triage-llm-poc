@@ -2,6 +2,7 @@
 """Run a loopback-only real-model API demonstration and preserve failed measurements."""
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -44,17 +45,16 @@ def stop_owned(process):
 
 def configure_cuda_linker(env, output):
     """Expose the installed driver to JIT linking without changing system libraries."""
-    listing = subprocess.run(
-        ["/sbin/ldconfig", "-p"], capture_output=True, text=True, check=True
-    ).stdout
-    candidates = [
-        Path(line.split("=>", 1)[1].strip())
-        for line in listing.splitlines()
-        if "libcuda.so.1 " in line and "=>" in line
-    ]
+    # Container-mounted driver libraries need not appear in the ldconfig cache.
+    driver_handle = ctypes.CDLL("libcuda.so.1")
+    candidates = []
+    for line in Path("/proc/self/maps").read_text().splitlines():
+        fields = line.split(maxsplit=5)
+        if len(fields) == 6 and Path(fields[5]).name.startswith("libcuda.so"):
+            candidates.append(Path(fields[5]))
     driver = next((path.resolve() for path in candidates if path.is_file()), None)
-    if driver is None:
-        raise RuntimeError("Installed CUDA driver library not found in linker cache")
+    if driver is None or driver_handle is None:
+        raise RuntimeError("Loaded CUDA driver path not found in process mappings")
     directory = output / "cuda-linker"
     directory.mkdir()
     (directory / "libcuda.so").symlink_to(driver)
