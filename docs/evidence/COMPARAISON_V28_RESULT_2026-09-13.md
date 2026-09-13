@@ -46,8 +46,7 @@ la différence au DPO. L'effet causal du backend reste non isolé.
 ## Décision suivante
 
 Conserver ces résultats négatifs. Ne pas promouvoir le DPO ni relancer un SFT long
-sur leur seule base. Vérifier sur un petit diagnostic de développement le rendu
-et le chargement du même SFT dans des configurations d'inférence explicites,
-puis choisir le runtime de démonstration. Le test réservé reste fermé pendant
+sur leur seule base. Vérifier directement les modèles dans la chaîne vLLM/API cible, sur les
+scénarios synthétiques de développement, puis choisir le runtime de démonstration. Le test réservé reste fermé pendant
 ces décisions. La validation clinique, l'API avec vrai modèle et le déploiement
 restent non prouvés. Aucune exposition publique n'est autorisée par cette mesure.
