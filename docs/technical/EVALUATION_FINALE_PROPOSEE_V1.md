@@ -76,3 +76,14 @@ Validation locale : 10 tests ciblés passent (sélection, refus du gel incomplet
 altéré et vérificateur des résultats de développement), CLI `--help` et Ruff passent.
 Cela ne prouve pas le mode final complet sur GPU. Le vérificateur final, le gel et
 l'exécution restent à terminer avant d'annoncer une mesure indépendante.
+
+
+### Précondition encore manquante : export du test
+
+Le manifeste v2.1 courant contient `canonical`, `train_qwen3` et
+`validation_qwen3`, mais aucun `test_qwen3`. C'est volontaire : les 500 exemples
+réservés sont uniquement dans le canonique. Avant le gel final, produire un export
+traçable avec le même transformateur que train/validation et un manifeste dérivé
+qui lie son hash au canonique, sans modifier le manifeste historique. Le mode final
+refuse explicitement un manifeste qui ne contient pas cet export. Aucun export du
+test n'a été réalisé pendant cette préparation.

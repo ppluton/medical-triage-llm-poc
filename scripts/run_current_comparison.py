@@ -62,7 +62,10 @@ def main():
             / "src/triage_poc/sft_termination.py",
         }
         validate_final_freeze(freeze, {key: sha256(path) for key, path in frozen_paths.items()})
-    entry = manifest["artifacts"]["test_qwen3" if final else "validation_qwen3"]
+    artifact_key = "test_qwen3" if final else "validation_qwen3"
+    if artifact_key not in manifest["artifacts"]:
+        raise ValueError("Required rendered split is absent; prepare and verify its manifest first")
+    entry = manifest["artifacts"][artifact_key]
     if sha256(dataset) != entry["sha256"]:
         raise ValueError("Dataset checksum mismatch")
     rows = [json.loads(line) for line in dataset.read_text().splitlines()]
