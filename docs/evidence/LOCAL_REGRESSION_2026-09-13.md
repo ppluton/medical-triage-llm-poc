@@ -16,3 +16,15 @@ transformations locales, dont les vérificateurs de métriques et d'audit ; leur
 fournisseurs simulés ne prouvent pas une inférence du vrai modèle. La suite ne
 lance ni entraînement GPU ni endpoint cloud et ne mesure aucune performance
 clinique. Les résultats v28 et les preuves de service réel restent nécessaires.
+
+## Après ajout de la préparation du test final
+
+Révision `7a44247`, worktree `complete-poc-evaluation`, réservation
+`val_7445d843207c` : commande `env PYTHONPATH=src python -m pytest -q` dans le
+runtime Python 3.13 local du projet. Résultat : **150 tests passent en 3,67 s**,
+code 0. L'avertissement de dépréciation Starlette/httpx persiste. Ruff sur
+`src scripts tests` passe. La réservation est terminée et la place libérée.
+
+Cette passe couvre notamment l'export synthétique du test, sa sélection et le
+recalcul des résultats sauvegardés. Elle ne charge pas les poids sur GPU, n'exécute
+pas le test réservé réel et ne prouve pas l'inférence vLLM ni le déploiement.
