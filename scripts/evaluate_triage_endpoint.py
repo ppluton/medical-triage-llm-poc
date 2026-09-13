@@ -21,6 +21,7 @@ def evaluate(client, scenarios):
         raise ValueError("Non-empty explicitly synthetic scenarios required")
     requests = [TriageRequest.model_validate(row["request"]) for row in scenarios]
     records, seen = [], set()
+    batch_started = time.perf_counter()
     for row, request in zip(scenarios, requests, strict=True):
         result = {"id": row["id"], "success": False}
         started = time.perf_counter()
@@ -38,6 +39,9 @@ def evaluate(client, scenarios):
             result["error"] = "transport_http_or_response_contract_failure"
         result["client_latency_ms"] = round((time.perf_counter() - started) * 1000, 2)
         records.append(result)
+    elapsed = time.perf_counter() - batch_started
+    if elapsed <= 0:
+        raise ValueError("Positive elapsed measurement required")
     latencies = sorted(r["client_latency_ms"] for r in records)
     successes = sum(r["success"] for r in records)
     return {
@@ -46,6 +50,10 @@ def evaluate(client, scenarios):
         "successes": successes,
         "failures": len(records) - successes,
         "error_rate": (len(records) - successes) / len(records),
+        "elapsed_seconds": elapsed,
+        "requests_per_second": len(records) / elapsed,
+        "successful_responses_per_second": successes / elapsed,
+        "concurrency": 1,
         "latency_population": "all requests including failures, serial, cold start included",
         "percentile_method": "nearest_rank",
         "client_p50_ms": latencies[math.ceil(len(latencies) * 0.5) - 1],

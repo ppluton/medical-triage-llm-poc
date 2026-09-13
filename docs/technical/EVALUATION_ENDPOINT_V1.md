@@ -45,3 +45,16 @@ fichiers et des motifs de divergence, sans recopier le contenu de l'audit.
 
 Cela prouve la correspondance avec l'export fourni. La persistance durable sur le vrai
 serveur, la rétention et l'efficacité de l'anonymisation restent des preuves distinctes.
+
+## Débit séquentiel — 2026-09-13
+
+Le rapport inclut maintenant `elapsed_seconds`, `requests_per_second`,
+`successful_responses_per_second` et `concurrency: 1`. Le temps total couvre
+la boucle entière, y compris le traitement des réponses ; les échecs comptent
+dans le débit des requêtes mais pas dans celui des réponses réussies.
+Le test à horloge contrôlée vérifie 3 requêtes en 12 secondes, dont une réussie :
+0,25 requête/s et 0,08333 réponse réussie/s. Ces chiffres sont une fixture de test,
+pas une mesure du modèle. Les deux tests ciblés passent et Ruff passe.
+L'horloge simulée est isolée du transport HTTP ; un premier essai de test a révélé
+qu'un remplacement global de l'horloge affectait aussi httpx, puis a été corrigé.
+La capacité sous concurrence reste à mesurer sur le service réel.

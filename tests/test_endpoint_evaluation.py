@@ -1,6 +1,7 @@
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from uuid import uuid4
 
 import httpx
@@ -13,7 +14,9 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
-def test_endpoint_evaluation_counts_failures_and_reused_interaction_ids():
+def test_endpoint_evaluation_counts_failures_and_reused_interaction_ids(monkeypatch):
+    ticks = iter([0, 1, 3, 4, 7, 8, 10, 12])
+    monkeypatch.setattr(module, "time", SimpleNamespace(perf_counter=lambda: next(ticks)))
     scenarios = json.loads(Path("data/samples/synthetic-triage-development-v2.json").read_text())[
         :3
     ]
@@ -45,6 +48,10 @@ def test_endpoint_evaluation_counts_failures_and_reused_interaction_ids():
     assert result["successes"] == 1
     assert result["failures"] == 2
     assert result["requests"] == 3
+    assert result["elapsed_seconds"] == 12
+    assert result["requests_per_second"] == pytest.approx(3 / 12)
+    assert result["successful_responses_per_second"] == pytest.approx(1 / 12)
+    assert result["concurrency"] == 1
     assert result["client_p95_ms"] >= result["client_p50_ms"]
     assert "Do not include" not in json.dumps(result)
     assert all(request.url.path == "/v1/triage" for request in calls)
