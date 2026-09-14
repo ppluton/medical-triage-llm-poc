@@ -119,7 +119,7 @@ def main():
             "--dtype",
             "half",
             "--max-model-len",
-            "2048",
+            "4096",
             "--max-num-seqs",
             "1",
             "--enforce-eager",

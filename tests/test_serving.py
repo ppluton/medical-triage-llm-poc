@@ -33,7 +33,7 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
         assert json.loads(request.content)["messages"][0] == messages_for_scenario(
             {"request": BODY}
         )[0]
-        assert PROMPT_VERSION == "triage-demo-v3-proposed"
+        assert PROMPT_VERSION == "triage-demo-v4-proposed"
 
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
             "content": json.dumps({**RESULT, "summary": "Contact alice@example.org"})}}]})
@@ -174,7 +174,7 @@ def test_successful_inference_is_withheld_when_audit_write_fails():
 
 @pytest.mark.parametrize(('reply', 'code'), [
     ({'finish_reason': 'length', 'message': {'content': 'private fixture'}},
-     'generation_incomplete'),
+     'generation_length'),
     ({'finish_reason': 'stop', 'message': {'content': 'private fixture'}},
      'output_contract'),
     ({}, 'generation_incomplete'),

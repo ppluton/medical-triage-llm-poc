@@ -24,7 +24,8 @@ class ProviderFailure(ValueError):
     """A bounded technical category, never a provider's raw exception message."""
 
     CODES = frozenset({"input_privacy", "input_contract", "transport",
-                       "provider_envelope", "generation_incomplete", "output_contract",
+                       "provider_envelope", "generation_incomplete", "generation_length",
+                       "generation_content_filter", "generation_tool_calls", "output_contract",
                        "output_privacy", "cleaned_output_contract"})
 
     def __init__(self, code: str):

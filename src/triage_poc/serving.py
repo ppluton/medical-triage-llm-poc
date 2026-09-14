@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 
 from triage_poc.anonymization import TextAnonymizer
 from triage_poc.api import ModelResult, ProviderFailure, ProviderResult, TriageRequest, create_app
-from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT
+from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT, generation_schema
 
 
 class JsonlAudit:
@@ -60,12 +60,12 @@ class VllmProvider:
             if set(context["vitals"]) - allowed:
                 raise ValueError("Unsupported vital name.")
             payload = {
-                "model": self.model, "temperature": 0, "max_tokens": 512,
+                "model": self.model, "temperature": 0, "max_tokens": 768,
                 "messages": [{"role": "system", "content": SYSTEM_PROMPT},
                              {"role": "user", "content": json.dumps({
                                  "language": request.language, "patient_context": context})}],
                 "response_format": {"type": "json_schema", "json_schema": {
-                    "name": "triage", "strict": True, "schema": ModelResult.model_json_schema()}},
+                    "name": "triage", "strict": True, "schema": generation_schema()}},
             }
             stage = "transport"
             if self.client is not None:
@@ -77,6 +77,8 @@ class VllmProvider:
             stage = "provider_envelope"
             choice = response.json()["choices"][0]
             stage = "generation_incomplete"
+            if choice.get("finish_reason") in {"length", "content_filter", "tool_calls"}:
+                stage = "generation_" + choice["finish_reason"]
             if choice.get("finish_reason") != "stop":
                 raise ValueError("Incomplete model generation.")
             stage = "output_contract"
