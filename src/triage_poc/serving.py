@@ -27,6 +27,7 @@ class JsonlAudit:
         try:
             if os.write(descriptor, data) != len(data):
                 raise OSError("Incomplete audit write")
+            os.fsync(descriptor)
         finally:
             os.close(descriptor)
 

@@ -42,3 +42,13 @@ fichier le même identifiant et la même réponse qu'en HTTP, sans l'identifiant
 synthétique présent dans l'entrée et la sortie du transport. Un échec de contrôle
 de sortie doit empêcher réponse et contenu sensible dans l'audit. Ces tests ne
 prouvent ni inférence vLLM réelle ni anonymisation exhaustive par Presidio.
+
+## Synchronisation locale — 14 septembre 2026
+
+Le sink synchronise désormais le fichier avec `fsync` après une écriture complète,
+avant de rendre la main à l'API. Tout échec de synchronisation suit le refus 503
+existant. Un test avec deux processus API indépendants vérifie l'ajout sans perte
+de la première interaction. Cette évolution ne fixe aucune rétention et ne
+promet pas la résistance à une perte de volume ou une panne matérielle.
+Un enregistrement éventuellement écrit avant un échec de synchronisation ne
+prouve pas que le client a reçu une réponse ; les deux événements sont distincts.
