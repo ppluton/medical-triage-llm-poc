@@ -70,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("vllm-python", "api-python", "sft", "dpo", "output", "scenarios"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--collection-scenarios", type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     if args.output.exists():
@@ -212,6 +213,22 @@ def main():
                 "measurement_exit_code": measure.returncode,
                 "audit_exit_code": audit.returncode,
             }
+            if args.collection_scenarios:
+                collection = subprocess.run(
+                    [str(args.api_python), str(root / "scripts/evaluate_collection_endpoint.py"),
+                     "--scenarios", str(args.collection_scenarios),
+                     "--output", str(directory / "collection.json")],
+                    env=stage_env, timeout=1800,
+                )
+                collection_audit = subprocess.run(
+                    [str(args.api_python), str(root / "scripts/verify_endpoint_audit.py"),
+                     "--report", str(directory / "collection.json"),
+                     "--audit", str(directory / "audit.jsonl"),
+                     "--output", str(directory / "collection-audit-proof.json")],
+                    env=stage_env, timeout=60,
+                )
+                reports[stage].update(collection_exit_code=collection.returncode,
+                                      collection_audit_exit_code=collection_audit.returncode)
             stop_owned(api_process)
             api_process = None
         (args.output / "summary.json").write_text(
@@ -221,6 +238,9 @@ def main():
                     "reports": reports,
                     "variant_order": list(variants),
                     "scenario_sha256": hashlib.sha256(args.scenarios.read_bytes()).hexdigest(),
+                    "collection_scenario_sha256": (
+                        hashlib.sha256(args.collection_scenarios.read_bytes()).hexdigest()
+                        if args.collection_scenarios else None),
                     "optimizer_steps": 0,
                     "test_records_used": 0,
                     "public_endpoint": False,

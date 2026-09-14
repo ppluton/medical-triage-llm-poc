@@ -45,3 +45,21 @@ L'API continue de demander une évaluation à chaque appel : elle n'attend pas u
 Tests reproductibles : `PYTHONPATH=src python -m pytest -q tests/test_collection.py tests/test_api.py tests/test_serving.py tests/test_endpoint_evaluation.py`.
 
 Les tests synthétiques avec fournisseur simulé vérifient les tours FR/EN, les contradictions de statut, le suivi des inconnues et le raccord d'anonymisation/audit. Ils ne prouvent pas le comportement du modèle réel avec le prompt v5, ni un parcours rendu dans une interface, ni la pertinence clinique. Une vérification GPU séparée doit mesurer ces limites, sans toucher au test QA figé de v35.
+
+## Pilote reproductible des échanges — 14 septembre
+
+`scripts/evaluate_collection_endpoint.py` se connecte exclusivement à l'API locale
+`http://127.0.0.1:8000`, avec `TRIAGE_API_TOKEN` dans l'environnement. Exemple :
+
+```sh
+PYTHONPATH=src python scripts/evaluate_collection_endpoint.py \
+  --scenarios data/samples/synthetic-collection-dialogues-v1.json \
+  --output artifacts/dialogue/run-001.json
+```
+
+Le client choisit les réponses correspondant aux champs réellement demandés,
+conserve le contexte et vérifie l'avancement, l'unicité des identifiants et les
+informations indisponibles. Le rapport contient les sorties synthétiques et les
+échecs ; il est compatible avec `scripts/verify_endpoint_audit.py`. Il ne calcule
+aucun score de justesse clinique. Les [tests locaux](../evidence/DIALOGUE_DRIVER_LOCAL_2026-09-14.md)
+passent ; les mesures avec les vrais modèles restent à effectuer.

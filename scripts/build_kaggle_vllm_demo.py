@@ -28,6 +28,8 @@ def main():
     names = [
         "scripts/run_vllm_api_demo.py",
         "scripts/evaluate_triage_endpoint.py",
+        "scripts/evaluate_collection_endpoint.py",
+        "data/samples/synthetic-collection-dialogues-v1.json",
         "scripts/verify_endpoint_audit.py",
         "requirements/api.txt",
         "data/samples/synthetic-triage-development-v2.json",
@@ -67,6 +69,7 @@ for name,python in (('vllm',vpy),('api',apy)):
 subprocess.run([sys.executable,str(root/'scripts/run_vllm_api_demo.py'),
  '--vllm-python',vpy,'--api-python',apy,'--sft',str(sft/'trainer/checkpoint-500'),
  '--dpo',str(dpo/'adapter/policy'),'--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
+ '--collection-scenarios',str(root/'data/samples/synthetic-collection-dialogues-v1.json'),
  '--output','/kaggle/working/RUN_NAME_PLACEHOLDER'],check=True,timeout=4800)
 """
     )

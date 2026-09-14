@@ -112,3 +112,9 @@ Ces contrôles établissent la cohérence du paquet, pas son fonctionnement GPU.
 Le lot courant mesure un appel par scénario ; une preuve du parcours complet
 sur plusieurs appels avec le modèle réel reste à ajouter. Le candidat ne remplace
 pas l'évaluation QA v35 figée en cours et n'a pas été lancé.
+
+Le candidat précédent est remplacé par `artifacts/kaggle/api-dialogue-candidate`
+(nom de run `api-dialogue-candidate`), qui inclut les deux dialogues FR/EN et la
+synchronisation d'audit. Voir la [préparation et ses limites](../evidence/DIALOGUE_DRIVER_LOCAL_2026-09-14.md).
+Le notebook SHA-256 est `3f5a79ec62eebfca17a6e1e726b08d145e95b6424f7e996bc8d1c19a40b3e2ff`.
+Il n'a pas encore été lancé ; l'évaluation QA v35 reste prioritaire et inchangée.

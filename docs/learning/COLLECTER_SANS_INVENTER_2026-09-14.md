@@ -18,3 +18,10 @@ clinique. La prochaine comparaison API inclura aussi la Base, car comparer
 uniquement SFT et DPO ne permet pas d'isoler ce qu'apporte l'adaptation par rapport
 au modèle d'origine dans les mêmes conditions de service. Le paquet local est
 vérifié mais n'a pas été envoyé sur Kaggle ; l'évaluation QA en cours reste figée.
+
+Le pilote de dialogue répond ensuite aux questions réellement reçues au lieu
+d'envoyer trois contextes fixes sans regarder les réponses. Ce détail permet de
+détecter une API qui répète les questions ou perd le contexte. Deux dialogues
+synthétiques de six échanges, en français et en anglais, passent localement ;
+la prochaine mesure GPU les exécutera avec chacun des trois modèles. Un succès
+de collecte restera distinct d'une bonne interprétation médicale.
