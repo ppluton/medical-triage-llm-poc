@@ -1,6 +1,6 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
-- **Date :** 2026-09-12
+- **Date :** 2026-09-14
 - **Statut :** draft — rapport intermédiaire, livrables incomplets
 - **Sources :** [cadrage](../CADRAGE_MISSION.md), [spécification](../SPEC_POC_TRIAGE_MEDICAL.md), [audit de mission](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md) et preuves liées ci-dessous.
 - **Format final :** PDF de vingt pages maximum ; ce document Markdown n'est pas encore le PDF final.
@@ -9,13 +9,13 @@
 
 Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L’intégration réelle vLLM/API est démontrée par v32 sur GPU T4 en accès local privé : 12 réponses conformes sur 18 pour chaque adaptateur, avec six erreurs par variante. La qualité et la disponibilité restent insuffisantes. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune v28 est terminée : Base 0/18 JSON conformes, SFT et DPO 1/18 chacun dans le runtime Transformers FP4. Aucun gain de triage DPO n’est démontré. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
+La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L’intégration réelle vLLM/API est démontrée par v34 sur GPU T4 en accès local privé : 18 réponses conformes sur 18 pour chaque adaptateur, sans erreur sur ce lot. La qualité du triage reste insuffisante : 8 priorités sur 18 correspondent aux références pédagogiques proposées, avec absence du niveau intermédiaire et de questions sur les cas incomplets. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune v28 est terminée : Base 0/18 JSON conformes, SFT et DPO 1/18 chacun dans le runtime Transformers FP4. Aucun gain de triage DPO n’est démontré. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO 426/54 admis pour expérimentation pédagogique ; validation clinique absente |
-| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Écart de runtime à expliquer ; test réservé à effectuer |
-| Endpoint cloud vLLM/API | Intégration réelle v32, 12/18 réponses conformes par variante, audit et latence mesurés | Diagnostiquer les rejets, vérifier le redémarrage, déployer sur cible autorisée |
+| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Test réservé v35 lancé avec protocole figé ; résultat non encore disponible |
+| Endpoint cloud vLLM/API | Intégration réelle v34, 18/18 réponses conformes par variante, audit et latence mesurés | Compléter le parcours de questions, vérifier le redémarrage, déployer sur cible autorisée |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
 
@@ -83,9 +83,13 @@ Preuves : [résultat v27](../docs/evidence/DPO_V27_RESULT_2026-09-13.md), [lance
 
 `POST /v1/triage` valide le contrat, retourne un niveau parmi les trois autorisés, ajoute un avertissement FR/EN et un identifiant d'interaction. Le fournisseur compatible vLLM anonymise les entrées avant transport et demande une sortie conforme au schéma. La factory privée exige un jeton. L'application par défaut n'a aucun modèle configuré et retourne 503 au triage.
 
-L’exécution v32 a servi les adaptateurs sauvegardés via vLLM 0.15.0, en FP16 avec sortie JSON contrainte, sur 18 scénarios synthétiques par variante. Le SFT et le DPO produisent chacun 12 réponses API conformes et six erreurs 502. Leurs priorités correspondent aux références pédagogiques proposées dans respectivement 6/18 et 5/18 cas. Le journal vLLM contient 36 réponses HTTP 200 : les rejets surviennent ensuite dans la chaîne de validation de l’API. Leur cause exacte n’est pas identifiable rétroactivement ; la v33 ajoute des codes techniques bornés pour la préciser.
+L’exécution v34 a servi les adaptateurs sauvegardés via vLLM 0.15.0, en FP16 avec sortie JSON contrainte, sur 18 scénarios synthétiques par variante. Après identification de générations incomplètes en v33, un prompt et un schéma plus concis ainsi qu’un budget de 768 tokens permettent 18 réponses API conformes sur 18 pour SFT et DPO. Ces changements ont été appliqués ensemble : leur contribution individuelle n’est pas isolée.
 
-Les latences médianes client sont de 21,878 secondes pour SFT et 10,897 secondes pour DPO ; p95 : 42,709 et 33,610 secondes. Les mesures sont séquentielles, incluent les échecs et ne constituent pas un test de charge. Le DPO passe après le SFT dans le même serveur ; l’effet des caches interdit d’attribuer directement la différence au DPO. Les 12 réponses réussies de chaque variante correspondent chacune à une trace d’audit. Voir la [preuve v32](../docs/evidence/VLLM_API_V32_RESULT_2026-09-14.md). Ces mesures ne prouvent ni la justesse clinique ni l’accès extérieur au service.
+Les deux variantes donnent les mêmes priorités : 8/18 correspondent aux références proposées, dont les six cas critiques classés `maximum`. Aucune réponse ne propose `moderate`, et les cas d’informations insuffisantes ne reçoivent pas de question complémentaire. Une réponse anglaise suppose aussi une stabilité absente des informations fournies. Le parcours reste donc incomplet ; aucune amélioration du triage par DPO n’est démontrée.
+
+Les latences médianes client sont de 7,719 secondes pour SFT et 7,178 secondes pour DPO ; p95 : 38,323 et 22,011 secondes. Les mesures sont séquentielles et ne constituent pas un test de charge. Le DPO passe après le SFT dans le même serveur ; l’effet des caches interdit d’attribuer directement la différence au DPO. Les 18 réponses de chaque variante correspondent chacune à une trace d’audit. Voir la [preuve v34](../docs/evidence/VLLM_API_V34_RESULT.md). Ces mesures ne prouvent ni la justesse clinique ni l’accès extérieur au service.
+
+Une extension locale de collecte (API 0.3.0) suit les rubriques renseignées, les absences explicitement déclarées et les informations indisponibles. Les questions FR/EN avancent au fil des contextes consolidés. Le raccord est testé avec fournisseur simulé ; il n'est pas inclus dans les mesures GPU v34 et ne prouve pas une amélioration de la priorité. Voir le [parcours de collecte](../docs/technical/COLLECTE_COMPLEMENTAIRE_V1.md).
 
 L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. La politique de stockage et de conservation reste à définir avant déploiement.
 
@@ -95,7 +99,7 @@ Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATIO
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT est établie par v25. La comparaison commune du DPO est réalisée. La clôture nécessite encore le traitement des rejets API, une évaluation finale réservée après gel des choix et une démonstration sur une cible accessible autorisée. Elle comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+La recharge du SFT est établie par v25. La comparaison commune du DPO est réalisée. La clôture nécessite encore un parcours de questions complémentaires opérationnel et des contrôles adaptés aux informations insuffisantes, les résultats de l’évaluation finale réservée et une démonstration sur une cible accessible autorisée. La v35 compare Base, SFT et DPO sur les 500 exemples de test et 50 générations sélectionnées de manière déterministe, sans entraînement. Son protocole Transformers FP4 est distinct de la démonstration vLLM FP16 ; ses résultats ne serviront pas à régler les modèles. Voir le [gel et lancement v35](../docs/evidence/FINAL_QA_V35_LAUNCH.md). La clôture comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 
