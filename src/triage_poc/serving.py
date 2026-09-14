@@ -49,10 +49,12 @@ class VllmProvider:
         stage = "input_privacy"
         try:
             context = request.patient_context.model_dump()
-            for field in ("symptoms", "medical_history", "allergies", "medications"):
+            for field in ("symptoms", "medical_history", "allergies", "medications",
+                          "associated_symptoms", "vulnerability_factors"):
                 context[field] = [self._clean(s, request.language) for s in context[field]]
-            if context["duration"]:
-                context["duration"] = self._clean(context["duration"], request.language)
+            for field in ("duration", "evolution", "intensity"):
+                if context[field]:
+                    context[field] = self._clean(context[field], request.language)
             # Keys can carry personal text too; use a bounded transport vocabulary.
             stage = "input_contract"
             allowed = {"temperature_c", "heart_rate", "respiratory_rate", "spo2",

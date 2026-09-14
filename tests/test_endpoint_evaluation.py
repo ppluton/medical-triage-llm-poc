@@ -30,6 +30,11 @@ def test_endpoint_evaluation_counts_failures_and_reused_interaction_ids(monkeypa
         return httpx.Response(
             200,
             json={
+                "collection": {
+                    "version": "explicit-collection-v1-proposed", "pending_fields": ["duration"],
+                    "unavailable_fields": [], "questions": [
+                        {"field": "duration", "text": "Synthetic collection question"}],
+                },
                 "triage_level": "moderate",
                 "summary": "Synthetic",
                 "clinical_rationale": ["Synthetic"],

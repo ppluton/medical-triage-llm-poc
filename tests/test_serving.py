@@ -33,7 +33,7 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
         assert json.loads(request.content)["messages"][0] == messages_for_scenario(
             {"request": BODY}
         )[0]
-        assert PROMPT_VERSION == "triage-demo-v4-proposed"
+        assert PROMPT_VERSION == "triage-demo-v5-proposed"
 
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
             "content": json.dumps({**RESULT, "summary": "Contact alice@example.org"})}}]})

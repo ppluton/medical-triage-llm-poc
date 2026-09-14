@@ -7,7 +7,15 @@ from typing import Annotated, Literal, Protocol
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+
+from triage_poc.collection import (
+    AbsenceField,
+    CollectionField,
+    CollectionProgress,
+    collection_progress,
+    validate_collection_status,
+)
 
 TriageLevel = Literal["maximum", "moderate", "deferred"]
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
@@ -43,10 +51,21 @@ class PatientContext(StrictModel):
     age_group: Literal["pediatric", "adult", "older_adult", "unknown"]
     symptoms: list[Text] = Field(min_length=1, max_length=20)
     duration: Text | None = None
+    evolution: Text | None = None
+    intensity: Text | None = None
+    associated_symptoms: list[Text] = Field(default_factory=list, max_length=20)
+    vulnerability_factors: list[Text] = Field(default_factory=list, max_length=20)
+    confirmed_absent: list[AbsenceField] = Field(default_factory=list, max_length=5)
+    unavailable_fields: list[CollectionField] = Field(default_factory=list, max_length=10)
     medical_history: list[Text] = Field(default_factory=list, max_length=30)
     allergies: list[Text] = Field(default_factory=list, max_length=30)
     medications: list[Text] = Field(default_factory=list, max_length=30)
     vitals: dict[str, float | None] = Field(default_factory=dict, max_length=20)
+
+    @model_validator(mode="after")
+    def validate_collection(self):
+        validate_collection_status(self.model_dump())
+        return self
 
 
 class TriageRequest(StrictModel):
@@ -64,6 +83,7 @@ class ModelResult(StrictModel):
 
 
 class TriageResponse(ModelResult):
+    collection: CollectionProgress
     interaction_id: str
     safety_notice: str = SAFETY_NOTICE
     model_version: str
@@ -85,7 +105,7 @@ class AuditSink(Protocol):
 
 
 def create_app(provider: TriageProvider | None = None, audit: AuditSink | None = None) -> FastAPI:
-    app = FastAPI(title="Medical triage POC", version="0.2.0")
+    app = FastAPI(title="Medical triage POC", version="0.3.0")
 
     @app.get("/healthz")
     def health():
@@ -109,6 +129,8 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                 interaction_id=interaction_id, model_version=model_version,
                 safety_notice=SAFETY_NOTICES[request.language],
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
+                collection=collection_progress(
+                    inference.anonymized_input.patient_context.model_dump(), request.language),
                 **result.model_dump())
             content = {"anonymized_input": inference.anonymized_input.model_dump(),
                        "output": response.model_dump(), "privacy_status": "passed"}
@@ -130,7 +152,7 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                         "timestamp": datetime.now(UTC).isoformat(),
                         "language": request.language, "model_version": model_version,
                         "prompt_version": getattr(provider, "prompt_version", "unconfigured"),
-                        "controls_version": "schema-privacy-v3", "status": status,
+                        "controls_version": "schema-privacy-collection-v4", "status": status,
                         **content,
                         "latency_ms": round((time.perf_counter() - started) * 1000, 2),
                     })
