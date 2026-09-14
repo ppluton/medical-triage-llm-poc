@@ -1,0 +1,37 @@
+{
+  "schema_version": "final-evaluation-proposal-v1",
+  "status": "frozen",
+  "date": "2026-09-14",
+  "split": "test",
+  "expected_examples": 500,
+  "variants": [
+    "base",
+    "sft",
+    "dpo"
+  ],
+  "response_loss_examples": 500,
+  "generation_examples": 50,
+  "selection_method": "lowest_sha256_of_seed_colon_record_id",
+  "selection_seed": 42,
+  "max_new_tokens": 512,
+  "do_sample": false,
+  "optimizer_steps": 0,
+  "requires_checkpoint_prompt_runtime_freeze": true,
+  "clinical_validation": false,
+  "input_hashes": {
+    "test": "103f5bcb522073fe385c656c9dc0071c5cd91d803b97a77a5f65e710a88e1dce",
+    "data_manifest": "b0d555e8e48cf4851c587b40af44c4ff1a25445653806022b49ebc0a07a37f83",
+    "sft_manifest": "a39ba94d115550ac16d4e6c9dc42621d7212885a373f3daee96288a7c8938e1b",
+    "dpo_summary": "dd65fa9a7612bc76ca46cd102353ca5b853fe1545569338ed7b42fb7f39a970a",
+    "runner": "0e991a3ea285f37c825e759c37a49c853f6727b743d859e9a7652b5918f86356",
+    "selection": "9bd867fa9e976c47889757b24954dbef1a172090749ef75d021a364f7cbe64d8",
+    "termination": "007fcbadb2f34dd293468829cbdec6fb67af5fa4ead6bf8afa62fb53abdc7e57"
+  },
+  "package_versions": {
+    "torch": "2.10.0+cu128",
+    "transformers": "4.57.6",
+    "peft": "0.18.1",
+    "bitsandbytes": "0.50.2"
+  },
+  "scope": "Reserved source QA evaluation, separate from structured vLLM triage development"
+}
