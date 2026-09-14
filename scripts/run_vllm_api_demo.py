@@ -103,6 +103,11 @@ def main():
     token = secrets.token_urlsafe(32)
     model_process = api_process = None
     reports = {}
+    variants = {
+        "base": ("unsloth/Qwen3-1.7B-Base", "e249956c10337100486d07afb77e3eb2b30906b8"),
+        "sft": ("chsa-sft", expected["sft"]),
+        "dpo": ("chsa-dpo", expected["dpo"]),
+    }
     try:
         command = [
             str(args.vllm_python),
@@ -140,17 +145,19 @@ def main():
             )
         models = wait_ready("http://127.0.0.1:8001/v1/models", model_process, 900)
         (args.output / "models.json").write_text(json.dumps(models, indent=2))
-        if not {"chsa-sft", "chsa-dpo"} <= {model["id"] for model in models["data"]}:
-            raise ValueError("Expected LoRA models are not served")
-        for stage in ("sft", "dpo"):
+        if not {item[0] for item in variants.values()} <= {
+            model["id"] for model in models["data"]
+        }:
+            raise ValueError("Expected base and LoRA models are not served")
+        for stage, (model_name, model_version) in variants.items():
             directory = args.output / stage
             directory.mkdir()
             stage_env = dict(
                 env,
                 TRIAGE_API_TOKEN=token,
                 TRIAGE_VLLM_URL="http://127.0.0.1:8001/v1",
-                TRIAGE_MODEL_NAME=f"chsa-{stage}",
-                TRIAGE_MODEL_VERSION=expected[stage],
+                TRIAGE_MODEL_NAME=model_name,
+                TRIAGE_MODEL_VERSION=model_version,
                 TRIAGE_AUDIT_PATH=str(directory / "audit.jsonl"),
             )
             with (directory / "api.log").open("w") as log:
@@ -212,6 +219,8 @@ def main():
                 {
                     "status": "measurement_completed",
                     "reports": reports,
+                    "variant_order": list(variants),
+                    "scenario_sha256": hashlib.sha256(args.scenarios.read_bytes()).hexdigest(),
                     "optimizer_steps": 0,
                     "test_records_used": 0,
                     "public_endpoint": False,
@@ -219,6 +228,7 @@ def main():
                     "limits": [
                         "Loopback GPU integration, not an externally accessible cloud deployment.",
                         "Structured FP16 serving differs from raw FP4 v28 generation.",
+                        "Serial Base/SFT/DPO latency is confounded by warmup and cache effects.",
                     ],
                 },
                 indent=2,

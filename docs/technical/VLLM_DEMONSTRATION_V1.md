@@ -18,7 +18,7 @@ un nouvel entraînement ne sont pas des prérequis de cette recette. Le serveur
 doit utiliser le tokenizer archivé du SFT et son template de conversation, ainsi
 que le nom de modèle demandé par l'API. Ne pas substituer un modèle Instruct.
 
-La première expérience proposée utilise FP16 avec LoRA rang 16, contexte 2048,
+La première expérience proposée utilise FP16 avec LoRA rang 16, contexte 4096,
 une séquence à la fois et exécution eager. Cette précision diffère de la
 comparaison 4 bits v28 : les réponses et la latence du service doivent donc être
 mesurées séparément, sans prétendre à une équivalence numérique.
@@ -33,7 +33,7 @@ vllm serve unsloth/Qwen3-1.7B-Base \
   --revision e249956c10337100486d07afb77e3eb2b30906b8 \
   --tokenizer "$SFT_ADAPTER" \
   --chat-template "$SFT_ADAPTER/chat_template.jinja" \
-  --dtype half --max-model-len 2048 --max-num-seqs 1 \
+  --dtype half --max-model-len 4096 --max-num-seqs 1 \
   --enforce-eager --enable-lora --max-lora-rank 16 \
   --lora-modules "chsa-selected=$SELECTED_ADAPTER" \
   --host 127.0.0.1 --port 8001
@@ -82,3 +82,33 @@ de la configuration Compose. Aucun conteneur n'a été construit ni lancé dans
 cette étape. Le démarrage du modèle peut être plus long que celui de l'API : un
 health API ne suffit pas ; attendre et réussir une inférence avant la démonstration.
 Un accès cloud et une procédure CI/CD restent des étapes distinctes.
+
+## Candidat de comparaison API Base/SFT/DPO — 14 septembre
+
+Statut : draft, préparé localement, non lancé. La recette utilise désormais le contexte
+4096 mesuré en v34. Le runner inclut la Base sans adaptateur, puis SFT et DPO,
+avec le même serveur, tokenizer SFT, prompt, schéma et lot de 18 scénarios. Le nom
+servi de la Base a été vérifié dans `models.json` de v34. L'ordre est consigné ;
+les latences restent influencées par l'échauffement et les caches.
+
+Le builder exige un nom de sortie explicite pour éviter d'appeler « v34 » un nouvel
+essai utilisant du code différent :
+
+```sh
+python scripts/build_kaggle_vllm_demo.py \
+  --metadata artifacts/kaggle/vllm-api-v34-final/kernel-metadata.json \
+  --output artifacts/kaggle/api-collection-candidate-2 \
+  --run-name api-collection-candidate-2
+```
+
+Cette commande crée un dossier neuf et ne publie rien. Le candidat comprend
+l'API 0.3.0 et son suivi de collecte, prompt v5. Les 39 fichiers embarqués ont été
+comparés au checkout et les sources Python compilées sans exécution ; Ruff et
+`docker compose -f compose.demo.yaml config -q` passent avec des paramètres
+synthétiques. Empreinte du notebook candidat :
+`d3f82158863c8bb5985bb799c441b8eefe4d537457f18813cc7c2a69a9b12870`.
+
+Ces contrôles établissent la cohérence du paquet, pas son fonctionnement GPU.
+Le lot courant mesure un appel par scénario ; une preuve du parcours complet
+sur plusieurs appels avec le modèle réel reste à ajouter. Le candidat ne remplace
+pas l'évaluation QA v35 figée en cours et n'a pas été lancé.

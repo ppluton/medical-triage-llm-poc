@@ -12,3 +12,9 @@ La distinction essentielle est entre « aucune allergie déclarée », « nous n
 Les tests locaux parcourent trois échanges synthétiques et contrôlent la trace de chaque réponse. Ils vérifient aussi que les nouveaux champs de texte passent par l'anonymiseur avant transport et journalisation. Le fournisseur et le détecteur utilisés dans ces tests sont simulés : c'est une preuve du raccord logiciel, pas une nouvelle mesure clinique ni GPU.
 
 Il reste à vérifier la pertinence des questions et du triage avec le vrai modèle, puis à montrer ce parcours dans la démonstration. Une rubrique remplie peut contenir une réponse vague ou contradictoire ; le suivi des champs ne résout pas cette interprétation médicale. Le test final de connaissances lancé avant cette modification reste inchangé.
+
+La vérification complète du dépôt passe ensuite : 163 tests, sans nouveau test
+clinique. La prochaine comparaison API inclura aussi la Base, car comparer
+uniquement SFT et DPO ne permet pas d'isoler ce qu'apporte l'adaptation par rapport
+au modèle d'origine dans les mêmes conditions de service. Le paquet local est
+vérifié mais n'a pas été envoyé sur Kaggle ; l'évaluation QA en cours reste figée.

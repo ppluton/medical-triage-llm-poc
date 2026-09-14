@@ -5,6 +5,7 @@ import argparse
 import base64
 import json
 import lzma
+import re
 from pathlib import Path
 
 
@@ -12,7 +13,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--metadata", type=Path, required=True)
+    parser.add_argument("--run-name", required=True, help="Fresh output directory name")
     args = parser.parse_args()
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", args.run_name):
+        raise ValueError("Use a bounded lowercase run name without path separators")
     root = Path(__file__).resolve().parents[1]
     meta = json.loads(args.metadata.read_text())
     if (
@@ -63,9 +67,10 @@ for name,python in (('vllm',vpy),('api',apy)):
 subprocess.run([sys.executable,str(root/'scripts/run_vllm_api_demo.py'),
  '--vllm-python',vpy,'--api-python',apy,'--sft',str(sft/'trainer/checkpoint-500'),
  '--dpo',str(dpo/'adapter/policy'),'--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
- '--output','/kaggle/working/vllm-api-v34'],check=True,timeout=4800)
+ '--output','/kaggle/working/RUN_NAME_PLACEHOLDER'],check=True,timeout=4800)
 """
     )
+    code = code.replace("RUN_NAME_PLACEHOLDER", args.run_name)
     compile(code, "vllm-demo-bootstrap", "exec")
     meta["kernel_sources"] = [meta["id"]]
     notebook = {

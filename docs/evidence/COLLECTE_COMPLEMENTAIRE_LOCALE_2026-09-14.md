@@ -15,7 +15,7 @@ Commande : `PYTHONPATH=src python -m pytest -q tests/test_collection.py tests/te
 
 24 tests passent en 6,65 secondes. Un avertissement de dépréciation Starlette/httpx est présent. Les contrôles couvrent : trois appels par langue, conservation de la priorité simulée `maximum` malgré une collecte incomplète, audit exact de chaque sortie, absence distincte d'information indisponible, refus des statuts contradictoires ou hors vocabulaire, constantes nulles et âge inconnu restant non renseignés, anonymisation des quatre nouveaux champs libres.
 
-Ruff passe sur les fichiers modifiés après correction du formatage. Le test du runner d'évaluation est adapté au nouveau contrat de réponse obligatoire `collection`. La régression complète est soumise à la réservation `val_fd3d564d8f79` ; elle est en attente du créneau commun au moment de cette note, donc son succès n'est pas établi.
+Ruff passe sur les fichiers modifiés après correction du formatage. Le test du runner d'évaluation est adapté au nouveau contrat de réponse obligatoire `collection`. La régression complète `PYTHONPATH=src python -m pytest -q` passe : **163 tests en 7,48 secondes**, même avertissement de dépréciation. La réservation `val_fd3d564d8f79` est terminée avec code 0 ; créneau libéré et processus propriétaire arrêté. La révision testée est `1756f1b`.
 
 ## Limites et suite
 
