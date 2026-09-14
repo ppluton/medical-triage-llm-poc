@@ -10,3 +10,7 @@ Le paquet dérive du builder de comparaison existant : les entrées de développ
 Contrôles avant lancement : compilation du bootstrap, validation des empreintes figées, 500 enregistrements et 50 identifiants déterministes. Push privé accepté comme version 35, statut RUNNING confirmé. Aucun résultat n’est encore établi.
 
 L’objectif est une comparaison QA indépendante Base/SFT/DPO en Transformers FP4 avec génération libre de 512 tokens. Elle ne mesure pas l’API vLLM FP16 à sorties contraintes. Les résultats de ce test ne serviront pas à régler les modèles. Les contrôles du parcours de triage, la démonstration extérieure et le rapport final restent distincts.
+
+## Observation du journal — 14 septembre
+
+Le [journal privé v35](https://www.kaggle.com/code/pierrepluton/chsa-source-sft-qwen3?scriptVersionId=349810521) affiche une exécution active après environ 27 minutes. La Base atteint 500 exemples de loss à 351,7 secondes ; le SFT atteint 500 à 1 317 secondes. Aucun jalon DPO n'est encore visible. L'ordre du runner situe ensuite le calcul dans les générations SFT ; le journal ne donne pas leur compteur intermédiaire. Les valeurs de loss et la qualité finale ne sont pas encore vérifiées. Aucun relancement n'est justifié par cette observation.

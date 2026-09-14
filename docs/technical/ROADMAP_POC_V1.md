@@ -1,35 +1,36 @@
 # Livrables restants du POC de triage médical
 
-- Date : 2026-09-13
-- Statut : draft — reprise après audit de la mission
-- Sources : [mission](../../CADRAGE_MISSION.md), [audit OpenClassrooms](../evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), [résultat SFT 500](../evidence/SFT_V22_RESULT_2026-09-12.md).
+Date : 2026-09-14 — Statut : draft
+Sources : [mission](../../CADRAGE_MISSION.md), [spécification](../../SPEC_POC_TRIAGE_MEDICAL.md), [audit OpenClassrooms](../evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), preuves liées ci-dessous.
 
 ## État courant
 
-| Livrable | Acquis | À terminer |
+| Livrable | Acquis vérifié | À terminer |
 |---|---|---|
-| Dataset bilingue | Corpus SFT corrigé : 3 721 train, 479 validation, 500 test ; provenance et contrôles documentés. | Lot DPO 426/54 admis pour expérimentation ; validation clinique absente. |
-| Modèle SFT puis DPO | SFT général à 500 étapes sauvegardé, comparaison QA Base/SFT disponible. | DPO v27 exécuté, sauvegarde vérifiée ; comparaison commune v28 terminée, sans gain de triage DPO. |
-| Endpoint cloud vLLM/API | Contrats API, garde-fous, audit et tests avec transport simulé. | Inférence du vrai modèle, mesures de latence et déploiement sur cible autorisée. |
-| GitHub Actions | Configuration locale et tests disponibles. | Vérifier l'exécution distante et le déploiement du modèle retenu. |
-| Rapport PDF ≤20 pages | Preuves et historique disponibles. | Synthèse finale, résultats comparés, limites et démonstration de soutenance. |
+| Dataset bilingue | Corpus SFT corrigé : 3 721 train, 479 validation, 500 test ; provenance et contrôles documentés. DPO source filtré : 426 train, 54 validation. | Validation clinique des préférences et des références absente ; ne pas l'inventer. |
+| SFT puis DPO | SFT 500 et DPO v27 sauvegardés et vérifiés ; comparaison commune QA v28 réalisée. | Récupérer et vérifier la comparaison finale QA v35 en cours. Aucun gain de triage DPO démontré. |
+| Vrai modèle via API | v34 sur T4 : 18/18 réponses conformes par adaptateur, 8/18 priorités conformes aux références proposées, audit et latence mesurés. | Comparer aussi la Base dans le même runtime API ; traiter les limites de priorité et les contextes incomplets. |
+| Collecte complémentaire | API 0.3.0 : suivi explicite des réponses/absences/inconnues, questions FR/EN, raccord testé localement. | Vérifier plusieurs échanges avec le vrai modèle et présenter le parcours complet. |
+| Audit | Entrées/sorties anonymisées rapprochées en v34 ; ajout et relecture après deux processus API locaux vérifiés ; synchronisation avant restitution. | Persistance sur la cible distante et politique de conservation de cette cible. |
+| Déploiement et GitHub Actions | Recette Docker et workflow de tests écrits ; configuration locale contrôlée. | Cible autorisée, accès extérieur privé, déploiement automatisé et preuve distante. |
+| Rapport et soutenance | Rapport Markdown actualisé, historique et preuves disponibles. | Résultats finaux, PDF ≤20 pages vérifié et démonstration. Le PDF historique reste un brouillon périmé. |
 
 ## Ordre de travail
 
-**État courant :** [v26 terminée](../evidence/TRIAGE_V26_RESULT_2026-09-12.md) : recharge 30/30 identique, consigne explicite. SFT : 12/18 JSON conformes, 6/18 priorités conformes, 2/6 cas critiques avec sortie valide et maximum correct. Qualité insuffisante, dont faits inventés. Le [DPO miniature CPU](../evidence/DPO_CPU_MECHANICS_2026-09-12.md) vérifie la mécanique des deux adaptateurs ; le lot 426/54 a été admis pour expérimentation pédagogique selon ADR-014 et la [v27 DPO](../evidence/DPO_V27_LAUNCH_2026-09-12.md) est terminée : 20 étapes, 392 tenseurs modifiés, référence inchangée et poids sauvegardés vérifiés. La comparaison commune v28 est terminée : SFT et DPO 1/18 JSON conforme chacun dans le runtime Transformers FP4 ; aucun gain de triage DPO. Le runtime de démonstration sera évalué directement via vLLM/API ; aucun diagnostic autonome supplémentaire n’est un préalable. Validation clinique absente.
+1. Laisser terminer la [comparaison QA v35](../evidence/FINAL_QA_V35_LAUNCH.md), sur les 500 exemples réservés et 50 générations déterministes par modèle. Vérifier fichiers et calculs avant toute conclusion. Le protocole est figé ; les résultats ne serviront pas à régler les modèles.
+2. Terminer la démonstration réelle de collecte et la comparaison API Base/SFT/DPO. Le [candidat local](VLLM_DEMONSTRATION_V1.md) doit être régénéré après l'ajout de synchronisation d'audit ; il n'a pas été lancé. Aucun nouveau SFT ni DPO n'est décidé.
+3. Évaluer les contrôles du parcours et la pertinence des réponses sur les scénarios de développement. La collecte structurée ne résout pas à elle seule les erreurs de priorité ou les faits inventés. Les seuils et références restent proposés, sans approbation clinique.
+4. Finaliser une cible cloud et son accès autorisés, le stockage/rétention, puis GitHub Actions avec déploiement et smoke test. Le notebook privé Kaggle sur quota gratuit est la seule autorisation GPU actuelle. Son API en boucle locale ne constitue pas un endpoint accessible depuis l'extérieur.
+5. Produire le PDF final et dérouler la soutenance sur les preuves obtenues, avec les résultats négatifs et les limites explicites.
 
-1. **Acquis :** corpus corrigé, SFT 500, DPO v27 et comparaison commune v28. Conserver les résultats négatifs ; aucun nouveau SFT long décidé.
-2. **En cours :** vérifier vLLM et l’API avec les deux adaptateurs sur 18 scénarios synthétiques. La v30 a échoué à la liaison CUDA après chargement du modèle ; la v31 teste le correctif. Mesurer réponses, erreurs, latence et audit, puis vérifier la persistance après redémarrage.
-3. **À réaliser :** figer le protocole et le runtime, puis exécuter une fois l’évaluation finale sur le test réservé. Les scripts de sélection, export et vérification existent ; ils ne constituent pas des résultats mesurés.
-4. **À concrétiser :** cible cloud, accès et coût autorisés ; exécution GitHub Actions et déploiement de démonstration. Le quota Kaggle gratuit privé reste la seule autorisation GPU actuelle. Une API accessible seulement en boucle locale dans Kaggle ne remplit pas à elle seule ce livrable.
-5. **À finaliser :** rapport PDF de 20 pages maximum et soutenance à partir des preuves obtenues. Le brouillon PDF existe ; la démonstration réelle reste à exécuter.
+## Preuves et limites
 
-## Limites à garder visibles
+La [v34](../evidence/VLLM_API_V34_RESULT.md) a résolu les sorties incomplètes de ce lot, mais les deux adaptateurs n'utilisent jamais `moderate` et omettent les questions sur les cas insuffisants. Les six scénarios critiques proposés sont classés `maximum`, sans que cela établisse une sûreté clinique générale.
 
-Les 15 QCM et 30 générations déjà observés ne suffisent pas à conclure à une amélioration générale. Le test final reste isolé. Les scénarios synthétiques et seuils proposés ne sont pas une validation clinique. Le niveau de validation clinique attendu par l'école doit être clarifié avec le mentor, sans confondre cette question et les tâches techniques réalisables.
+La [collecte locale](../evidence/COLLECTE_COMPLEMENTAIRE_LOCALE_2026-09-14.md) est couverte par 163 tests de régression à la révision 1756f1b. L'ajout ultérieur de synchronisation et la [preuve de redémarrage](../evidence/AUDIT_RESTART_LOCAL_2026-09-14.md) passent 14 tests ciblés. Ces tests ne sont pas des résultats GPU avec le nouveau prompt.
 
-Le raccord DPO utilise désormais un manifeste du checkpoint et de son tokenizer au lieu d'un hash v5 codé en dur. Le checkpoint 500 a été rechargé fidèlement dans v25 ; le DPO v27 est exécuté et sa sauvegarde vérifiée. La comparaison v28 ne démontre pas de gain de triage après DPO.
+La v35 utilise Transformers FP4 et des questions-réponses libres ; l'API utilise vLLM FP16 et des sorties contraintes. Leurs métriques ne sont pas interchangeables. Une baisse de loss ne prouve pas une meilleure priorité de triage.
 
 ## Historique
 
-Les essais et décisions antérieurs restent dans l'[historique du projet](HISTORIQUE_PROJET_2026-09-11.md), les [preuves](../evidence/) et les [décisions](../decisions/). Cette page remplace l'accumulation de statuts historiques contradictoires ; elle décrit uniquement le travail courant.
+Les essais précédents restent dans l'[historique du projet](HISTORIQUE_PROJET_2026-09-11.md), les [preuves](../evidence/) et les [décisions](../decisions/). Cette page décrit l'état courant ; elle ne remplace aucune preuve ni exigence du mandat.
