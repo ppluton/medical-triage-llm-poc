@@ -121,3 +121,18 @@ def test_contract_rejects_an_approved_manifest_with_a_skipped_pii_check():
 
     with pytest.raises(ContractValidationError, match="passed"):
         validate_against_schema(manifest, "source_manifest_v1.schema.json")
+
+
+def test_email_recognizer_uses_bundled_suffixes_without_network(monkeypatch):
+    import requests
+
+    from triage_poc.anonymization import OfflineEmailRecognizer
+
+    def forbid_network(*args, **kwargs):
+        raise AssertionError("PII detection must not fetch network resources")
+
+    monkeypatch.setattr(requests.sessions.Session, "request", forbid_network)
+    recognizer = OfflineEmailRecognizer()
+    matches = recognizer.analyze("Contact synthetic@example.com", ["EMAIL_ADDRESS"])
+    assert len(matches) == 1
+    assert matches[0].entity_type == "EMAIL_ADDRESS"

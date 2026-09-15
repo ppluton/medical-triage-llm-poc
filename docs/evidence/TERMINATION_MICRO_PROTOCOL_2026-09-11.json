@@ -1,0 +1,22 @@
+{
+  "code_revision": "634a918",
+  "purpose": "isolate_eos_correction_before_v2_training",
+  "max_steps": 20,
+  "training_rows": 64,
+  "validation_rows": 3,
+  "test_rows": 0,
+  "timeout_seconds": 1200,
+  "notebook_sha256": "1bf1dd3b9e6cb7671189d2abfad0c017845a78f4e789b16a061bc075f0a1d394",
+  "files_sha256": {
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/sft_termination.py": "2c691f95c3e9709d92fbcc82ac68d6c101c6f8cfa7b09c64cee620cb2f820660",
+    "scripts/run_sft_termination_experiment.py": "a6f8ea0145a82c9419119ac376cb49d159e836216695737bd5d4658c86d58aad"
+  },
+  "kaggle_kernel": "pierrepluton/chsa-source-sft-qwen3",
+  "kaggle_version": 15,
+  "status": "completed",
+  "dataset_version": "v1",
+  "initial_checkpoint": "v5",
+  "clinical_validation": "not_performed"
+}

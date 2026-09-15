@@ -1,0 +1,24 @@
+{
+  "status": "contextual_scan_not_approval",
+  "fields_scanned": 1728,
+  "records_flagged": 529,
+  "entity_counts": {
+    "PERSON": 1544,
+    "DATE_TIME": 1317,
+    "LOCATION": 614
+  },
+  "inputs_sha256": {
+    "train": "3caba7bb477db6ef404a672e671d6ce5cacb081877cdf6f867ff190fda3af6f4",
+    "validation": "af75d9da42d8268ccb255085df222d41122f7982150ef5263c16ebf9af133623"
+  },
+  "presidio_version": "2.2.364",
+  "limits": [
+    "Automated candidates only; medical terms and durations may be false positives.",
+    "No clinical review or privacy approval inferred."
+  ],
+  "date": "2026-09-12",
+  "validation_job": "val_a85d4c35d461",
+  "exit_code": 0,
+  "script_sha256": "0159aa099764a536a88a6429909e2df5b350baf6a9dcc5bf65d7a5a7914ddca7",
+  "findings_sha256": "bf27d526af155db87bac779ef0891b488a0f125c97d90b3906339a884e9da778"
+}

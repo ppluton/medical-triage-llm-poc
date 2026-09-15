@@ -1,0 +1,25 @@
+{
+  "status": "passed_data_revision_checks",
+  "previous_sha256": "da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347",
+  "dataset_sha256": "3f754a9a4d34a15d06094b2190c0f906c71826c0998c6814109f3c8b122bd2c2",
+  "records": 5000,
+  "split_counts": {
+    "train": 4000,
+    "validation": 500,
+    "test": 500
+  },
+  "retained_record_ids": 4899,
+  "new_record_ids": 101,
+  "removed_record_ids": 101,
+  "historical_split_migrations": 0,
+  "truncated_records": 0,
+  "development_prompts_checked": 4500,
+  "changed_prompts": 0,
+  "training_changes": "only_final_assistant_terminator",
+  "vocabulary_unchanged": true,
+  "test_rendered_count": 0,
+  "code_sha256": "94103d44d995643be553ca0c87fcc3f639fde806ad52c545d0c0a030ba217301",
+  "limits": [
+    "No training, model reload, inference or clinical evaluation performed."
+  ]
+}

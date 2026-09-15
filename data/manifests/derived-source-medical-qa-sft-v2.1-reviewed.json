@@ -1,0 +1,73 @@
+{
+  "manifest_id": "derived-source-medical-qa-sft-v2.1-reviewed",
+  "schema_version": "1.0.0",
+  "status": "candidate_pending_pilot",
+  "date": "2026-09-11",
+  "parent_manifest_sha256": "c7b20e79e045d1067c76b20715f26d43194afce8250fcb293ffac35ff019e142",
+  "parent_canonical_sha256": "76ad26ea87ef16b0a1ea4d3ced43f2a253b5f146bfed8515447b6810c593707f",
+  "record_count": 4700,
+  "triage_label_count": 0,
+  "artifacts": {
+    "canonical": {
+      "path": "source-sft-v2.1.jsonl",
+      "sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+      "record_count": 4700,
+      "byte_size": 9206508
+    },
+    "train_qwen3": {
+      "path": "train-qwen3.jsonl",
+      "sha256": "70270d659db975a1f3547392c4681791c59d408360ec77a6104808018b4c4f9b",
+      "record_count": 3721,
+      "byte_size": 4586935
+    },
+    "validation_qwen3": {
+      "path": "validation-qwen3.jsonl",
+      "sha256": "554ee8ad2b8349f7df024796ad58d2bd27464b6dd5a7de56a3b760a305c74f25",
+      "record_count": 479,
+      "byte_size": 589628
+    }
+  },
+  "split_counts": {
+    "train": 3721,
+    "validation": 479,
+    "test": 500
+  },
+  "source_counts": {
+    "abachaa/MedQuAD": 2226,
+    "ANR-MALADES/MediQAl": 1475,
+    "qanastek/frenchmedmcqa": 999
+  },
+  "language_counts": {
+    "en": 2226,
+    "fr": 2474
+  },
+  "exclusions": [
+    {
+      "record_id": "sft-source-01b6be9d7e9b532f0e84775c",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    },
+    {
+      "record_id": "sft-source-1133c2b65fcd8f9540324797",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    },
+    {
+      "record_id": "sft-source-210c47540ab7a5a0abebc2e0",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    }
+  ],
+  "audit_report_sha256": "8353618d9b2e805c3c1842f869130189967c688dc54d2408af66c128419ab93a",
+  "group_keys_sha256": "c47f8aa395f8e0d91bd1e066e1290bcac5118099bb0aee8f07818cc9bf90b05a",
+  "historical_records_unchanged": true,
+  "test_records_unchanged": 500,
+  "grouping_policy": "ADR-012",
+  "cross_split_content_groups": 0,
+  "script_sha256": "63bdf92d22bf8003eb817cf665fbb29a9be1e41c8f483a83f58c114e92a56842",
+  "training_launched": false,
+  "limits": [
+    "No clinical validation; no guarantee against semantic paraphrases.",
+    "Old SFT checkpoints were not trained with this isolation policy."
+  ]
+}

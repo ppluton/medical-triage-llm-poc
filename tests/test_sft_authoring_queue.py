@@ -186,6 +186,10 @@ def test_iter_mediqal_anchors_uses_only_train_and_validation(tmp_path):
     assert all("/test.json:" not in anchor.source_locator for anchor in anchors)
     assert all(anchor.answer == "First answer\nThird answer" for anchor in anchors)
     assert all("Synthetic clinical context" in anchor.question for anchor in anchors)
+    complete = list(iter_mediqal_anchors(tmp_path, include_options=True))
+    assert all("A. First answer" in anchor.question and "E. Fifth answer" in anchor.question
+               for anchor in complete)
+    assert all(anchor.answer == "First answer\nThird answer" for anchor in complete)
 
 
 def test_iter_mediqal_anchors_excludes_questions_overlapping_test(tmp_path):
@@ -218,3 +222,16 @@ def test_iter_mediqal_anchors_excludes_questions_overlapping_test(tmp_path):
 
     assert len(anchors) == 2
     assert all("validation" in anchor.source_locator for anchor in anchors)
+
+
+def test_french_mcq_options_are_preserved_when_requested(tmp_path):
+    from triage_poc.sft_authoring_queue import iter_frenchmedmcqa_anchors
+
+    row = {"id": "synthetic-1", "question": "Which option is correct?",
+           "answers": {"A": "First", "B": "Second"}, "correct_answers": ["B"]}
+    (tmp_path / "train.json").write_text(json.dumps([row]))
+    (tmp_path / "validation.json").write_text("[]")
+    anchor = list(iter_frenchmedmcqa_anchors(tmp_path, include_options=True))[0]
+    assert "A. First" in anchor.question and "B. Second" in anchor.question
+    assert anchor.answer == "Second"
+    assert anchor.deduplication_text == row["question"]

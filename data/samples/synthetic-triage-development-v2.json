@@ -1,0 +1,398 @@
+[
+  {
+    "id": "dev-triage-v2-chest_pain-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "chest_pain",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Douleur thoracique intense et persistante depuis 30 minutes."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-chest_pain-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "chest_pain",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Persistent intense chest pain for 30 minutes."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-respiratory_distress-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "respiratory_distress",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Difficulté respiratoire sévère, ne peut pas finir une phrase."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-respiratory_distress-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "respiratory_distress",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Severe breathing difficulty, cannot finish a sentence."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-neurological_deficit-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "neurological_deficit",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Faiblesse soudaine du bras droit et trouble soudain de la parole."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-neurological_deficit-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "neurological_deficit",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Sudden right arm weakness and sudden speech difficulty."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-pediatric-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "pediatric",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "pediatric",
+        "symptoms": [
+          "Toux récente chez un enfant ; durée et évolution inconnues."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-pediatric-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "pediatric",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "pediatric",
+        "symptoms": [
+          "Recent cough in a child; duration and progression unknown."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-pregnancy-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "pregnancy",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Grossesse et vertiges récents ; intensité et évolution non précisées."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-pregnancy-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "pregnancy",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Pregnancy and recent dizziness; severity and progression unspecified."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-vulnerability-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "vulnerability",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "older_adult",
+        "symptoms": [
+          "Faiblesse récente ; antécédents et traitements inconnus."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-vulnerability-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "vulnerability",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "older_adult",
+        "symptoms": [
+          "Recent weakness; medical history and medications unknown."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-insufficient_information-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "insufficient_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "unknown",
+        "symptoms": [
+          "Je ne me sens pas bien."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-insufficient_information-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "insufficient_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "unknown",
+        "symptoms": [
+          "I do not feel well."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-contradictory_information-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "contradictory_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Je dis que cela a commencé hier puis il y a un mois ; je nie la douleur puis la confirme."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-contradictory_information-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "contradictory_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "I say this started yesterday then a month ago; I deny pain then confirm it."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-other-fr",
+    "synthetic": true,
+    "split": "development",
+    "category": "other",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "deferred",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Gêne légère du poignet, stable depuis six mois, déjà évaluée, sans traumatisme, aggravation, fièvre ni symptôme associé ; rendez-vous de suivi déjà prévu."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "dev-triage-v2-other-en",
+    "synthetic": true,
+    "split": "development",
+    "category": "other",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "deferred",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Mild wrist discomfort, stable for six months, already assessed, no injury, worsening, fever or associated symptom; follow-up already scheduled."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    }
+  }
+]

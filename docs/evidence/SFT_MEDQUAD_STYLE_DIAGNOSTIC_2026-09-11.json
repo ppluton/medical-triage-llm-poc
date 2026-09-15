@@ -1,0 +1,21 @@
+{
+  "status": "descriptive_style_audit_not_causal_proof",
+  "definition": "Literal Human Phenotype Ontology marker in response; no changes to records.",
+  "counts": {
+    "train": {
+      "medquad_records": 1746,
+      "hpo_template_records": 291,
+      "hpo_character_fraction_of_medquad": 0.29274817746171794
+    },
+    "validation": {
+      "medquad_records": 230,
+      "hpo_template_records": 42,
+      "hpo_character_fraction_of_medquad": 0.33071743061404524
+    }
+  },
+  "test_content_assessed": false,
+  "limits": [
+    "Boilerplate presence does not prove source medical inaccuracy.",
+    "Its causal role in model repetition needs a controlled comparison."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-12",
+  "status": "exact_prompt_check_completed_not_dataset_approval",
+  "candidate_manifest_sha256": "c990549ba648b60f047f17db664e43865755691de86c2bbe0b5e225fb76a59d1",
+  "sft_canonical_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+  "sft_unique_prompts": 4700,
+  "dpo_records": 576,
+  "new_protected_hashes_needed": 2561,
+  "overlapping_dpo_ids": [],
+  "test_answers_used": 0,
+  "limits": [
+    "Exact normalized hashes do not detect semantic paraphrases.",
+    "Final reviewed DPO manifest must include the current SFT prompt hashes."
+  ]
+}

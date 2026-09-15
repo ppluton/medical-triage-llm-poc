@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-12",
+  "status": "reload_failed",
+  "version": 24,
+  "identical": 14,
+  "total": 30,
+  "first_difference_counts": {
+    "1": 7,
+    "3": 3,
+    "4": 2,
+    "12": 1,
+    "7": 1,
+    "10": 1,
+    "47": 1
+  },
+  "artifacts": {
+    "base.json": "c00aa38b06c09d7b13329d97c0b00d6e1186f13cd8626da2de33454ad77387c0",
+    "reload.json": "eef3d9f22ffea6fffd7b063deab8c59a582c6eebcf493ac5d29a3e13fa72cc5c"
+  }
+}

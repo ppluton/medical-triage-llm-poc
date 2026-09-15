@@ -1,0 +1,188 @@
+{
+  "date": "2026-09-11",
+  "status": "memorization_target_met",
+  "stages": {
+    "base": {
+      "mean_example_train_nll": 1.1552504301071167,
+      "exact_answers": 0,
+      "strict_stripped_text_matches": 0,
+      "eos_terminated": 9,
+      "records": 12
+    },
+    "pilot_end": {
+      "mean_example_train_nll": 7.801577885402367e-05,
+      "exact_answers": 12,
+      "strict_stripped_text_matches": 12,
+      "eos_terminated": 12,
+      "records": 12
+    }
+  },
+  "records": [
+    {
+      "stage": "base",
+      "record_id": "sft-source-16e1490c0d2531e7c7dff024",
+      "exact_reference": false,
+      "native_eos": false
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-11fc6e9c815b8bae54e55cbe",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-003aaa65a374ca9e620b60b6",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-1c0629d5aafd74ac5f5add16",
+      "exact_reference": false,
+      "native_eos": false
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-091e6f1931acc3342d509134",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-1004371271fc9424019c684b",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-1081287d3016a3da9094bb12",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-024f64b0155a424cf4df78bb",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-34d2172a5f37587230367dc6",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-11425c2f038b441481afc7b6",
+      "exact_reference": false,
+      "native_eos": false
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-035f24d3c190a043b2627fb7",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "base",
+      "record_id": "sft-source-5108b78338edcde482a2c448",
+      "exact_reference": false,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-16e1490c0d2531e7c7dff024",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-11fc6e9c815b8bae54e55cbe",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-003aaa65a374ca9e620b60b6",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-1c0629d5aafd74ac5f5add16",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-091e6f1931acc3342d509134",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-1004371271fc9424019c684b",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-1081287d3016a3da9094bb12",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-024f64b0155a424cf4df78bb",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-34d2172a5f37587230367dc6",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-11425c2f038b441481afc7b6",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-035f24d3c190a043b2627fb7",
+      "exact_reference": true,
+      "native_eos": true
+    },
+    {
+      "stage": "pilot_end",
+      "record_id": "sft-source-5108b78338edcde482a2c448",
+      "exact_reference": true,
+      "native_eos": true
+    }
+  ],
+  "optimizer_steps": 300,
+  "script_sha256": "36a90aad34cbfc1a6c108135159559e5fcefab55b3caaef2358dcb5015d89d33",
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "168688368228daa13c455e749835bb73e433e877ff6028dc5e702203e50c5e0b",
+    "optimizer.pt": "037f9a6765134a938f219af490440091c50ace32baf586d868d976d4c2da69e9",
+    "scheduler.pt": "d15d3d1b8bb19162d239033d431d77f4eba28beb04ec2c0ba04b41fbc223a133",
+    "rng_state.pth": "8553d3987609520495680f36a4682a760a418a930648ce46178a1399cde440b0",
+    "trainer_state.json": "befde194d162d7c85c1d539c2c2d5f3f253449278e4659e704b6963c7234c678"
+  },
+  "input_sha256": {
+    "summary.json": "a37576d746b34264bfc26e3050ca5fd362270cd1e0f15d8b788b4b7cc10f540c",
+    "base.json": "8658b4db7b6a1c92f80185c70d3bd9636454458b773fb967d04cb89e1e58570f",
+    "pilot_end.json": "055d6a440d17846ca53d3ca55a2da271bdd294386436a1cf1f63e67fe5392c18"
+  },
+  "generalization_measured": false,
+  "validation_records_used": 0,
+  "test_records_used": 0,
+  "limits": [
+    "Deliberate memorization of short training answers, not generalization.",
+    "No modifications to source corpus, validation or test.",
+    "These diagnostic weights must never replace the general SFT checkpoint."
+  ]
+}

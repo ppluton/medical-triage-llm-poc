@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-11",
+  "status": "prepared",
+  "experiment": "train-only-memorization-12",
+  "parent_config_sha256": "f54882f4a39e90aff28de7bc20e4ced6045b0c0baa75fc35c9f8361188f5b7da",
+  "record_ids": [
+    "sft-source-16e1490c0d2531e7c7dff024",
+    "sft-source-11fc6e9c815b8bae54e55cbe",
+    "sft-source-003aaa65a374ca9e620b60b6",
+    "sft-source-1c0629d5aafd74ac5f5add16",
+    "sft-source-091e6f1931acc3342d509134",
+    "sft-source-1004371271fc9424019c684b",
+    "sft-source-1081287d3016a3da9094bb12",
+    "sft-source-024f64b0155a424cf4df78bb",
+    "sft-source-34d2172a5f37587230367dc6",
+    "sft-source-11425c2f038b441481afc7b6",
+    "sft-source-035f24d3c190a043b2627fb7",
+    "sft-source-5108b78338edcde482a2c448"
+  ],
+  "selection": "Four per source, train only, response length 1..128 tokens, sha256(memorization-42:record_id) order. No validation output used.",
+  "completion_tokens": [
+    82,
+    53,
+    50,
+    74,
+    5,
+    35,
+    40,
+    12,
+    28,
+    23,
+    6,
+    26
+  ],
+  "budget": {
+    "optimizer_steps": 300,
+    "training_seconds": 900,
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 0.0002,
+    "warmup_steps": 5,
+    "generation_cap": 256
+  },
+  "technical_target": "12/12 normalized exact train answers and 12/12 native EOS at final stage; otherwise partial/inconclusive, never clinical acceptance.",
+  "limits": [
+    "Deliberate memorization of short training answers, not generalization.",
+    "No modifications to source corpus, validation or test.",
+    "These diagnostic weights must never replace the general SFT checkpoint."
+  ]
+}

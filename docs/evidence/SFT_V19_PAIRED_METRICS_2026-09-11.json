@@ -1,0 +1,84 @@
+{
+  "status": "paired_descriptive_metrics_complete_pending_review",
+  "stages": {
+    "base": {
+      "mean_example_response_nll": 1.456921935081482,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 20,
+      "reached_token_cap": 10,
+      "exact_normalized_reference_matches": 0,
+      "mean_repeated_token_4gram_fraction": 0.34466439593316733,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 6,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 3,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 0
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 5,
+          "reached_token_cap": 1,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 0
+        }
+      }
+    },
+    "pilot_end": {
+      "mean_example_response_nll": 0.7121326923370361,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 22,
+      "reached_token_cap": 8,
+      "exact_normalized_reference_matches": 7,
+      "mean_repeated_token_4gram_fraction": 0.24259501182727716,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 7,
+          "reached_token_cap": 8,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 5
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 2
+        }
+      }
+    }
+  },
+  "response_nll_delta": -0.7447892427444458,
+  "full_training_approved": false,
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Exact normalized reference match misses valid paraphrases; inspect outputs.",
+    "Shorter outputs alone do not establish improved answer quality.",
+    "GPU checkpoint resume and reload must be verified separately."
+  ],
+  "optimizer_steps": 150,
+  "changed_adapter_tensors": 392,
+  "input_sha256": {
+    "base.json": "e0d1398a4eddb6cba2f7620ded9edacee1618d55f909833f3eeec08398c2953c",
+    "pilot_end.json": "72e5ace01dbdb267e346cca5a21ca4c2e7a0160d570d51d7e7af12f03f49123d",
+    "summary.json": "099979378a042473ec910194bec48d54ed02a6fba206c97d0558c04f5da447c9"
+  }
+}

@@ -1,6 +1,9 @@
+import json
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 from triage_poc.sft_authoring_queue import SourceAnchor
 from triage_poc.source_sft import build_source_sft_dataset, render_source_sft_conversation
@@ -62,6 +65,12 @@ def test_builds_source_provided_records_without_triage_labels(monkeypatch):
         run_id="test-run",
     )
 
+    schema_path = (Path(__file__).resolve().parents[1]
+                   / "data/manifests/source_medical_qa_sft_v2.schema.json")
+    schema = json.loads(schema_path.read_text())
+    validator = Draft202012Validator(schema)
+    for record in records:
+        validator.validate(record)
     assert len(records) == 6
     assert summary["triage_label_count"] == 0
     assert all(record["quality"]["answer_origin"] == "source_provided" for record in records)
@@ -168,3 +177,42 @@ def test_production_quotas_match_brief():
     assert sum(quotas["train"] for quotas in SOURCE_SPLIT_QUOTAS.values()) == 4_000
     assert sum(quotas["validation"] for quotas in SOURCE_SPLIT_QUOTAS.values()) == 500
     assert sum(quotas["test"] for quotas in SOURCE_SPLIT_QUOTAS.values()) == 500
+
+
+def test_preserves_held_out_splits_when_selection_order_changes(monkeypatch):
+    from triage_poc.source_sft import _assign_splits
+
+    monkeypatch.setattr("triage_poc.source_sft.SOURCE_SPLIT_QUOTAS",
+                        {"example": {"train": 2, "validation": 1, "test": 1}})
+    rows = [{"record_id": name} for name in ["old-test", "old-validation", "new", "old-train"]]
+    _assign_splits("example", rows, {"old-test": "test", "old-validation": "validation",
+                                    "old-train": "train"})
+    assert [r["split"] for r in rows] == ["test", "validation", "train", "train"]
+
+
+def test_overlength_source_is_rejected_instead_of_cut(monkeypatch):
+    _small_quotas(monkeypatch)
+    sources = {source: list(_anchors(source, 3))
+               for source in ("medquad", "mediqal", "frenchmedmcqa")}
+    first = min(sources["medquad"], key=lambda a: a.selection_digest)
+    sources["medquad"] = [SourceAnchor(a.source_name, a.source_record_id, a.source_locator,
+        a.question, "x" * 4001 if a == first else a.answer) for a in sources["medquad"]]
+    records, summary = build_source_sft_dataset(sources, _FakeAnonymizer(),
+                                               code_revision="test", run_id="synthetic")
+    assert summary["source_audits"]["medquad"]["over_length_rejections"] == 1
+    assert all(not r["transformation"]["content_truncated"] for r in records)
+    assert all(len(r["response"]) < 4000 for r in records)
+
+
+def test_final_test_renderer_preserves_content_and_training_isolation():
+    from triage_poc.source_sft import render_source_test_conversation
+
+    record = {"record_id": "synthetic-reserved", "task_type": "medical_qa_sft",
+              "split": "test", "instruction": "Synthetic question", "response": "Synthetic answer"}
+    output = render_source_test_conversation(record)
+    assert output == render_source_sft_conversation({**record, "split": "validation"})
+    assert record["split"] == "test"
+    with pytest.raises(ValueError):
+        render_source_sft_conversation(record)
+    with pytest.raises(ValueError):
+        render_source_test_conversation({**record, "split": "train"})

@@ -1,0 +1,75 @@
+{
+  "protocol_id": "source-qa-validation-v2-expanded-v1",
+  "date": "2026-09-11",
+  "status": "proposed_not_executed",
+  "purpose": "paired_source_qa_comparison_not_clinical_triage",
+  "dataset_manifest_id": "derived-source-medical-qa-sft-v2",
+  "canonical_sha256": "3f754a9a4d34a15d06094b2190c0f906c71826c0998c6814109f3c8b122bd2c2",
+  "validation_sha256": "e0c3e90f990e9827a0102097bc21d65c479858f3fe66b7d922a2e4ca2a981656",
+  "loss_records": 500,
+  "generation_records": 30,
+  "generation_source_quotas": {
+    "abachaa/MedQuAD": 15,
+    "ANR-MALADES/MediQAl": 9,
+    "qanastek/frenchmedmcqa": 6
+  },
+  "generation_language_counts": {
+    "en": 15,
+    "fr": 15
+  },
+  "generation_selection": "sha256(seed:record_id) ascending within each source, excluding micro diagnostic IDs",
+  "seed": 42,
+  "generation_record_ids": [
+    "sft-source-20776eaf90841911df4aaaee",
+    "sft-source-22b95096fa337ac8bde24c37",
+    "sft-source-20cbcb01c5bf844aecfa60a2",
+    "sft-source-210c3ac9a9e7873fc02a53df",
+    "sft-source-209b66a1a832aeb4bba70d5f",
+    "sft-source-21d429a6de71caf9a110e400",
+    "sft-source-20b160aa65532e207823f34b",
+    "sft-source-1fad1d0fbf11cdd0c778b003",
+    "sft-source-2176dbd1b517b126fa887e2f",
+    "sft-source-2006dd343eeb49346d74fb41",
+    "sft-source-21b32e8b6252fb21e74e817b",
+    "sft-source-22acb952efe6ce6368ee769b",
+    "sft-source-2193913b2e28c19b37bf7731",
+    "sft-source-2070e415f6f7374d59ac956d",
+    "sft-source-1fab1bf7eba4c61bbdbacb10",
+    "sft-source-1550cf426ebc418e5687d267",
+    "sft-source-141322b67de7a67f88744b53",
+    "sft-source-148f4f77ba8f9d88f342fffb",
+    "sft-source-1426133419621878f691f7c3",
+    "sft-source-1322dd39170409d0f5ba991a",
+    "sft-source-134e300b683d865a495bb74e",
+    "sft-source-1525c330bb68b7d5c94c4566",
+    "sft-source-139b53140fe59d64e815a540",
+    "sft-source-14129c2aead5d6aaf6827be1",
+    "sft-source-62fdc247563e3d49bd041110",
+    "sft-source-66e3558cd52fe12aee3b41cf",
+    "sft-source-6a0546e13be0101dda58fbe0",
+    "sft-source-686b234bfba4c2fbdccc6274",
+    "sft-source-62fa0a06b8ab307d6e30571f",
+    "sft-source-604f53d7e1e180ae0a583709"
+  ],
+  "excluded_micro_diagnostic_ids": [
+    "sft-source-13baad9c05acb3242f937d58",
+    "sft-source-21664f6f477a47ecf2630ccb",
+    "sft-source-5fe9cf31977fce3f78ec7e55"
+  ],
+  "generation": {
+    "do_sample": false,
+    "max_new_tokens": 512,
+    "eos_token_ids": [
+      151643
+    ],
+    "same_tokenizer_and_prompt_for_all_variants": true
+  },
+  "test_records_used": 0,
+  "clinical_validation": "not_performed",
+  "checkpoint_selection": "pending_review_after_micro_runs",
+  "limits": [
+    "This protocol has not been executed.",
+    "Source QA correctness is not clinical triage validity.",
+    "Pretraining contamination is not assessed."
+  ]
+}

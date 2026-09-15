@@ -1,0 +1,75 @@
+name: chsa-triage-demo
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.15.0@sha256:97187c9535fd6d6040444d68bb073f17344fd454e9241cc7a4e998141f244543
+    platform: linux/amd64
+    command:
+      - unsloth/Qwen3-1.7B-Base
+      - --revision
+      - e249956c10337100486d07afb77e3eb2b30906b8
+      - --tokenizer
+      - /models/tokenizer
+      - --chat-template
+      - /models/tokenizer/chat_template.jinja
+      - --dtype
+      - half
+      - --max-model-len
+      - "4096"
+      - --max-num-seqs
+      - "1"
+      - --enforce-eager
+      - --enable-lora
+      - --max-lora-rank
+      - "16"
+      - --lora-modules
+      - chsa-selected=/models/adapter
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    volumes:
+      - type: bind
+        source: ${SFT_ADAPTER:?Set the verified SFT checkpoint directory}
+        target: /models/tokenizer
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${SELECTED_ADAPTER:?Set the verified selected adapter directory}
+        target: /models/adapter
+        read_only: true
+        bind:
+          create_host_path: false
+    shm_size: 1gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  api:
+    build: .
+    command:
+      - uvicorn
+      - triage_poc.serving:create_serving_app
+      - --factory
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --no-access-log
+    environment:
+      TRIAGE_API_TOKEN: ${TRIAGE_API_TOKEN:?Set a private token of at least 32 characters}
+      TRIAGE_VLLM_URL: http://vllm:8000/v1
+      TRIAGE_MODEL_NAME: chsa-selected
+      TRIAGE_MODEL_VERSION: ${TRIAGE_MODEL_VERSION:?Set the selected artifact checksum}
+      TRIAGE_AUDIT_PATH: /audit/interactions.jsonl
+    volumes:
+      - type: bind
+        source: ${TRIAGE_AUDIT_DIRECTORY:?Set a private directory writable by UID 10001}
+        target: /audit
+        bind:
+          create_host_path: false
+    ports:
+      - 127.0.0.1:8000:8000

@@ -1,0 +1,242 @@
+{
+  "intermediate_checkpoint_hashes": {
+    "50": {
+      "adapter_model.safetensors": "daa8cb65644b557c62cf850d617014ff10a3ae98d631ad99c61038cd8e2937ab",
+      "optimizer.pt": "69fee6ba80936bdce633cf6042769337cd683e12cd99a67b65b5b71b87a491e7",
+      "scheduler.pt": "02e62a6077bbfe66ac2c74310d38d2c1ef1ee7306a35279ab936be63f0c00c03",
+      "rng_state.pth": "f4a9f217e852f439efa6bd32fde98d6867f11aa6ea13ddc021ba10af6a0b0934",
+      "trainer_state.json": "3ddc9ede265b44d6f606e0a146954a61bd514a41164b6e680ed20902da99776b"
+    },
+    "100": {
+      "adapter_model.safetensors": "88ae5305ca4f9214be03d3ea2c75f56ca9612c721f293a95b317b01e8c2de53f",
+      "optimizer.pt": "f00cb7ba7c280663de47ec8b67f25a0aefb99f792f99360d6510ca0e606ff693",
+      "scheduler.pt": "bf414979b065e7310d6296125b6c17f7a7bc24d4254d73152cfc72f1761e46be",
+      "rng_state.pth": "a8e2011629d8bed3ef560fa11175cac55684c4e12a72634bb24abf767b6c7399",
+      "trainer_state.json": "3e1f055807a9a0d1d51288f41f5558b06c727e4860dbea8e25b7a700038b1b06"
+    }
+  },
+  "intermediate_checkpoints_evaluated": [
+    50,
+    100
+  ],
+  "status": "pilot_fresh_reload_verified",
+  "optimizer_steps_executed": 0,
+  "identical_generations": 30,
+  "loss_records": 479,
+  "absolute_loss_delta": 5.960464477539063e-08,
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "9674c6a12a903eb969d70eae089d915a52e04b5ea0c50f875b090297b9ccbb01",
+    "optimizer.pt": "c673504809ca422709334345e44c69a7148628be892b33af17f41947be76bb28",
+    "scheduler.pt": "59d1892f669811bc189b9c419cb70133abb580519a56b3fbdcfff78366625416",
+    "rng_state.pth": "718a0f3db00824213036a2c0441849791319b7d9cf189065873bb26a7020738e",
+    "trainer_state.json": "d398bb3c80113f8ea662d751edcdcaede6c9cbe1ecb48308d7753ca20f127a39"
+  },
+  "configuration": {
+    "experiment_id": "source-sft-v2.1-bounded-pilot",
+    "date": "2026-09-11",
+    "status": "prepared_not_launched",
+    "base_model": "unsloth/Qwen3-1.7B-Base",
+    "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+    "initial_checkpoint": "base_only_no_v5_adapter",
+    "dataset_manifest": "data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json",
+    "dataset_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "training_records": 3721,
+    "validation_records": 479,
+    "test_records_used": 0,
+    "seed": 42,
+    "max_length": 2048,
+    "completion_only_loss": true,
+    "packing": false,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "learning_rate": 0.0001,
+    "warmup_steps": 30,
+    "lr_scheduler_type": "linear",
+    "scheduler_horizon_steps": 1000,
+    "pilot_stop_after_steps": 150,
+    "pilot_training_wall_seconds": 1800,
+    "save_steps": 50,
+    "save_only_model": false,
+    "resume_required_files": [
+      "adapter_model.safetensors",
+      "optimizer.pt",
+      "scheduler.pt",
+      "rng_state.pth",
+      "trainer_state.json"
+    ],
+    "resume_policy": "same_data_same_horizon_and_order_resume_from_checkpoint",
+    "evaluation": {
+      "loss_records": 479,
+      "generation_records": 30,
+      "max_new_tokens": 512,
+      "do_sample": false,
+      "native_eos_only": true,
+      "stages": [
+        "base",
+        "pilot_end"
+      ],
+      "compare": [
+        "response_token_nll",
+        "eos_termination",
+        "repeated_token_4grams",
+        "source_mcq_answer_agreement"
+      ],
+      "clinical_acceptance": "not_assessed",
+      "generation_record_ids": [
+        "sft-source-22b95096fa337ac8bde24c37",
+        "sft-source-20cbcb01c5bf844aecfa60a2",
+        "sft-source-210c3ac9a9e7873fc02a53df",
+        "sft-source-209b66a1a832aeb4bba70d5f",
+        "sft-source-21d429a6de71caf9a110e400",
+        "sft-source-20b160aa65532e207823f34b",
+        "sft-source-1fad1d0fbf11cdd0c778b003",
+        "sft-source-2176dbd1b517b126fa887e2f",
+        "sft-source-2006dd343eeb49346d74fb41",
+        "sft-source-21b32e8b6252fb21e74e817b",
+        "sft-source-22acb952efe6ce6368ee769b",
+        "sft-source-2193913b2e28c19b37bf7731",
+        "sft-source-2070e415f6f7374d59ac956d",
+        "sft-source-1fab1bf7eba4c61bbdbacb10",
+        "sft-source-204ad73dc403848153790f24",
+        "sft-source-1550cf426ebc418e5687d267",
+        "sft-source-141322b67de7a67f88744b53",
+        "sft-source-148f4f77ba8f9d88f342fffb",
+        "sft-source-1426133419621878f691f7c3",
+        "sft-source-1322dd39170409d0f5ba991a",
+        "sft-source-134e300b683d865a495bb74e",
+        "sft-source-1525c330bb68b7d5c94c4566",
+        "sft-source-139b53140fe59d64e815a540",
+        "sft-source-14129c2aead5d6aaf6827be1",
+        "sft-source-62fdc247563e3d49bd041110",
+        "sft-source-66e3558cd52fe12aee3b41cf",
+        "sft-source-6a0546e13be0101dda58fbe0",
+        "sft-source-686b234bfba4c2fbdccc6274",
+        "sft-source-62fa0a06b8ab307d6e30571f",
+        "sft-source-604f53d7e1e180ae0a583709"
+      ],
+      "intermediate_checkpoints": "loss measured every 50 steps; generation comparisons from saved checkpoints after pilot"
+    },
+    "decision": {
+      "automatic_full_training": false,
+      "must_pass": [
+        "finite_loss_and_gradients",
+        "full_completion_labels",
+        "reload_equivalence",
+        "complete_resume_checkpoint"
+      ],
+      "quality_review": "paired_metrics_and_actual_outputs_required_no_loss_only_decision",
+      "next_action": "explain_measured_readiness_to_user_before_launch"
+    },
+    "kaggle": {
+      "kernel": "pierrepluton/chsa-source-sft-qwen3",
+      "private": true,
+      "free_quota_only": true,
+      "accelerator": "Tesla T4"
+    },
+    "limits": [
+      "Prepared protocol, not an executed pilot.",
+      "1800 seconds bounds training between step callbacks, not setup or evaluation wall time.",
+      "Resume equivalence must still be verified in the pinned CUDA runtime."
+    ],
+    "artifact_hashes": {
+      "train_qwen3": "70270d659db975a1f3547392c4681791c59d408360ec77a6104808018b4c4f9b",
+      "validation_qwen3": "554ee8ad2b8349f7df024796ad58d2bd27464b6dd5a7de56a3b760a305c74f25"
+    },
+    "tokenizer_files_sha256": {
+      "tokenizer.json": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09",
+      "tokenizer_config.json": "8afc76e17070a6a722817babaf72189e1e9022f1ba94566226811a9c242c7708",
+      "chat_template.jinja": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb"
+    },
+    "runtime_versions": {
+      "unsloth": "2026.8.22",
+      "unsloth_zoo": "2026.8.16",
+      "torch": "2.10.0+cu128",
+      "transformers": "5.5.0",
+      "trl": "0.23.1",
+      "peft": "0.18.1",
+      "datasets": "4.3.0",
+      "accelerate": "1.14.0"
+    },
+    "lora": {
+      "rank": 16,
+      "alpha": 16,
+      "dropout": 0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    }
+  },
+  "script_sha256": "9bd4bb0c5009121bc0b324b65d7aa4bc72c37f21777825ef82301a97c3e12222",
+  "precision_events": [
+    {
+      "stage": "trainer_ready",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "reloaded_before_evaluation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "reloaded_after_loss",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "reloaded_after_generation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_50_before_evaluation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_50_after_loss",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_50_after_generation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_100_before_evaluation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_100_after_loss",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "checkpoint_100_after_generation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    }
+  ],
+  "test_records_used": 0,
+  "limits": [
+    "Read-only reload; long training and clinical quality are not approved."
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "date": "2026-09-12",
+  "status": "completed",
+  "kernel_version": 25,
+  "script_version_id": 349322069,
+  "optimizer_steps": 0,
+  "test_records_used": 0,
+  "reload_identical_generations": 30,
+  "cache": {
+    "before_load": {
+      "cached_tensors": 392,
+      "stale_tensors": 0
+    },
+    "loaded_weights_identical": true,
+    "after_load": {
+      "cached_tensors": 392,
+      "stale_tensors": 392
+    },
+    "after_reset": {
+      "cached_tensors": 0,
+      "stale_tensors": 0
+    }
+  },
+  "stages": {
+    "base": {
+      "records": 18,
+      "valid_schema": 0,
+      "invalid_schema": 18,
+      "agreement_on_all_records": 0.0,
+      "valid_only_metrics": null,
+      "clinical_validation": "not_performed",
+      "limits": [
+        "Proposed synthetic references, not clinical truth.",
+        "Question counts do not measure relevance or safety.",
+        "Raw generation, no constrained decoding or API guardrails."
+      ],
+      "eos_terminated": 4,
+      "capped_512": 14,
+      "valid_correct_critical_on_all_critical": 0,
+      "critical_cases": 6
+    },
+    "sft": {
+      "records": 18,
+      "valid_schema": 10,
+      "invalid_schema": 8,
+      "agreement_on_all_records": 0.2222222222222222,
+      "valid_only_metrics": {
+        "total": 10,
+        "exact_match_rate": 0.4,
+        "critical_recall": 1.0,
+        "under_triage_count": 6,
+        "over_triage_count": 0,
+        "confusion_matrix": {
+          "maximum": {
+            "maximum": 2,
+            "moderate": 0,
+            "deferred": 0
+          },
+          "moderate": {
+            "maximum": 0,
+            "moderate": 0,
+            "deferred": 6
+          },
+          "deferred": {
+            "maximum": 0,
+            "moderate": 0,
+            "deferred": 2
+          }
+        }
+      },
+      "clinical_validation": "not_performed",
+      "limits": [
+        "Proposed synthetic references, not clinical truth.",
+        "Question counts do not measure relevance or safety.",
+        "Raw generation, no constrained decoding or API guardrails."
+      ],
+      "eos_terminated": 10,
+      "capped_512": 8,
+      "valid_correct_critical_on_all_critical": 2,
+      "critical_cases": 6
+    }
+  },
+  "source_hashes": {
+    "summary.json": "8c02e4175f1e56bc29a18a428ca4cdf9662442c553a782a79bdfec82ec3ab343",
+    "adapter_reload.json": "40501d3ab9b48d3e82dcbabbf7673693c44717f976db03b15b496962753502e5",
+    "reload.json": "b3eac5fd41bb4c854ff07a299d0e7e111f7f05e682e094cc1baf7d4200c2be6e",
+    "base.json": "2dd8afc967a3322d2f4bbd7b1eef504a3316a36c3c4e981d9c91415e378e4beb",
+    "sft.json": "3c65d4ceb93751a6e4d16536e866f10509e9f285eb06655cc40fb2ec9306b07b"
+  },
+  "clinical_validation": "not_performed"
+}

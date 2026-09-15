@@ -17,38 +17,40 @@ Construire une chaîne reproductible allant de corpus médicaux ouverts à un mo
 
 ```mermaid
 flowchart LR
-  A[MedQuAD] --> D[SFT bilingue 5 000]
+  A[MedQuAD] --> D[SFT bilingue 4 700]
   B[MediQAl] --> D
   C[FrenchMedMCQA] --> D
   D --> E[Qwen3 + LoRA]
-  U[UltraMedical Preference] --> F[DPO de sûreté]
+  U[UltraMedical Preference] --> F[DPO par préférences]
   E --> F
   F --> G[Évaluation triage FR/EN]
   G --> H[API de démonstration]
 ```
 
-## État réel
+## État vérifié au 16 septembre 2026
 
-| Jalon | État |
+| Étape | Résultat disponible |
 |---|---|
-| Audit, licences et versions des quatre sources | réalisé |
-| Dataset SFT source-derived | 5 000 paires, 2 500 FR / 2 500 EN |
-| Splits SFT | 4 000 train / 500 validation / 500 test |
-| Pré-vol tokenizer Qwen3 | réussi, aucune séquence au-dessus de 2 048 tokens |
-| Micro-run LoRA | 20 étapes terminées sur Apple MLX |
-| Entraînement SFT complet | non démarré |
-| Dataset et entraînement DPO | non démarrés |
-| Validation clinique | non réalisée |
+| Corpus SFT corrigé | 4 700 exemples : 3 721 train / 479 validation / 500 test |
+| SFT Qwen3 + LoRA | Checkpoint général à 500 étapes sauvegardé et vérifié |
+| DPO | 20 étapes, 426 paires train / 54 validation, poids sauvegardés vérifiés |
+| Comparaison finale QA v35 | 500 tests et 50 générations par modèle ; perte Base 1,575 / SFT 0,844 / DPO 0,843 |
+| API réelle v34 | 18/18 réponses conformes par adaptateur ; 8/18 priorités conformes aux références proposées |
+| Questionnaire et audit | Suivi de collecte FR/EN, anonymisation, synchronisation et redémarrage local testés |
+| Validation locale | 171 tests passent ; cela ne vaut pas validation clinique |
+| Dernière comparaison API v36 | Lancée, résultats en attente : Base/SFT/DPO et dialogues |
+| Déploiement extérieur et PowerPoint | À finaliser ; aucune API publique annoncée |
+| Validation clinique | Non réalisée |
 
-La [roadmap](docs/technical/ROADMAP_POC_V1.md) distingue systématiquement code présent, preuve technique et validation clinique.
+Commencer par l'[index des livrables](reports/LIVRABLES.md), le [rapport](reports/RAPPORT_TECHNIQUE_POC.md) et la [feuille de route](docs/technical/ROADMAP_POC_V1.md). Le [résultat final QA](docs/evidence/FINAL_QA_V35_RESULT.md) distingue apprentissage des réponses sources et qualité du triage.
 
 ## Sources de données
 
 | Source | Langue | Usage retenu | Licence source |
 |---|---|---|---|
-| [MedQuAD](https://github.com/abachaa/MedQuAD) | EN | 2 500 paires SFT | CC BY 4.0 |
-| [MediQAl](https://huggingface.co/datasets/ANR-MALADES/MediQAl) | FR | 1 500 paires SFT | CC BY 4.0 |
-| [FrenchMedMCQA](https://huggingface.co/datasets/qanastek/frenchmedmcqa) | FR | 1 000 paires SFT | Apache 2.0 |
+| [MedQuAD](https://github.com/abachaa/MedQuAD) | EN | Corpus SFT corrigé | CC BY 4.0 |
+| [MediQAl](https://huggingface.co/datasets/ANR-MALADES/MediQAl) | FR | Corpus SFT corrigé | CC BY 4.0 |
+| [FrenchMedMCQA](https://huggingface.co/datasets/qanastek/frenchmedmcqa) | FR | Corpus SFT corrigé | Apache 2.0 |
 | [UltraMedical-Preference](https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference) | EN | DPO, étape séparée | voir manifeste |
 
 Les données brutes, datasets générés et poids de modèle ne sont pas versionnés. Le dépôt conserve les schémas, configurations, versions de sources, transformations, compteurs et SHA-256 nécessaires à la reproductibilité. Les licences des sources restent applicables à leurs contenus respectifs ; la licence MIT de ce dépôt couvre uniquement le code et la documentation originale.
@@ -102,14 +104,14 @@ tests/            tests automatisés
 
 ## Résultats et limites
 
-Le micro-run prouve que Qwen3-1.7B Base peut charger le dataset source-derived, exécuter 20 étapes LoRA sur MLX et sauvegarder un adaptateur. Il ne prouve ni convergence, ni amélioration du triage, ni sûreté clinique. Les métriques et limites sont consignées dans [SFT_SOURCE_MICRO_RUN_2026-09-04.md](docs/evidence/SFT_SOURCE_MICRO_RUN_2026-09-04.md).
+Le SFT réduit la perte sur les 500 exemples réservés. Le DPO apporte un écart faible sur cette mesure ; aucun gain clinique n'est démontré. Dans la dernière API mesurée (v34), les six scénarios critiques proposés sont classés `maximum`, mais le niveau `moderate` est absent et les questions complémentaires restent insuffisantes. La version locale suivante ajoute un suivi explicite des rubriques ; sa vérification GPU v36 reste en cours. Voir les [résultats API](docs/evidence/VLLM_API_V34_RESULT.md) et les [résultats finaux QA](docs/evidence/FINAL_QA_V35_RESULT.md).
 
 ## Documentation de référence
 
 - [Cadrage de mission](CADRAGE_MISSION.md)
 - [Spécification fonctionnelle et technique](SPEC_POC_TRIAGE_MEDICAL.md)
-- [Documentation du dataset SFT](docs/technical/DATASET_SFT_SOURCE_5000_V1.md)
-- [Preuve de génération des 5 000 paires](docs/evidence/GENERATION_SFT_SOURCE_5000_2026-09-04.md)
+- [Manifeste du corpus corrigé](data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json)
+- [Historique : premier corpus de 5 000 paires](docs/evidence/GENERATION_SFT_SOURCE_5000_2026-09-04.md)
 - [Règles de contribution](CONTRIBUTING.md)
 - [Politique de sécurité](SECURITY.md)
 

@@ -1,0 +1,40 @@
+{
+  "status": "draft",
+  "run": 33,
+  "metrics": {
+    "sft": {
+      "requests": 18,
+      "successes": 12,
+      "failures": 6,
+      "client_p50_ms": 22647.09,
+      "client_p95_ms": 42957.04,
+      "failure_codes": {
+        "generation_incomplete": 6
+      }
+    },
+    "dpo": {
+      "requests": 18,
+      "successes": 12,
+      "failures": 6,
+      "client_p50_ms": 10483.77,
+      "client_p95_ms": 41907.91,
+      "failure_codes": {
+        "generation_incomplete": 6
+      }
+    }
+  },
+  "hashes": {
+    "summary.json": "f1962d6ca024f1c84f5d4c2918ca209f4ece3631de1b9c7749cb2afc3da3349a",
+    "models.json": "c7a7b3b243be84a412a8dc5f381115b0089f29ab05b4b83881ecc8f7dc975bdd",
+    "vllm.log": "6df444549b1ed0c781537eed316e9d750ce66e477d7ec3eed5662f0c1df5f759",
+    "cuda-linker.json": "992ee0b2a3e4a6fc99036c1d05789565ddf83118050a6ae5c2fc606b19cc33e0",
+    "dpo/api.log": "126856cc99766f621d323a8d94783a4cbcefe8b5f118f370a2ac368defd69d29",
+    "dpo/audit-proof.json": "242e3f29207511d27c00b13f48db4e833b18f14c5977bb8fef21a118f25cc531",
+    "dpo/endpoint.json": "4cebb34472993c3fce66295032b5c923bfa969096f5c286ec7dfa4efb2fabb9a",
+    "dpo/audit.jsonl": "9c8eb7843669471f88a3ca9d93ae647d45dd2c7d3657563ba0ccaf60d1596cd7",
+    "sft/api.log": "d0464b86f750c826cf9e17472b2d3b4a9d634b216cdbfbd74aba1b7bce07a97f",
+    "sft/audit-proof.json": "4b6b9c7e87793eeda7f9bfb84dcda3580544f44b51c0981e172650648a3b4a0b",
+    "sft/endpoint.json": "c2ae817d9996a2c8971cee0b3eeef8d82f365837ebd8ca663beed28f5c25dbbb",
+    "sft/audit.jsonl": "0ba8f64539080cfbf2d6696e1fdeab41be42c6ae74dc3e652a79ca3abe0e8ca7"
+  }
+}
