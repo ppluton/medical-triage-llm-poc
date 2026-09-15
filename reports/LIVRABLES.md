@@ -1,14 +1,16 @@
 # Livrables du POC CHSA
 
 Date : 2026-09-16 — Statut : draft, livraison en cours
-Sources : CADRAGE_MISSION.md, SPEC_POC_TRIAGE_MEDICAL.md, preuves référencées ci-dessous.
+Sources : CADRAGE_MISSION.md, SPEC_POC_TRIAGE_MEDICAL.md, [consignes officielles de remise](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance), preuves référencées ci-dessous.
+
+Le [guide de reprise](../GUIDE_REPRISE.md) pilote désormais la réalisation. Cette liste décrit les artefacts existants, sans les déclarer finaux.
 
 ## Parcours de lecture
 
 1. [Rapport technique](RAPPORT_TECHNIQUE_POC.md) : démarche, résultats et limites. Export PDF final de 20 pages maximum à produire après consolidation des dernières mesures.
 2. [Déroulé de démonstration](DEMONSTRATION_POC.md) : présentation du parcours et preuves à montrer.
 3. [Feuille de route](../docs/technical/ROADMAP_POC_V1.md) : acquis et écarts restants.
-4. PowerPoint pédagogique : à produire par l'agent Sol après vérification des dernières mesures, puis à relire et contrôler visuellement.
+4. PowerPoint et storyboard locaux — brouillon de première réalisation préparé par Sol ; finalisation suspendue pendant la reprise.
 
 ## Livrables demandés par la mission
 
@@ -27,3 +29,7 @@ Sources : CADRAGE_MISSION.md, SPEC_POC_TRIAGE_MEDICAL.md, preuves référencées
 Les poids, jeux générés et journaux restent dans les archives privées ; leurs identités sont décrites dans les preuves et manifestes. Le dépôt public ne contient ni token, ni données patient identifiantes, ni poids de modèle. Les fichiers de démonstration sont synthétiques. Les anciennes expériences restent dans `docs/evidence/` pour la traçabilité et ne décrivent pas l'état courant.
 
 Un résultat de test, un rapport PDF ou une présentation ne remplacent pas une validation clinique. Les priorités et préférences non approuvées restent explicitement proposées.
+
+## Format de remise
+
+ZIP `Titre_du_projet_nom_prenom` ; fichiers `Nom_Prenom_numero_nom_livrable_mmaaaa` (mois de démarrage). Dataset HF/JSONL versionné sur un dépôt, poids finaux chargeables, rapport PDF de 20 pages maximum, URL cloud et CI/CD. Présentation de 15 minutes incluant la démo, puis discussion 10 minutes et débrief 5 minutes. Voir le guide pour la checklist complète.

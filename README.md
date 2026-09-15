@@ -11,6 +11,12 @@ An educational Proof of Concept for a bilingual AI-assisted medical triage syste
 > [!CAUTION]
 > This project is not a medical device, diagnostic tool, or prescription system. It must not be used with real patients. Its outputs and triage thresholds have not been validated by healthcare professionals.
 
+## Restart guide
+
+[Spécification d’exécution — stack, contrat et livraison](SPEC_EXECUTION_V1.md)
+
+The project is undergoing a methodical restart. Follow the [active guide (French)](GUIDE_REPRISE.md) and [lessons learned](docs/learning/RETOUR_EXPERIENCE_REPRISE_2026-09-16.md). Results below describe the first implementation; they do not automatically validate the restarted workflow.
+
 ## Objective
 
 Build a reproducible pipeline from open medical corpora to a Qwen3 model adapted through SFT/LoRA and then DPO, with a FastAPI interface, safety guardrails, metrics, and explicit traceability.

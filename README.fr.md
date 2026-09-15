@@ -11,6 +11,12 @@ Proof of Concept scolaire d'un assistant IA bilingue de triage médical, réalis
 > [!CAUTION]
 > Ce projet n'est ni un dispositif médical, ni un outil de diagnostic ou de prescription. Il ne doit pas être utilisé avec de vrais patients. Les sorties et seuils de triage n'ont pas été validés par des professionnels de santé.
 
+## Reprendre ici
+
+[Spécification d’exécution — stack, contrat et livraison](SPEC_EXECUTION_V1.md)
+
+Le projet est en reprise méthodologique. Suivre le [guide actif](GUIDE_REPRISE.md), puis le [retour d’expérience](docs/learning/RETOUR_EXPERIENCE_REPRISE_2026-09-16.md). Les résultats ci-dessous décrivent la première réalisation ; ils ne valident pas automatiquement la reprise.
+
 ## Objectif
 
 Construire une chaîne reproductible allant de corpus médicaux ouverts à un modèle Qwen3 adapté par SFT/LoRA puis DPO, avec une API FastAPI, des garde-fous, des métriques et une traçabilité explicite.
