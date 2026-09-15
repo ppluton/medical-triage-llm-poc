@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-16",
+  "status": "draft",
+  "run": 36,
+  "target": "pierrepluton/chsa-source-sft-qwen3",
+  "private": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "code_revision": "a66a3e2",
+  "notebook_sha256": "3f5a79ec62eebfca17a6e1e726b08d145e95b6424f7e996bc8d1c19a40b3e2ff",
+  "variants": [
+    "base",
+    "sft",
+    "dpo"
+  ],
+  "expected_requests_if_complete": 90,
+  "optimizer_steps": 0,
+  "test_records_used": 0,
+  "public_endpoint": false,
+  "result": "running",
+  "local_regression": {
+    "passed": 171,
+    "seconds": 29.87,
+    "reservation": "val_3a9e9d0cf24e"
+  }
+}

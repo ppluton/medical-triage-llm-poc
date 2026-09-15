@@ -10,7 +10,7 @@
   "test_examples": 500,
   "generation_examples": 50,
   "optimizer_steps": 0,
-  "result": "pending",
+  "result": "completed_and_verified",
   "script_version_id": 349810521,
   "url": "https://www.kaggle.com/code/pierrepluton/chsa-source-sft-qwen3?scriptVersionId=349810521",
   "progress_observation": {
@@ -22,5 +22,6 @@
     "last_sft_loss_log_seconds": 1317.0,
     "dpo_progress_observed": false,
     "result": "pending"
-  }
+  },
+  "result_evidence": "FINAL_QA_V35_RESULT.json"
 }

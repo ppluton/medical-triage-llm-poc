@@ -1,0 +1,43 @@
+{
+  "status": "draft",
+  "comparison": {
+    "base": {
+      "mean_example_response_nll": 1.5752023297548294,
+      "loss_records": 500,
+      "qa_eos_terminated": 37,
+      "triage": null
+    },
+    "sft": {
+      "mean_example_response_nll": 0.8440168938003481,
+      "loss_records": 500,
+      "qa_eos_terminated": 40,
+      "triage": null
+    },
+    "dpo": {
+      "mean_example_response_nll": 0.8429704240523279,
+      "loss_records": 500,
+      "qa_eos_terminated": 41,
+      "triage": null
+    }
+  },
+  "test_records": 500,
+  "generated_records_per_model": 50,
+  "artifact_hashes": {
+    "summary.json": "0c379638461bdadfc5e6eae3dbc5cb57fb82b5bf2b52a7c85b3cdee5ad8e6976",
+    "base.json": "c4daf56041df8b72c7615640d6acfccaea730f1b8ab4e6aa876b1906c10dcb60",
+    "sft.json": "d20ae748d857bacf5d2b77ccc3865c22f99cdac3e164fe1259536ebcabdecf07",
+    "dpo.json": "acbd6f23b0135ab610e9675d053e37f8da4ab250f2f66262127caf9f38749124",
+    "selected_ids.json": "5ff53c5504d5d27a52f2c44cfe51af261cc310423a1eeeebf8b02f3de7e05233",
+    "final_freeze.json": "073559b5df70404f69a47ec8a8ee65a10eb18edc03a5d8f430b725a0ab733f9a"
+  },
+  "limits": [
+    "Saved observations checked; inference is not independently repeated.",
+    "EOS flags are reported, not recomputed from tokenizer.",
+    "No clinical or semantic accuracy inferred from response loss."
+  ],
+  "date": "2026-09-16",
+  "verification_status": "final_saved_metrics_recomputed",
+  "kaggle_version": 35,
+  "script_version_id": 349810521,
+  "identical_sft_dpo_outputs": 43
+}

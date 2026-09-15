@@ -1,6 +1,6 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
-- **Date :** 2026-09-14
+- **Date :** 2026-09-16
 - **Statut :** draft — rapport intermédiaire, livrables incomplets
 - **Sources :** [cadrage](../CADRAGE_MISSION.md), [spécification](../SPEC_POC_TRIAGE_MEDICAL.md), [audit de mission](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md) et preuves liées ci-dessous.
 - **Format final :** PDF de vingt pages maximum ; ce document Markdown n'est pas encore le PDF final.
@@ -14,7 +14,7 @@ La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qw
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO 426/54 admis pour expérimentation pédagogique ; validation clinique absente |
-| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Test réservé v35 lancé avec protocole figé ; résultat non encore disponible |
+| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Test réservé v35 terminé et vérifié ; comparaison API enrichie v36 en cours |
 | Endpoint cloud vLLM/API | Intégration réelle v34, 18/18 réponses conformes par variante, audit et latence mesurés | Compléter le parcours de questions, vérifier le redémarrage, déployer sur cible autorisée |
 | GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
@@ -69,6 +69,17 @@ Les v23 et v24 ont échoué au contrôle de recharge. La [v25](../docs/evidence/
 
 Preuves : [mesures SFT](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [échec v23](../docs/evidence/TRIAGE_V23_LAUNCH_2026-09-12.md), [contrôle v24](../docs/evidence/TRIAGE_V24_LAUNCH_2026-09-12.md).
 
+### Test final indépendant v35
+
+Le protocole a été figé avant l'ouverture des 500 exemples de test. Les trois modèles ont été évalués sur les mêmes exemples et 50 générations sélectionnées par hash, en Transformers FP4 et décodage greedy. Les fichiers et les calculs ont été vérifiés après téléchargement ; aucune modification du modèle n'est déduite de ce test.
+
+| Mesure finale | Base | SFT 500 | DPO |
+|---|---:|---:|---:|
+| Perte réponse moyenne par exemple, 500 tests | 1,575202 | 0,844017 | 0,842970 |
+| Arrêts EOS déclarés, sur 50 générations | 37 | 40 | 41 |
+
+Le SFT réduit la perte sur ce corpus réservé. Le DPO change peu cette mesure et 43 sorties sur 50 sont identiques au SFT. Ce constat n'est pas un test de significativité ni une mesure de justesse clinique. Les drapeaux EOS sont recomptés depuis les sorties sauvegardées, pas recalculés avec le tokenizer. Voir la [preuve finale v35](../docs/evidence/FINAL_QA_V35_RESULT.md).
+
 ## 5. DPO : préparation et limites
 
 Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes anglaises. Après revue contextuelle, 95 récits personnels non vérifiés et une paire altérée ont été exclus. Le candidat filtré contient 426 train et 54 validation ; son usage expérimental est consigné dans ADR-014, sans approbation clinique ni revue humaine indépendante. Les statistiques suivantes décrivent le lot initial. Les catégories source comprennent `length`, `easy` et `hard`. La réponse préférée est plus longue en caractères dans 358/512 paires train ; ce constat descriptif ne prouve pas un biais causal. Certaines paires choisissent la même option finale avec des explications différentes. `chosen/rejected` ne signifie donc pas automatiquement « triage correct/incorrect », et le DPO ne peut pas être présenté comme une garantie de prudence.
@@ -76,6 +87,8 @@ Le lot UltraMedical initial contenait 512 paires train et 64 validations, toutes
 Le raccord DPO ne dépend plus de l'ancien hash v5 : il vérifie un manifeste explicite du SFT, de son tokenizer et de la comparaison associée. Le contrôle local des longueurs n'a trouvé aucun dépassement des budgets de 1 024 tokens de prompt et 2 048 tokens par séquence complète sur les 576 paires. La revue technique et contextuelle a conduit aux exclusions ci-dessus ; aucune approbation clinique n'a été créée.
 
 La v27 a exécuté vingt étapes sur T4 en 464,143 secondes, beta 0,1, learning rate `5e-6`, batch effectif 8. Les 392 tenseurs de la politique ont changé ; la référence est restée identique au SFT initial. Les poids sauvegardés ont été téléchargés et vérifiés contre les empreintes du run. Sur 54 paires de validation, la loss DPO passe de 0,63323 à l'étape 10 à 0,62233 à l'étape 20. Le taux de préférence implicite TRL est 64,8 % ; ce n'est pas une accuracy médicale. La comparaison v28 terminée donne une NLL de 0,786970 pour SFT contre 0,786059 pour DPO, mais seulement 1/18 JSON de triage conforme pour chacun. Le runtime diffère de v26 ; aucun gain de triage n’est démontré. Voir [résultats v28](../docs/evidence/COMPARAISON_V28_RESULT_2026-09-13.md).
+
+Le faible effet observé peut être lié à un essai court et à des préférences de réponses médicales générales, toutes anglaises, qui ne ciblent pas directement les priorités de triage. Ce sont des hypothèses, pas des causes isolées expérimentalement. Les poids vérifiés confirment une optimisation effective ; augmenter simplement le nombre d'étapes ne garantit pas une amélioration.
 
 Preuves : [résultat v27](../docs/evidence/DPO_V27_RESULT_2026-09-13.md), [lancement v28](../docs/evidence/COMPARAISON_V28_LAUNCH_2026-09-13.md), [raccord DPO](../docs/evidence/DPO_HANDOFF_2026-09-12.md), [revue descriptive](../docs/evidence/DPO_CANDIDATE_REVIEW_2026-09-12.json).
 
@@ -91,15 +104,15 @@ Les latences médianes client sont de 7,719 secondes pour SFT et 7,178 secondes 
 
 Une extension locale de collecte (API 0.3.0) suit les rubriques renseignées, les absences explicitement déclarées et les informations indisponibles. Les questions FR/EN avancent au fil des contextes consolidés. Le raccord est testé avec fournisseur simulé ; il n'est pas inclus dans les mesures GPU v34 et ne prouve pas une amélioration de la priorité. Voir le [parcours de collecte](../docs/technical/COLLECTE_COMPLEMENTAIRE_V1.md).
 
-L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. La politique de stockage et de conservation reste à définir avant déploiement.
+L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. Deux processus API locaux successifs ont également conservé les réponses dans le même journal. La synchronisation du fichier est exigée avant restitution ; son échec produit un refus 503. Cette [preuve locale de redémarrage](../docs/evidence/AUDIT_RESTART_LOCAL_2026-09-14.md) ne prouve pas la durabilité du futur volume distant. La politique de stockage et de conservation reste à définir avant déploiement.
 
-La configuration GitHub Actions couvre tests et conteneur ; le déploiement automatisé et son exécution distante restent à terminer. L'unique autorisation GPU actuelle est le notebook Kaggle privé sur quota gratuit. Un endpoint cloud nécessite une cible et un coût explicitement autorisés, puis une démonstration du modèle via vLLM et FastAPI. Aucun endpoint ni modèle public n'est annoncé.
+La régression locale complète passe 171 tests au 16 septembre. La v36 a été lancée pour comparer Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN ; ses résultats restent en attente. La configuration GitHub Actions couvre tests et conteneur ; le déploiement automatisé et son exécution distante restent à terminer. L'unique autorisation GPU actuelle est le notebook Kaggle privé sur quota gratuit. Un endpoint cloud nécessite une cible et un coût explicitement autorisés, puis une démonstration du modèle via vLLM et FastAPI. Aucun endpoint ni modèle public n'est annoncé.
 
 Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md).
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT est établie par v25. La comparaison commune du DPO est réalisée. La clôture nécessite encore un parcours de questions complémentaires opérationnel et des contrôles adaptés aux informations insuffisantes, les résultats de l’évaluation finale réservée et une démonstration sur une cible accessible autorisée. La v35 compare Base, SFT et DPO sur les 500 exemples de test et 50 générations sélectionnées de manière déterministe, sans entraînement. Son protocole Transformers FP4 est distinct de la démonstration vLLM FP16 ; ses résultats ne serviront pas à régler les modèles. Voir le [gel et lancement v35](../docs/evidence/FINAL_QA_V35_LAUNCH.md). La clôture comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+La recharge du SFT est établie par v25. Les comparaisons communes QA du DPO, sur validation et test réservé, sont réalisées. La clôture nécessite encore un parcours de questions complémentaires opérationnel et des contrôles adaptés aux informations insuffisantes, l’analyse qualitative complémentaire et une démonstration sur une cible accessible autorisée. La v35 terminée compare Base, SFT et DPO sur les 500 exemples de test et 50 générations sélectionnées de manière déterministe, sans entraînement. Son protocole Transformers FP4 est distinct de la démonstration vLLM FP16 ; ses résultats ne serviront pas à régler les modèles. Voir le [gel et lancement v35](../docs/evidence/FINAL_QA_V35_LAUNCH.md). La clôture comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 

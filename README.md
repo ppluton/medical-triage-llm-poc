@@ -17,38 +17,40 @@ Build a reproducible pipeline from open medical corpora to a Qwen3 model adapted
 
 ```mermaid
 flowchart LR
-  A[MedQuAD] --> D[Bilingual SFT: 5,000]
+  A[MedQuAD] --> D[Bilingual SFT: 4,700]
   B[MediQAl] --> D
   C[FrenchMedMCQA] --> D
   D --> E[Qwen3 + LoRA]
-  U[UltraMedical Preference] --> F[Safety-oriented DPO]
+  U[UltraMedical Preference] --> F[Preference alignment DPO]
   E --> F
   F --> G[FR/EN triage evaluation]
   G --> H[Demonstration API]
 ```
 
-## Current status
+## Verified status — 16 September 2026
 
-| Milestone | Status |
+| Stage | Available evidence |
 |---|---|
-| Audit, licenses, and versions of the four sources | completed |
-| Source-derived SFT dataset | 5,000 pairs: 2,500 FR / 2,500 EN |
-| SFT splits | 4,000 train / 500 validation / 500 test |
-| Qwen3 tokenizer preflight | passed, no sequence above 2,048 tokens |
-| LoRA micro-run | 20 steps completed on Apple MLX |
-| Full SFT training | not started |
-| DPO dataset and training | not started |
-| Clinical validation | not performed |
+| Corrected SFT corpus | 4,700 examples: 3,721 train / 479 validation / 500 test |
+| Qwen3 SFT + LoRA | General checkpoint at 500 steps saved and verified |
+| DPO | 20 steps, 426 training pairs / 54 validation pairs, saved weights verified |
+| Final QA comparison v35 | 500 test examples and 50 generations per model; loss Base 1.575 / SFT 0.844 / DPO 0.843 |
+| Real API v34 | 18/18 schema-valid responses per adapter; 8/18 priorities match proposed references |
+| Questionnaire and audit | Bilingual collection, anonymization, file synchronization and local restart tested |
+| Local verification | 171 tests pass; this is not clinical validation |
+| Latest API comparison v36 | Launched, results pending: Base/SFT/DPO and dialogues |
+| External deployment and slide deck | Still to complete; no public API announced |
+| Clinical validation | Not performed |
 
-The [roadmap](docs/technical/ROADMAP_POC_V1.md) systematically distinguishes implemented code, technical evidence, and clinical validation.
+Start with the [deliverables index](reports/LIVRABLES.md), [report](reports/RAPPORT_TECHNIQUE_POC.md), and [roadmap](docs/technical/ROADMAP_POC_V1.md). The [final QA evidence](docs/evidence/FINAL_QA_V35_RESULT.md) separates learning source answers from triage quality.
 
 ## Data sources
 
 | Source | Language | Intended use | Source license |
 |---|---|---|---|
-| [MedQuAD](https://github.com/abachaa/MedQuAD) | EN | 2,500 SFT pairs | CC BY 4.0 |
-| [MediQAl](https://huggingface.co/datasets/ANR-MALADES/MediQAl) | FR | 1,500 SFT pairs | CC BY 4.0 |
-| [FrenchMedMCQA](https://huggingface.co/datasets/qanastek/frenchmedmcqa) | FR | 1,000 SFT pairs | Apache 2.0 |
+| [MedQuAD](https://github.com/abachaa/MedQuAD) | EN | Corrected SFT corpus | CC BY 4.0 |
+| [MediQAl](https://huggingface.co/datasets/ANR-MALADES/MediQAl) | FR | Corrected SFT corpus | CC BY 4.0 |
+| [FrenchMedMCQA](https://huggingface.co/datasets/qanastek/frenchmedmcqa) | FR | Corrected SFT corpus | Apache 2.0 |
 | [UltraMedical-Preference](https://huggingface.co/datasets/TsinghuaC3I/UltraMedical-Preference) | EN | separate DPO stage | see source manifest |
 
 Raw data, generated datasets, and model weights are not committed. The repository retains the schemas, configurations, source versions, transformation records, counters, and SHA-256 hashes required for reproducibility. Each source dataset remains governed by its own license; this repository's MIT license applies only to the original code and documentation.
@@ -102,14 +104,14 @@ tests/            automated tests
 
 ## Results and limitations
 
-The micro-run demonstrates that Qwen3-1.7B Base can load the source-derived dataset, complete 20 LoRA steps on MLX, and save an adapter. It does not demonstrate convergence, improved triage performance, or clinical safety. Metrics and evidence limitations are recorded in [SFT_SOURCE_MICRO_RUN_2026-09-04.md](docs/evidence/SFT_SOURCE_MICRO_RUN_2026-09-04.md).
+SFT reduces response loss on the 500 held-out examples. DPO changes this metric only slightly; no clinical benefit is established. In the latest measured API run (v34), all six proposed critical scenarios receive `maximum`, but `moderate` is never used and follow-up questions remain insufficient. The next local version adds explicit field tracking; its GPU verification v36 is running. See [API results](docs/evidence/VLLM_API_V34_RESULT.md) and [final QA results](docs/evidence/FINAL_QA_V35_RESULT.md).
 
 ## Reference documentation
 
 - [Project brief](CADRAGE_MISSION.md) — French
 - [Functional and technical specification](SPEC_POC_TRIAGE_MEDICAL.md) — French
-- [SFT dataset documentation](docs/technical/DATASET_SFT_SOURCE_5000_V1.md) — French
-- [Evidence for the 5,000-pair generation](docs/evidence/GENERATION_SFT_SOURCE_5000_2026-09-04.md) — French
+- [Corrected corpus manifest](data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json) — French
+- [Historical first 5,000-pair corpus](docs/evidence/GENERATION_SFT_SOURCE_5000_2026-09-04.md) — French
 - [Contribution guidelines](CONTRIBUTING.md) — French
 - [Security policy](SECURITY.md) — French
 
