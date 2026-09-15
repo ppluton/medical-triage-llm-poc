@@ -22,6 +22,7 @@ Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max
 SAFETY_NOTICE = (
     "Cette évaluation est une aide au triage et ne remplace pas un professionnel de santé."
 )
+API_VERSION = "0.4.0"
 SAFETY_NOTICES = {
     "fr": SAFETY_NOTICE,
     "en": "This assessment assists triage and does not replace a healthcare professional.",
@@ -94,6 +95,9 @@ class ProviderResult(StrictModel):
     result: ModelResult
     model_version: str
     anonymized_input: TriageRequest
+    guardrail_status: Literal["model_output", "corrected", "safe_fallback"] = "model_output"
+    guardrail_version: str = "unconfigured"
+    guardrail_reasons: list[str] = Field(default_factory=list, max_length=20)
 
 
 class TriageProvider(Protocol):
@@ -105,7 +109,7 @@ class AuditSink(Protocol):
 
 
 def create_app(provider: TriageProvider | None = None, audit: AuditSink | None = None) -> FastAPI:
-    app = FastAPI(title="Medical triage POC", version="0.3.0")
+    app = FastAPI(title="Medical triage POC", version=API_VERSION)
 
     @app.get("/healthz")
     def health():
@@ -133,7 +137,10 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                     inference.anonymized_input.patient_context.model_dump(), request.language),
                 **result.model_dump())
             content = {"anonymized_input": inference.anonymized_input.model_dump(),
-                       "output": response.model_dump(), "privacy_status": "passed"}
+                       "output": response.model_dump(), "privacy_status": "passed",
+                       "guardrail_status": inference.guardrail_status,
+                       "guardrail_version": inference.guardrail_version,
+                       "guardrail_reasons": inference.guardrail_reasons}
             return response
         except HTTPException:
             raise
@@ -152,7 +159,8 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                         "timestamp": datetime.now(UTC).isoformat(),
                         "language": request.language, "model_version": model_version,
                         "prompt_version": getattr(provider, "prompt_version", "unconfigured"),
-                        "controls_version": "schema-privacy-collection-v4", "status": status,
+                        "controls_version": "schema-privacy-collection-guardrails-v5",
+                        "status": status,
                         **content,
                         "latency_ms": round((time.perf_counter() - started) * 1000, 2),
                     })

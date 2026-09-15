@@ -3,7 +3,11 @@ from dataclasses import dataclass
 import pytest
 from presidio_analyzer import RecognizerResult
 
-from triage_poc.anonymization import AnonymizationConfigurationError, TextAnonymizer
+from triage_poc.anonymization import (
+    SERVING_PII_ENTITIES,
+    AnonymizationConfigurationError,
+    TextAnonymizer,
+)
 from triage_poc.contracts import ContractValidationError, validate_against_schema
 
 
@@ -125,6 +129,14 @@ def test_anonymize_supports_a_bounded_entity_policy():
 
     with pytest.raises(AnonymizationConfigurationError, match="Invalid PII entity policy"):
         TextAnonymizer(analyzer, FakeAnonymizer(), entities=("UNKNOWN",))
+
+
+def test_serving_policy_preserves_clinical_context_entities():
+    assert "DATE_TIME" not in SERVING_PII_ENTITIES
+    assert "LOCATION" not in SERVING_PII_ENTITIES
+    assert "PERSON" not in SERVING_PII_ENTITIES
+    assert "PATIENT_NAME" in SERVING_PII_ENTITIES
+    assert "EMAIL_ADDRESS" in SERVING_PII_ENTITIES
 
 
 def test_contract_rejects_an_approved_manifest_with_a_skipped_pii_check():

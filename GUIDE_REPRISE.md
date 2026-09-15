@@ -66,7 +66,7 @@ Les scénarios couvrent douleur thoracique, respiration, neurologie, pédiatrie,
 
 **Condition de passage :** on sait ce qui est mesuré, sur quelles données, et comment la même comparaison sera rejouée après SFT et DPO.
 
-**État au 16 septembre :** la [revue de sûreté v36](docs/evidence/STAGE2_SAFETY_V36_RESULT_2026-09-16.md) compare désormais Base, SFT et DPO sur les mêmes 18 scénarios avec une file aveugle et des portes proposées dans l'[ADR-016](docs/decisions/ADR-016-portes-surete-etape-2.md). Les trois variantes échouent : les sorties valides au niveau du schéma contiennent encore des affirmations non étayées, des sous-triages et des corruptions de texte. Le lot v36 reste un jeu de développement déjà vu. La prochaine action est de corriger les garde-fous locaux puis de le rejouer ; aucun nouveau SFT/DPO n'est décidé à ce stade.
+**État au 16 septembre :** la [revue de sûreté v36](docs/evidence/STAGE2_SAFETY_V36_RESULT_2026-09-16.md) compare désormais Base, SFT et DPO sur les mêmes 18 scénarios avec une file aveugle et des portes proposées dans l'[ADR-016](docs/decisions/ADR-016-portes-surete-etape-2.md). Les trois variantes échouent : les sorties valides au niveau du schéma contiennent encore des affirmations non étayées, des sous-triages et des corruptions de texte. Les [garde-fous déterministes v1](docs/technical/GARDE_FOUS_DETERMINISTES_V1.md) sont implémentés dans l'API 0.4.0 et leur [replay historique](docs/evidence/STAGE2_GUARDRAIL_REPLAY_V36_2026-09-16.md) rétablit les métriques critiques proposées, mais remplace 8 à 11 sorties sur 18 selon la variante. Le lot v36 reste un jeu de développement déjà vu et aucune nouvelle inférence GPU n'a encore vérifié la chaîne complète. Aucun nouveau SFT/DPO n'est décidé à ce stade.
 
 ## 3 — SFT/LoRA sur GPU externe
 
@@ -118,4 +118,4 @@ La première version peut être identifiée comme brouillon avec écarts explici
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
-**Prochaine action concrète : étape 1, inventaire et revue des transformations.** Aucun nouvel entraînement n’est lancé par la création de ce guide.
+**Prochaine action concrète : préparer puis exécuter un candidat v37 Base/SFT/DPO avec l'API 0.4.0 sur le lot de régression, sans nouvel entraînement.** La décision de refaire un SFT ou un DPO viendra seulement après l'analyse des erreurs qui subsistent.

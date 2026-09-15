@@ -85,7 +85,7 @@ Un accès cloud et une procédure CI/CD restent des étapes distinctes.
 
 ## Candidat de comparaison API Base/SFT/DPO — 14 septembre
 
-Statut : draft, préparé localement, non lancé. La recette utilise désormais le contexte
+Statut au 14 septembre : draft, préparé localement, alors non lancé. La recette utilise désormais le contexte
 4096 mesuré en v34. Le runner inclut la Base sans adaptateur, puis SFT et DPO,
 avec le même serveur, tokenizer SFT, prompt, schéma et lot de 18 scénarios. Le nom
 servi de la Base a été vérifié dans `models.json` de v34. L'ordre est consigné ;
@@ -111,10 +111,26 @@ synthétiques. Empreinte du notebook candidat :
 Ces contrôles établissent la cohérence du paquet, pas son fonctionnement GPU.
 Le lot courant mesure un appel par scénario ; une preuve du parcours complet
 sur plusieurs appels avec le modèle réel reste à ajouter. Le candidat ne remplace
-pas l'évaluation QA v35 figée en cours et n'a pas été lancé.
+pas l'évaluation QA v35 alors figée en cours.
 
 Le candidat précédent est remplacé par `artifacts/kaggle/api-dialogue-candidate`
 (nom de run `api-dialogue-candidate`), qui inclut les deux dialogues FR/EN et la
 synchronisation d'audit. Voir la [préparation et ses limites](../evidence/DIALOGUE_DRIVER_LOCAL_2026-09-14.md).
 Le notebook SHA-256 est `3f5a79ec62eebfca17a6e1e726b08d145e95b6424f7e996bc8d1c19a40b3e2ff`.
-Il n'a pas encore été lancé ; l'évaluation QA v35 reste prioritaire et inchangée.
+Il a ensuite été exécuté sous le nom v36 ; ses résultats sont décrits dans la section
+suivante et dans la preuve de sûreté dédiée.
+
+## Candidat v37 après revue de sûreté — 16 septembre
+
+Le run v36 a finalement été exécuté puis revu ; ses sorties restent la preuve historique de
+l'API 0.3.0 et du prompt v5. La revue a révélé des faits non étayés, des signaux d'alerte
+omis et des textes corrompus. L'API 0.4.0 candidate ajoute une anonymisation de service plus
+ciblée, le prompt v6 et `proposed-guardrails-v1`. Le
+[replay hors ligne](../evidence/STAGE2_GUARDRAIL_REPLAY_V36_2026-09-16.md) montre la logique
+sur les sorties sauvegardées, sans relancer les modèles.
+
+Le prochain paquet doit porter un nouveau nom `api-guardrails-v37`, embarquer les sources
+exactes de l'API 0.4.0 et conserver Base, SFT et DPO inchangés. Il doit vérifier la version
+d'API, rapprocher les audits et résumer `model_output`, `corrected` et `safe_fallback` par
+variante. Tant que ce paquet n'est pas exécuté, le prompt v6 et la chaîne complète restent
+non prouvés sur GPU. Ce run est une régression d'inférence, pas un nouvel entraînement.

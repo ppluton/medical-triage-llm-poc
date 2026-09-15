@@ -11,8 +11,9 @@ import httpx
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from triage_poc.anonymization import TextAnonymizer
+from triage_poc.anonymization import SERVING_PII_ENTITIES, TextAnonymizer
 from triage_poc.api import ModelResult, ProviderFailure, ProviderResult, TriageRequest, create_app
+from triage_poc.guardrails import GUARDRAIL_VERSION, apply_proposed_guardrails
 from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT, generation_schema
 
 
@@ -43,7 +44,11 @@ class VllmProvider:
             raise ValueError("Remote serving requires HTTPS.")
         self.url = url.rstrip("/") + "/chat/completions"
         self.model, self.version = model, version
-        self.anonymizer = anonymizer if anonymizer is not None else TextAnonymizer()
+        self.anonymizer = (
+            anonymizer
+            if anonymizer is not None
+            else TextAnonymizer(entities=SERVING_PII_ENTITIES)
+        )
         self.client = client
 
     def triage(self, request: TriageRequest):
@@ -96,9 +101,15 @@ class VllmProvider:
                     if isinstance(value, list) else self._clean(value, request.language)
                 )
             stage = "cleaned_output_contract"
+            cleaned = ModelResult.model_validate(clean_result)
+            decision = apply_proposed_guardrails(context, cleaned, request.language)
             return ProviderResult(
-                result=ModelResult.model_validate(clean_result), model_version=self.version,
+                result=decision.result,
+                model_version=self.version,
                 anonymized_input=TriageRequest(language=request.language, patient_context=context),
+                guardrail_status=decision.status,
+                guardrail_version=GUARDRAIL_VERSION,
+                guardrail_reasons=list(decision.reasons),
             )
         except Exception:
             raise ProviderFailure(stage) from None

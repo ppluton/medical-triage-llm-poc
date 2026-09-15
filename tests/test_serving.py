@@ -33,7 +33,7 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
         assert json.loads(request.content)["messages"][0] == messages_for_scenario(
             {"request": BODY}
         )[0]
-        assert PROMPT_VERSION == "triage-demo-v5-proposed"
+        assert PROMPT_VERSION == "triage-demo-v6-proposed"
 
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
             "content": json.dumps({**RESULT, "summary": "Contact alice@example.org"})}}]})
@@ -55,6 +55,43 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
     ]
     assert record["output"] == response.json()
     assert record["output"]["summary"] == "Contact <EMAIL_ADDRESS>"
+    assert record["guardrail_status"] == "model_output"
+    assert record["guardrail_version"] == "proposed-guardrails-v1"
+    assert record["guardrail_reasons"] == []
+
+
+def test_provider_replaces_unsupported_stability_with_audited_safe_fallback(tmp_path):
+    body = {"language": "en", "patient_context": {
+        "age_group": "unknown", "symptoms": ["I do not feel well."], "vitals": {}}}
+    hallucinated = {
+        "triage_level": "deferred",
+        "summary": "The patient is stable and has no warning signs.",
+        "clinical_rationale": ["Vital signs are stable."],
+        "missing_information": [],
+    }
+    with httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(
+        200,
+        json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(hallucinated)}}]},
+    ))) as transport:
+        provider = VllmProvider(
+            "http://localhost:8001/v1", "sft", "fixture",
+            anonymizer=Redactor(), client=transport,
+        )
+        audit = tmp_path / "audit.jsonl"
+        response = TestClient(create_app(provider, JsonlAudit(audit))).post(
+            "/v1/triage", json=body
+        )
+    assert response.status_code == 200
+    assert response.json()["triage_level"] == "moderate"
+    assert "stable" not in response.json()["summary"].lower()
+    record = json.loads(audit.read_text())
+    assert record["guardrail_status"] == "safe_fallback"
+    assert set(record["guardrail_reasons"]) == {
+        "invented_vital_stability",
+        "invented_stability_or_absence",
+        "explicit_uncertainty_or_vulnerability",
+    }
 
 
 @pytest.mark.parametrize("reply", [

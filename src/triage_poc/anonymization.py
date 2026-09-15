@@ -22,6 +22,7 @@ from tldextract import TLDExtract
 SUPPORTED_LANGUAGES = frozenset({"fr", "en"})
 PII_ENTITIES = (
     "PERSON",
+    "PATIENT_NAME",
     "PHONE_NUMBER",
     "EMAIL_ADDRESS",
     "CREDIT_CARD",
@@ -29,6 +30,15 @@ PII_ENTITIES = (
     "IP_ADDRESS",
     "LOCATION",
     "DATE_TIME",
+    "PATIENT_REFERENCE",
+)
+SERVING_PII_ENTITIES = (
+    "PATIENT_NAME",
+    "PHONE_NUMBER",
+    "EMAIL_ADDRESS",
+    "CREDIT_CARD",
+    "IBAN_CODE",
+    "IP_ADDRESS",
     "PATIENT_REFERENCE",
 )
 GENERATED_PLACEHOLDER_PATTERN = re.compile(
@@ -114,11 +124,47 @@ def build_presidio_analyzer() -> AnalyzerEngine:
             )
         ],
     )
+    patient_name_recognizers = [
+        PatternRecognizer(
+            supported_entity="PATIENT_NAME",
+            supported_language="fr",
+            patterns=[
+                Pattern(
+                    name="fr_explicit_patient_name",
+                    regex=(
+                        r"\b(?:je m['’]appelle|nom du patient\s*(?:est|:)|M(?:me|lle)?\.?|"
+                        r"Monsieur|Madame)\s+[A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+"
+                        r"(?:[-'][A-ZÀ-ÖØ-Ý]?[a-zà-öø-ÿ]+)?"
+                        r"(?:\s+[A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+"
+                        r"(?:[-'][A-ZÀ-ÖØ-Ý]?[a-zà-öø-ÿ]+)?){0,2}\b"
+                    ),
+                    score=0.85,
+                )
+            ],
+        ),
+        PatternRecognizer(
+            supported_entity="PATIENT_NAME",
+            supported_language="en",
+            patterns=[
+                Pattern(
+                    name="en_explicit_patient_name",
+                    regex=(
+                        r"\b(?:my name is|patient(?:'s)? name\s*(?:is|:)|Mr\.?|Mrs\.?|Ms\.?)"
+                        r"\s+[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?"
+                        r"(?:\s+[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?){0,2}\b"
+                    ),
+                    score=0.85,
+                )
+            ],
+        ),
+    ]
     analyzer = AnalyzerEngine(nlp_engine=provider.create_engine(), supported_languages=["fr", "en"])
     analyzer.registry.remove_recognizer("EmailRecognizer")
     for language in SUPPORTED_LANGUAGES:
         analyzer.registry.add_recognizer(OfflineEmailRecognizer(supported_language=language))
     analyzer.registry.add_recognizer(registry_recognizer)
+    for recognizer in patient_name_recognizers:
+        analyzer.registry.add_recognizer(recognizer)
     return analyzer
 
 

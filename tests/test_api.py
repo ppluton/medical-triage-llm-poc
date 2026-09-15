@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from triage_poc.api import ModelResult, ProviderResult, TriageRequest, create_app
+from triage_poc.api import API_VERSION, ModelResult, ProviderResult, TriageRequest, create_app
 
 
 class FakeProvider:
@@ -14,6 +14,13 @@ class FakeProvider:
             ),
             model_version="fake-model-v1", anonymized_input=request,
         )
+
+
+def test_openapi_exposes_current_api_version():
+    response = TestClient(create_app(FakeProvider())).get("/openapi.json")
+
+    assert response.status_code == 200
+    assert response.json()["info"]["version"] == API_VERSION == "0.4.0"
 
 
 def test_triage_contract_returns_required_safety_notice():

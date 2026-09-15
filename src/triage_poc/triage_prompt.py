@@ -4,7 +4,9 @@ import json
 
 from triage_poc.api import ModelResult
 
-PROMPT_VERSION = "triage-demo-v5-proposed"
+PROMPT_VERSION = "triage-demo-v6-proposed"
+
+
 def generation_schema():
     """Bound verbosity for the demo while preserving every response field."""
     schema = ModelResult.model_json_schema()
@@ -13,9 +15,9 @@ def generation_schema():
             continue
         if field.get("type") == "array":
             field["maxItems"] = 2
-            field["items"]["maxLength"] = 160
+            field["items"]["maxLength"] = 240
         elif field.get("type") == "string":
-            field["maxLength"] = 240
+            field["maxLength"] = 320
     return schema
 
 
@@ -41,7 +43,8 @@ SYSTEM_PROMPT = (
     "because information is missing. Ask relevant follow-up questions without delaying "
     "urgent professional assessment. Do not request names or contact details. "
     "Use short sentences. Do not repeat the summary in the rationale or repeat list items. "
-    "Provide at most two items per list, each at most 160 characters; summary at most 240. "
+    "Provide at most two complete items per list, each at most 240 characters; summary at most "
+    "320 characters. Never end a field mid-word or emit HTML entities or privacy placeholders. "
     "Respond concisely in the requested language, with only a JSON object matching this schema: "
     + json.dumps(generation_schema())
 )

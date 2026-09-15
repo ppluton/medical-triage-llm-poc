@@ -2,7 +2,13 @@
 
 Date : 2026-09-14 — Statut : draft
 Sources : ADR-015, src/triage_poc/collection.py, src/triage_poc/api.py, tests/test_collection.py.
-Version : API 0.3.0, collecte `explicit-collection-v1-proposed`, prompt `triage-demo-v5-proposed`.
+Version historique : API 0.3.0, collecte `explicit-collection-v1-proposed`, prompt `triage-demo-v5-proposed`.
+
+Mise à jour du 16 septembre : l'API 0.4.0 conserve le même contrat de collecte et ajoute
+`proposed-guardrails-v1` après la sortie du modèle. Le prompt candidat devient
+`triage-demo-v6-proposed`. L'audit enregistre le statut, la version et les motifs du
+garde-fou ; voir le [document technique](GARDE_FOUS_DETERMINISTES_V1.md). Cette mise à jour
+est vérifiée localement, pas encore par une nouvelle inférence GPU multi-échanges.
 
 ## Utilisation
 
