@@ -48,6 +48,8 @@ Constituer environ 5 000 paires SFT bilingues ; justifier les exclusions plutôt
 
 **Point de départ :** [manifeste corrigé](data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [audit des corrections](docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [audit de fidélité](docs/evidence/SFT_V2_READINESS_2026-09-11.md). Ces preuves portent sur leur version, pas automatiquement sur un futur corpus.
 
+**État au 16 septembre :** inventaire et intégrité du candidat SFT v2.1 repris dans la [fiche active](docs/technical/CORPUS_ETAPE_1_V1.md) et la [preuve datée](docs/evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md). Le schéma de métadonnées et le processus RGPD sont documentés. Étape partiellement terminée : revue contextuelle PII, lignée finale du DPO et validation clinique indépendante restent ouvertes.
+
 ## 2 — Fixer l’évaluation et la baseline
 
 **Travail :** figer les métriques et le protocole avant apprentissage. QA : exactitude lorsque la référence le permet, complétude, répétitions, arrêt et loss séparément. Triage : matrice des trois priorités, cas critiques, sous/sur-triage, faits inventés, recommandations dangereuses, qualité des questions et explications, FR/EN. Mesurer API : erreurs, latence p50/p95, débit et rapprochement des audits.

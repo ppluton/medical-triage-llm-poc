@@ -8,8 +8,10 @@ Sources : mission OpenClassrooms, cadrage et spécification du dépôt.
 1. [Spécification d’exécution](../SPEC_EXECUTION_V1.md) — stack et livrables.
 2. [Guide de reprise étape par étape](../GUIDE_REPRISE.md) — plan actif, preuves attendues et prochaine action.
 3. [Bilan des erreurs et corrections](learning/RETOUR_EXPERIENCE_REPRISE_2026-09-16.md) — ce que nous conservons et ce que nous changeons.
-4. [Livrables](../reports/LIVRABLES.md) — fichiers attendus pour la remise.
-5. [Historique documentaire](HISTORIQUE_DOCUMENTAIRE.md) — anciennes étapes et liens conservés.
+4. [Corpus de l’étape 1](technical/CORPUS_ETAPE_1_V1.md) — sources, SFT, DPO, métadonnées et portes restantes.
+5. [Processus RGPD du corpus](governance/PROCESSUS_RGPD_CORPUS_V1.md) — méthode, preuves et limites.
+6. [Livrables](../reports/LIVRABLES.md) — fichiers attendus pour la remise.
+7. [Historique documentaire](HISTORIQUE_DOCUMENTAIRE.md) — anciennes étapes et liens conservés.
 
 Le [cadrage](../CADRAGE_MISSION.md) et la [spécification](../SPEC_POC_TRIAGE_MEDICAL.md) restent les références. Le guide organise leur réalisation ; il ne réduit pas leurs exigences.
 

@@ -47,13 +47,53 @@ def test_anonymize_replaces_detected_pii_and_keeps_a_pii_free_audit():
 
 
 def test_anonymize_marks_manual_review_when_pii_is_still_detected():
-    detection = RecognizerResult(entity_type="PHONE_NUMBER", start=0, end=5, score=0.9)
-    result = TextAnonymizer(FakeAnalyzer([[detection], [detection]]), FakeAnonymizer()).anonymize(
-        "06 12", "fr"
+    source = "06 12; 07 34"
+    initial = RecognizerResult(entity_type="PHONE_NUMBER", start=0, end=5, score=0.9)
+    anonymized = "<PHONE_NUMBER>; 07 34"
+    residual = RecognizerResult(
+        entity_type="PHONE_NUMBER",
+        start=anonymized.index("07 34"),
+        end=len(anonymized),
+        score=0.9,
     )
+    result = TextAnonymizer(
+        FakeAnalyzer([[initial], [residual]]), FakeAnonymizer()
+    ).anonymize(source, "fr")
 
     assert result.audit.status == "manual_review_required"
     assert result.audit.residual_entity_counts == {"PHONE_NUMBER": 1}
+
+
+def test_anonymize_ignores_ner_hits_inside_its_generated_placeholders():
+    source = "Patient id: AB-1234"
+    initial = RecognizerResult(
+        entity_type="PATIENT_REFERENCE", start=0, end=len(source), score=0.9
+    )
+    placeholder_hit = RecognizerResult(
+        entity_type="PERSON", start=1, end=len("<PATIENT_REFERENCE>") - 1, score=0.85
+    )
+
+    result = TextAnonymizer(
+        FakeAnalyzer([[initial], [placeholder_hit]]), FakeAnonymizer()
+    ).anonymize(source, "fr")
+
+    assert result.text == "<PATIENT_REFERENCE>"
+    assert result.audit.residual_entity_counts == {}
+    assert result.audit.status == "passed"
+
+
+def test_anonymize_does_not_ignore_a_placeholder_it_did_not_generate():
+    source = "<PATIENT_REFERENCE>"
+    detection = RecognizerResult(
+        entity_type="PERSON", start=1, end=len(source) - 1, score=0.85
+    )
+
+    result = TextAnonymizer(
+        FakeAnalyzer([[], [detection]]), FakeAnonymizer()
+    ).anonymize(source, "fr")
+
+    assert result.audit.residual_entity_counts == {"PERSON": 1}
+    assert result.audit.status == "manual_review_required"
 
 
 def test_anonymize_rejects_unsupported_language_before_processing():

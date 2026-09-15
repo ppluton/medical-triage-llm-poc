@@ -6,6 +6,7 @@ pipeline. It does not establish legal compliance or clinical validation.
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -29,6 +30,9 @@ PII_ENTITIES = (
     "LOCATION",
     "DATE_TIME",
     "PATIENT_REFERENCE",
+)
+GENERATED_PLACEHOLDER_PATTERN = re.compile(
+    rf"<({'|'.join(re.escape(entity) for entity in PII_ENTITIES)})>"
 )
 
 
@@ -161,11 +165,19 @@ class TextAnonymizer:
                 analyzer_results=detections,
                 operators=operators,
             )
-            residual = self._analyzer.analyze(
-                text=output.text,
-                entities=self._entities,
-                language=language,
-            )
+            residual = [
+                result
+                for result in self._analyzer.analyze(
+                    text=output.text,
+                    entities=self._entities,
+                    language=language,
+                )
+                if not _is_inside_generated_placeholder(
+                    output.text,
+                    result,
+                    {detection.entity_type for detection in detections},
+                )
+            ]
         except Exception as exc:  # Presidio configuration and runtime errors must stop ingestion.
             raise AnonymizationConfigurationError(
                 "PII anonymization could not complete safely."
@@ -187,3 +199,18 @@ class TextAnonymizer:
 
 def _count_entities(results: Sequence[RecognizerResult]) -> dict[str, int]:
     return dict(sorted(Counter(result.entity_type for result in results).items()))
+
+
+def _is_inside_generated_placeholder(
+    text: str,
+    result: RecognizerResult,
+    generated_entities: set[str],
+) -> bool:
+    """Ignore NER hits on placeholders created by this anonymization pass only."""
+
+    return any(
+        match.group(1) in generated_entities
+        and match.start() <= result.start
+        and result.end <= match.end()
+        for match in GENERATED_PLACEHOLDER_PATTERN.finditer(text)
+    )

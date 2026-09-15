@@ -4,6 +4,7 @@
 - **Statut :** proposed
 - **Sources :** `SPEC_POC_TRIAGE_MEDICAL.md`, `docs/governance/REGISTRE_SOURCES_DONNEES.md`, `docs/decisions/ADR-001-ingestion-conditionnelle-des-sources.md`
 - **Artefacts normatifs :** `data/manifests/triage_record_v1.schema.json` et `data/manifests/source_manifest_v1.schema.json`
+- **Complément de reprise :** `data/manifests/clinical_metadata_v1.schema.json` décrit les métadonnées cliniques d'un corpus QA lorsque les cibles de triage de `triage_record_v1` ne s'appliquent pas.
 
 ## Objectif
 

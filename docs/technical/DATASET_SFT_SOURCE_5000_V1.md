@@ -1,5 +1,7 @@
 # Dataset SFT médical bilingue dérivé des sources v1
 
+> Statut documentaire : historique. Le candidat actif après correction et isolation est décrit dans [CORPUS_ETAPE_1_V1.md](CORPUS_ETAPE_1_V1.md). Les chiffres ci-dessous appartiennent à la v1 et ne décrivent pas le corpus retenu v2.1 de 4 700 lignes.
+
 - **Date :** 2026-09-03
 - **Statut :** generated and technically validated; clinical review not performed
 - **Version :** `source-medical-qa-sft-v1`

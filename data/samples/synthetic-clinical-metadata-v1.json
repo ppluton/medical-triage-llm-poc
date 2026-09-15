@@ -1,0 +1,90 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_id": "meta-synthetic-chest-pain-001",
+    "language": "fr",
+    "data_origin": "synthetic",
+    "metadata_status": "source_provided",
+    "patient_context": {
+      "age_group": "adult",
+      "symptoms": ["douleur thoracique"],
+      "duration": "depuis 20 minutes",
+      "evolution": "persistante",
+      "intensity": "forte",
+      "associated_symptoms": ["essoufflement"],
+      "medical_history": [],
+      "vitals": {
+        "heart_rate_bpm": 105,
+        "temperature_c": null,
+        "respiratory_rate_bpm": 24,
+        "oxygen_saturation_pct": 93,
+        "systolic_bp_mmhg": null,
+        "diastolic_bp_mmhg": null
+      },
+      "vulnerability_factors": []
+    },
+    "source": {
+      "source_manifest_id": "src-synthetic-sft-fixture",
+      "source_dataset": "project synthetic fixtures",
+      "immutable_revision": "1.0.0",
+      "source_record_id": "synthetic-chest-pain-001",
+      "source_locator": "data/samples/synthetic-clinical-metadata-v1.json:0",
+      "source_license": "project-synthetic"
+    },
+    "confidence": {
+      "value": null,
+      "basis": "not_available",
+      "scope": "not_available",
+      "review_status": "not_available",
+      "note": "Aucun score clinique n'est inventé pour cet exemple synthétique."
+    },
+    "quality": {
+      "anonymization_status": "passed_after_manual_review",
+      "clinical_review_status": "not_performed"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_id": "meta-synthetic-unavailable-001",
+    "language": "en",
+    "data_origin": "synthetic",
+    "metadata_status": "not_available",
+    "patient_context": {
+      "age_group": "unknown",
+      "symptoms": [],
+      "duration": null,
+      "evolution": null,
+      "intensity": null,
+      "associated_symptoms": [],
+      "medical_history": [],
+      "vitals": {
+        "heart_rate_bpm": null,
+        "temperature_c": null,
+        "respiratory_rate_bpm": null,
+        "oxygen_saturation_pct": null,
+        "systolic_bp_mmhg": null,
+        "diastolic_bp_mmhg": null
+      },
+      "vulnerability_factors": []
+    },
+    "source": {
+      "source_manifest_id": "src-synthetic-sft-fixture",
+      "source_dataset": "project synthetic fixtures",
+      "immutable_revision": "1.0.0",
+      "source_record_id": "synthetic-unavailable-001",
+      "source_locator": "data/samples/synthetic-clinical-metadata-v1.json:1",
+      "source_license": "project-synthetic"
+    },
+    "confidence": {
+      "value": null,
+      "basis": "not_available",
+      "scope": "not_available",
+      "review_status": "not_available",
+      "note": "La source ne fournit pas de métadonnées cliniques structurées."
+    },
+    "quality": {
+      "anonymization_status": "not_run",
+      "clinical_review_status": "not_performed"
+    }
+  }
+]
