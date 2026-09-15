@@ -78,7 +78,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage au SFT complet :** pipeline et recharge vérifiés, dataset de l’étape 1 identifié, comparaison de validation disponible et explication pédagogique fournie à Pierre. Estimation de durée à partir du débit observé. Après entraînement : comparer Base/SFT et retenir un checkpoint selon la validation, sans régler sur le test final.
 
-**État au 16 septembre :** le [pilote SFT v2.2 Kaggle v38](docs/evidence/SFT_V22_KAGGLE_V38_LAUNCH_2026-09-16.md) est lancé sur 3 721 train / 479 validation, sans test. Le snapshot Qwen privé est vérifié avant installation puis chargé depuis `/kaggle/input`. Le statut `RUNNING` prouve le lancement seulement ; résultats, checkpoint et recharge restent à observer.
+**État au 16 septembre :** le [pilote v38](docs/evidence/SFT_V22_KAGGLE_V38_LAUNCH_2026-09-16.md) a vérifié le snapshot Qwen puis échoué avant entraînement, car le tokenizer Base exact n'avait pas de chat template. La correction ciblée conserve le tokenizer, ajoute un template versionné au rendu audité et la [v39](docs/evidence/SFT_V22_KAGGLE_V39_RELAUNCH_2026-09-16.md) est `RUNNING` sur 3 721 train / 479 validation, sans test. Smoke, checkpoints, recharge et résultats restent à observer.
 
 ## 4 — DPO à partir du SFT retenu
 

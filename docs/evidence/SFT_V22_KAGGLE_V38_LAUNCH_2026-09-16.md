@@ -1,7 +1,7 @@
 # Lancement SFT v2.2 — Kaggle v38
 
 - Date : 2026-09-16 à 03:40 Asia/Tbilisi
-- Statut observé : `RUNNING`
+- Statut final : `ERROR` avant toute étape d'entraînement
 - Notebook privé : `pierrepluton/chsa-source-sft-qwen3`, version 38
 - Révision de code : `c2db5e491099d1c638d2e688bd4d669a1111b5de`
 - Notebook SHA-256 : `23149fc0d4bb49866774119ffebe9a1031d58f0373cd9c5f140fba316796cf28`
@@ -28,6 +28,11 @@ téléchargement Hugging Face des poids n'est prévu.
 
 ## Niveau de preuve
 
-Kaggle a accepté la version 38 et la CLI a observé `RUNNING`. Cela prouve le lancement,
-pas encore la réussite du preflight distant, l'achèvement du SFT, la recharge du checkpoint
-ou un gain de qualité. Ces points seront consignés après récupération des sorties.
+Kaggle a accepté la version 38 et la CLI a d'abord observé `RUNNING`. Le log récupéré
+prouve ensuite `BASE_SNAPSHOT_PREFLIGHT_PASSED 11`, puis un arrêt du smoke avant toute
+étape : le tokenizer exact du modèle Base ne définit pas de chat template. L'erreur est
+`Cannot use chat template functions because tokenizer.chat_template is not set`.
+
+Le snapshot, les données et les checksums ne sont pas en cause. Aucun checkpoint v38 n'a
+été produit et aucun poids n'a été modifié. La correction versionne séparément le template
+de conversation et vérifie son hash avant le rendu ; elle est relancée en v39.
