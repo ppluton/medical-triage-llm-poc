@@ -66,6 +66,8 @@ Les scénarios couvrent douleur thoracique, respiration, neurologie, pédiatrie,
 
 **Condition de passage :** on sait ce qui est mesuré, sur quelles données, et comment la même comparaison sera rejouée après SFT et DPO.
 
+**État au 16 septembre :** la [revue de sûreté v36](docs/evidence/STAGE2_SAFETY_V36_RESULT_2026-09-16.md) compare désormais Base, SFT et DPO sur les mêmes 18 scénarios avec une file aveugle et des portes proposées dans l'[ADR-016](docs/decisions/ADR-016-portes-surete-etape-2.md). Les trois variantes échouent : les sorties valides au niveau du schéma contiennent encore des affirmations non étayées, des sous-triages et des corruptions de texte. Le lot v36 reste un jeu de développement déjà vu. La prochaine action est de corriger les garde-fous locaux puis de le rejouer ; aucun nouveau SFT/DPO n'est décidé à ce stade.
+
 ## 3 — SFT/LoRA sur GPU externe
 
 **Travail :** garder Qwen3-1.7B-Base, vérifier la révision exacte et le template. Réutiliser une recette officielle compatible avec le runtime retenu, épingler les versions ; vérifier les tokens supervisés, le masquage du prompt et le terminateur.
