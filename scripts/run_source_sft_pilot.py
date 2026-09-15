@@ -146,6 +146,14 @@ def main():
         raise ValueError("This pilot is restricted to the authorized free T4 environment")
     set_seed(cfg["seed"])
     tokenizer = AutoTokenizer.from_pretrained(str(a.tokenizer), local_files_only=True)
+    template_path_value = cfg.get("training_chat_template_path")
+    if template_path_value:
+        template_path = Path(template_path_value)
+        if sha256(template_path) != cfg.get("training_chat_template_sha256"):
+            raise ValueError("Training chat template checksum mismatch")
+        tokenizer.chat_template = template_path.read_text()
+    if not tokenizer.chat_template:
+        raise ValueError("A versioned training chat template is required")
     train_pairs = [render_prompt_completion(tokenizer, r) for r in train]
     val_pairs = [render_prompt_completion(tokenizer, r) for r in validation]
     for pair in train_pairs + val_pairs:

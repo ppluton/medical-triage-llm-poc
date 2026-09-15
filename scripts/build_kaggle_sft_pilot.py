@@ -39,6 +39,7 @@ data_directory = (
     args.data_directory if args.data_directory.is_absolute() else root / args.data_directory
 )
 config_relative = str(config_path.relative_to(root))
+selected_config = json.loads(config_path.read_text())
 out = args.output
 out.mkdir(parents=True, exist_ok=False)
 files = {
@@ -53,6 +54,9 @@ files = {
         config_relative,
     ]
 }
+template_relative = selected_config.get("training_chat_template_path")
+if template_relative:
+    files[template_relative] = (root / template_relative).read_text()
 if args.memorization_manifest:
     files["src/triage_poc/memorization.py"] = (root / "src/triage_poc/memorization.py").read_text()
     files["src/triage_poc/pilot_report.py"] = (root / "src/triage_poc/pilot_report.py").read_text()
@@ -189,7 +193,7 @@ install = {
     "execution_count": None,
     "outputs": [],
 }
-uses_local_base = json.loads(files[config_relative])["base_model"] == BASE_MODEL_PATH
+uses_local_base = selected_config["base_model"] == BASE_MODEL_PATH
 base_preflight = {
     "cell_type": "code",
     "execution_count": None,

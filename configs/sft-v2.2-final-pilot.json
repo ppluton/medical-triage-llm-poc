@@ -112,6 +112,8 @@
     "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
     "tokenizer_config.json": "aa71776c7cec3ef357d7b59a67edb31377d9c52407b9e2e822c717fe145cd03c"
   },
+  "training_chat_template_path": "configs/qwen3-source-sft-chat-template.jinja",
+  "training_chat_template_sha256": "b44d8063c3b49558db444116213856583a953510918d3eac9c58bf1b35c905b0",
   "runtime_versions": {
     "unsloth": "2026.8.22",
     "unsloth_zoo": "2026.8.16",

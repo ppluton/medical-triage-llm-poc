@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -30,6 +31,29 @@ def test_pilot_config_keeps_fixed_horizon_and_no_auto_full_run():
     config["scheduler_horizon_steps"] = config["pilot_stop_after_steps"]
     with pytest.raises(ValueError, match="horizon"):
         validate_pilot_config(config)
+
+
+def test_v22_training_template_is_versioned_and_renders_qwen_boundaries():
+    from jinja2 import Environment
+
+    config = json.loads(Path("configs/sft-v2.2-final-pilot.json").read_text())
+    template_path = Path(config["training_chat_template_path"])
+    assert hashlib.sha256(template_path.read_bytes()).hexdigest() == config[
+        "training_chat_template_sha256"
+    ]
+    rendered = Environment().from_string(template_path.read_text()).render(
+        messages=[
+            {"role": "system", "content": "System"},
+            {"role": "user", "content": "Question"},
+            {"role": "assistant", "content": "Answer"},
+        ],
+        add_generation_prompt=False,
+    )
+    assert rendered == (
+        "<|im_start|>system\nSystem<|im_end|>\n"
+        "<|im_start|>user\nQuestion<|im_end|>\n"
+        "<|im_start|>assistant\n<think>\n\n</think>\n\nAnswer<|im_end|>\n"
+    )
 
 
 def test_pilot_preflight_needs_no_model_and_rejects_mutated_data(tmp_path, monkeypatch, capsys):
