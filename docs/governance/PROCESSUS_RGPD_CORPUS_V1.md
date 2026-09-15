@@ -26,7 +26,9 @@ La CNIL distingue l’anonymisation irréversible de la pseudonymisation, qui pe
 |---|---|---|
 | Modèles spaCy FR/EN installés | observé localement (`fr_core_news_md 3.8.0`, `en_core_web_sm 3.8.0`) | installation locale, pas preuve de rappel exhaustif |
 | Intégration Presidio réelle | noms FR/EN, référence patient et emails synthétiques détectés et remplacés ; zéro résidu après correction du faux positif sur placeholder | deux cas synthétiques, pas une mesure de rappel corpus |
-| SFT : identifiants directs | 8 400 champs de développement rescannés lors de l’audit v2.1 | `PERSON`, `LOCATION`, `DATE_TIME` exclus de cette passe |
+| SFT : scan intégral PII | 9 400 champs, 4 700 lignes et les trois splits parcourus ; 1 498 lignes sans détection | détection automatique, pas certification |
+| SFT : identifiants directs | 31 détections `PATIENT_NAME` sur 22 lignes dans une file privée | décisions humaines encore absentes |
+| SFT : contexte | 3 180 lignes à revoir pour `PERSON`, `LOCATION` ou `DATE_TIME` | nombreux faux positifs possibles : auteurs, éponymes, lieux et durées |
 | SFT : contenu transformé | cinq différences expliquées par rejeu du remplacement ; aucune troncature | revue contextuelle complète non signée |
 | DPO : identifiants directs | statut technique et revue éducative présents sur 480 lignes | lot anglais ; aucune revue professionnelle revendiquée |
 | DPO : contexte | scan complémentaire et exclusions documentés | les alertes NER ambiguës ne valent pas certification |
@@ -50,4 +52,7 @@ Un artefact ne peut être présenté comme anonymisé et prêt à diffuser que s
 - le canal, l’audience, la durée et les accès sont approuvés ;
 - la formulation publique distingue contrôle technique, anonymisation juridique et validation clinique.
 
-Le candidat actuel n’a pas encore franchi toutes ces portes. Cette documentation justifie la méthode suivie et ses limites ; elle ne délivre pas une certification RGPD.
+Le [scan intégral](../evidence/SFT_CONTEXTUAL_PII_SCAN_2026-09-16.md) est terminé, mais
+les décisions de revue ne le sont pas. Le candidat actuel n’a donc pas encore franchi toutes
+ces portes. Cette documentation justifie la méthode suivie et ses limites ; elle ne délivre
+pas une certification RGPD.

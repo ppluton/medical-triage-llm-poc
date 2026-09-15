@@ -64,6 +64,17 @@
   "test_records_unchanged": 500,
   "grouping_policy": "ADR-012",
   "cross_split_content_groups": 0,
+  "contextual_pii_scan": {
+    "date": "2026-09-16",
+    "status": "review_pending",
+    "evidence": "docs/evidence/SFT_CONTEXTUAL_PII_SCAN_2026-09-16.json",
+    "input_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "records_scanned": 4700,
+    "fields_scanned": 9400,
+    "direct_review_records": 22,
+    "contextual_review_records": 3180,
+    "passed_no_contextual_detection_records": 1498
+  },
   "script_sha256": "63bdf92d22bf8003eb817cf665fbb29a9be1e41c8f483a83f58c114e92a56842",
   "training_launched": false,
   "limits": [

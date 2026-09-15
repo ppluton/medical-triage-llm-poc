@@ -2,7 +2,7 @@
 
 Date : 2026-09-16 — Statut : draft, candidat technique ; revue POC et porte RGPD ouvertes
 
-Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT](../../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md).
+Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT](../../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [scan PII contextuel](../evidence/SFT_CONTEXTUAL_PII_SCAN_2026-09-16.md).
 
 ## Objet
 
@@ -33,6 +33,12 @@ Le canonique conserve la provenance de chaque ligne, les opérations de transfor
 
 Les artefacts textuels restent hors Git public dans `data/processed/source-sft-v2.1-reviewed/`. Leurs SHA-256 et volumes sont consignés dans le manifeste versionné.
 
+Le scan contextuel du 16 septembre a parcouru les 9 400 champs du canonique. Il laisse
+1 498 lignes sans détection, 3 180 en revue contextuelle et 22 en revue prioritaire pour
+31 détections `PATIENT_NAME`. Une file privée relie ces candidats aux lignes sans exposer
+leur texte dans Git. Ce résultat termine le scan automatisé, pas la revue humaine ni la
+porte RGPD.
+
 ## Lot DPO disponible
 
 `artifacts/dpo-reviewed-v2/` contient 426 paires train et 54 validation, toutes en anglais et issues d’UltraMedical-Preference. Les empreintes des deux JSONL correspondent au [manifeste compact versionné](../../data/manifests/derived-ultramedical-dpo-v2-project-reviewed.json). Les lignes conservent le locator, la révision source, le type de préférence et les statuts de revue.
@@ -59,7 +65,8 @@ Les exemples [synthetic-clinical-metadata-v1.json](../../data/samples/synthetic-
 
 Avant de déclarer l’étape complète :
 
-1. terminer la revue contextuelle PII et consigner la décision ligne par ligne ;
+1. décider les 22 lignes prioritaires puis documenter la stratégie de revue des 3 180
+   alertes contextuelles ; toute transformation produira une nouvelle version du corpus ;
 2. produire un jeu d’évaluation de POC séparé, sans réutiliser le test déjà consulté ;
 3. publier ou transmettre les données uniquement par un canal autorisé et compatible avec les licences ;
 4. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git ;
@@ -79,6 +86,10 @@ PYTHONPATH=src /path/to/project-python scripts/audit_sft_v2_readiness.py \
 
 PYTHONPATH=src /path/to/project-python -m pytest \
   tests/test_clinical_metadata_schema.py tests/test_source_sft.py -q
+
+PYTHONPATH=src /path/to/project-python scripts/audit_sft_contextual_pii.py \
+  --canonical data/processed/source-sft-v2.1-reviewed/source-sft-v2.1.jsonl \
+  --output /fresh/private/audit-directory
 ```
 
 Ces commandes prouvent les contrats et transformations techniques dans l’environnement testé. Elles ne prouvent ni conformité RGPD globale, ni exactitude médicale, ni validation clinique.
