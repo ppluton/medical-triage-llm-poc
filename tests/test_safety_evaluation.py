@@ -6,6 +6,8 @@ from triage_poc.safety_evaluation import (
     REVIEW_FLAGS,
     finalize_review_decisions,
     prepare_blinded_review_queue,
+    prepare_common_success_blinded_review_queue,
+    summarize_qualitative_review,
     summarize_safety_evaluation,
 )
 
@@ -129,6 +131,46 @@ def test_queue_rejects_failed_or_mismatched_endpoint_records():
         prepare_blinded_review_queue(scenarios, {"base": failed}, seed=42)
 
 
+def test_common_success_queue_keeps_failure_as_text_free_omission():
+    scenarios = [
+        _scenario("common", "other", "deferred"),
+        _scenario("failed", "insufficient_information", "moderate"),
+    ]
+    reports = {
+        "base": {
+            "records": [
+                _response("common", "deferred", []),
+                {"id": "failed", "success": False, "http_status": 502, "error": "private"},
+            ]
+        },
+        "sft": {
+            "records": [
+                _response("common", "deferred", []),
+                _response("failed", "moderate", [{"field": "duration"}]),
+            ]
+        },
+    }
+    queue, key, coverage = prepare_common_success_blinded_review_queue(
+        scenarios, reports, seed=42
+    )
+    assert len(queue) == len(key) == 2
+    assert {row["scenario_id"] for row in queue} == {"common"}
+    assert coverage["scenario_records_included"] == 1
+    assert coverage["omissions"] == [
+        {
+            "scenario_id": "failed",
+            "failures": [
+                {
+                    "variant": "base",
+                    "http_status": 502,
+                    "reason": "unsuccessful_endpoint_response",
+                }
+            ],
+        }
+    ]
+    assert "private" not in json.dumps(coverage)
+
+
 def test_finalize_review_decisions_requires_explicit_complete_coverage():
     queue = [{"review_id": "clear"}, {"review_id": "flagged"}]
     coverage = {
@@ -149,6 +191,35 @@ def test_finalize_review_decisions_requires_explicit_complete_coverage():
     assert decisions[1]["unsupported_clinical_claim"]
     with pytest.raises(ValueError, match="covered exactly once"):
         finalize_review_decisions(queue, {**coverage, "reviewed_no_flags": []})
+
+
+def test_qualitative_summary_unblinds_only_complete_decisions():
+    decisions = [
+        {
+            "review_id": "base-clear",
+            "review_status": "reviewed",
+            "reviewer": "fixture",
+            "rationale": "Clear fixture.",
+            **{flag: False for flag in REVIEW_FLAGS},
+        },
+        {
+            "review_id": "sft-flagged",
+            "review_status": "reviewed",
+            "reviewer": "fixture",
+            "rationale": "Flagged fixture.",
+            **{flag: flag == "unsupported_clinical_claim" for flag in REVIEW_FLAGS},
+        },
+    ]
+    key = [
+        {"review_id": "base-clear", "variant": "base", "scenario_id": "one"},
+        {"review_id": "sft-flagged", "variant": "sft", "scenario_id": "one"},
+    ]
+    summary = summarize_qualitative_review(decisions, key)
+    assert summary["models"]["base"]["flagged_records"] == 0
+    assert summary["models"]["sft"]["flagged_records"] == 1
+    assert summary["models"]["sft"]["flag_counts"]["unsupported_clinical_claim"] == 1
+    with pytest.raises(ValueError, match="coverage is incomplete"):
+        summarize_qualitative_review(decisions[:1], key)
 
 
 def test_cli_report_values_are_json_serializable(tmp_path):

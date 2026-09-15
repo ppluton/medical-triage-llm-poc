@@ -110,6 +110,73 @@ def prepare_blinded_review_queue(
     return queue, sorted(key, key=lambda item: item["review_id"])
 
 
+def prepare_common_success_blinded_review_queue(
+    scenarios: list[dict], reports: dict[str, dict], *, seed: int
+) -> tuple[list[dict], list[dict], dict]:
+    """Blind only scenarios with a successful response from every compared variant."""
+
+    scenario_by_id = _scenario_index(scenarios)
+    if not reports:
+        raise ValueError("At least one model report is required.")
+    records_by_variant: dict[str, dict[str, dict]] = {}
+    for variant, report in sorted(reports.items()):
+        records = report.get("records")
+        if not isinstance(records, list):
+            raise ValueError(f"Missing records for {variant}.")
+        indexed = {record.get("id"): record for record in records}
+        if set(indexed) != set(scenario_by_id) or len(indexed) != len(records):
+            raise ValueError(f"Scenario coverage mismatch for {variant}.")
+        records_by_variant[variant] = indexed
+
+    included_ids = []
+    omissions = []
+    for scenario_id in scenario_by_id:
+        failed = [
+            {
+                "variant": variant,
+                "http_status": record.get("http_status"),
+                "reason": "unsuccessful_endpoint_response",
+            }
+            for variant, indexed in records_by_variant.items()
+            if not (
+                (record := indexed[scenario_id]).get("success") is True
+                and isinstance(record.get("response"), dict)
+            )
+        ]
+        if failed:
+            omissions.append({"scenario_id": scenario_id, "failures": failed})
+        else:
+            included_ids.append(scenario_id)
+    if not included_ids:
+        raise ValueError("No common successful scenario is available for blinded review.")
+
+    included = set(included_ids)
+    subset_scenarios = [row for row in scenarios if row["id"] in included]
+    subset_reports = {
+        variant: {
+            **report,
+            "records": [row for row in report["records"] if row["id"] in included],
+        }
+        for variant, report in reports.items()
+    }
+    queue, key = prepare_blinded_review_queue(subset_scenarios, subset_reports, seed=seed)
+    coverage = {
+        "status": "common_success_review_queue_prepared",
+        "seed": seed,
+        "scenario_records_total": len(scenarios),
+        "scenario_records_included": len(included_ids),
+        "review_records": len(queue),
+        "variants": sorted(reports),
+        "omissions": omissions,
+        "limits": [
+            "Omitted endpoint failures remain evaluation failures outside qualitative review.",
+            "The queue hides model identity but uses previously observed development scenarios.",
+            "Project review is not healthcare-professional or clinical validation.",
+        ],
+    }
+    return queue, key, coverage
+
+
 def _load_reviews(review_rows: list[dict], key_rows: list[dict]) -> dict[tuple[str, str], dict]:
     key_by_id = {row.get("review_id"): row for row in key_rows}
     if len(key_by_id) != len(key_rows):
@@ -181,6 +248,38 @@ def finalize_review_decisions(queue: list[dict], coverage: dict) -> list[dict]:
             }
         )
     return decisions
+
+
+def summarize_qualitative_review(review_rows: list[dict], key_rows: list[dict]) -> dict:
+    """Unblind completed decisions and count qualitative flags by model variant."""
+
+    reviews = _load_reviews(review_rows, key_rows)
+    variants = sorted({variant for variant, _ in reviews})
+    models = {}
+    for variant in variants:
+        selected = [review for (name, _), review in reviews.items() if name == variant]
+        flag_counts = {
+            flag: sum(bool(review[flag]) for review in selected) for flag in REVIEW_FLAGS
+        }
+        flagged_records = sum(any(review[flag] for flag in REVIEW_FLAGS) for review in selected)
+        models[variant] = {
+            "review_records": len(selected),
+            "flagged_records": flagged_records,
+            "clear_records": len(selected) - flagged_records,
+            "flag_counts": flag_counts,
+            "status": "qualitative_flags_observed" if flagged_records else "no_flags_observed",
+        }
+    return {
+        "status": "completed_project_review_not_clinical_validation",
+        "review_records": len(review_rows),
+        "models": models,
+        "clinical_validation": "not_performed",
+        "limits": [
+            "Model identity was revealed only after decisions covered every queue record.",
+            "The development scenarios were previously observed and are not a blind final test.",
+            "Counts support engineering decisions and do not estimate clinical harm rates.",
+        ],
+    }
 
 
 def summarize_safety_evaluation(
