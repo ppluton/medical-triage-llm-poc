@@ -88,6 +88,8 @@ def audit_contextual_pii(
                                 "field": field,
                                 "entity": match.entity_type,
                                 "score": match.score,
+                                "start": match.start,
+                                "end": match.end,
                                 "span": text[match.start : match.end],
                                 "context": text[
                                     max(0, match.start - 100) : min(len(text), match.end + 100)
@@ -181,6 +183,8 @@ def prepare_direct_identifier_review(findings_path: Path, output_path: Path) -> 
             required = ("record_id", "split", "source_manifest_id", "field", "span", "context")
             if any(not isinstance(finding.get(key), str) for key in required):
                 raise ValueError("Direct finding lacks required review fields.")
+            if not all(isinstance(finding.get(key), int) for key in ("start", "end")):
+                raise ValueError("Direct finding lacks required span positions.")
             output_stream.write(
                 json.dumps(
                     finding

@@ -55,6 +55,10 @@ def test_contextual_audit_keeps_text_out_of_decisions_and_summary(tmp_path):
     assert summary["input"]["records"] == 3
     assert summary["split_counts"] == {"test": 1, "train": 1, "validation": 1}
     assert "Alice" in (output / "findings-private.jsonl").read_text()
+    findings = [
+        json.loads(line) for line in (output / "findings-private.jsonl").read_text().splitlines()
+    ]
+    assert all(isinstance(row["start"], int) and isinstance(row["end"], int) for row in findings)
     assert stat.S_IMODE(output.stat().st_mode) == 0o700
     assert stat.S_IMODE((output / "findings-private.jsonl").stat().st_mode) == 0o600
     assert stat.S_IMODE((output / "decisions.jsonl").stat().st_mode) == 0o600
@@ -80,6 +84,8 @@ def test_direct_review_queue_excludes_contextual_entities_and_stays_private(tmp_
             "field": "instruction",
             "entity": "PERSON",
             "score": 0.9,
+            "start": 9,
+            "end": 14,
             "span": "Alice",
             "context": "What did Alice report?",
         },
@@ -90,6 +96,8 @@ def test_direct_review_queue_excludes_contextual_entities_and_stays_private(tmp_
             "field": "response",
             "entity": "PATIENT_NAME",
             "score": 0.9,
+            "start": 0,
+            "end": 11,
             "span": "Patient Bob",
             "context": "Patient Bob reported a synthetic symptom.",
         },
