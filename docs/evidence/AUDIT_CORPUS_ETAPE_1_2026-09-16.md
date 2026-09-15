@@ -85,7 +85,7 @@ Cette preuve porte sur ces cas contrôlés ; elle ne transforme pas Presidio en 
 | Langue | 426 EN | 54 EN |
 | Statut clinique `not_performed` | 426 | 54 |
 
-Les 480 identifiants et locators sont uniques. Les statuts projet et confidentialité valent `approved_for_educational_dpo`, mais les 480 justifications portent encore la mention `project review pending`, et aucune validation clinique indépendante n’est enregistrée. Le manifeste final a le hash `66cd0e59…fa9f` attendu par la preuve du 12 septembre, mais ses champs `sft_manifest_sha256` et `sft_protected_records` sont absents/nulls. Conclusion : intégrité du lot prouvée, adéquation clinique et lignée finale incomplètes.
+Les 480 identifiants et locators sont uniques. Les statuts projet et confidentialité valent `approved_for_educational_dpo`, mais les 480 justifications portent encore la mention `project review pending`. Le manifeste final a le hash `66cd0e59…fa9f` attendu par la preuve du 12 septembre, mais ses champs `sft_manifest_sha256` et `sft_protected_records` sont absents/nulls. Conclusion : intégrité et revue éducative du lot prouvées ; justification et lignée finale à consolider. `clinical_review_status: not_performed` indique correctement qu'aucun professionnel de santé réel n'a participé au scénario scolaire.
 
 ## Schéma de métadonnées
 
@@ -112,7 +112,7 @@ La suite complète finale `val_50912d5d4674` termine avec le code 0 : **176 test
 | Train/validation/test séparés | prouvé selon les groupes définis | pas de garantie contre toute paraphrase sémantique |
 | Métadonnées définies | schéma et fixtures prouvés par tests | non rétro-remplies dans v2.1 |
 | Anonymisation | partiellement prouvé | identifiants directs contrôlés ; contexte et conformité RGPD non certifiés |
-| DPO | intégrité prouvée | 480 EN, lignée à consolider, validation clinique absente |
-| Évaluation clinique séparée | jeux synthétiques séparés présents | références proposées, test déjà consulté, aucune validation clinique |
+| DPO | intégrité et revue éducative prouvées | 480 EN, lignée et justifications de projet à consolider |
+| Évaluation de POC séparée | jeux synthétiques séparés présents | références proposées et test déjà consulté ; aucune étude clinique revendiquée |
 
-L’étape ne doit pas être déclarée complète. Les deux portes restantes sont la revue contextuelle PII/RGPD et la validation clinique indépendante du DPO et des références d’évaluation.
+L’étape ne doit pas encore être déclarée complète. Les deux travaux restants dans le périmètre scolaire sont la revue contextuelle PII/RGPD et la consolidation des justifications/lignée du DPO. Une validation indépendante par des professionnels appartient à la roadmap d'un pilote réel ; son absence ne bloque pas le POC OpenClassrooms.

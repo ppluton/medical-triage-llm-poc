@@ -7,6 +7,12 @@ Sources : [mission OpenClassrooms](https://openclassrooms.com/fr/paths/2053/proj
 
 La [spécification d’exécution](SPEC_EXECUTION_V1.md) fixe la stack, les interfaces et les livrables. Ce guide décrit uniquement l’ordre de travail.
 
+## Nature du projet
+
+Le CHSA, Dr Marie Dubois et la mission de quatre semaines constituent le scénario professionnel pédagogique OpenClassrooms. Aucun hôpital réel ni référent clinique externe n'est fourni pour exécuter le projet. La « validation clinique » demandée dans ce cadre est donc mise en œuvre comme une validation de POC documentée : préférences source, grille de revue, jeux d'évaluation, métriques de sécurité et limites explicites.
+
+Cette validation de POC permet d'avancer dans la mission ; elle ne doit pas être présentée comme l'avis d'un professionnel de santé, une étude clinique ou une autorisation d'usage réel. Une validation indépendante par des professionnels devient une condition de passage vers un pilote hospitalier réel, pas un bloqueur artificiel de la réalisation scolaire.
+
 ## Objectif et échéance
 
 Première version des livrables demandée pour le 17 septembre 2026 à 15 h Europe/Paris, soit 17 h Asia/Tbilisi. Cette échéance ne transforme pas une limite connue en résultat validé.
@@ -48,7 +54,7 @@ Constituer environ 5 000 paires SFT bilingues ; justifier les exclusions plutôt
 
 **Point de départ :** [manifeste corrigé](data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [audit des corrections](docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [audit de fidélité](docs/evidence/SFT_V2_READINESS_2026-09-11.md). Ces preuves portent sur leur version, pas automatiquement sur un futur corpus.
 
-**État au 16 septembre :** inventaire et intégrité du candidat SFT v2.1 repris dans la [fiche active](docs/technical/CORPUS_ETAPE_1_V1.md) et la [preuve datée](docs/evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md). Le schéma de métadonnées et le processus RGPD sont documentés. Étape partiellement terminée : revue contextuelle PII, lignée finale du DPO et validation clinique indépendante restent ouvertes.
+**État au 16 septembre :** inventaire et intégrité du candidat SFT v2.1 repris dans la [fiche active](docs/technical/CORPUS_ETAPE_1_V1.md) et la [preuve datée](docs/evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md). Le schéma de métadonnées et le processus RGPD sont documentés. Étape partiellement terminée : revue contextuelle PII et consolidation de la lignée/justification du DPO restent ouvertes. L'absence d'un référent clinique réel est documentée comme limite de transposition, pas comme blocage de la mission.
 
 ## 2 — Fixer l’évaluation et la baseline
 

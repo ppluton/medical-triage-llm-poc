@@ -1,6 +1,6 @@
 # Corpus de l’étape 1 — état reproductible
 
-Date : 2026-09-16 — Statut : draft, candidat technique ; portes clinique et RGPD ouvertes
+Date : 2026-09-16 — Statut : draft, candidat technique ; revue POC et porte RGPD ouvertes
 
 Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT](../../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md).
 
@@ -37,7 +37,9 @@ Les artefacts textuels restent hors Git public dans `data/processed/source-sft-v
 
 `artifacts/dpo-reviewed-v1/` contient 426 paires train et 54 validation, toutes en anglais et issues d’UltraMedical-Preference. Les empreintes des deux JSONL correspondent au manifeste. Les lignes conservent le locator, la révision source, le type de préférence et les statuts de revue.
 
-Ce lot n’est **pas validé cliniquement** : `clinical_review_status` vaut `not_performed` sur 480/480 lignes. Son texte de justification générique indique encore `project review pending`, tandis que le statut projet indique `approved_for_educational_dpo`. Cette incohérence doit être corrigée par une nouvelle décision tracée, et non par une simple substitution de chaîne. Le manifeste historique ne renseigne pas non plus explicitement `sft_manifest_sha256` malgré la protection par empreintes documentée. Le lot est donc une entrée de revue, pas le jeu DPO clinique final demandé.
+Le lot possède une revue de projet `approved_for_educational_dpo` mais **aucune revue professionnelle n'est revendiquée** : `clinical_review_status` vaut correctement `not_performed` sur 480/480 lignes. Le scénario OpenClassrooms ne fournit pas de clinicien réel ; cette absence n'empêche donc pas l'expérimentation DPO du POC.
+
+Deux corrections de traçabilité restent nécessaires avant de figer le livrable : le texte générique `project review pending` contredit le statut projet, et le manifeste historique ne renseigne pas explicitement `sft_manifest_sha256` malgré la protection par empreintes documentée. Elles doivent être corrigées par une nouvelle décision tracée, pas par une prétendue signature clinique.
 
 La [checklist de revue clinique](../governance/CHECKLIST_REVUE_CLINIQUE_V1.md) précise la décision et les preuves à enregistrer pour chaque paire.
 
@@ -58,10 +60,11 @@ Les exemples [synthetic-clinical-metadata-v1.json](../../data/samples/synthetic-
 Avant de déclarer l’étape complète :
 
 1. terminer la revue contextuelle PII et consigner la décision ligne par ligne ;
-2. obtenir la validation clinique du jeu DPO, avec identité/rôle du réviseur, date, protocole et justification ;
-3. produire un jeu d’évaluation clinique séparé validé, sans réutiliser le test déjà consulté ;
+2. consolider la validation de POC du jeu DPO avec identité/rôle du réviseur de projet, date, protocole et justification ;
+3. produire un jeu d’évaluation de POC séparé, sans réutiliser le test déjà consulté ;
 4. publier ou transmettre les données uniquement par un canal autorisé et compatible avec les licences ;
-5. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git.
+5. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git ;
+6. réserver la validation par des professionnels de santé à la roadmap d'un pilote réel.
 
 ## Reproduction minimale
 

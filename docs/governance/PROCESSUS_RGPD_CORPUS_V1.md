@@ -28,7 +28,7 @@ La CNIL distingue l’anonymisation irréversible de la pseudonymisation, qui pe
 | Intégration Presidio réelle | noms FR/EN, référence patient et emails synthétiques détectés et remplacés ; zéro résidu après correction du faux positif sur placeholder | deux cas synthétiques, pas une mesure de rappel corpus |
 | SFT : identifiants directs | 8 400 champs de développement rescannés lors de l’audit v2.1 | `PERSON`, `LOCATION`, `DATE_TIME` exclus de cette passe |
 | SFT : contenu transformé | cinq différences expliquées par rejeu du remplacement ; aucune troncature | revue contextuelle complète non signée |
-| DPO : identifiants directs | statut technique présent sur 480 lignes | lot anglais, revue clinique absente |
+| DPO : identifiants directs | statut technique et revue éducative présents sur 480 lignes | lot anglais ; aucune revue professionnelle revendiquée |
 | DPO : contexte | scan complémentaire et exclusions documentés | les alertes NER ambiguës ne valent pas certification |
 | Données patient réelles | aucune autorisée ni intégrée | tout changement de périmètre exige une gouvernance distincte |
 

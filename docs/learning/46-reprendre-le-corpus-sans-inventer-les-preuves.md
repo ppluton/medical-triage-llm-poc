@@ -10,7 +10,7 @@ Nous avons repris l’étape données depuis ses résultats attendus : inventair
 
 ## Pourquoi c’était nécessaire
 
-Le dépôt contenait déjà beaucoup de travail, mais plusieurs phrases étaient plus fortes que les preuves disponibles. Le registre disait encore que certaines révisions restaient à épingler alors qu’elles l’étaient déjà. À l’inverse, un lot DPO qualifié d’« approuvé pour DPO éducatif » n’a jamais reçu de validation clinique. L’objectif de la reprise est donc de rendre l’état lisible, pas de refaire mécaniquement tous les artefacts.
+Le dépôt contenait déjà beaucoup de travail, mais plusieurs phrases étaient plus fortes ou plus bloquantes que les preuves disponibles. Le registre disait encore que certaines révisions restaient à épingler alors qu’elles l’étaient déjà. À l'inverse, demander la signature d'un clinicien réel confondait le scénario pédagogique avec un hôpital réel. L’objectif de la reprise est donc de rendre l’état lisible, pas de refaire mécaniquement tous les artefacts ni d'inventer un acteur externe.
 
 ## Comment la vérification a été menée
 
@@ -26,14 +26,14 @@ Le dépôt contenait déjà beaucoup de travail, mais plusieurs phrases étaient
 
 - **≈ 5 000** n’oblige pas à réintroduire 300 lignes à risque : 4 700 exemples isolés et intacts valent mieux que 5 000 obtenus par remplissage.
 - **QA médicale ≠ triage** : une réponse d’examen correcte ne fournit ni priorité ni protocole clinique.
-- **Préférence source ≠ validation clinique** : `chosen` peut seulement être la réponse préférée du dataset amont.
+- **Validation de POC ≠ validation professionnelle** : les préférences source et une grille documentée permettent l'expérience scolaire ; elles ne prouvent pas l'aptitude à un usage clinique réel.
 - **Détection PII ≠ anonymisation garantie** : un outil automatique a des faux positifs et des faux négatifs ; la revue et la gouvernance restent nécessaires.
 - **Absence explicite ≠ donnée manquante à inventer** : le schéma `not_available` protège contre une extraction présentée à tort comme un fait source.
 
 ## Ce que nous savons maintenant
 
-Le candidat SFT v2.1 est cohérent et reproductible pour ses contrôles techniques. Le schéma de métadonnées est testable. Les sources et licences sont traçables. En revanche, la validation clinique DPO et la clôture de la revue contextuelle PII ne sont pas acquises ; l’étape reste donc partiellement terminée.
+Le candidat SFT v2.1 est cohérent et reproductible pour ses contrôles techniques. Le schéma de métadonnées est testable. Les sources et licences sont traçables. La revue éducative du DPO existe, mais ses justifications et sa lignée doivent être consolidées ; la revue contextuelle PII reste ouverte. L'étape est donc partiellement terminée pour des raisons techniques, pas parce qu'un médecin fictif manquerait.
 
 ## Prochaine décision
 
-Préparer une revue clinique bornée du lot DPO et des références d’évaluation avec un professionnel habilité. Tant que ce rôle n’est pas disponible, ne pas modifier les statuts pour faire croire que la porte est franchie.
+Consolider la revue de POC du lot DPO et des références d'évaluation avec la grille du projet, puis avancer vers l'étape 2. Conserver `clinical_review_status: not_performed` pour signaler honnêtement l'absence de professionnel réel ; placer une véritable validation clinique dans la roadmap avant tout pilote hospitalier.

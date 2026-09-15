@@ -16,7 +16,7 @@ Le [guide de reprise](../GUIDE_REPRISE.md) pilote désormais la réalisation. Ce
 
 | Livrable | Fichiers et preuves | État |
 |---|---|---|
-| Dataset bilingue documenté | [Fiche active](../docs/technical/CORPUS_ETAPE_1_V1.md), [manifeste SFT corrigé](../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [schéma de métadonnées](../data/manifests/clinical_metadata_v1.schema.json), [processus RGPD](../docs/governance/PROCESSUS_RGPD_CORPUS_V1.md) | 4 700 paires SFT techniquement contrôlées ; revue contextuelle PII et validation clinique DPO absentes |
+| Dataset bilingue documenté | [Fiche active](../docs/technical/CORPUS_ETAPE_1_V1.md), [manifeste SFT corrigé](../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [schéma de métadonnées](../data/manifests/clinical_metadata_v1.schema.json), [processus RGPD](../docs/governance/PROCESSUS_RGPD_CORPUS_V1.md) | 4 700 paires SFT contrôlées et lot DPO revu pour le POC ; lignée DPO et revue contextuelle PII à consolider |
 | Modèle SFT puis DPO | [Identité SFT](../configs/sft-v22-handoff.json), [SFT v22](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [DPO v27](../docs/evidence/DPO_V27_RESULT_2026-09-13.md) | Poids archivés et empreintes vérifiées ; poids volumineux hors Git |
 | Comparaison des modèles | [Test final QA v35](../docs/evidence/FINAL_QA_V35_RESULT.md), [API v34](../docs/evidence/VLLM_API_V34_RESULT.md) | QA terminée ; comparaison API enrichie v36 en cours |
 | API de démonstration cloud | [Recette vLLM](../docs/technical/VLLM_DEMONSTRATION_V1.md), [Docker Compose](../compose.demo.yaml), [collecte](../docs/technical/COLLECTE_COMPLEMENTAIRE_V1.md) | Inférence locale sur GPU Kaggle prouvée ; accès extérieur autorisé restant à établir |
