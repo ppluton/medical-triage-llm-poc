@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-16",
+  "status": "completed_with_one_base_generation_length_failure",
+  "run": 37,
+  "target": "pierrepluton/chsa-source-sft-qwen3",
+  "private": true,
+  "optimizer_steps": 0,
+  "test_records_used": 0,
+  "api_version": "0.4.0",
+  "prompt_version": "triage-demo-v6-proposed",
+  "guardrail_version": "proposed-guardrails-v1",
+  "scenario_records": 18,
+  "models": {
+    "base": {
+      "response_success": "17/18",
+      "failure": {"scenario": "dev-triage-v2-contradictory_information-en", "code": "generation_length"},
+      "priority_exact_match_all_scenarios": "16/18",
+      "critical_recall": "6/6",
+      "critical_red_flag_coverage": "6/6",
+      "uncertainty_priority_floor": "3/4",
+      "guardrail_status_counts": {"corrected": 8, "model_output": 4, "safe_fallback": 5},
+      "audit_reconciliation": "passed"
+    },
+    "sft": {
+      "response_success": "18/18",
+      "priority_exact_match_all_scenarios": "15/18",
+      "critical_recall": "6/6",
+      "critical_red_flag_coverage": "6/6",
+      "uncertainty_priority_floor": "4/4",
+      "guardrail_status_counts": {"corrected": 5, "model_output": 5, "safe_fallback": 8},
+      "audit_reconciliation": "passed"
+    },
+    "dpo": {
+      "response_success": "18/18",
+      "priority_exact_match_all_scenarios": "15/18",
+      "critical_recall": "6/6",
+      "critical_red_flag_coverage": "6/6",
+      "uncertainty_priority_floor": "4/4",
+      "guardrail_status_counts": {"corrected": 5, "model_output": 4, "safe_fallback": 9},
+      "audit_reconciliation": "passed"
+    }
+  },
+  "collection": {
+    "base": {"successful_responses": 12, "status": "passed", "audit": "passed"},
+    "sft": {"successful_responses": 12, "status": "passed", "audit": "passed"},
+    "dpo": {"successful_responses": 12, "status": "passed", "audit": "passed"}
+  },
+  "artifact_sha256": {
+    "summary": "57a53d8fefe79d3f73bb1258b0db9607ed3f55e39119bdc1a1bf56538ea9656d",
+    "models": "8e30058310bf7174c9bb57217a6ff958224ac9465f5a67c6e0637ba790dee5a1",
+    "base_endpoint": "c04e927778b12a378bd99678c9dd156673431728541ba40ae518f78bff7f8559",
+    "base_guardrails": "df08bc39a87c2bdd3c1aacac3f18558c43c70b05d756ac17f0698949e987c90d",
+    "sft_endpoint": "45e9d31b49342b2996acc2cbd190643eb15a8ad744935e3f842b6870df5046e6",
+    "sft_guardrails": "d212595a33ed48c2ca334db3f49fdbb15e4b0b0078cb91d1bcbe4a2c1272f0c3",
+    "dpo_endpoint": "8bf80e74e969b116df34120dbce45155d70f6e9c03d569b201e3b681330a24de",
+    "dpo_guardrails": "03acc7a04665f1486af6798f494eca2ef8ddf452aa56fc99cf4630728d06fc1c"
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "The 18 synthetic development scenarios were previously observed and are not a blind final test.",
+    "Automatic priority and guardrail metrics do not replace a new blinded qualitative review of the final responses.",
+    "High correction and fallback counts show containment of known patterns, not intrinsic model quality.",
+    "The private loopback run is not an externally accessible cloud endpoint."
+  ]
+}

@@ -8,6 +8,19 @@ import lzma
 import re
 from pathlib import Path
 
+BASE_DATASET_ID = "pierrepluton/qwen3-1-7b-base-e249956c"
+BASE_MODEL_PATH = "/kaggle/input/qwen3-1-7b-base-e249956c"
+BASE_MANIFEST_SHA256 = "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1"
+
+
+def attach_base_dataset(metadata: dict) -> dict:
+    """Attach the immutable private base-model snapshot exactly once."""
+    sources = list(metadata.get("dataset_sources", []))
+    if BASE_DATASET_ID not in sources:
+        sources.append(BASE_DATASET_ID)
+    metadata["dataset_sources"] = sources
+    return metadata
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -45,6 +58,12 @@ from pathlib import Path
 root=Path('/kaggle/working/vllm-demo-code')
 for name,text in json.loads(lzma.decompress(base64.b85decode(encoded))).items():
     path=root/name; path.parent.mkdir(parents=True,exist_ok=True); path.write_text(text)
+sys.path.insert(0,str(root/'src'))
+from triage_poc.model_snapshot import verify_base_snapshot
+base_model=Path('BASE_MODEL_PATH_PLACEHOLDER')
+base_preflight=verify_base_snapshot(base_model)
+(Path('/kaggle/working')/'base-snapshot-preflight.json').write_text(
+    json.dumps(base_preflight,indent=2)+'\\n')
 def locate(filename,digest):
     matches=[p for p in Path('/kaggle/input').rglob(filename)
         if hashlib.sha256(p.read_bytes()).hexdigest()==digest]
@@ -70,12 +89,15 @@ subprocess.run([sys.executable,str(root/'scripts/run_vllm_api_demo.py'),
  '--vllm-python',vpy,'--api-python',apy,'--sft',str(sft/'trainer/checkpoint-500'),
  '--dpo',str(dpo/'adapter/policy'),'--scenarios',str(root/'data/samples/synthetic-triage-development-v2.json'),
  '--collection-scenarios',str(root/'data/samples/synthetic-collection-dialogues-v1.json'),
+ '--base-model',str(base_model),
  '--output','/kaggle/working/RUN_NAME_PLACEHOLDER'],check=True,timeout=4800)
 """
     )
     code = code.replace("RUN_NAME_PLACEHOLDER", args.run_name)
+    code = code.replace("BASE_MODEL_PATH_PLACEHOLDER", BASE_MODEL_PATH)
     compile(code, "vllm-demo-bootstrap", "exec")
     meta["kernel_sources"] = [meta["id"]]
+    attach_base_dataset(meta)
     notebook = {
         "nbformat": 4,
         "nbformat_minor": 5,

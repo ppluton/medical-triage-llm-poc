@@ -135,3 +135,21 @@ l'API 0.4.0, conserve Base, SFT et DPO inchangés, vérifie la version des garde
 l'audit et résume `model_output`, `corrected` et `safe_fallback` par variante. Tant que ce
 paquet n'est pas exécuté, le prompt v6 et la chaîne complète restent non prouvés sur GPU.
 Ce run est une régression d'inférence, pas un nouvel entraînement.
+
+La v37 a ensuite [terminé sur le runtime réel](../evidence/VLLM_V37_RESULT_2026-09-16.md) :
+SFT et DPO répondent à 18/18 scénarios, la Base à 17/18 après un refus sûr
+`generation_length`. Les garde-fous restaurent les mesures critiques proposées mais
+interviennent sur la majorité des sorties. Ce résultat valide l'intégration, pas une sûreté
+clinique ni un bénéfice DPO.
+
+## Cache privé du modèle de base — futur v38
+
+La révision exacte Qwen3 Base est désormais disponible comme [ressource Kaggle privée
+contrôlée](../evidence/QWEN3_BASE_KAGGLE_RESOURCE_2026-09-16.md). Les futurs paquets
+attachent automatiquement `pierrepluton/qwen3-1-7b-base-e249956c`. Le préflight rehash le
+manifeste, les poids, le tokenizer et les configurations avant d'installer vLLM ; le serveur
+charge ensuite `/kaggle/input/qwen3-1-7b-base-e249956c` avec un nom servi stable.
+
+Le candidat `api-local-base-v38` est préparé localement mais non lancé. Il conserve le
+tokenizer SFT et le chat template précédents pour isoler le seul changement de source des
+poids. L'optimisation suivante portera sur l'installation vLLM/API répétée.

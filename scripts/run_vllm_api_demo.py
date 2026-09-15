@@ -16,6 +16,12 @@ import urllib.request
 from collections import Counter
 from pathlib import Path
 
+from triage_poc.model_snapshot import (
+    BASE_SERVED_MODEL_NAME,
+    EXPECTED_BASE_REVISION,
+    verify_base_snapshot,
+)
+
 EXPECTED_GUARDRAIL_VERSION = "proposed-guardrails-v1"
 GUARDRAIL_STATUSES = frozenset({"model_output", "corrected", "safe_fallback"})
 
@@ -120,7 +126,15 @@ def configure_cuda_linker(env, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("vllm-python", "api-python", "sft", "dpo", "output", "scenarios"):
+    for name in (
+        "vllm-python",
+        "api-python",
+        "base-model",
+        "sft",
+        "dpo",
+        "output",
+        "scenarios",
+    ):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--collection-scenarios", type=Path)
     args = parser.parse_args()
@@ -139,6 +153,7 @@ def main():
             != expected[name]
         ):
             raise ValueError("Unexpected adapter artifact")
+    base_snapshot = verify_base_snapshot(args.base_model)
     cases = json.loads(args.scenarios.read_text())
     if len(cases) != 18 or any(
         case.get("synthetic") is not True or case.get("split") != "development" for case in cases
@@ -157,7 +172,7 @@ def main():
     model_process = api_process = None
     reports = {}
     variants = {
-        "base": ("unsloth/Qwen3-1.7B-Base", "e249956c10337100486d07afb77e3eb2b30906b8"),
+        "base": (BASE_SERVED_MODEL_NAME, EXPECTED_BASE_REVISION),
         "sft": ("chsa-sft", expected["sft"]),
         "dpo": ("chsa-dpo", expected["dpo"]),
     }
@@ -167,9 +182,9 @@ def main():
             "-m",
             "vllm.entrypoints.openai.api_server",
             "--model",
-            "unsloth/Qwen3-1.7B-Base",
-            "--revision",
-            "e249956c10337100486d07afb77e3eb2b30906b8",
+            str(args.base_model),
+            "--served-model-name",
+            BASE_SERVED_MODEL_NAME,
             "--tokenizer",
             str(args.sft),
             "--chat-template",
@@ -307,6 +322,8 @@ def main():
                     "collection_scenario_sha256": (
                         hashlib.sha256(args.collection_scenarios.read_bytes()).hexdigest()
                         if args.collection_scenarios else None),
+                    "base_snapshot": base_snapshot,
+                    "huggingface_model_download": False,
                     "optimizer_steps": 0,
                     "test_records_used": 0,
                     "public_endpoint": False,
