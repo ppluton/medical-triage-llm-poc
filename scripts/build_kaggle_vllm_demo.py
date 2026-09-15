@@ -53,7 +53,7 @@ def main():
     ).decode()
     code = (
         f"encoded={encoded!r}\n"
-        + """import base64, hashlib, json, lzma, os, shutil, subprocess, sys
+        + """import base64, hashlib, json, lzma, os, subprocess, sys
 from pathlib import Path
 root=Path('/kaggle/working/vllm-demo-code')
 for name,text in json.loads(lzma.decompress(base64.b85decode(encoded))).items():
@@ -71,8 +71,6 @@ def locate(filename,digest):
     return matches[0].parent
 sft=locate('summary.json','45d6c88ef5e17e150a38f5ca7593212619ff854febe10901635f98913a6edb75')
 dpo=locate('run_summary.json','dd65fa9a7612bc76ca46cd102353ca5b853fe1545569338ed7b42fb7f39a970a')
-shutil.copytree(sft,Path('/kaggle/working/source-sft-v2-continuation-500'))
-shutil.copytree(dpo,Path('/kaggle/working/source-dpo-v27'))
 subprocess.run([sys.executable,'-m','pip','install','-q','virtualenv==20.35.4'],check=True,timeout=180)
 for name in ('vllm','api'):
     subprocess.run([sys.executable,'-m','virtualenv','/tmp/chsa-'+name],check=True,timeout=120)

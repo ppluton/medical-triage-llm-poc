@@ -40,9 +40,13 @@ Le builder ajoute automatiquement `pierrepluton/qwen3-1-7b-base-e249956c` à
 depuis ce chemin local et n'utilise plus l'identifiant Hugging Face dans sa commande modèle.
 Le candidat local `api-local-base-v38` contient 48 fichiers embarqués, zéro divergence avec
 le checkout et exécute le préflight avant la création des environnements Python.
-Son notebook porte le SHA-256 `46242e70…1dd3`. Les huit tests ciblés passent ; la
-régression complète `val_c39659679a1b` passe 205 tests en 23,57 secondes avec le seul
+Son notebook porte le SHA-256 `579c9d28…0b4`. Les huit tests ciblés passent ; la
+régression complète `val_ebcbf75e2104` passe 205 tests en 34,68 secondes avec le seul
 avertissement externe Starlette/httpx déjà connu. Ruff passe sur l'ensemble du dépôt.
+
+Le builder ne recopie plus les archives complètes SFT et DPO dans `/kaggle/working` : il
+utilise directement leurs chemins `/kaggle/input`. Cela évite de republier plusieurs
+centaines de Mo de checkpoints comme sorties du notebook, sans changer les adaptateurs lus.
 
 Le tokenizer SFT reste celui utilisé par vLLM afin de ne pas changer simultanément le rendu
 de prompt et la source des poids. Le tokenizer original reste conservé avec les poids et

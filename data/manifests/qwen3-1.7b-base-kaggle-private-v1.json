@@ -43,27 +43,28 @@
   "v38_candidate": {
     "status": "prepared_not_launched",
     "run_name": "api-local-base-v38",
-    "notebook_sha256": "46242e7075997f322b14eca07e4d9d9b2b8c95f47cbdeab879f3f055e3901dd3",
+    "notebook_sha256": "579c9d28b8d14592c261008ff05db375949ff07c2e7ea5ede50043647be580b4",
     "metadata_sha256": "30ee0cc80e56d4f69fa965f1c3151ed89d084bee247f9f7cabc2f66778ec5772",
     "embedded_files": 48,
     "checkout_mismatches": 0
   },
   "validation": {
     "snapshot_unit_tests": "8 passed",
-    "full_regression": "205 passed, 1 external deprecation warning in 23.57s",
-    "full_regression_job": "val_c39659679a1b",
+    "full_regression": "205 passed, 1 external deprecation warning in 34.68s",
+    "full_regression_job": "val_ebcbf75e2104",
     "ruff": "passed"
   },
   "code_sha256": {
     "snapshot_builder": "b8dbcf394e4effa7c3f162c77d591b944b0704b60feb652b513ad6bab8d06fd3",
     "runtime_verifier": "6449925aff2fb9c18f5dd9ae591f08a8503846b537f22d5c58e00aaa08bf2508",
-    "notebook_builder": "f28b86b5b8b378adde43f229ec72857973d0b9a3aac699303cd8ff9cc4f6df7a",
+    "notebook_builder": "3b7f79b3984f671ee84d7fecc99ed8d879fcded806bcad1be2b601d457bae9f4",
     "runtime_runner": "4d7744deb770cd6fdc514a9d510fbf10f707f9beec60449843fc0dc3098e1f2a"
   },
   "limits": [
     "The private Kaggle copy is a reproducibility cache, not a new model release.",
     "The upload source was verified before transfer and the remote manifest was re-downloaded; the 3.2 GB remote model will be rehashed by the first attached runtime.",
     "The SFT inference tokenizer remains selected by the vLLM recipe to preserve prior serving behavior; the exact source tokenizer is retained beside the base weights for provenance.",
+    "Future runs read SFT and DPO adapters directly from Kaggle input instead of copying their full archives into notebook output.",
     "vLLM and API dependency installation is not yet cached by this resource."
   ]
 }
