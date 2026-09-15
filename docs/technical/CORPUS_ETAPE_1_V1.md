@@ -35,11 +35,11 @@ Les artefacts textuels restent hors Git public dans `data/processed/source-sft-v
 
 ## Lot DPO disponible
 
-`artifacts/dpo-reviewed-v1/` contient 426 paires train et 54 validation, toutes en anglais et issues d’UltraMedical-Preference. Les empreintes des deux JSONL correspondent au manifeste. Les lignes conservent le locator, la révision source, le type de préférence et les statuts de revue.
+`artifacts/dpo-reviewed-v2/` contient 426 paires train et 54 validation, toutes en anglais et issues d’UltraMedical-Preference. Les empreintes des deux JSONL correspondent au [manifeste compact versionné](../../data/manifests/derived-ultramedical-dpo-v2-project-reviewed.json). Les lignes conservent le locator, la révision source, le type de préférence et les statuts de revue.
 
 Le lot possède une revue de projet `approved_for_educational_dpo` mais **aucune revue professionnelle n'est revendiquée** : `clinical_review_status` vaut correctement `not_performed` sur 480/480 lignes. Le scénario OpenClassrooms ne fournit pas de clinicien réel ; cette absence n'empêche donc pas l'expérimentation DPO du POC.
 
-Deux corrections de traçabilité restent nécessaires avant de figer le livrable : le texte générique `project review pending` contredit le statut projet, et le manifeste historique ne renseigne pas explicitement `sft_manifest_sha256` malgré la protection par empreintes documentée. Elles doivent être corrigées par une nouvelle décision tracée, pas par une prétendue signature clinique.
+La [consolidation DPO v2](../evidence/DPO_PROJECT_REVIEW_V2_2026-09-16.md) supprime la contradiction `project review pending`, relie chaque ligne à `ADR-014` et relie explicitement le manifeste aux 4 700 prompts SFT protégés. Les champs d'apprentissage et de provenance sont identiques à la version utilisée par l'expérience historique ; cette correction de gouvernance n'impose donc aucun réentraînement.
 
 La [checklist de revue clinique](../governance/CHECKLIST_REVUE_CLINIQUE_V1.md) précise la décision et les preuves à enregistrer pour chaque paire.
 
@@ -60,11 +60,10 @@ Les exemples [synthetic-clinical-metadata-v1.json](../../data/samples/synthetic-
 Avant de déclarer l’étape complète :
 
 1. terminer la revue contextuelle PII et consigner la décision ligne par ligne ;
-2. consolider la validation de POC du jeu DPO avec identité/rôle du réviseur de projet, date, protocole et justification ;
-3. produire un jeu d’évaluation de POC séparé, sans réutiliser le test déjà consulté ;
-4. publier ou transmettre les données uniquement par un canal autorisé et compatible avec les licences ;
-5. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git ;
-6. réserver la validation par des professionnels de santé à la roadmap d'un pilote réel.
+2. produire un jeu d’évaluation de POC séparé, sans réutiliser le test déjà consulté ;
+3. publier ou transmettre les données uniquement par un canal autorisé et compatible avec les licences ;
+4. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git ;
+5. réserver la validation par des professionnels de santé à la roadmap d'un pilote réel.
 
 ## Reproduction minimale
 
