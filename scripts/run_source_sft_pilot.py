@@ -152,14 +152,22 @@ def main():
         ids = tokenizer.encode(pair["prompt"] + pair["completion"], add_special_tokens=False)
         if len(ids) > cfg["max_length"] or ids[-1] != tokenizer.eos_token_id:
             raise ValueError("Invalid response length or EOS")
+    base_model = Path(cfg["base_model"])
+    model_kwargs = {}
+    if base_model.is_dir():
+        from triage_poc.model_snapshot import verify_base_snapshot
+
+        verify_base_snapshot(base_model)
+    else:
+        model_kwargs["revision"] = cfg["base_revision"]
     model, _ = FastLanguageModel.from_pretrained(
-        model_name=cfg["base_model"],
-        revision=cfg["base_revision"],
+        model_name=str(base_model) if base_model.is_dir() else cfg["base_model"],
         max_seq_length=cfg["max_length"],
         dtype=None,
         load_in_4bit=True,
         use_exact_model_name=True,
         device_map={"": 0},
+        **model_kwargs,
     )
     model = FastLanguageModel.get_peft_model(
         model,

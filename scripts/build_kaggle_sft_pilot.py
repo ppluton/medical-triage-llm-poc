@@ -11,6 +11,10 @@ import json
 import lzma
 from pathlib import Path
 
+BASE_DATASET_ID = "pierrepluton/qwen3-1-7b-base-e249956c"
+BASE_MODEL_PATH = "/kaggle/input/qwen3-1-7b-base-e249956c"
+BASE_MANIFEST_SHA256 = "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1"
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--metadata", type=Path, required=True)
@@ -18,12 +22,23 @@ parser.add_argument("--report", type=Path, required=True)
 parser.add_argument("--verify-pilot-summary", type=Path)
 parser.add_argument("--memorization-manifest", type=Path)
 parser.add_argument("--continue-pilot", action="store_true")
+parser.add_argument("--config", type=Path, default=Path("configs/sft-v2.1-pilot.json"))
+parser.add_argument(
+    "--data-directory",
+    type=Path,
+    default=Path("data/processed/source-sft-v2.1-reviewed"),
+)
 args = parser.parse_args()
 if args.continue_pilot and (args.memorization_manifest or args.verify_pilot_summary):
     parser.error("Continuation is separate from diagnostic and reload modes")
 if args.memorization_manifest and args.verify_pilot_summary:
     parser.error("Choose memorization or reload, not both")
 root = Path(__file__).resolve().parents[1]
+config_path = args.config if args.config.is_absolute() else root / args.config
+data_directory = (
+    args.data_directory if args.data_directory.is_absolute() else root / args.data_directory
+)
+config_relative = str(config_path.relative_to(root))
 out = args.output
 out.mkdir(parents=True, exist_ok=False)
 files = {
@@ -32,9 +47,10 @@ files = {
         "scripts/run_source_sft_pilot.py",
         "src/triage_poc/__init__.py",
         "src/triage_poc/comparison.py",
+        "src/triage_poc/model_snapshot.py",
         "src/triage_poc/sft_pilot.py",
         "src/triage_poc/sft_termination.py",
-        "configs/sft-v2.1-pilot.json",
+        config_relative,
     ]
 }
 if args.memorization_manifest:
@@ -48,7 +64,7 @@ payload = {}
 expected = {}
 system = None
 for name in ("train-qwen3.jsonl", "validation-qwen3.jsonl"):
-    p = root / "data/processed/source-sft-v2.1-reviewed" / name
+    p = data_directory / name
     rows = [json.loads(line) for line in p.read_text().splitlines()]
     system = rows[0]["messages"][0]["content"]
     assert all(r["messages"][0]["content"] == system for r in rows)
@@ -89,19 +105,24 @@ root.mkdir(parents=True)
     p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(text)
 """
     + f"encoded={encoded!r}\nsystem={system!r}\nexpected={expected!r}\n"
+    + f"config_relative={config_relative!r}\n"
     + """(root/'data').mkdir()
 for name,rows in json.loads(lzma.decompress(base64.b85decode(encoded))).items():
     text=''.join(json.dumps({'record_id':rid,'messages':[{'role':'system','content':system},{'role':'user','content':q},{'role':'assistant','content':a}]},ensure_ascii=False,sort_keys=True)+'\\n' for rid,q,a in rows)
     p=root/'data'/name;p.write_text(text)
     assert hashlib.sha256(p.read_bytes()).hexdigest()==expected[name]
-cfg=json.loads((root/'configs/sft-v2.1-pilot.json').read_text())
+cfg=json.loads((root/config_relative).read_text())
 candidates=[]
-for p in Path('/kaggle/input').rglob('tokenizer.json'):
-    if hashlib.sha256(p.read_bytes()).hexdigest()==cfg['tokenizer_files_sha256']['tokenizer.json']:
-        if all((p.parent/n).is_file() and hashlib.sha256((p.parent/n).read_bytes()).hexdigest()==h for n,h in cfg['tokenizer_files_sha256'].items()): candidates.append(p.parent)
+if cfg['base_model'].startswith('/kaggle/input/'):
+    candidate=Path(cfg['base_model'])
+    if all((candidate/n).is_file() and hashlib.sha256((candidate/n).read_bytes()).hexdigest()==h for n,h in cfg['tokenizer_files_sha256'].items()): candidates.append(candidate)
+else:
+    for p in Path('/kaggle/input').rglob('tokenizer.json'):
+        if hashlib.sha256(p.read_bytes()).hexdigest()==cfg['tokenizer_files_sha256']['tokenizer.json']:
+            if all((p.parent/n).is_file() and hashlib.sha256((p.parent/n).read_bytes()).hexdigest()==h for n,h in cfg['tokenizer_files_sha256'].items()): candidates.append(p.parent)
 if not candidates: raise ValueError('No mounted tokenizer matches the audited files')
 env=dict(os.environ,PYTHONPATH=str(root/'src'),PYTHONUNBUFFERED='1')
-command=[sys.executable,str(root/'scripts/run_source_sft_pilot.py'),'--config','configs/sft-v2.1-pilot.json','--data','data','--tokenizer',str(sorted(candidates,key=str)[0]),'--output','/kaggle/working/source-sft-v2-pilot']
+command=[sys.executable,str(root/'scripts/run_source_sft_pilot.py'),'--config',config_relative,'--data','data','--tokenizer',str(sorted(candidates,key=str)[0]),'--output','/kaggle/working/source-sft-v2-pilot']
 subprocess.run(command,cwd=root,env=env,check=True)
 smoke=command[:-1]+['/kaggle/working/fp16-smoke','--execute-pilot','--mechanics-smoke']
 subprocess.run(smoke,cwd=root,env=env,check=True,timeout=900)
@@ -116,7 +137,7 @@ subprocess.run(command+['--execute-pilot'],cwd=root,env=env,check=True,timeout=5
 )
 if args.verify_pilot_summary:
     prior = json.loads(args.verify_pilot_summary.read_text())
-    config = json.loads(files["configs/sft-v2.1-pilot.json"])
+    config = json.loads(files[config_relative])
     if prior.get("mode") != "pilot" or prior["configuration"] != config or prior["steps"] != 150:
         raise ValueError("Expected the completed frozen 150-step pilot")
     summary_hash = hashlib.sha256(args.verify_pilot_summary.read_bytes()).hexdigest()
@@ -168,6 +189,27 @@ install = {
     "execution_count": None,
     "outputs": [],
 }
+uses_local_base = json.loads(files[config_relative])["base_model"] == BASE_MODEL_PATH
+base_preflight = {
+    "cell_type": "code",
+    "execution_count": None,
+    "metadata": {},
+    "outputs": [],
+    "source": (
+        "import hashlib,json\n"
+        "from pathlib import Path\n"
+        f"base=Path({BASE_MODEL_PATH!r})\n"
+        "manifest=base/'MODEL_SNAPSHOT_MANIFEST.json'\n"
+        "digest=lambda p: hashlib.sha256(p.read_bytes()).hexdigest()\n"
+        f"assert digest(manifest)=={BASE_MANIFEST_SHA256!r}\n"
+        "payload=json.loads(manifest.read_text())\n"
+        "for name,info in payload['files'].items():\n"
+        " p=base/name\n"
+        " assert p.is_file() and p.stat().st_size==info['size'] and "
+        "digest(p)==info['sha256'],name\n"
+        "print('BASE_SNAPSHOT_PREFLIGHT_PASSED',len(payload['files']))\n"
+    ).splitlines(keepends=True),
+}
 notebook_metadata = {
     "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}
 }
@@ -183,6 +225,7 @@ nb = {
                 "# Pilote SFT v2 depuis la base\n150 étapes ou 30 minutes de phase entraînement. 3721 train, 479 validation, aucun test. Notebook privé, T4 gratuite."
             ],
         },
+        *([base_preflight] if uses_local_base else []),
         install,
         {
             "cell_type": "code",
@@ -217,6 +260,13 @@ if (
     raise ValueError("Builder restricted to the authorized private T4 notebook")
 if args.verify_pilot_summary or args.memorization_manifest or args.continue_pilot:
     meta["kernel_sources"] = ["pierrepluton/chsa-source-sft-qwen3"]
+if uses_local_base:
+    sources = list(meta.get("dataset_sources", []))
+    if BASE_DATASET_ID not in sources:
+        sources.append(BASE_DATASET_ID)
+    meta["dataset_sources"] = sources
+    if not (args.verify_pilot_summary or args.memorization_manifest or args.continue_pilot):
+        meta["kernel_sources"] = []
 (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
 report = {
     "status": "prepared_for_authorized_private_launch",
