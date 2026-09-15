@@ -118,4 +118,4 @@ La première version peut être identifiée comme brouillon avec écarts explici
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
-**Prochaine action concrète : préparer puis exécuter un candidat v37 Base/SFT/DPO avec l'API 0.4.0 sur le lot de régression, sans nouvel entraînement.** La décision de refaire un SFT ou un DPO viendra seulement après l'analyse des erreurs qui subsistent.
+**Prochaine action concrète : exécuter le [candidat v37 préparé](docs/evidence/VLLM_V37_PACKAGE_2026-09-16.md) Base/SFT/DPO avec l'API 0.4.0 sur le lot de régression, sans nouvel entraînement.** La décision de refaire un SFT ou un DPO viendra seulement après l'analyse des erreurs qui subsistent.

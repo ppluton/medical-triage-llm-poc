@@ -6,13 +6,65 @@ import ctypes
 import hashlib
 import json
 import os
+import re
 import secrets
 import signal
 import subprocess
 import time
 import urllib.error
 import urllib.request
+from collections import Counter
 from pathlib import Path
+
+EXPECTED_GUARDRAIL_VERSION = "proposed-guardrails-v1"
+GUARDRAIL_STATUSES = frozenset({"model_output", "corrected", "safe_fallback"})
+
+
+def summarize_guardrail_audit(report_path, audit_path):
+    """Summarize versioned guardrail decisions without copying patient text."""
+    report = json.loads(Path(report_path).read_text())
+    audit = [
+        json.loads(line) for line in Path(audit_path).read_text().splitlines() if line.strip()
+    ]
+    successful = [record for record in report["records"] if record.get("success") is True]
+    expected_ids = [record["response"]["interaction_id"] for record in successful]
+    audit_by_id = {}
+    for row in audit:
+        audit_by_id.setdefault(row.get("interaction_id"), []).append(row)
+    statuses = Counter()
+    reasons = Counter()
+    issue_counts = Counter()
+    for interaction_id in expected_ids:
+        rows = audit_by_id.get(interaction_id, [])
+        if len(rows) != 1:
+            issue_counts["missing_or_duplicate_audit_entry"] += 1
+            continue
+        row = rows[0]
+        status = row.get("guardrail_status")
+        version = row.get("guardrail_version")
+        row_reasons = row.get("guardrail_reasons")
+        if status not in GUARDRAIL_STATUSES:
+            issue_counts["invalid_guardrail_status"] += 1
+            continue
+        if version != EXPECTED_GUARDRAIL_VERSION:
+            issue_counts["unexpected_guardrail_version"] += 1
+        if not isinstance(row_reasons, list) or any(
+            not isinstance(reason, str) or not re.fullmatch(r"[a-z0-9_]+", reason)
+            for reason in row_reasons
+        ):
+            issue_counts["invalid_guardrail_reasons"] += 1
+            continue
+        statuses[status] += 1
+        reasons.update(row_reasons)
+    result = {
+        "status": "passed" if successful and not issue_counts else "failed",
+        "successful_responses": len(successful),
+        "guardrail_version": EXPECTED_GUARDRAIL_VERSION,
+        "guardrail_status_counts": dict(sorted(statuses.items())),
+        "guardrail_reason_counts": dict(sorted(reasons.items())),
+        "issue_counts": dict(sorted(issue_counts.items())),
+    }
+    return result
 
 
 def wait_ready(url, process, timeout, token=None):
@@ -213,6 +265,13 @@ def main():
                 "measurement_exit_code": measure.returncode,
                 "audit_exit_code": audit.returncode,
             }
+            endpoint_guardrails = summarize_guardrail_audit(
+                directory / "endpoint.json", directory / "audit.jsonl"
+            )
+            (directory / "endpoint-guardrails.json").write_text(
+                json.dumps(endpoint_guardrails, indent=2) + "\n"
+            )
+            reports[stage]["endpoint_guardrails"] = endpoint_guardrails
             if args.collection_scenarios:
                 collection = subprocess.run(
                     [str(args.api_python), str(root / "scripts/evaluate_collection_endpoint.py"),
@@ -229,6 +288,13 @@ def main():
                 )
                 reports[stage].update(collection_exit_code=collection.returncode,
                                       collection_audit_exit_code=collection_audit.returncode)
+                collection_guardrails = summarize_guardrail_audit(
+                    directory / "collection.json", directory / "audit.jsonl"
+                )
+                (directory / "collection-guardrails.json").write_text(
+                    json.dumps(collection_guardrails, indent=2) + "\n"
+                )
+                reports[stage]["collection_guardrails"] = collection_guardrails
             stop_owned(api_process)
             api_process = None
         (args.output / "summary.json").write_text(

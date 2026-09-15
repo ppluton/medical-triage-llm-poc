@@ -129,8 +129,9 @@ ciblée, le prompt v6 et `proposed-guardrails-v1`. Le
 [replay hors ligne](../evidence/STAGE2_GUARDRAIL_REPLAY_V36_2026-09-16.md) montre la logique
 sur les sorties sauvegardées, sans relancer les modèles.
 
-Le prochain paquet doit porter un nouveau nom `api-guardrails-v37`, embarquer les sources
-exactes de l'API 0.4.0 et conserver Base, SFT et DPO inchangés. Il doit vérifier la version
-d'API, rapprocher les audits et résumer `model_output`, `corrected` et `safe_fallback` par
-variante. Tant que ce paquet n'est pas exécuté, le prompt v6 et la chaîne complète restent
-non prouvés sur GPU. Ce run est une régression d'inférence, pas un nouvel entraînement.
+Le paquet `api-guardrails-v37` est maintenant [préparé et vérifié
+localement](../evidence/VLLM_V37_PACKAGE_2026-09-16.md). Il embarque les sources exactes de
+l'API 0.4.0, conserve Base, SFT et DPO inchangés, vérifie la version des garde-fous dans
+l'audit et résume `model_output`, `corrected` et `safe_fallback` par variante. Tant que ce
+paquet n'est pas exécuté, le prompt v6 et la chaîne complète restent non prouvés sur GPU.
+Ce run est une régression d'inférence, pas un nouvel entraînement.

@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-16",
+  "status": "prepared_not_launched",
+  "run_name": "api-guardrails-v37",
+  "target": {
+    "provider": "Kaggle",
+    "notebook_id": "pierrepluton/chsa-source-sft-qwen3",
+    "visibility": "private",
+    "machine_shape": "NvidiaTeslaT4"
+  },
+  "package": {
+    "embedded_files": 47,
+    "checkout_mismatches": 0,
+    "notebook_sha256": "ee5c9f37fc0a720d1ed443ccc78fda9fdaa51e80d7c7039aa7f6c738331b1a80",
+    "metadata_sha256": "80614c2fac8e2207d47df6eed2fc18ae9f940dec77206e13272ee5d6797ed86a"
+  },
+  "included_controls": {
+    "api_version": "0.4.0",
+    "prompt_version": "triage-demo-v6-proposed",
+    "guardrail_version": "proposed-guardrails-v1",
+    "endpoint_guardrail_summary": true,
+    "collection_guardrail_summary": true,
+    "expected_variants": ["base", "sft", "dpo"],
+    "optimizer_steps": 0
+  },
+  "source_revision_before_runner_commit": "97926681b50d40e859403b38499194143022c569",
+  "code_sha256": {
+    "builder": "27ff18f3f8dd2e67809b62f78c329ea37b921eb9c6ce2fadf960fee211f4051c",
+    "runner": "c9e0a9092871ccbcdd2f14d34580ddf86f907c6b9d643977ee136dfe4b0a9ce4",
+    "runner_tests": "ede02e870f3c78c04de957ca5e416acfd14939d0bbe74408def94fd0194a4bb2",
+    "api": "bc549e4d3ee9d92d1fbe77da005ae578837258ab2b5f20c45bfe72fcf34ad29a",
+    "guardrails": "570d833c8a3f69c09a944e8d54e1ecb40e096daf70b19b90477c4232cb1ad642",
+    "prompt": "4d2933bc69b4dfed32836716c4f74fd6b0fcb460617d543a86328cf821be35c8"
+  },
+  "validation": {
+    "targeted_tests": "21 passed, 1 external deprecation warning",
+    "full_regression": "199 passed, 1 external deprecation warning in 15.13s",
+    "full_regression_job": "val_9f3a8faa9c28",
+    "ruff": "passed",
+    "bootstrap_compilation": "passed",
+    "embedded_checkout_comparison": "passed"
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "The package was built and inspected locally but has not been uploaded or executed.",
+    "The future run reuses existing Base, SFT and DPO weights and performs no optimizer step.",
+    "A private loopback Kaggle run is not an externally accessible cloud endpoint.",
+    "Passing guardrail summaries would not establish clinical safety."
+  ]
+}
