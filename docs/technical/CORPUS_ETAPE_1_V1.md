@@ -1,8 +1,8 @@
 # Corpus de l’étape 1 — état reproductible
 
-Date : 2026-09-16 — Statut : draft, candidat technique ; revue POC et porte RGPD ouvertes
+Date : 2026-09-16 — Statut : prêt pour entraînement pédagogique contrôlé ; publication bloquée
 
-Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT](../../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [scan PII contextuel](../evidence/SFT_CONTEXTUAL_PII_SCAN_2026-09-16.md).
+Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT v2.2](../../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [finalisation PII](../evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md).
 
 ## Objet
 
@@ -21,7 +21,7 @@ Les quatre manifestes `src-*` enregistrent URL, révision, licence, taille, empr
 
 ## Candidat SFT retenu
 
-`derived-source-medical-qa-sft-v2.1-reviewed` contient **4 700 paires**, soit 3 721 train, 479 validation et 500 test. La répartition est 2 474 français / 2 226 anglais :
+`derived-source-medical-qa-sft-v2.2-privacy-finalized` contient **4 700 paires**, soit 3 721 train, 479 validation et 500 test. La répartition est 2 474 français / 2 226 anglais :
 
 | Source | Enregistrements |
 |---|---:|
@@ -33,11 +33,12 @@ Le canonique conserve la provenance de chaque ligne, les opérations de transfor
 
 Les artefacts textuels restent hors Git public dans `data/processed/source-sft-v2.1-reviewed/`. Leurs SHA-256 et volumes sont consignés dans le manifeste versionné.
 
-Le scan contextuel du 16 septembre a parcouru les 9 400 champs du canonique. Il laisse
-1 498 lignes sans détection, 3 180 en revue contextuelle et 22 en revue prioritaire pour
-31 détections `PATIENT_NAME`. Une file privée relie ces candidats aux lignes sans exposer
-leur texte dans Git. Ce résultat termine le scan automatisé, pas la revue humaine ni la
-porte RGPD.
+Le scan contextuel initial a parcouru les 9 400 champs du canonique. La v2.2 masque les
+31 détections `PATIENT_NAME` sur 22 lignes avec des positions et checksums vérifiés. Son
+rescan intégral ne contient plus d'identifiant direct : 1 501 lignes sont sans détection et
+3 199 conservent seulement `PERSON`, `LOCATION` ou `DATE_TIME` sous la politique des
+sources médicales publiques. Ce résultat ouvre l'entraînement local contrôlé, pas la
+publication ni une certification RGPD.
 
 ## Lot DPO disponible
 
@@ -63,21 +64,21 @@ Les exemples [synthetic-clinical-metadata-v1.json](../../data/samples/synthetic-
 
 ## Conditions de passage
 
-Avant de déclarer l’étape complète :
+L'étape 1 est complète pour le périmètre scolaire d'entraînement local contrôlé. Les portes
+restantes s'appliquent à une diffusion ou à un pilote réel :
 
-1. décider les 22 lignes prioritaires puis documenter la stratégie de revue des 3 180
-   alertes contextuelles ; toute transformation produira une nouvelle version du corpus ;
-2. produire un jeu d’évaluation de POC séparé, sans réutiliser le test déjà consulté ;
-3. publier ou transmettre les données uniquement par un canal autorisé et compatible avec les licences ;
-4. figer un manifeste final reliant explicitement SFT, DPO, schéma, audits et révision Git ;
-5. réserver la validation par des professionnels de santé à la roadmap d'un pilote réel.
+1. ne pas publier ni transmettre v2.2 sans revue humaine/juridique et canal autorisé ;
+2. utiliser un jeu d'évaluation de POC séparé et ne pas régler le modèle sur le test consulté ;
+3. réserver la validation par des professionnels de santé à la roadmap d'un pilote réel ;
+4. produire une nouvelle version, de nouveaux hashes et un nouveau rescan après toute
+   transformation textuelle.
 
 ## Reproduction minimale
 
 ```bash
 PYTHONPATH=src /path/to/project-python scripts/audit_sft_v2_readiness.py \
-  --manifest data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json \
-  --artifacts data/processed/source-sft-v2.1-reviewed \
+  --manifest data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json \
+  --artifacts data/processed/source-sft-v2.2-privacy-finalized \
   --original-tokenizer artifacts/sft-v2-pilot-ready/tokenizer \
   --medquad /controlled/path/medquad \
   --mediqal /controlled/path/mediqal \
@@ -88,7 +89,7 @@ PYTHONPATH=src /path/to/project-python -m pytest \
   tests/test_clinical_metadata_schema.py tests/test_source_sft.py -q
 
 PYTHONPATH=src /path/to/project-python scripts/audit_sft_contextual_pii.py \
-  --canonical data/processed/source-sft-v2.1-reviewed/source-sft-v2.1.jsonl \
+  --canonical data/processed/source-sft-v2.2-privacy-finalized/source-sft-v2.2.jsonl \
   --output /fresh/private/audit-directory
 ```
 

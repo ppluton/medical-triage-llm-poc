@@ -117,4 +117,9 @@ La suite complète finale `val_50912d5d4674` termine avec le code 0 : **176 test
 | DPO | intégrité, lignée et revue éducative prouvées | 480 EN ; aucune validation professionnelle ni preuve d'alignement FR |
 | Évaluation de POC séparée | jeux synthétiques séparés présents | références proposées et test déjà consulté ; aucune étude clinique revendiquée |
 
-L’étape ne doit pas encore être déclarée complète. Le travail restant dans le périmètre scolaire est la revue contextuelle PII/RGPD du corpus SFT et son manifeste final. La consolidation DPO est terminée. Une validation indépendante par des professionnels appartient à la roadmap d'un pilote réel ; son absence ne bloque pas le POC OpenClassrooms.
+Cette preuve historique constatait une porte PII ouverte sur v2.1. La
+[finalisation v2.2](SFT_PRIVACY_FINALIZATION_2026-09-16.md) masque ensuite les alertes
+directes, rescane le corpus et fige le manifeste admis pour l'entraînement pédagogique
+contrôlé. La publication externe et la certification RGPD restent bloquées. La consolidation
+DPO est terminée. Une validation indépendante par des professionnels appartient à la
+roadmap d'un pilote réel ; son absence ne bloque pas le POC OpenClassrooms.
