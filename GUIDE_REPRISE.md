@@ -54,7 +54,7 @@ Constituer environ 5 000 paires SFT bilingues ; justifier les exclusions plutôt
 
 **Point de départ :** [manifeste corrigé](data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json), [audit des corrections](docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [audit de fidélité](docs/evidence/SFT_V2_READINESS_2026-09-11.md). Ces preuves portent sur leur version, pas automatiquement sur un futur corpus.
 
-**État au 16 septembre :** l'étape est fermée pour l'entraînement pédagogique contrôlé. Le [manifeste SFT v2.2](data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json) relie 4 700 lignes, le schéma, les splits, les hashes, la révision de code et le lot DPO. La [finalisation PII](docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md) a masqué 31 alertes `PATIENT_NAME` sur 22 lignes ; le rescan des 9 400 champs ne trouve plus d'identifiant direct. Les alertes `PERSON`, `LOCATION` et `DATE_TIME` sont conservées sous la politique des sources publiques pour ne pas dégrader le contenu médical. La publication externe et toute revendication de certification RGPD restent bloquées. La [consolidation DPO v2](docs/evidence/DPO_PROJECT_REVIEW_V2_2026-09-16.md) est terminée. L'absence d'un référent clinique réel est documentée comme limite de transposition, pas comme blocage de la mission.
+**État au 16 septembre :** l'étape est fermée pour l'entraînement pédagogique contrôlé. Le [manifeste SFT v2.2](data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json) relie 4 700 lignes, le schéma, les splits, les hashes et la révision de code. La [finalisation PII](docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md) a masqué 31 alertes `PATIENT_NAME` sur 22 lignes ; le rescan des 9 400 champs ne trouve plus d'identifiant direct. Les alertes `PERSON`, `LOCATION` et `DATE_TIME` sont conservées sous la politique des sources publiques pour ne pas dégrader le contenu médical. La publication externe et toute revendication de certification RGPD restent bloquées. Le [réancrage DPO v3](docs/evidence/DPO_V22_LINEAGE_REBIND_2026-09-16.md) conserve les 480 charges d'entraînement, protège les 4 700 empreintes SFT v2.2 et confirme zéro recouvrement. L'absence d'un référent clinique réel est documentée comme limite de transposition, pas comme blocage de la mission.
 
 ## 2 — Fixer l’évaluation et la baseline
 
@@ -88,6 +88,8 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage :** apprentissage/recharge prouvés, résultats analysés, bénéfices et régressions explicites. Un DPO sans gain est un résultat à expliquer, pas un score à embellir. La durée de l’ancien essai n’est pas une cause démontrée de son faible effet.
 
+**État au 16 septembre :** le lot DPO v3 est relié au canonique SFT v2.2, sans modifier les 480 prompts ou réponses de préférence. Le nouveau DPO reste bloqué tant que le checkpoint SFT v39 n'est pas techniquement vérifié et retenu.
+
 ## 5 — Démonstration cloud et CI/CD
 
 **Travail :** FastAPI + vLLM + Docker ; questionnaire adaptatif ; schémas, anonymisation et garde-fous ; accès restreint ; audit avec versions. Reprendre les composants existants après contrôles ciblés.
@@ -95,6 +97,8 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 **À produire :** endpoint réellement joignable depuis l’extérieur sur une cible autorisée, GitHub Actions avec tests ET déploiement, smoke test distant, démonstration multi-échanges FR/EN, mesures de latence/robustesse/audit et procédure d’arrêt.
 
 **Condition de passage :** parcours réel observé, URL et accès transmissibles au jury, trace retrouvable. Un notebook Kaggle avec API sur localhost n’est pas ce livrable. Une CI de tests/build n’est pas une CD.
+
+**État au 16 septembre :** l'image API est construite localement et ses modes sans fournisseur et factory privée authentifiée passent hors réseau. Compose vLLM/API est préparé. La cible cloud, le coût, le déploiement automatisé et le smoke distant restent ouverts.
 
 ## 6 — Assembler la première livraison et préparer l’oral
 
@@ -120,4 +124,4 @@ La première version peut être identifiée comme brouillon avec écarts explici
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
-**Prochaine action concrète : préparer et lancer le SFT LoRA borné sur le corpus final v2.2, avec la révision Qwen3 privée déjà vérifiée, puis comparer le checkpoint rechargé.** L'optimisation générique vLLM reste différée. Le DPO ne partira qu'après validation technique du nouveau SFT et conservera la baseline négative v37.
+**Prochaine action concrète : laisser terminer la v39 déjà lancée, télécharger ses artefacts dans un dossier neuf, vérifier le checkpoint, la recharge et les métriques appariées, puis décider du checkpoint SFT retenu.** Le DPO ne partira qu'après cette validation et conservera la baseline négative v37. Le jeu de réserve final reste fermé jusqu'au gel du SFT et du DPO.
