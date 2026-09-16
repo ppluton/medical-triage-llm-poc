@@ -16,7 +16,7 @@ La chaîne actuelle comprend un corpus bilingue v2.2 finalisé par des contrôle
 | Dataset bilingue documenté | SFT v2.2 : 4 700 lignes, 31 masques sur 22 lignes, zéro identifiant direct au rescan | Publication externe, certification RGPD et validation clinique absentes |
 | SFT puis DPO comparés | SFT v39 rechargé ; DPO v41 vérifié ; sélection v43 et réserve v46 terminées | Validation clinique indépendante absente ; triage brut final non conforme |
 | Endpoint cloud vLLM/API | Intégration réelle v37, audit, dialogues et garde-fous mesurés | Déployer et tester sur une cible extérieure autorisée |
-| GitHub Actions tests/déploiement | 240 tests ; CI et CD Modal manuelle préparées localement | Exécution GitHub distante, endpoint et smoke test |
+| GitHub Actions tests/déploiement | 240 tests et conteneur passés sur la PR #4 ; CD Modal manuelle préparée | Déploiement Modal, endpoint et smoke test |
 | Rapport et soutenance | Rapport et support générés à partir des preuves finales du modèle | Cible cloud, nommage final et démonstration extérieure |
 
 ## 2. Données et gouvernance
@@ -119,9 +119,9 @@ L'audit local conserve désormais le contexte anonymisé transmis au modèle et 
 
 La régression locale complète passe 240 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau.
 
-La cible Modal v1 est maintenant implémentée localement : environnements vLLM/API séparés dans un conteneur T4, poids privés rehashés avant démarrage, audit synchronisé, authentification Bearer, retour à zéro après inactivité et CD GitHub manuelle protégée. Le dossier de transfert réutilise le poids Base local par lien physique et contient uniquement le SFT retenu. La définition est acceptée par `modal==1.5.5`, mais aucune ressource, image distante, URL ou dépense Modal n'a été créée. L’ADR-018 reste `proposed` tant que Pierre n'a pas autorisé le fournisseur et un plafond de coût. Aucun endpoint ni modèle public n'est annoncé.
+La cible Modal v1 est maintenant implémentée localement : environnements vLLM/API séparés dans un conteneur T4, poids privés rehashés avant démarrage, audit synchronisé, authentification Bearer, retour à zéro après inactivité et CD GitHub manuelle protégée. Le dossier de transfert réutilise le poids Base local par lien physique et contient uniquement le SFT retenu. La définition est acceptée par `modal==1.5.5`. La PR #4 exécute aussi la CI distante : les jobs `test` et `container` passent. En revanche, aucune ressource, image distante, URL ou dépense Modal n'a été créée. L’ADR-018 reste `proposed` tant que Pierre n'a pas autorisé le fournisseur et un plafond de coût. Aucun endpoint ni modèle public n'est annoncé.
 
-Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md) et [préparation Modal](../docs/evidence/MODAL_DEPLOYMENT_PREPARATION_2026-09-16.md).
+Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation Modal](../docs/evidence/MODAL_DEPLOYMENT_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
 
 ## 7. Conditions de clôture et limites
 
