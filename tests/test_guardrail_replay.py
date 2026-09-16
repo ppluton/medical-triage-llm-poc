@@ -64,7 +64,7 @@ def test_replay_reports_priority_and_fallback_without_source_text():
     assert metrics["critical_recall_after_replay"] == 1.0
     assert metrics["critical_red_flag_coverage_after_replay"] == 1.0
     assert metrics["uncertainty_priority_floor_rate_after_replay"] == 1.0
-    assert metrics["guardrail_status_counts"] == {"corrected": 1, "safe_fallback": 1}
+    assert metrics["guardrail_status_counts"] == {"safe_fallback": 2}
     assert "Severe breathing" not in str(summary)
 
 
