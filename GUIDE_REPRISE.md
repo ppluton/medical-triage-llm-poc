@@ -78,7 +78,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage au SFT complet :** pipeline et recharge vérifiés, dataset de l’étape 1 identifié, comparaison de validation disponible et explication pédagogique fournie à Pierre. Estimation de durée à partir du débit observé. Après entraînement : comparer Base/SFT et retenir un checkpoint selon la validation, sans régler sur le test final.
 
-**État au 16 septembre :** le [pilote v38](docs/evidence/SFT_V22_KAGGLE_V38_LAUNCH_2026-09-16.md) a vérifié le snapshot Qwen puis échoué avant entraînement, car le tokenizer Base exact n'avait pas de chat template. La correction ciblée conserve le tokenizer, ajoute un template versionné au rendu audité et la [v39](docs/evidence/SFT_V22_KAGGLE_V39_RELAUNCH_2026-09-16.md) est `RUNNING` sur 3 721 train / 479 validation, sans test. Smoke, checkpoints, recharge et résultats restent à observer.
+**État au 16 septembre :** le [pilote v38](docs/evidence/SFT_V22_KAGGLE_V38_LAUNCH_2026-09-16.md) a vérifié le snapshot Qwen puis échoué avant entraînement, car le tokenizer Base exact n'avait pas de chat template. La correction ciblée conserve le tokenizer et ajoute un template versionné. La [v39](docs/evidence/SFT_V39_RESULT_2026-09-16.md) termine 150 étapes sur 3 721 train / 479 validation, sans test. La [v40](docs/evidence/SFT_V40_RELOAD_RESULT_2026-09-16.md) recharge le checkpoint 150 avec 30/30 générations identiques et un delta de loss nul. Le handoff et la ressource Kaggle privée du SFT sont vérifiés.
 
 ## 4 — DPO à partir du SFT retenu
 
@@ -88,7 +88,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage :** apprentissage/recharge prouvés, résultats analysés, bénéfices et régressions explicites. Un DPO sans gain est un résultat à expliquer, pas un score à embellir. La durée de l’ancien essai n’est pas une cause démontrée de son faible effet.
 
-**État au 16 septembre :** le lot DPO v3 est relié au canonique SFT v2.2, sans modifier les 480 prompts ou réponses de préférence. Le nouveau DPO reste bloqué tant que le checkpoint SFT v39 n'est pas techniquement vérifié et retenu.
+**État au 16 septembre :** le lot DPO v3 est relié au canonique SFT v2.2, sans modifier les 480 prompts ou réponses de préférence. La [v41](docs/evidence/DPO_V41_RESULT_2026-09-16.md) exécute vingt étapes depuis le SFT v39 : référence inchangée, 392/392 tenseurs de politique modifiés et adaptateur sauvegardé vérifié. La v43 compare maintenant Base/SFT/DPO sur validation et développement après l'échec d'import v42, corrigé sans changer les poids ni les données. La réserve finale reste fermée.
 
 ## 5 — Démonstration cloud et CI/CD
 
@@ -124,4 +124,4 @@ La première version peut être identifiée comme brouillon avec écarts explici
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
-**Prochaine action concrète : laisser terminer la v39 déjà lancée, télécharger ses artefacts dans un dossier neuf, vérifier le checkpoint, la recharge et les métriques appariées, puis décider du checkpoint SFT retenu.** Le DPO ne partira qu'après cette validation et conservera la baseline négative v37. Le jeu de réserve final reste fermé jusqu'au gel du SFT et du DPO.
+**Prochaine action concrète : laisser terminer la comparaison v43, vérifier la recharge réelle Base/SFT/DPO et revoir les résultats de développement.** Si le DPO est retenu, figer le couple final puis ouvrir une seule fois la réserve synthétique ; sinon conserver honnêtement le SFT seul ou tester l'alternative étape 50. La cible cloud GPU et son coût nécessitent encore une décision explicite de Pierre.
