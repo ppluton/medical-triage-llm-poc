@@ -13,17 +13,21 @@ def main() -> None:
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--sft-manifest", required=True, type=Path)
+    parser.add_argument("--sft-canonical", required=True, type=Path)
     parser.add_argument("--decision", required=True, type=Path)
     parser.add_argument("--decision-id", required=True)
     parser.add_argument("--review-date", required=True)
+    parser.add_argument("--manifest-id", required=True)
     args = parser.parse_args()
     manifest = finalize_dpo_review(
         args.source,
         args.output,
         sft_manifest_path=args.sft_manifest,
+        sft_canonical_path=args.sft_canonical,
         decision_path=args.decision,
         decision_id=args.decision_id,
         review_date=args.review_date,
+        manifest_id=args.manifest_id,
     )
     print(json.dumps({
         "status": manifest["status"],

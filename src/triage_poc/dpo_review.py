@@ -7,7 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from triage_poc.comparison import sha256
-from triage_poc.dpo import validate_preferences
+from triage_poc.dpo import prompt_hash, validate_preferences
 
 PAYLOAD_FIELDS = (
     "record_id",
@@ -56,9 +56,11 @@ def finalize_dpo_review(
     output_directory: Path,
     *,
     sft_manifest_path: Path,
+    sft_canonical_path: Path,
     decision_path: Path,
     decision_id: str,
     review_date: str,
+    manifest_id: str,
 ) -> dict:
     """Write a fresh, lineage-bound DPO version with corrected review metadata."""
     if output_directory.exists():
@@ -74,6 +76,22 @@ def finalize_dpo_review(
     canonical = sft_manifest.get("artifacts", {}).get("canonical", {})
     if not isinstance(sft_records, int) or sft_records < 1 or not canonical.get("sha256"):
         raise ValueError("SFT manifest does not expose its canonical protected dataset.")
+    if sha256(sft_canonical_path) != canonical["sha256"]:
+        raise ValueError("SFT canonical checksum does not match its manifest.")
+    sft_rows = _read_jsonl(sft_canonical_path)
+    if len(sft_rows) != sft_records:
+        raise ValueError("SFT canonical record count does not match its manifest.")
+    current_sft_prompt_hashes = set()
+    current_sft_ids = set()
+    for row in sft_rows:
+        if not isinstance(row.get("record_id"), str) or row["record_id"] in current_sft_ids:
+            raise ValueError("SFT canonical record IDs must be present and unique.")
+        if not isinstance(row.get("instruction"), str) or not row["instruction"].strip():
+            raise ValueError("SFT canonical instruction is required.")
+        current_sft_ids.add(row["record_id"])
+        current_sft_prompt_hashes.add(prompt_hash(row["instruction"]))
+    if len(current_sft_prompt_hashes) != sft_records:
+        raise ValueError("SFT canonical instructions must be unique after normalization.")
 
     decision = json.loads(decision_path.read_text())
     if (
@@ -84,8 +102,14 @@ def finalize_dpo_review(
         raise ValueError("The project review decision is incomplete.")
     if decision.get("dataset_manifest_sha256") != sha256(parent_manifest_path):
         raise ValueError("Project review decision does not match the parent DPO manifest.")
+    if (
+        decision.get("sft_manifest_sha256") != sha256(sft_manifest_path)
+        or decision.get("sft_canonical_sha256") != canonical["sha256"]
+    ):
+        raise ValueError("Project review decision does not match the protected SFT corpus.")
 
     protected = set(parent_manifest.get("protected_prompt_hashes", []))
+    protected.update(current_sft_prompt_hashes)
     finalized: dict[str, list[dict]] = {}
     input_artifacts = {}
     output_directory.mkdir(parents=True)
@@ -120,7 +144,7 @@ def finalize_dpo_review(
         artifacts[split] = {"records": len(rows), "sha256": sha256(path)}
 
     manifest = {
-        "manifest_id": "derived-ultramedical-dpo-v2-project-reviewed",
+        "manifest_id": manifest_id,
         "schema_version": "1.0.0",
         "status": "approved_for_educational_dpo",
         "clinical_review_status": "not_performed",
@@ -137,6 +161,7 @@ def finalize_dpo_review(
         "sft_manifest_sha256": sha256(sft_manifest_path),
         "sft_protected_records": sft_records,
         "protected_sft_canonical_sha256": canonical["sha256"],
+        "current_sft_prompt_hashes": len(current_sft_prompt_hashes),
         "protected_prompt_hashes": sorted(protected),
         "test_answers_used": 0,
         "language": parent_manifest["language"],
@@ -145,6 +170,7 @@ def finalize_dpo_review(
             "replace stale pending preference rationale with the exact project-review scope",
             "bind each row to the documented review decision and date",
             "bind the manifest to the current protected SFT manifest",
+            "extend prompt protection with every current SFT canonical instruction",
         ],
         "limits": [
             "Source biomedical preferences are not validated triage preferences.",

@@ -51,9 +51,13 @@ def _fixture(tmp_path):
     parent_path = source / "manifest.json"
     parent_path.write_text(json.dumps(parent))
     sft = tmp_path / "sft.json"
+    canonical = tmp_path / "sft.jsonl"
+    canonical.write_text("".join(json.dumps({
+        "record_id": f"sft-{index}", "instruction": f"SFT prompt {index}"
+    }) + "\n" for index in range(2)))
     sft.write_text(json.dumps({
         "record_count": 2,
-        "artifacts": {"canonical": {"sha256": "b" * 64}},
+        "artifacts": {"canonical": {"sha256": sha256(canonical)}},
     }))
     decision = tmp_path / "decision.json"
     decision.write_text(json.dumps({
@@ -61,23 +65,29 @@ def _fixture(tmp_path):
         "clinical_validation": "not_performed",
         "reviewer": "fixture project review",
         "dataset_manifest_sha256": sha256(parent_path),
+        "sft_manifest_sha256": sha256(sft),
+        "sft_canonical_sha256": sha256(canonical),
     }))
-    return source, rows, sft, decision
+    return source, rows, sft, canonical, decision
 
 
 def test_finalize_dpo_review_changes_only_governance_metadata(tmp_path):
-    source, rows, sft, decision = _fixture(tmp_path)
+    source, rows, sft, canonical, decision = _fixture(tmp_path)
     output = tmp_path / "output"
     manifest = finalize_dpo_review(
         source,
         output,
         sft_manifest_path=sft,
+        sft_canonical_path=canonical,
         decision_path=decision,
         decision_id="ADR-014",
         review_date="2026-09-12",
+        manifest_id="fixture-dpo-v2",
     )
     assert manifest["sft_protected_records"] == 2
     assert manifest["clinical_review_status"] == "not_performed"
+    assert manifest["current_sft_prompt_hashes"] == 2
+    assert len(manifest["protected_prompt_hashes"]) == 2
     for split in ("train", "validation"):
         updated = json.loads((output / f"{split}.jsonl").read_text())
         assert {field: updated.get(field) for field in PAYLOAD_FIELDS} == {
@@ -88,7 +98,7 @@ def test_finalize_dpo_review_changes_only_governance_metadata(tmp_path):
 
 
 def test_finalize_dpo_review_refuses_unreviewed_or_mismatched_inputs(tmp_path):
-    source, _, sft, decision = _fixture(tmp_path)
+    source, _, sft, canonical, decision = _fixture(tmp_path)
     train = json.loads((source / "train.jsonl").read_text())
     train["privacy_review_status"] = "pending"
     (source / "train.jsonl").write_text(json.dumps(train) + "\n")
@@ -98,15 +108,18 @@ def test_finalize_dpo_review_refuses_unreviewed_or_mismatched_inputs(tmp_path):
     parent_path.write_text(json.dumps(parent))
     review = json.loads(decision.read_text())
     review["dataset_manifest_sha256"] = sha256(parent_path)
+    review["sft_manifest_sha256"] = sha256(sft)
     decision.write_text(json.dumps(review))
     with pytest.raises(ValueError, match="privacy review"):
         finalize_dpo_review(
             source,
             tmp_path / "output",
             sft_manifest_path=sft,
+            sft_canonical_path=canonical,
             decision_path=decision,
             decision_id="ADR-014",
             review_date="2026-09-12",
+            manifest_id="fixture-dpo-v2",
         )
 
     decision.write_text(json.dumps({**review, "dataset_manifest_sha256": "0" * 64}))
@@ -115,7 +128,25 @@ def test_finalize_dpo_review_refuses_unreviewed_or_mismatched_inputs(tmp_path):
             source,
             tmp_path / "other-output",
             sft_manifest_path=sft,
+            sft_canonical_path=canonical,
             decision_path=decision,
             decision_id="ADR-014",
             review_date="2026-09-12",
+            manifest_id="fixture-dpo-v2",
+        )
+
+
+def test_finalize_dpo_review_rejects_changed_sft_canonical(tmp_path):
+    source, _, sft, canonical, decision = _fixture(tmp_path)
+    canonical.write_text(json.dumps({"record_id": "changed", "instruction": "changed"}) + "\n")
+    with pytest.raises(ValueError, match="canonical checksum"):
+        finalize_dpo_review(
+            source,
+            tmp_path / "output",
+            sft_manifest_path=sft,
+            sft_canonical_path=canonical,
+            decision_path=decision,
+            decision_id="ADR-014",
+            review_date="2026-09-12",
+            manifest_id="fixture-dpo-v2",
         )

@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-16",
+  "status": "approved_for_educational_dpo",
+  "clinical_validation": "not_performed",
+  "reviewer": "Codex assisted technical lineage review; no independent human or clinical review",
+  "scope": "Rebind the unchanged DPO training payload to the privacy-finalized SFT v2.2 corpus.",
+  "dataset_manifest_sha256": "688b917a459352089f1817702d7b6f203dac4123b439783d8be4775d5797c02e",
+  "sft_manifest_sha256": "44328484b9c05dc58304007037cbcca17d57d49ac08949b356c8c314c8ae99c0",
+  "sft_canonical_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2",
+  "constraints": [
+    "The prompt, chosen, rejected, split, source label, and source provenance fields must remain unchanged.",
+    "Every current SFT v2.2 instruction must be included in the protected prompt hash set.",
+    "No healthcare-professional or clinical validation is claimed.",
+    "The held-out triage reserve must not be opened or used."
+  ]
+}
