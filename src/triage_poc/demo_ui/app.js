@@ -11,7 +11,7 @@ const copy = {
     empty: "Sélectionnez un scénario ou saisissez un contexte synthétique, puis lancez l’évaluation.",
     priority: "Priorité proposée", considered: "Éléments considérés", questions: "Informations à compléter",
     redFlags: "Signaux d’alerte relevés", latency: "Latence API", interaction: "Interaction", model: "Version modèle",
-    running: "Évaluation en cours", warming: "Réveil du modèle · jusqu’à 2 min", ready: "Réponse contrôlée", error: "Échec explicite",
+    running: "Évaluation en cours", warming: "Réveil du modèle · jusqu’à 3 min", ready: "Réponse contrôlée", error: "Échec explicite",
     required: "Renseignez au moins un symptôme synthétique et un jeton d’au moins 32 caractères.",
     unavailable: "L’évaluation est indisponible. Vérifiez le jeton ou consultez le journal technique expurgé.",
     guidedLabel: "Conversation guidée", guidedTitle: "Compléter sans recommencer",
@@ -30,7 +30,7 @@ const copy = {
     empty: "Select a scenario or enter a synthetic context, then run the assessment.",
     priority: "Proposed priority", considered: "Elements considered", questions: "Information to complete",
     redFlags: "Warning signs identified", latency: "API latency", interaction: "Interaction", model: "Model version",
-    running: "Assessment running", warming: "Waking model · up to 2 min", ready: "Controlled response", error: "Explicit failure",
+    running: "Assessment running", warming: "Waking model · up to 3 min", ready: "Controlled response", error: "Explicit failure",
     required: "Enter at least one synthetic symptom and a token of at least 32 characters.",
     unavailable: "Assessment unavailable. Check the token or inspect the redacted technical log.",
     guidedLabel: "Guided conversation", guidedTitle: "Complete without starting over",
@@ -202,7 +202,7 @@ async function assess(context, errorElement, submit) {
   byId("status").className = "status";
   byId("status").textContent = copy[language].running;
   try {
-    const readyDeadline = Date.now() + 130000;
+    const readyDeadline = Date.now() + 190000;
     while (true) {
       const health = await fetch("/v1/healthz", {
         headers: { "Authorization": `Bearer ${token}` },

@@ -98,7 +98,7 @@ def _wait_for_http(
     raise TimeoutError("Owned service readiness deadline exceeded")
 
 
-@app.server(
+@app.cls(
     image=image,
     gpu="T4",
     secrets=[api_secret],
@@ -109,11 +109,9 @@ def _wait_for_http(
     min_containers=0,
     max_containers=1,
     scaledown_window=120,
-    startup_timeout=1200,
-    port=8000,
-    target_concurrency=1,
-    unauthenticated=True,
+    timeout=1200,
 )
+@modal.concurrent(max_inputs=1)
 class TriageService:
     @modal.enter()
     def start_services(self) -> None:
@@ -175,6 +173,11 @@ class TriageService:
             timeout_seconds=120,
             token=token,
         )
+
+    @modal.web_server(port=8000, startup_timeout=1200)
+    def serve(self) -> None:
+        """Expose the governed FastAPI process through Modal's web gateway."""
+        pass
 
     @modal.exit()
     def stop_services(self) -> None:

@@ -56,7 +56,7 @@ def test_provider_transport_and_persisted_audit_use_redacted_context(tmp_path):
     assert record["output"] == response.json()
     assert record["output"]["summary"] == "Contact <EMAIL_ADDRESS>"
     assert record["guardrail_status"] == "model_output"
-    assert record["guardrail_version"] == "proposed-guardrails-v2"
+    assert record["guardrail_version"] == "proposed-guardrails-v3"
     assert record["guardrail_reasons"] == []
 
 

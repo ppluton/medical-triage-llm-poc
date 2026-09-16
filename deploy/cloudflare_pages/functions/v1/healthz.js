@@ -24,15 +24,20 @@ export async function onRequestGet({ request, env }) {
   try {
     const upstream = await fetch(target, {
       headers: { Authorization: `Bearer ${env.MODAL_API_TOKEN}` },
-      redirect: "error",
+      redirect: "manual",
     });
-    return new Response(upstream.body, {
+    if (upstream.status >= 300 && upstream.status < 400) {
+      return jsonResponse(502, "Demonstration backend redirect was rejected");
+    }
+    const body = await upstream.arrayBuffer();
+    return new Response(body, {
       status: upstream.status,
       headers: upstreamHeaders(
         upstream.headers.get("Content-Type") || "application/json",
       ),
     });
-  } catch {
+  } catch (error) {
+    console.error("modal_healthz_proxy_failed", error);
     return jsonResponse(502, "Demonstration backend is temporarily unavailable");
   }
 }

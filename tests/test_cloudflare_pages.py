@@ -35,7 +35,7 @@ def test_cloudflare_pages_build_contains_static_demo_without_secrets(tmp_path):
     assert "DEMO_ACCESS_TOKEN" not in combined
 
 
-def test_cloudflare_proxy_is_fail_closed_and_streams_modal_response():
+def test_cloudflare_proxy_is_fail_closed_and_buffers_modal_response():
     source = (
         REPOSITORY_ROOT
         / "deploy"
@@ -56,7 +56,10 @@ def test_cloudflare_proxy_is_fail_closed_and_streams_modal_response():
     assert "readBoundedBody(request)" in source
     assert "total > MAX_BODY_BYTES" in source
     assert "body," in source
-    assert "new Response(upstream.body" in source
+    assert "await upstream.arrayBuffer()" in source
+    assert "new Response(responseBody" in source
+    assert 'redirect: "manual"' in source
+    assert "upstream.status >= 300 && upstream.status < 400" in source
     assert "console.log" not in source
     assert "console.log" not in shared
 

@@ -73,13 +73,18 @@ export async function onRequestPost(context) {
         "Content-Type": "application/json",
       },
       body,
-      redirect: "error",
+      redirect: "manual",
     });
+    if (upstream.status >= 300 && upstream.status < 400) {
+      return jsonResponse(502, "Demonstration backend redirect was rejected");
+    }
     const headers = upstreamHeaders(
       upstream.headers.get("Content-Type") || "application/json",
     );
-    return new Response(upstream.body, { status: upstream.status, headers });
-  } catch {
+    const responseBody = await upstream.arrayBuffer();
+    return new Response(responseBody, { status: upstream.status, headers });
+  } catch (error) {
+    console.error("modal_triage_proxy_failed", error);
     return jsonResponse(502, "Demonstration backend is temporarily unavailable");
   }
 }

@@ -34,9 +34,10 @@ def _context(symptom, **extra):
 def test_explicit_warning_sign_sets_priority_floor_and_grounded_red_flag():
     context = _context("Severe breathing difficulty, cannot finish a sentence.")
     decision = apply_proposed_guardrails(context, _result("moderate"), "en")
-    assert decision.status == "corrected"
+    assert decision.status == "safe_fallback"
     assert decision.result.triage_level == "maximum"
     assert decision.result.red_flags == context["symptoms"]
+    assert "Immediate professional assessment" in decision.result.summary
     assert "explicit_proposed_warning_sign" in decision.reasons
 
 
@@ -54,6 +55,21 @@ def test_english_neurological_warning_is_detected_across_separate_symptoms():
     assert decision.result.triage_level == "maximum"
     assert decision.result.red_flags == context["symptoms"]
     assert "explicit_proposed_warning_sign" in decision.reasons
+
+
+def test_french_chest_warning_uses_separate_intensity_field_and_safe_wording():
+    context = _context("douleur thoracique soudaine", intensity="forte")
+    context["symptoms"].append("essoufflement")
+    decision = apply_proposed_guardrails(
+        context,
+        _result("maximum", summary="Attendre un examen médical urgent."),
+        "fr",
+    )
+    assert decision.status == "safe_fallback"
+    assert decision.result.triage_level == "maximum"
+    assert decision.result.red_flags == context["symptoms"]
+    assert "immédiate" in decision.result.summary
+    assert "attendre" not in decision.result.summary.lower()
 
 
 def test_unknown_state_cannot_be_reported_as_stable_or_absent():

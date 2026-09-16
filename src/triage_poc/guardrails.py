@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from triage_poc.api import ModelResult, TriageLevel
 
-GUARDRAIL_VERSION = "proposed-guardrails-v2"
+GUARDRAIL_VERSION = "proposed-guardrails-v3"
 _SEVERITY: dict[TriageLevel, int] = {"deferred": 0, "moderate": 1, "maximum": 2}
 
 
@@ -64,6 +64,13 @@ def explicit_warning_signs(context: dict) -> list[str]:
     """Return supplied symptom strings matching the bounded proposed warning policy."""
     symptoms = [*context.get("symptoms", []), *context.get("associated_symptoms", [])]
     combined = _normalize(" ".join(symptoms))
+    intensity = _normalize(context.get("intensity") or "")
+    chest_cluster = (
+        "chest pain" in combined or "douleur thoracique" in combined
+    ) and any(
+        token in intensity
+        for token in ("intense", "forte", "severe", "strong")
+    )
     neurological_cluster = (
         any(token in combined for token in ("sudden", "soudaine", "soudain"))
         and (
@@ -104,6 +111,8 @@ def explicit_warning_signs(context: dict) -> list[str]:
         if chest or breathing or consciousness or deterioration:
             matches.append(symptom)
     if neurological_cluster:
+        matches.extend(symptoms)
+    if chest_cluster:
         matches.extend(symptoms)
     return list(dict.fromkeys(matches))[:2]
 
@@ -243,6 +252,12 @@ def apply_proposed_guardrails(context: dict, result: ModelResult, language: str)
     """Apply proposed priority floors and replace known unsupported assertion patterns."""
     warnings = explicit_warning_signs(context)
     floor, floor_reason = proposed_priority_floor(context)
+    if warnings and floor == "maximum":
+        return GuardrailResult(
+            result=_safe_fallback(context, language, floor, warnings),
+            status="safe_fallback",
+            reasons=(floor_reason or "explicit_proposed_warning_sign",),
+        )
     unsupported = unsupported_claim_reasons(context, result)
     malformed = malformed_output_reasons(result)
     reasons = [*unsupported, *malformed]
