@@ -7,10 +7,10 @@ Le [guide de reprise](../GUIDE_REPRISE.md) pilote désormais la réalisation. Ce
 
 ## Parcours de lecture
 
-1. [Rapport technique](RAPPORT_TECHNIQUE_POC.md) : démarche, résultats et limites. Export PDF final de 20 pages maximum à produire après consolidation des dernières mesures.
+1. [Rapport technique](RAPPORT_TECHNIQUE_POC.md) : démarche, résultats et limites. Candidat PDF de cinq pages généré et contrôlé après la réserve v46.
 2. [Déroulé de démonstration](DEMONSTRATION_POC.md) : présentation du parcours et preuves à montrer.
-3. [Feuille de route](../docs/technical/ROADMAP_POC_V1.md) : acquis et écarts restants.
-4. PowerPoint et storyboard locaux — brouillon de première réalisation préparé par Sol ; finalisation suspendue pendant la reprise.
+3. [Guide de reprise](../GUIDE_REPRISE.md) : acquis vérifiés, séquence réalisée et écarts externes restants.
+4. PowerPoint local de dix slides — candidat v46 généré, contrôlé et cohérent avec le rapport.
 
 ## Livrables demandés par la mission
 
@@ -21,8 +21,8 @@ Le [guide de reprise](../GUIDE_REPRISE.md) pilote désormais la réalisation. Ce
 | Comparaison des modèles | [Test final QA historique v35](../docs/evidence/FINAL_QA_V35_RESULT.md), [revue aveugle v43](../docs/evidence/COMPARISON_V43_RESULT_2026-09-16.md), [réserve finale v46](../docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md) | Réserve ouverte une fois sur le SFT retenu : 0/18 JSON conforme, résultat négatif figé et non réutilisé pour régler le système |
 | API de démonstration cloud | [Recette vLLM](../docs/technical/VLLM_DEMONSTRATION_V1.md), [Docker Compose](../compose.demo.yaml), [collecte](../docs/technical/COLLECTE_COMPLEMENTAIRE_V1.md) | Inférence locale sur GPU Kaggle prouvée ; accès extérieur autorisé restant à établir |
 | CI/CD | [Workflow GitHub Actions](../.github/workflows/ci.yml), [preuve conteneur locale](../docs/evidence/DOCKER_BUILD_LOCAL.md) | Image et factory privée vérifiées localement ; déploiement automatique et preuve distante à achever |
-| Rapport ≤20 pages | [Source du rapport](RAPPORT_TECHNIQUE_POC.md), [preuve du brouillon PDF](../docs/evidence/REPORT_PDF_DRAFT_2026-09-16.md) | Brouillon A4 de six pages vérifié ; régénération finale après comparaison/cloud |
-| PowerPoint demandé | Démarche, résultats, démonstration et limites avec notes orales | À produire à la fin et à vérifier |
+| Rapport ≤20 pages | [Source du rapport](RAPPORT_TECHNIQUE_POC.md), [preuve du candidat PDF v46](../docs/evidence/REPORT_PDF_V46_2026-09-16.md) | Candidat A4 de cinq pages vérifié ; nom de remise final à confirmer |
+| PowerPoint demandé | [Preuve du support v46](../docs/evidence/PRESENTATION_V46_2026-09-16.md) | Dix slides vérifiées, quatre graphiques natifs ; nom de remise final à confirmer |
 
 ## Artefacts lourds et confidentialité
 

@@ -126,4 +126,6 @@ La première version peut être identifiée comme brouillon avec écarts explici
 
 **Résultat final de l’étape modèle :** la [réserve v46](docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md) recharge le SFT sélectionné, vérifie le snapshot Base et évalue une seule fois les dix-huit cas gelés. Elle obtient 0 JSON conforme, 17 plafonds sur 18 et une répétition moyenne de 0,8289 ; les dix-huit sorties sont signalées par la revue de projet. Ce résultat négatif est figé et ne servira pas à régler le modèle, le prompt ou les garde-fous.
 
-**Prochaine action concrète : mettre à jour le rapport, le support et la démonstration avec le SFT retenu et le résultat négatif de la réserve.** La cible cloud GPU et son coût nécessitent encore une décision explicite de Pierre.
+**État de la livraison locale :** le rapport, le support et le déroulé de démonstration intègrent désormais le SFT retenu et le résultat négatif de la réserve. Le candidat PDF de cinq pages et le PowerPoint de dix slides ont été rendus et contrôlés. Le nommage officiel reste à confirmer.
+
+**Prochaine action concrète : choisir et autoriser une cible cloud GPU avec un plafond de coût, puis exécuter le déploiement, le smoke test distant et le parcours de démonstration.** Sans cette décision externe, l'endpoint cloud et la CD ne peuvent pas être déclarés livrés.

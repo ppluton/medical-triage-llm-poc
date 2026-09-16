@@ -1,8 +1,8 @@
 # Démonstration du POC de triage médical
 
 - Date : 2026-09-16
-- Statut : draft — déroulé préparé, démonstration avec modèle réel non exécutée
-- Sources : `CADRAGE_MISSION.md`, `SPEC_POC_TRIAGE_MEDICAL.md`, rapport technique, scripts d'évaluation de l'endpoint et preuves v26/v27/v28.
+- Statut : draft vérifié contre les preuves v39 à v46 — démonstration cloud non exécutée
+- Sources : `CADRAGE_MISSION.md`, `SPEC_POC_TRIAGE_MEDICAL.md`, rapport technique, preuves SFT v39/v40, DPO v41, comparaison v43, réserve v46 et API v34/v37.
 
 ## Déroulé de quinze minutes
 
@@ -10,16 +10,16 @@
 |---|---|---|
 | 0–2 min | Besoin CHSA, collecte, questions complémentaires et priorité proposée ; responsabilité du professionnel | Mandat et limites du POC |
 | 2–5 min | Sources de l'école, transformation corrigée, séparation train/validation/test, anonymisation et exclusions | Manifestes SFT et DPO, un exemple synthétique |
-| 5–8 min | Base, SFT puis DPO : expliquer l'apprentissage et les résultats, y compris négatifs | Test final QA v35 : perte 1,575 / 0,844 / 0,843 ; expliquer ce que cette mesure signifie |
-| 8–12 min | Appeler l'API sur contexte incomplet, cas avec signal d'alerte et scénario anglais ; afficher questions, priorité et avertissement | Réponses vLLM, identifiant et version ; v34 mesurée, dialogue enrichi v36 en cours |
+| 5–8 min | Base, SFT puis DPO : expliquer l'apprentissage, la sélection conservatrice du SFT et le résultat négatif final | Comparaison de développement v43 puis réserve v46 ouverte une seule fois : 0/18 JSON conforme |
+| 8–12 min | Rejouer, sur une cible autorisée, l'API gardée sur contexte incomplet, signal d'alerte et scénario anglais ; afficher questions, priorité et avertissement | API v34/v37 : sortie contrainte, garde-fous, identifiant et version ; ne pas présenter cette conformité comme une capacité du modèle brut |
 | 12–14 min | Retrouver l'interaction anonymisée dans l'audit et montrer latence et erreurs | Rapport de mesure et rapprochement JSONL, sans exposer token ni données réelles |
 | 14–15 min | Limites et suite : triage, revue clinique, déploiement et conservation | État vérifié des livrables, sans annoncer une utilisation hospitalière |
 
 ## Conditions de la démonstration réelle
 
-Retenir le checkpoint à partir des mesures comparables ; consigner son empreinte,
-le prompt, la version du serveur et le code. Utiliser exclusivement les scénarios
-synthétiques de développement. Le test final reste distinct de la répétition.
+Utiliser le SFT v39 retenu avant ouverture de la réserve ; consigner son empreinte,
+le prompt, la version du serveur et le code. Utiliser exclusivement des scénarios
+synthétiques de démonstration distincts de la réserve finale désormais figée.
 Le serveur cloud, son accès privé et son coût doivent avoir une cible autorisée.
 Un appel au fournisseur simulé n'est pas une démonstration du modèle.
 
@@ -35,9 +35,11 @@ des scénarios restent proposées, sans validation clinique.
 
 ## État de préparation
 
-SFT 500 et DPO v27 terminés, poids sauvegardés vérifiés. La comparaison finale QA v35 sur 500 exemples réservés donne une perte moyenne Base/SFT/DPO de 1,575/0,844/0,843 et 37/40/41 arrêts EOS déclarés sur 50 générations. La baisse de perte ne prouve pas une amélioration du triage.
+Le SFT v39 et le DPO v41 sont terminés, rechargeables et vérifiés. Sur le développement v43, la NLL Base/SFT/DPO vaut 1,532/0,830/0,829. Le DPO termine mieux et répète moins, mais ajoute un signal diagnostic ou prescriptif dans la revue aveugle ; il n'est donc pas retenu. Cette sélection ne prouve aucune pertinence clinique.
 
-L'API v34 produit 18/18 réponses conformes par adaptateur, 8/18 priorités conformes aux références pédagogiques proposées et six cas critiques classés maximum. Elle n'utilise pas le niveau intermédiaire. La collecte enrichie et la synchronisation d'audit sont ensuite implémentées et testées localement ; la v36 mesure les trois modèles et les dialogues FR/EN. Résultats en attente.
+La réserve v46, ouverte une seule fois sur le SFT choisi, produit 0/18 JSON conforme, 17/18 sorties au plafond et 18/18 sorties signalées comme malformées ou répétitives. Ce résultat est figé : il n'a déclenché aucun réglage ni nouvel entraînement. Le modèle brut ne peut pas être le produit de démonstration.
+
+L'API v34 produit néanmoins 18/18 réponses conformes par adaptateur grâce au schéma contraint et aux garde-fous, avec 8/18 priorités correspondant aux références pédagogiques proposées. Elle n'utilise pas le niveau intermédiaire et les cas incomplets restent faibles. La v37 confirme l'exécution Base/SFT/DPO et deux dialogues FR/EN ; les garde-fous interviennent fréquemment. La démonstration doit donc porter sur une chaîne gouvernée et non sur une autonomie du modèle.
 
 La démonstration publique ou sur une cible extérieure reste à établir. Ce déroulé est un support, pas une preuve de soutenance réalisée. Le test final QA ne sert pas à répéter la démonstration.
 
@@ -45,11 +47,12 @@ La démonstration publique ou sur une cible extérieure reste à établir. Ce d�
 
 « Le SFT apprend à mieux reproduire les réponses du corpus. Le DPO apprend à
 préférer certaines réponses aux autres. Nous avons exécuté les deux étapes,
-puis comparé les trois modèles sur les mêmes exemples. L’apprentissage améliore
-la probabilité des réponses attendues, mais notre dernier essai API présente encore
-des erreurs de priorité et des questions complémentaires insuffisantes. Nous ne présentons donc pas ce
-modèle comme prêt à trier des patients. Nous évaluons séparément la chaîne API,
-ses contrôles, ses erreurs et sa traçabilité. »
+puis comparé les trois modèles sur les mêmes exemples de développement. Le DPO
+améliore certaines métriques de forme, mais pas assez pour compenser une régression
+qualitative ; nous avons donc retenu le SFT avant d'ouvrir la réserve. Sur cette
+réserve, le modèle brut échoue au contrat de triage. Nous ne le présentons pas comme
+prêt à trier des patients. La démonstration porte sur la chaîne API, ses garde-fous,
+ses erreurs, sa traçabilité et la décision humaine. »
 
 Si la démonstration renvoie une erreur, montrer cette erreur et le journal
 technique expurgé. Ne pas remplacer silencieusement la réponse par une sortie
