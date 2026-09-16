@@ -76,14 +76,24 @@ def test_logs_to_explicit_local_store_with_fake_mlflow(tmp_path):
         def __init__(self):
             self.uri = None
             self.logged = []
+            self.created_experiment = None
 
         def set_tracking_uri(self, uri):
             self.uri = uri
 
-        def set_experiment(self, name):
-            self.experiment = name
+        def MlflowClient(self):
+            return self
 
-        def start_run(self, *, run_name):
+        def get_experiment_by_name(self, name):
+            self.experiment = name
+            return None
+
+        def create_experiment(self, name, *, artifact_location):
+            self.created_experiment = (name, artifact_location)
+            return "fixture-experiment"
+
+        def start_run(self, *, experiment_id, run_name):
+            self.experiment_id = experiment_id
             self.run_name = run_name
             return Run()
 
@@ -116,5 +126,7 @@ def test_logs_to_explicit_local_store_with_fake_mlflow(tmp_path):
         mlflow_module=mlflow,
     )
     assert result["run_id"] == "fixture-run"
-    assert mlflow.uri.startswith("file://")
+    assert mlflow.uri.startswith("sqlite:///")
+    assert mlflow.uri.endswith("/mlruns/mlflow.db")
+    assert mlflow.created_experiment[1].endswith("/mlruns/artifacts")
     assert len(mlflow.logged) == 3

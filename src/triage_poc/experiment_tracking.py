@@ -77,14 +77,25 @@ def log_completed_run(
     if not experiment_name.strip() or not run_name.strip():
         raise ValueError("Experiment and run names are required.")
     tracking_directory.mkdir(parents=True, exist_ok=True)
+    artifact_directory = tracking_directory / "artifacts"
+    artifact_directory.mkdir(exist_ok=True)
     if mlflow_module is None:
         try:
             import mlflow as mlflow_module
         except ImportError as error:
             raise RuntimeError("Install the project tracking extra before logging.") from error
-    mlflow_module.set_tracking_uri(tracking_directory.resolve().as_uri())
-    mlflow_module.set_experiment(experiment_name)
-    with mlflow_module.start_run(run_name=run_name) as run:
+    database_path = (tracking_directory / "mlflow.db").resolve()
+    mlflow_module.set_tracking_uri(f"sqlite:///{database_path}")
+    client = mlflow_module.MlflowClient()
+    experiment = client.get_experiment_by_name(experiment_name)
+    experiment_id = (
+        experiment.experiment_id
+        if experiment is not None
+        else client.create_experiment(
+            experiment_name, artifact_location=artifact_directory.resolve().as_uri()
+        )
+    )
+    with mlflow_module.start_run(experiment_id=experiment_id, run_name=run_name) as run:
         mlflow_module.log_params(payload["params"])
         mlflow_module.log_metrics(payload["metrics"])
         mlflow_module.set_tags(payload["tags"])
