@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHSA — Contrat de démonstration</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <main>
+      <section class="intro" aria-labelledby="contract-title">
+        <div>
+          <p class="context">Contrat public du démonstrateur</p>
+          <h1 id="contract-title">Une API encadrée,<br>pas un diagnostic.</h1>
+        </div>
+        <p class="intro-copy">
+          Le navigateur appelle uniquement <code>POST /v1/triage</code>. Le proxy Cloudflare
+          vérifie l’accès puis transmet le scénario synthétique à l’API FastAPI/vLLM privée.
+          Les réponses restent limitées à <code>maximum</code>, <code>moderate</code> ou
+          <code>deferred</code> et incluent un identifiant d’interaction.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <span>POC pédagogique · aucune donnée patient réelle</span>
+      <a href="../">Retour à la démonstration</a>
+    </footer>
+  </body>
+</html>

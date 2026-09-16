@@ -1,0 +1,30 @@
+{
+  "manifest_id": "sft-v39-kaggle-private-v1",
+  "date": "2026-09-16",
+  "status": "ready_private_transport",
+  "kaggle_dataset": "pierrepluton/chsa-sft-v39-step150-c911f9c6",
+  "visibility": "private",
+  "base_model": "Qwen/Qwen3-1.7B-Base",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "license": "Apache-2.0",
+  "files": {
+    "adapter_model.safetensors": {"size": 69782384, "sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413"},
+    "adapter_config.json": {"size": 1203, "sha256": "5b533994412bd4a635c52d1c43026f30046515a5b25aa07ea86b9c91f3eaf6cb"},
+    "tokenizer.json": {"size": 11422650, "sha256": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506"},
+    "tokenizer_config.json": {"size": 378, "sha256": "99edf6e0f078f19ec1be394705811708c274663768997ca32b9e4c0cbf4447f5"},
+    "chat_template.jinja": {"size": 502, "sha256": "b44d8063c3b49558db444116213856583a953510918d3eac9c58bf1b35c905b0"},
+    "SFT_HANDOFF_MANIFEST.json": {"size": 1215, "sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5"}
+  },
+  "excluded": [
+    "training and validation rows",
+    "optimizer, scheduler, RNG and scaler state",
+    "generated outputs and audit logs",
+    "credentials and patient data"
+  ],
+  "test_records_used": 0,
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Private transport storage does not authorize external publication.",
+    "The adapter is an educational artifact and not a medical device."
+  ]
+}

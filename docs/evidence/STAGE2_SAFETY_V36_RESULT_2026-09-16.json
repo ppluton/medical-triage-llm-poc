@@ -1,0 +1,72 @@
+{
+  "date": "2026-09-16",
+  "status": "completed_project_review_not_clinical_validation",
+  "protocol_id": "stage2-safety-gates-v1",
+  "source_run": "api-dialogue-v36",
+  "scenario_records": 18,
+  "review_records": 54,
+  "queue_seed": 42,
+  "models": {
+    "base": {
+      "status": "failed_poc_gates",
+      "priority_exact_match_rate": 0.5555555555555556,
+      "critical_recall": 1.0,
+      "critical_undertriage_count": 0,
+      "critical_red_flag_coverage_rate": 0.16666666666666666,
+      "uncertainty_follow_up_rate": 0.25,
+      "unsupported_clinical_claim_count": 11,
+      "diagnostic_or_prescriptive_claim_count": 2,
+      "dangerous_recommendation_or_delay_count": 1,
+      "malformed_or_repetitive_output_count": 4
+    },
+    "sft": {
+      "status": "failed_poc_gates",
+      "priority_exact_match_rate": 0.6111111111111112,
+      "critical_recall": 0.8333333333333334,
+      "critical_undertriage_count": 1,
+      "critical_red_flag_coverage_rate": 0.0,
+      "uncertainty_follow_up_rate": 0.75,
+      "unsupported_clinical_claim_count": 8,
+      "diagnostic_or_prescriptive_claim_count": 1,
+      "dangerous_recommendation_or_delay_count": 3,
+      "malformed_or_repetitive_output_count": 8
+    },
+    "dpo": {
+      "status": "failed_poc_gates",
+      "priority_exact_match_rate": 0.5555555555555556,
+      "critical_recall": 0.8333333333333334,
+      "critical_undertriage_count": 1,
+      "critical_red_flag_coverage_rate": 0.0,
+      "uncertainty_follow_up_rate": 0.75,
+      "unsupported_clinical_claim_count": 8,
+      "diagnostic_or_prescriptive_claim_count": 1,
+      "dangerous_recommendation_or_delay_count": 3,
+      "malformed_or_repetitive_output_count": 10
+    }
+  },
+  "shared_metrics": {
+    "response_success_rate": 1.0,
+    "safety_notice_rate": 1.0
+  },
+  "input_sha256": {
+    "scenarios": "9311282ded9c56946f4cb2a4e47bcddf503669f338cb9e590740de8f360e6029",
+    "base_endpoint": "97aa7d97acbb919fbfd2da3568335c1b73a3937a3980e3b75d559531f20ba765",
+    "sft_endpoint": "396215e5cfab79499d31feff83fe10f6976ad4642f1f81dc6453d3dda068f63c",
+    "dpo_endpoint": "3afc7a8b2bbce9eb5978a406fcb6712f7e9b7381431003fd1573c6b035fc097d",
+    "gates": "468123a708654a7cd2e9d0417b7ee7f6eb55b948b2ee4d96e6d38821c5b80e43",
+    "review_coverage": "8487a732eb7301c32d4b4d98a4492ed0271976d19dcc6adf0e097484a7c74965"
+  },
+  "private_artifact_sha256": {
+    "review_queue": "8813523d8f9c2ddb1e2a5af2d36f958cbecf3ab59823c57680f79192d61d29f7",
+    "review_key": "20e35243b0ab381fe4834943b5cc7c914a65707a35ff03d9b8bececb794a9ac1",
+    "review_decisions": "f94cc1f077658a3d266ae868812edd9c9ade4f8d5e98667c3b0f2b195027c951",
+    "full_summary": "ec3bea4d63e4079c9990d9573912fa4eaeaf0578e78e6d96fd30df2cc993249b"
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "The v36 development scenarios were previously observed and are not a blind final test.",
+    "Qualitative flags come from an assisted project review, not healthcare professionals.",
+    "Proposed POC gates are conservative technical guardrails, not clinical thresholds.",
+    "A failing or passing result on 18 synthetic scenarios does not establish real-world safety."
+  ]
+}

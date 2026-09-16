@@ -1,0 +1,47 @@
+{
+  "status": "technical_audit_passed",
+  "input_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+  "checks": {
+    "development_records": 4200,
+    "exact_source_content_matches": 4195,
+    "mcq_records": 2224,
+    "source_matches_after_anonymization_replay": 5,
+    "direct_identifier_fields_rescanned": 8400
+  },
+  "token_checks": {
+    "train": {
+      "records": 3721,
+      "maximum_tokens": 1072,
+      "minimum_completion_tokens": 2,
+      "native_eos_per_record": 1,
+      "over_context_limit": 0,
+      "exact_prompt_boundaries": 3721
+    },
+    "validation": {
+      "records": 479,
+      "maximum_tokens": 939,
+      "minimum_completion_tokens": 2,
+      "native_eos_per_record": 1,
+      "over_context_limit": 0,
+      "exact_prompt_boundaries": 479
+    }
+  },
+  "review_flags": [],
+  "cross_split_content_groups_before": 0,
+  "proposed_exclusions": 0,
+  "proposed_exclusion_splits": {},
+  "proposed_retained_splits": {
+    "train": 3721,
+    "validation": 479,
+    "test": 500
+  },
+  "cross_split_content_groups_after": 0,
+  "test_generation_or_answer_review_records": 0,
+  "training_steps": 0,
+  "clinical_validation": "not_performed",
+  "script_sha256": "fbe642c4bb59e6dbef209d64680d97c3d1e6d2385f1de4b0455c3cbd848605dc",
+  "limits": [
+    "Grouping is conservative lexical/document isolation, not semantic independence.",
+    "Source agreement does not establish medical correctness or absence of all PII."
+  ]
+}

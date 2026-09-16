@@ -1,0 +1,141 @@
+{
+  "experiment_id": "source-sft-v2.2-final-bounded-pilot",
+  "date": "2026-09-16",
+  "status": "prepared_not_launched",
+  "base_model": "/kaggle/input/qwen3-1-7b-base-e249956c",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "base_snapshot_manifest_sha256": "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1",
+  "initial_checkpoint": "base_only_no_v5_adapter",
+  "dataset_manifest": "data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json",
+  "dataset_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2",
+  "training_records": 3721,
+  "validation_records": 479,
+  "test_records_used": 0,
+  "seed": 42,
+  "max_length": 2048,
+  "completion_only_loss": true,
+  "packing": false,
+  "per_device_train_batch_size": 1,
+  "gradient_accumulation_steps": 8,
+  "learning_rate": 0.0001,
+  "warmup_steps": 30,
+  "lr_scheduler_type": "linear",
+  "scheduler_horizon_steps": 1000,
+  "pilot_stop_after_steps": 150,
+  "pilot_training_wall_seconds": 1800,
+  "save_steps": 50,
+  "save_only_model": false,
+  "resume_required_files": [
+    "adapter_model.safetensors",
+    "optimizer.pt",
+    "scheduler.pt",
+    "rng_state.pth",
+    "trainer_state.json"
+  ],
+  "resume_policy": "same_data_same_horizon_and_order_resume_from_checkpoint",
+  "evaluation": {
+    "loss_records": 479,
+    "generation_records": 30,
+    "max_new_tokens": 512,
+    "do_sample": false,
+    "native_eos_only": true,
+    "stages": ["base", "pilot_end"],
+    "compare": [
+      "response_token_nll",
+      "eos_termination",
+      "repeated_token_4grams",
+      "source_mcq_answer_agreement"
+    ],
+    "clinical_acceptance": "not_assessed",
+    "generation_record_ids": [
+      "sft-source-22b95096fa337ac8bde24c37",
+      "sft-source-20cbcb01c5bf844aecfa60a2",
+      "sft-source-210c3ac9a9e7873fc02a53df",
+      "sft-source-209b66a1a832aeb4bba70d5f",
+      "sft-source-21d429a6de71caf9a110e400",
+      "sft-source-20b160aa65532e207823f34b",
+      "sft-source-1fad1d0fbf11cdd0c778b003",
+      "sft-source-2176dbd1b517b126fa887e2f",
+      "sft-source-2006dd343eeb49346d74fb41",
+      "sft-source-21b32e8b6252fb21e74e817b",
+      "sft-source-22acb952efe6ce6368ee769b",
+      "sft-source-2193913b2e28c19b37bf7731",
+      "sft-source-2070e415f6f7374d59ac956d",
+      "sft-source-1fab1bf7eba4c61bbdbacb10",
+      "sft-source-204ad73dc403848153790f24",
+      "sft-source-1550cf426ebc418e5687d267",
+      "sft-source-141322b67de7a67f88744b53",
+      "sft-source-148f4f77ba8f9d88f342fffb",
+      "sft-source-1426133419621878f691f7c3",
+      "sft-source-1322dd39170409d0f5ba991a",
+      "sft-source-134e300b683d865a495bb74e",
+      "sft-source-1525c330bb68b7d5c94c4566",
+      "sft-source-139b53140fe59d64e815a540",
+      "sft-source-14129c2aead5d6aaf6827be1",
+      "sft-source-62fdc247563e3d49bd041110",
+      "sft-source-66e3558cd52fe12aee3b41cf",
+      "sft-source-6a0546e13be0101dda58fbe0",
+      "sft-source-686b234bfba4c2fbdccc6274",
+      "sft-source-62fa0a06b8ab307d6e30571f",
+      "sft-source-604f53d7e1e180ae0a583709"
+    ],
+    "intermediate_checkpoints": "loss every 50 steps; generation after bounded pilot"
+  },
+  "decision": {
+    "automatic_full_training": false,
+    "must_pass": [
+      "finite_loss_and_gradients",
+      "full_completion_labels",
+      "reload_equivalence",
+      "complete_resume_checkpoint"
+    ],
+    "quality_review": "paired_metrics_and_actual_outputs_required_no_loss_only_decision",
+    "next_action": "review_bounded_pilot_before_continuation"
+  },
+  "kaggle": {
+    "kernel": "pierrepluton/chsa-source-sft-qwen3",
+    "private": true,
+    "free_quota_only": true,
+    "accelerator": "Tesla T4",
+    "base_dataset": "pierrepluton/qwen3-1-7b-base-e249956c"
+  },
+  "limits": [
+    "This rerun repairs final-dataset lineage and does not guarantee a quality gain.",
+    "The 1800-second budget covers training callbacks, not setup and evaluation.",
+    "No test record is embedded in the notebook."
+  ],
+  "artifact_hashes": {
+    "train_qwen3": "d8a07d031e56993e12b81f892aa984e8755a5d4027e5ef0527fddef6477e9766",
+    "validation_qwen3": "4c99d1f69063d822345c13d87f30da559c451332f4f2282280efa2c034da6e0b"
+  },
+  "tokenizer_files_sha256": {
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "aa71776c7cec3ef357d7b59a67edb31377d9c52407b9e2e822c717fe145cd03c"
+  },
+  "training_chat_template_path": "configs/qwen3-source-sft-chat-template.jinja",
+  "training_chat_template_sha256": "b44d8063c3b49558db444116213856583a953510918d3eac9c58bf1b35c905b0",
+  "runtime_versions": {
+    "unsloth": "2026.8.22",
+    "unsloth_zoo": "2026.8.16",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.5.0",
+    "trl": "0.23.1",
+    "peft": "0.18.1",
+    "datasets": "4.3.0",
+    "accelerate": "1.14.0"
+  },
+  "lora": {
+    "rank": 16,
+    "alpha": 16,
+    "dropout": 0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  }
+}

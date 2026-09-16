@@ -1,0 +1,146 @@
+{
+  "status": "checkpoint_comparison_complete_pending_quality_decision",
+  "stages": {
+    "base": {
+      "mean_example_response_nll": 1.456921935081482,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 20,
+      "reached_token_cap": 10,
+      "exact_normalized_reference_matches": 0,
+      "mean_repeated_token_4gram_fraction": 0.34466439593316733,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 6,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 3,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 0
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 5,
+          "reached_token_cap": 1,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 0
+        }
+      }
+    },
+    "50": {
+      "mean_example_response_nll": 0.8215776681900024,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 26,
+      "reached_token_cap": 4,
+      "exact_normalized_reference_matches": 6,
+      "mean_repeated_token_4gram_fraction": 0.1401255411714776,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 11,
+          "reached_token_cap": 4,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 4
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 2
+        }
+      }
+    },
+    "100": {
+      "mean_example_response_nll": 0.7305812835693359,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 25,
+      "reached_token_cap": 5,
+      "exact_normalized_reference_matches": 5,
+      "mean_repeated_token_4gram_fraction": 0.15399099635263994,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 10,
+          "reached_token_cap": 5,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 3
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 2
+        }
+      }
+    },
+    "150": {
+      "mean_example_response_nll": 0.7121326327323914,
+      "empty_outputs": 0,
+      "records": 30,
+      "native_eos_terminated": 22,
+      "reached_token_cap": 8,
+      "exact_normalized_reference_matches": 7,
+      "mean_repeated_token_4gram_fraction": 0.24259501182727716,
+      "by_source": {
+        "abachaa/MedQuAD": {
+          "native_eos_terminated": 7,
+          "reached_token_cap": 8,
+          "empty_outputs": 0,
+          "records": 15,
+          "exact_normalized_reference_matches": 0
+        },
+        "ANR-MALADES/MediQAl": {
+          "native_eos_terminated": 9,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 9,
+          "exact_normalized_reference_matches": 5
+        },
+        "qanastek/frenchmedmcqa": {
+          "native_eos_terminated": 6,
+          "reached_token_cap": 0,
+          "empty_outputs": 0,
+          "records": 6,
+          "exact_normalized_reference_matches": 2
+        }
+      }
+    }
+  },
+  "input_sha256": {
+    "checkpoint_50.json": "a041486b585c8b2b58491eb103951dfce4d4a657cf78658705ac39cf6cf8e550",
+    "checkpoint_100.json": "969a48c3a84a0d30d3e34c6bdfa9ce8fb6288c554655c39079025cfef324b096",
+    "reloaded.json": "6a10ac7280f0791958fe8173ef682cb4f8c5f5570f5ed00b48cc09228abc2182"
+  },
+  "reload_summary_sha256": "11108593bc70f770f0d6b39422161609343ef4e411116b071ad3d27d11665f2d",
+  "base_sha256": "e0d1398a4eddb6cba2f7620ded9edacee1618d55f909833f3eeec08398c2953c",
+  "full_training_approved": false,
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Exact normalized reference match misses valid paraphrases; inspect outputs.",
+    "Shorter outputs alone do not establish improved answer quality."
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "completed_project_review_not_clinical_validation",
+  "source_run": 37,
+  "queue_seed": 137,
+  "scenarios_total": 18,
+  "scenarios_common_success": 17,
+  "review_records": 51,
+  "omitted_endpoint_failures": [
+    {
+      "scenario_id": "dev-triage-v2-contradictory_information-en",
+      "variant": "base",
+      "failure_code": "generation_length"
+    }
+  ],
+  "artifacts": {
+    "queue": {
+      "storage": "private_outside_git",
+      "sha256": "aec3450ffec4902371f5a1a683695f60b6f7f440e1d79dece8e6fa8fa73963af"
+    },
+    "key": {
+      "storage": "private_outside_git",
+      "sha256": "7f242e1681de6650e06fd9e9421c25f03003d0dfcdd6e55836f4364abaecf32d"
+    },
+    "queue_coverage": {
+      "storage": "private_outside_git",
+      "sha256": "1481559c33c1dd89729d7a45f238b303c99cddaff236c45999d342a2aedde8fc"
+    },
+    "review_coverage": {
+      "storage": "private_outside_git",
+      "sha256": "9393d9ef2233b12116ff96c4163fda57d661c8a0311bef95914c8ce00e444283"
+    },
+    "review_decisions": {
+      "storage": "private_outside_git",
+      "sha256": "569f9a6a7fbe763946cbfbd4fa2c3a913b19035921741466b2d9e29982a346c1"
+    },
+    "qualitative_summary": {
+      "storage": "private_outside_git",
+      "sha256": "5ff36821c628abe7e3c591b18eaa77f88609fc17b1cd79635726a6ceb0fc60c0"
+    }
+  },
+  "models": {
+    "base": {
+      "review_records": 17,
+      "flagged_records": 7,
+      "unsupported_clinical_claim": 3,
+      "diagnostic_or_prescriptive_claim": 2,
+      "dangerous_recommendation_or_delay": 0,
+      "malformed_or_repetitive_output": 4
+    },
+    "sft": {
+      "review_records": 17,
+      "flagged_records": 6,
+      "unsupported_clinical_claim": 3,
+      "diagnostic_or_prescriptive_claim": 1,
+      "dangerous_recommendation_or_delay": 0,
+      "malformed_or_repetitive_output": 5
+    },
+    "dpo": {
+      "review_records": 17,
+      "flagged_records": 6,
+      "unsupported_clinical_claim": 3,
+      "diagnostic_or_prescriptive_claim": 1,
+      "dangerous_recommendation_or_delay": 0,
+      "malformed_or_repetitive_output": 5
+    }
+  },
+  "decision": {
+    "rerun_sft_on_final_v2_2_corpus": true,
+    "reason": "checkpoint_dataset_lineage_mismatch_not_proven_clinical_gain",
+    "rerun_dpo_after_sft_validation": true,
+    "dpo_gain_currently_demonstrated": false
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Model identity was revealed only after every included queue row had a decision.",
+    "The scenarios were previously observed and are not a blind final test.",
+    "Counts do not estimate clinical harm rates."
+  ]
+}

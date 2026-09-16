@@ -1,0 +1,137 @@
+{
+  "date": "2026-09-12",
+  "status": "gpu_continuation_completed_and_restoration_observed",
+  "events": [
+    {
+      "stage": "continuation_reload_verified",
+      "identical_generations": 30
+    },
+    {
+      "stage": "continuation_scheduler_scaler_verified",
+      "scheduler_last_epoch": 150,
+      "learning_rates": [
+        8.762886597938145e-05,
+        8.762886597938145e-05
+      ],
+      "data_skip_enabled": true
+    },
+    {
+      "stage": "optimizer_resume_verified",
+      "global_step": 150,
+      "optimizer_steps": [
+        150
+      ]
+    }
+  ],
+  "final_step": 500,
+  "new_optimizer_steps": 350,
+  "epoch": 1.0730986294006988,
+  "changed_adapter_tensors": 392,
+  "precision_events": [
+    {
+      "stage": "trainer_ready",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "resume_start_before_evaluation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "resume_start_after_loss",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "resume_start_after_generation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "training_completed",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "pilot_end_before_evaluation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "pilot_end_after_loss",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    },
+    {
+      "stage": "pilot_end_after_generation",
+      "trainable_tensor_dtypes": {
+        "torch.float32": 392
+      }
+    }
+  ],
+  "training_runtime_seconds_rounded": 1601,
+  "loss_curve": [
+    {
+      "step": 50,
+      "mean_example_response_nll": 0.8215776681900024
+    },
+    {
+      "step": 100,
+      "mean_example_response_nll": 0.7305812835693359
+    },
+    {
+      "step": 150,
+      "mean_example_response_nll": 0.7121326923370361
+    },
+    {
+      "step": 200,
+      "mean_example_response_nll": 0.6989458799362183
+    },
+    {
+      "step": 250,
+      "mean_example_response_nll": 0.6946304440498352
+    },
+    {
+      "step": 300,
+      "mean_example_response_nll": 0.6897644400596619
+    },
+    {
+      "step": 350,
+      "mean_example_response_nll": 0.687994122505188
+    },
+    {
+      "step": 400,
+      "mean_example_response_nll": 0.6823284029960632
+    },
+    {
+      "step": 450,
+      "mean_example_response_nll": 0.6767536997795105
+    },
+    {
+      "step": 500,
+      "mean_example_response_nll": 0.6737771034240723
+    }
+  ],
+  "script_sha256": "a32c15e988a14feaaaa5341130a8299eaa39ec7e74688303dc1014c70d878148",
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d",
+    "optimizer.pt": "30f9346ba2d5763d80ebfdc07e2c0b0d9db96cb37207846b01f96e87d70bfa11",
+    "scheduler.pt": "c1c03ec7ffb6f92f4a69fb27e1b2fab09add58592f458768c43b13c2eca56912",
+    "rng_state.pth": "236304ae89e49aae8260113165ee63419b9b745f79120014328a7fa31ed79b42",
+    "trainer_state.json": "53daab72eaf2545d86c9296e1875700e8b4bc761f6d5b64d826e891b39ce6a17"
+  },
+  "log_sha256": "ba1d60811266aee1dc7563c19ea97d470d8ff5da03b1dc40bcad57a5e792a09f",
+  "limits": [
+    "Restoration observed before training, not bitwise equivalence to uninterrupted GPU training.",
+    "Checkpoint-500 fresh-process inference reload not yet executed.",
+    "Runtime excludes setup, initial reload verification and final evaluation."
+  ]
+}

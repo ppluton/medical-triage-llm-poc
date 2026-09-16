@@ -1,0 +1,13 @@
+{
+  "name": "chsa-triage-cloudflare-pages",
+  "private": true,
+  "scripts": {
+    "build": "python3 ../../scripts/build_cloudflare_pages.py --output dist",
+    "check:functions": "wrangler pages functions build functions --outdir .wrangler-check --project-directory . --build-output-directory dist",
+    "build:upload": "npm run build && npm run check:functions && cp .wrangler-check/index.js dist/_worker.js",
+    "dev": "wrangler pages dev"
+  },
+  "devDependencies": {
+    "wrangler": "4.132.0"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "manifest_id": "comparison-v43-review-v1",
+  "date": "2026-09-16",
+  "status": "completed_project_review_not_clinical_validation",
+  "source": {
+    "notebook": "pierrepluton/chsa-source-sft-qwen3",
+    "version": 43,
+    "run": "current-comparison-v43",
+    "optimizer_steps": 0,
+    "test_records_used": 0,
+    "held_out_reserve_used": false
+  },
+  "artifacts": {
+    "kernel_log": "8430f6c83794a3c3ecf746970824c0a7ba283ce8dbd20e3319d1b7d8631ed289",
+    "summary": "63c290c1c8261bb1baab1435733557086658d91ce6c6678a1e91b221a2cf9083",
+    "base": "f270aa912dba839c62c060a6301ae6fe551dbcf8d898ca031fcb138309870b22",
+    "sft": "e121d3a6f01aa9df01084b5a92879a5189ec6f90b504cda0a1c2cc92e49821d6",
+    "dpo": "8778bf108f5f78d30aa0e67bf81f7f02451961a7f93b0c5e9244f903adbe1d93",
+    "verified_result": "f723c9d2bb2e9a78e47a8ef2eff451eb0baf5cbb466eb0e6a8f3b16a9cdd0bb2",
+    "blind_queue": "c7a61e210c474540628d3b7e8ddeb87263dffa336072ee4ae0269204c2a60c7d",
+    "blind_key": "10e3ab454b1b943eeb0ff403d37c8993b9f5a0904e674979cf8c41fc2ec7e086",
+    "review_coverage": "597db0b6d2d886a097fce930c919d776ca25da9f269358b287a19e763ac614dc",
+    "review_decisions": "8c711781c7c1d21407ffad293b7fd604067e1a1c8002bc077c394492fe2d8d35",
+    "qualitative_summary": "1f7310028537cc545023cd767c1445bde96c7bc4f94bd6a97c2bb239a7022320",
+    "selection": "cc4b4d5041c72cde22182b6bad0eb87aaf758830ea0c25f4f2f9441bfc1e2455"
+  },
+  "review": {
+    "seed": 143,
+    "records": 54,
+    "schema_invalid_records": 52,
+    "model_identity_revealed_after_decisions": true,
+    "reviewer": "Codex-assisted project review",
+    "clinical_validation": "not_performed"
+  },
+  "selection": {
+    "selected_variant": "sft",
+    "policy": "dpo_must_pareto_dominate_sft",
+    "dpo_regressions": [
+      "flag_diagnostic_or_prescriptive_claim"
+    ],
+    "held_out_reserve_used": false
+  },
+  "storage": "raw outputs, blind queue, key and decisions are private outside Git",
+  "limits": [
+    "The lexical review assistance can miss or over-flag clinical meaning.",
+    "The raw triage generations use no constrained decoding or API guardrails.",
+    "The v43 runner used the attached private base path but did not repeat the base snapshot checksum preflight; the one-shot reserve runner fails closed on that checksum.",
+    "Synthetic development references and project review are not clinical validation."
+  ]
+}

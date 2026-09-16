@@ -1,0 +1,50 @@
+{
+  "status": "completed",
+  "purpose": "original_backend_generation_diagnostic",
+  "sft_sha256": "3f050ae77a4b66ecf4a254a407a463a046143437198ac5dfbd7922b75b28a940",
+  "base_model": "unsloth/Qwen3-1.7B-Base",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "validation_sha256": "7118258c5fdbfe47d5c11b5c4e4b2c2600c4ed17a1eb4b806b0bf5f7c2c52296",
+  "count": 3,
+  "test_records_used": 0,
+  "code_sha256": "a383e8bacb01d53650f31297a06dcc21fa019dea55c00b92968576aa078bc6bc",
+  "token_embedding_probe": {
+    "<|endoftext|>": {
+      "token_id": 151643,
+      "input_norm": 1.8832229375839233,
+      "output_norm": 1.8832229375839233
+    },
+    "<|im_start|>": {
+      "token_id": 151644,
+      "input_norm": 0.3748409152030945,
+      "output_norm": 0.3748409152030945
+    },
+    "<|im_end|>": {
+      "token_id": 151645,
+      "input_norm": 0.3748409152030945,
+      "output_norm": 0.3748409152030945
+    },
+    "\u5b8c\u6574\u70ed": {
+      "token_id": null,
+      "input_norm": 624.1946411132812,
+      "output_norm": 624.1946411132812
+    }
+  },
+  "generation": {
+    "do_sample": false,
+    "max_new_tokens": 256,
+    "eos_token_id": [
+      151643,
+      151645
+    ]
+  },
+  "package_versions": {
+    "unsloth": "2026.8.22",
+    "unsloth_zoo": "2026.8.16",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.5.0",
+    "peft": "0.18.1",
+    "bitsandbytes": "0.50.2"
+  },
+  "clinical_validation": "not_performed"
+}

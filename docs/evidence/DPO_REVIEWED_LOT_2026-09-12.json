@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-12",
+  "status": "approved_for_educational_dpo",
+  "dataset_manifest_sha256": "66cd0e5907663831b9de86e88dad9ec8f20ffd9ccf1a3ab03b3e463684bffa9f",
+  "parent_manifest_sha256": "991dce270eede8715ec668255fafa79e2b08491c0be74e574a5797ee9700de31",
+  "artifacts": {
+    "train": {
+      "records": 426,
+      "sha256": "5a3bb76a303c4c0ae0cb59ad1d36c96f3f1831e80af12c179c3f2f40385f6674"
+    },
+    "validation": {
+      "records": 54,
+      "sha256": "2052ae0ad58ad63e12d2f0ab08ce8f42538432eb7d9af90f5752b3f23a1c53e8"
+    }
+  },
+  "text_and_source_fields_unchanged": true,
+  "clinical_validation": "not_performed",
+  "reviewer": "Codex assisted technical review; no independent human or clinical review",
+  "decision_sha256": "4a1f599774718147ecb2e5d9ec3384da4fc9d0bbd302bb911de9fec134d08402"
+}

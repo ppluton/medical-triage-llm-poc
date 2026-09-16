@@ -43,12 +43,6 @@ class AnonymizerLike(Protocol):
     def anonymize(self, text: str, language: str): ...
 
 
-def _truncate(text: str) -> tuple[str, bool]:
-    if len(text) <= MAX_GROUNDING_CHARS:
-        return text, False
-    return text[:MAX_GROUNDING_CHARS].rstrip(), True
-
-
 def _record_id(anchor: SourceAnchor) -> str:
     digest = hashlib.sha256(
         f"{anchor.source_name}:{anchor.source_record_id}".encode()
@@ -68,14 +62,16 @@ def _select_source_records(
     detected_entities: Counter[str] = Counter()
 
     for anchor in sorted(anchors, key=lambda item: item.selection_digest):
-        question_key = normalize_for_deduplication(anchor.question)
+        question_key = normalize_for_deduplication(anchor.deduplication_text or anchor.question)
         if not question_key or question_key in globally_seen_questions:
             counters["duplicate_questions_skipped"] += 1
             continue
 
         language = str(SOURCE_METADATA[anchor.source_name]["source_language"])
-        question, question_truncated = _truncate(anchor.question)
-        answer, answer_truncated = _truncate(anchor.answer)
+        if max(len(anchor.question), len(anchor.answer)) > MAX_GROUNDING_CHARS:
+            counters["over_length_rejections"] += 1
+            continue
+        question, answer = anchor.question, anchor.answer
         question_result = anonymizer.anonymize(question, language)
         answer_result = anonymizer.anonymize(answer, language)
         detected_entities.update(question_result.audit.detected_entity_counts)
@@ -84,8 +80,10 @@ def _select_source_records(
             counters["residual_pii_rejections"] += 1
             continue
 
-        anonymized_question, anonymized_question_truncated = _truncate(question_result.text)
-        anonymized_answer, anonymized_answer_truncated = _truncate(answer_result.text)
+        if max(len(question_result.text), len(answer_result.text)) > MAX_GROUNDING_CHARS:
+            counters["post_anonymization_over_length_rejections"] += 1
+            continue
+        anonymized_question, anonymized_answer = question_result.text, answer_result.text
         if not anonymized_question.strip() or not anonymized_answer.strip():
             counters["empty_after_transformation"] += 1
             continue
@@ -101,12 +99,7 @@ def _select_source_records(
                 "anchor": anchor,
                 "instruction": anonymized_question,
                 "response": anonymized_answer,
-                "truncated": (
-                    question_truncated
-                    or answer_truncated
-                    or anonymized_question_truncated
-                    or anonymized_answer_truncated
-                ),
+                "truncated": False,
             }
         )
         if len(selected) == quota:
@@ -124,15 +117,27 @@ def _select_source_records(
     }
 
 
-def _assign_splits(source_name: str, records: list[dict[str, object]]) -> None:
+def _assign_splits(source_name: str, records: list[dict[str, object]], previous_splits) -> None:
+    quotas = dict(SOURCE_SPLIT_QUOTAS[source_name])
+    fresh = []
+    for record in records:
+        previous = previous_splits.get(record["record_id"])
+        if previous is None:
+            fresh.append(record)
+        elif previous not in quotas:
+            raise ValueError("Invalid previous split")
+        else:
+            record["split"] = previous
+            quotas[previous] -= 1
+    if any(count < 0 for count in quotas.values()):
+        raise ValueError("Previous split assignments exceed the configured quotas")
     offset = 0
-    for split in ("train", "validation", "test"):
-        count = SOURCE_SPLIT_QUOTAS[source_name][split]
-        for record in records[offset : offset + count]:
+    for split, count in quotas.items():
+        for record in fresh[offset:offset + count]:
             record["split"] = split
         offset += count
-    if offset != len(records):
-        raise ValueError(f"Split quotas do not cover source {source_name}.")
+    if offset != len(fresh):
+        raise ValueError(f"Split quotas do not cover source {source_name}")
 
 
 def build_source_sft_dataset(
@@ -141,6 +146,7 @@ def build_source_sft_dataset(
     *,
     code_revision: str,
     run_id: str,
+    previous_splits: Mapping[str, str] | None = None,
 ) -> tuple[list[dict[str, object]], dict[str, object]]:
     """Return exactly 5,000 source-derived records with isolated splits."""
 
@@ -165,7 +171,7 @@ def build_source_sft_dataset(
             anchor = item["anchor"]
             source_records.append(
                 {
-                    "schema_version": "1.0.0",
+                    "schema_version": "2.0.0",
                     "record_id": _record_id(anchor),
                     "task_type": "medical_qa_sft",
                     "language": metadata["source_language"],
@@ -180,11 +186,13 @@ def build_source_sft_dataset(
                     },
                     "transformation": {
                         "pipeline_name": "source_medical_qa_sft",
-                        "pipeline_version": "1.0.0",
+                        "pipeline_version": "2.0.0",
                         "operations": [
                             "deterministic_selection",
                             "exact_normalized_question_deduplication",
                             "presidio_direct_identifier_anonymization",
+                            "reject_overlength_without_truncation",
+                            "preserve_previous_source_record_splits",
                         ],
                         "content_truncated": item["truncated"],
                         "code_revision": code_revision,
@@ -200,7 +208,7 @@ def build_source_sft_dataset(
                     "triage_label": None,
                 }
             )
-        _assign_splits(source_name, source_records)
+        _assign_splits(source_name, source_records, previous_splits or {})
         records.extend(source_records)
         audits[source_name] = audit
 
@@ -228,6 +236,17 @@ def render_source_sft_conversation(record: Mapping[str, object]) -> dict[str, ob
         raise ValueError("Only medical_qa_sft records can be rendered.")
     if record.get("split") == "test":
         raise ValueError("The test split must remain isolated from training rendering.")
+    return _render_qa_conversation(record)
+
+
+def render_source_test_conversation(record: Mapping[str, object]) -> dict[str, object]:
+    """Render a reserved record explicitly for final evaluation, never training."""
+    if record.get("task_type") != "medical_qa_sft" or record.get("split") != "test":
+        raise ValueError("Final evaluation rendering requires a medical QA test record")
+    return _render_qa_conversation(record)
+
+
+def _render_qa_conversation(record: Mapping[str, object]) -> dict[str, object]:
     return {
         "record_id": record["record_id"],
         "messages": [

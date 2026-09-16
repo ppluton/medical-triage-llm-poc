@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-16",
+  "status": "contextual_scan_completed_direct_review_pending",
+  "input": {
+    "manifest_id": "derived-source-medical-qa-sft-v2.1-reviewed",
+    "path": "source-sft-v2.1.jsonl",
+    "sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "records": 4700,
+    "fields_scanned": 9400
+  },
+  "runtime": {
+    "presidio_analyzer_version": "2.2.364",
+    "spacy_models": {"fr_core_news_md": "3.8.0", "en_core_web_sm": "3.8.0"},
+    "validation_job": "val_0fd624a7c572",
+    "elapsed_seconds": 315.0,
+    "exit_code": 0
+  },
+  "entity_counts": {
+    "DATE_TIME": 844,
+    "LOCATION": 3491,
+    "PATIENT_NAME": 31,
+    "PERSON": 5433
+  },
+  "record_status_counts": {
+    "contextual_review_required": 3180,
+    "manual_review_required_direct_identifier": 22,
+    "passed_no_contextual_detection": 1498
+  },
+  "split_counts": {"train": 3721, "validation": 479, "test": 500},
+  "source_manifest_counts": {
+    "src-frenchmedmcqa-deft-2023-full": 999,
+    "src-mediqal-5af3494": 1475,
+    "src-medquad-577bd37": 2226
+  },
+  "private_artifact_sha256": {
+    "summary": "9b78fc9b65b4c31e8241415ab92ca3efeb9c50b5135d363702eab5a22e2ab917",
+    "findings": "36f920de0b852bcc573c0237ef1a31335f7326e6abe961332d6c0f1ebdee245c",
+    "text_free_decisions": "82969f868f30289664f3c221aeb221fe046717f8a388c6f50ec643047673252c",
+    "direct_review_queue": "f3966402b0c31f41301f323e90f08cccfb32732f2b76c93d71b67b8da07e351c"
+  },
+  "code_sha256": {
+    "privacy_audit": "dad3251b213aeb972a57007bbe9b6f239fb7800b6539d2def881d386d9995659",
+    "scan_cli": "8e62077266da0f4524ab917004ed0132215de7d9f54698689acd06cb83034034",
+    "review_cli": "f0d72f728d468c45f60d498aa12c78437dcdb9fba82768e47aa3c8fdfa540ac0",
+    "tests": "12a8a01a5a6225afc15d207317e8c1b2ecb7ccf1d6a950db70a840309e69d903"
+  },
+  "review_queue": {
+    "status": "pending",
+    "findings": 31,
+    "records": 22,
+    "entity_counts": {"PATIENT_NAME": 31},
+    "storage": "private_outside_git_permissions_0600"
+  },
+  "validation": {
+    "full_regression": "197 passed, 1 external deprecation warning in 15.13s",
+    "full_regression_job": "val_7c2aff4810d7",
+    "ruff_privacy_components": "passed"
+  },
+  "clinical_validation": "not_performed",
+  "rgpd_certification": "not_claimed",
+  "limits": [
+    "Automated NER candidates are not privacy approval or RGPD certification.",
+    "PATIENT_NAME detections require human contextual review before any row is cleared or transformed.",
+    "PERSON, LOCATION and DATE_TIME may represent authors, eponyms, medical locations or durations rather than patient identifiers.",
+    "Private findings contain source spans and remain outside the public repository.",
+    "Test text was scanned for privacy only and was not used for model selection."
+  ]
+}

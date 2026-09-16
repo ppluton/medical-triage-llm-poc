@@ -1,0 +1,18 @@
+{
+  "status": "saved_weights_verified",
+  "weight_checks": {
+    "reference_unchanged": true,
+    "policy_changed_tensors": 392,
+    "policy_total_tensors": 392
+  },
+  "adapter_sha256": "ae66169e4a52077803fc5403bf088bf599f7813f86e5ec3cdb82df584fd4b565",
+  "run_summary_sha256": "5e72ce63cc0c19e243a34093c67d53a61092188d96b9c6738a045032e2146514",
+  "sft_adapter_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+  "test_records_used": 0,
+  "held_out_triage_reserve_used": false,
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Exact saved weights do not prove inference reload or quality.",
+    "Preference optimization metrics are not clinical metrics."
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "status": "termination_smoke_passed",
+  "dataset_version": "v2",
+  "loss_scope": "completion",
+  "training_steps": 20,
+  "changed_adapter_tensors": 392,
+  "reload_tokens_identical": true,
+  "stages": {
+    "before": {
+      "records": 3,
+      "token_lengths": [
+        256,
+        256,
+        256
+      ],
+      "terminated_with_eos": 0,
+      "reached_256_tokens": 3,
+      "mean_repeated_token_4gram_fraction": 0.47299077733860345
+    },
+    "after": {
+      "records": 3,
+      "token_lengths": [
+        14,
+        60,
+        25
+      ],
+      "terminated_with_eos": 3,
+      "reached_256_tokens": 0,
+      "mean_repeated_token_4gram_fraction": 0.0
+    },
+    "reloaded": {
+      "records": 3,
+      "token_lengths": [
+        14,
+        60,
+        25
+      ],
+      "terminated_with_eos": 3,
+      "reached_256_tokens": 0,
+      "mean_repeated_token_4gram_fraction": 0.0
+    }
+  },
+  "test_records_used": 0,
+  "full_training_approved": false,
+  "limits": [
+    "Three development examples only; inspect response content separately.",
+    "A short continuation does not establish full-corpus training readiness.",
+    "No clinical evaluation or DPO acceptance is established."
+  ],
+  "input_sha256": {
+    "summary.json": "f4bd3a923a4abb02f0713c884d259e91bd171f227a085843db7ae12caaf1a0ab",
+    "before.jsonl": "c58618e360ce9b5406d71d1828423345eef1016c1b8ab218c7ec07a88450cad1",
+    "after.jsonl": "f0cc2e2dc946ec944f73f1ce053f323c143b0304c4e2f168d60b3796e0608922",
+    "reloaded.jsonl": "3e0aba6e0da2221971fe2a8e34d81c2e35cbf6c4b8c9ffd4c7d21de3aaac4923"
+  },
+  "label_audit": {
+    "records": 64,
+    "supervised_prompt_tokens": 0,
+    "all_completion_tokens_supervised": true,
+    "native_eos_per_record": 1
+  },
+  "before_tokens_identical_to_v16": true,
+  "train_runtime_seconds": 69.0176,
+  "adapter_sha256": "060af1186c1e8c5932503d706eefb6a54b92c369eba3f117725cd3a72108e84d",
+  "content_review": {
+    "status": "source_alignment_gate_failed",
+    "mcq_records": 2,
+    "mcq_matching_source": 0,
+    "clinical_validation": "not_performed"
+  }
+}

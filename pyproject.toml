@@ -16,6 +16,8 @@ dependencies = [
   "fastapi>=0.115,<1",
   "jsonschema>=4.23,<5",
   "ijson>=3.4,<4",
+  "tldextract>=5.3,<6",
+  "httpx>=0.28,<1",
   "torch>=2.6,<3",
   "transformers>=4.50,<5",
   "presidio-analyzer>=2.2.360,<3",
@@ -28,6 +30,9 @@ dependencies = [
 dev = [
   "pytest>=8.3,<9",
   "ruff>=0.12,<1",
+]
+tracking = [
+  "mlflow==3.16.0",
 ]
 
 [project.urls]

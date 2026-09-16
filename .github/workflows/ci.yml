@@ -16,5 +16,36 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
       - run: python -m pytest
-      - run: python -m ruff check src scripts tests
+      - run: python -m ruff check src scripts tests deploy
       - run: python -c "import json; from pathlib import Path; [json.loads(path.read_text()) for path in Path('data/manifests').glob('*.json')]"
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -t medical-triage-poc:ci .
+      - name: Exercise container without model or network
+        run: >-
+          docker run --rm --network none medical-triage-poc:ci python -c
+          'from fastapi.testclient import TestClient;
+          from triage_poc.api import create_app;
+          c=TestClient(create_app());
+          assert c.get("/healthz").status_code == 200;
+          assert c.post("/v1/triage", json={"language":"fr","patient_context":{"age_group":"adult","symptoms":["synthetic"]}}).status_code == 503'
+      - name: Exercise authenticated serving factory without inference
+        run: >-
+          docker run --rm --network none
+          -e TRIAGE_API_TOKEN=ci-only-synthetic-token-0000000000
+          -e TRIAGE_VLLM_URL=http://vllm/v1
+          -e TRIAGE_MODEL_NAME=ci-synthetic
+          -e TRIAGE_MODEL_VERSION=ci-synthetic
+          -e TRIAGE_AUDIT_PATH=/tmp/triage-audit.jsonl
+          medical-triage-poc:ci python -c
+          'from fastapi.testclient import TestClient;
+          from triage_poc.serving import create_serving_app;
+          c=TestClient(create_serving_app());
+          assert c.get("/healthz").status_code == 401;
+          r=c.get("/healthz", headers={"Authorization":"Bearer ci-only-synthetic-token-0000000000"});
+          assert r.status_code == 200;
+          assert r.json()=={"status":"alive","provider_configured":True,"clinical_validation":"not_performed"};
+          assert c.post("/v1/triage", json={"language":"fr","patient_context":{"age_group":"adult","symptoms":["synthetic"]}}).status_code == 401'

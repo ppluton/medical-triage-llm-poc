@@ -1,0 +1,19 @@
+{
+  "status": "draft",
+  "run": 33,
+  "purpose": "Repeat v32 API measurements with bounded failure categories",
+  "source_code": "1cb76f1",
+  "builder_code": "51fcf8d",
+  "private": true,
+  "target": "pierrepluton/chsa-source-sft-qwen3",
+  "machine_shape": "NvidiaTeslaT4",
+  "notebook_sha256": "3ebf1e554b24f2f2f8dc2dd4d340ee1b7b2001398183a28e2ce0ef1668b15d58",
+  "optimizer_steps": 0,
+  "test_records_used": 0,
+  "scenarios_per_model": 18,
+  "models": [
+    "sft",
+    "dpo"
+  ],
+  "result": "pending"
+}

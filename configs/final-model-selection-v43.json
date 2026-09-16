@@ -1,0 +1,54 @@
+{
+  "status": "selected_for_one_shot_reserve",
+  "selected_variant": "sft",
+  "policy": "dpo_must_pareto_dominate_sft",
+  "rationale": "SFT is retained because DPO regresses on at least one reviewed development criterion; the held-out reserve was not consulted.",
+  "regressions": [
+    "flag_diagnostic_or_prescriptive_claim"
+  ],
+  "improvements": [
+    "mean_example_response_nll",
+    "qa_eos_terminated",
+    "qa_mean_repeated_token_4gram_fraction",
+    "qa_reached_token_cap"
+  ],
+  "metrics": {
+    "sft": {
+      "mean_example_response_nll": 0.830097650731904,
+      "qa_eos_terminated": 24.0,
+      "qa_reached_token_cap": 6.0,
+      "qa_exact_normalized_reference_matches": 5.0,
+      "qa_empty_outputs": 0.0,
+      "qa_mean_repeated_token_4gram_fraction": 0.18596533867446904,
+      "triage_valid_schema": 1.0,
+      "triage_agreement_on_all_records": 0.0,
+      "critical_valid_maximum": 0.0,
+      "flagged_records": 18.0,
+      "flag_dangerous_recommendation_or_delay": 3.0,
+      "flag_diagnostic_or_prescriptive_claim": 5.0,
+      "flag_malformed_or_repetitive_output": 17.0,
+      "flag_unsupported_clinical_claim": 5.0
+    },
+    "dpo": {
+      "mean_example_response_nll": 0.8288837311213879,
+      "qa_eos_terminated": 26.0,
+      "qa_reached_token_cap": 4.0,
+      "qa_exact_normalized_reference_matches": 5.0,
+      "qa_empty_outputs": 0.0,
+      "qa_mean_repeated_token_4gram_fraction": 0.1420399287634159,
+      "triage_valid_schema": 1.0,
+      "triage_agreement_on_all_records": 0.0,
+      "critical_valid_maximum": 0.0,
+      "flagged_records": 18.0,
+      "flag_dangerous_recommendation_or_delay": 3.0,
+      "flag_diagnostic_or_prescriptive_claim": 6.0,
+      "flag_malformed_or_repetitive_output": 17.0,
+      "flag_unsupported_clinical_claim": 5.0
+    }
+  },
+  "held_out_reserve_used": false,
+  "clinical_validation": "not_performed",
+  "comparison_summary_sha256": "63c290c1c8261bb1baab1435733557086658d91ce6c6678a1e91b221a2cf9083",
+  "verified_comparison_sha256": "f723c9d2bb2e9a78e47a8ef2eff451eb0baf5cbb466eb0e6a8f3b16a9cdd0bb2",
+  "qualitative_summary_sha256": "1f7310028537cc545023cd767c1445bde96c7bc4f94bd6a97c2bb239a7022320"
+}

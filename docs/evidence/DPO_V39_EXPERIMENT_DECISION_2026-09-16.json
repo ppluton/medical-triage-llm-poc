@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-16",
+  "decision": "accepted_for_educational_dpo",
+  "reviewer": "Codex assisted technical project review; no independent human or clinical review",
+  "rationale": "The v39 SFT checkpoint is bound to the privacy-finalized v2.2 corpus, has complete resumable artifacts, changed finite LoRA tensors, and reproduced all 30 frozen generations with zero validation-loss delta after a fresh-process reload. A single bounded 20-step DPO experiment is admitted to measure preference optimization without claiming clinical improvement.",
+  "comparison_sha256": "640d01cc1ad4babadc3563a950bccb66c8e87a2acf2215fe886697124f567a92",
+  "sft_handoff_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5",
+  "dpo_dataset_manifest_sha256": "8374a9e26abaf82d49f7b27022ada27beec1bf295f08c9ecef8dbfbebcda1a35",
+  "max_optimizer_steps": 20,
+  "test_records_used": 0,
+  "clinical_validation": "not_performed",
+  "constraints": [
+    "Policy and reference must start from the exact v39 SFT adapter.",
+    "The reference adapter must remain unchanged and the policy must change.",
+    "No held-out triage reserve record may be opened or used.",
+    "A completed DPO run must be reloaded and compared before any quality claim.",
+    "No continuation beyond 20 steps is automatic."
+  ]
+}

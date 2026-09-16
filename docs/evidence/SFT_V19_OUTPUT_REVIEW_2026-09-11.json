@@ -1,0 +1,138 @@
+{
+  "status": "assistant_textual_review_complete_not_clinical_validation",
+  "reviewer": "Codex, comparison to provided source references only",
+  "protocol": "Compare the selected option set to the source answer; allow introductory phrasing, but reject missing or extra options. Repetition and factual validity of explanations are assessed separately.",
+  "records": [
+    {
+      "record_id": "sft-source-1550cf426ebc418e5687d267",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    },
+    {
+      "record_id": "sft-source-141322b67de7a67f88744b53",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "gain"
+    },
+    {
+      "record_id": "sft-source-148f4f77ba8f9d88f342fffb",
+      "base_source_answer_set_agreement": true,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "regression"
+    },
+    {
+      "record_id": "sft-source-1426133419621878f691f7c3",
+      "base_source_answer_set_agreement": true,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "stable_agreement"
+    },
+    {
+      "record_id": "sft-source-1322dd39170409d0f5ba991a",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "gain"
+    },
+    {
+      "record_id": "sft-source-134e300b683d865a495bb74e",
+      "base_source_answer_set_agreement": true,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "regression"
+    },
+    {
+      "record_id": "sft-source-1525c330bb68b7d5c94c4566",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    },
+    {
+      "record_id": "sft-source-139b53140fe59d64e815a540",
+      "base_source_answer_set_agreement": true,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "stable_agreement"
+    },
+    {
+      "record_id": "sft-source-14129c2aead5d6aaf6827be1",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "gain"
+    },
+    {
+      "record_id": "sft-source-62fdc247563e3d49bd041110",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    },
+    {
+      "record_id": "sft-source-66e3558cd52fe12aee3b41cf",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "gain"
+    },
+    {
+      "record_id": "sft-source-6a0546e13be0101dda58fbe0",
+      "base_source_answer_set_agreement": true,
+      "pilot_source_answer_set_agreement": true,
+      "transition": "stable_agreement"
+    },
+    {
+      "record_id": "sft-source-686b234bfba4c2fbdccc6274",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    },
+    {
+      "record_id": "sft-source-62fa0a06b8ab307d6e30571f",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    },
+    {
+      "record_id": "sft-source-604f53d7e1e180ae0a583709",
+      "base_source_answer_set_agreement": false,
+      "pilot_source_answer_set_agreement": false,
+      "transition": "neither_agrees"
+    }
+  ],
+  "base_agreement": 5,
+  "pilot_agreement": 7,
+  "paired_gains": 4,
+  "paired_regressions": 2,
+  "english_observations": {
+    "clear_reference_conflict_indices": [
+      0,
+      9,
+      11,
+      12
+    ],
+    "clear_repetition_indices": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      8,
+      13,
+      14
+    ],
+    "truncated_verbose_expansion_indices": [
+      7
+    ],
+    "not_fully_assessed_for_factual_equivalence_indices": [
+      5,
+      10
+    ]
+  },
+  "index_definition": "Zero-based order of the frozen 30 generation IDs.",
+  "limits": [
+    "This is not a human clinician review or a clinical accuracy score.",
+    "Source agreement can include a repeated answer; it does not establish usability.",
+    "The references are not certified current medical truth.",
+    "Fifteen MCQs are too few to establish a general improvement.",
+    "Exact text matching (0 to 7) must not be described as MCQ accuracy (5 to 7 in this review)."
+  ],
+  "input_sha256": {
+    "base.json": "e0d1398a4eddb6cba2f7620ded9edacee1618d55f909833f3eeec08398c2953c",
+    "pilot_end.json": "72e5ace01dbdb267e346cca5a21ca4c2e7a0160d570d51d7e7af12f03f49123d"
+  }
+}

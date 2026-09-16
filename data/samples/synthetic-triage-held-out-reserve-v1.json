@@ -1,0 +1,164 @@
+[
+  {
+    "id": "reserve-triage-v1-chest_pain-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "chest_pain",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "fr", "patient_context": {"age_group": "adult", "symptoms": ["Oppression thoracique nouvelle avec sueurs et nausées."], "duration": "depuis vingt minutes", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-chest_pain-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "chest_pain",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "en", "patient_context": {"age_group": "adult", "symptoms": ["New central chest pressure with sweating and nausea."], "duration": "for twenty minutes", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-respiratory_distress-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "respiratory_distress",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "fr", "patient_context": {"age_group": "adult", "symptoms": ["Essoufflement brutal avec lèvres bleutées et confusion."], "duration": "apparition soudaine", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-respiratory_distress-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "respiratory_distress",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "en", "patient_context": {"age_group": "adult", "symptoms": ["Sudden shortness of breath with bluish lips and confusion."], "duration": "sudden onset", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-neurological_deficit-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "neurological_deficit",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "fr", "patient_context": {"age_group": "older_adult", "symptoms": ["Visage soudainement asymétrique et faiblesse de la jambe gauche."], "duration": "depuis dix minutes", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-neurological_deficit-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "neurological_deficit",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "en", "patient_context": {"age_group": "older_adult", "symptoms": ["Sudden facial asymmetry and new weakness of the left leg."], "duration": "for ten minutes", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-pediatric-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "pediatric",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "fr", "patient_context": {"age_group": "pediatric", "symptoms": ["Enfant moins actif avec vomissements récents ; hydratation inconnue."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-pediatric-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "pediatric",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "en", "patient_context": {"age_group": "pediatric", "symptoms": ["Child is less active with recent vomiting; hydration is unknown."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-pregnancy-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "pregnancy",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "fr", "patient_context": {"age_group": "adult", "symptoms": ["Grossesse avec saignement important et douleur abdominale intense."], "duration": "aujourd'hui", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-pregnancy-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "pregnancy",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "maximum",
+    "request": {"language": "en", "patient_context": {"age_group": "adult", "symptoms": ["Pregnancy with heavy bleeding and severe abdominal pain."], "duration": "today", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-vulnerability-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "vulnerability",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "fr", "patient_context": {"age_group": "older_adult", "symptoms": ["Chute récente sans perte de connaissance signalée ; traitement anticoagulant possible mais non confirmé."], "duration": "ce matin", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-vulnerability-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "vulnerability",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "en", "patient_context": {"age_group": "older_adult", "symptoms": ["Recent fall with no reported loss of consciousness; possible blood-thinner use is unconfirmed."], "duration": "this morning", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-insufficient_information-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "insufficient_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "fr", "patient_context": {"age_group": "unknown", "symptoms": ["Quelque chose ne va pas, mais je ne peux pas le décrire."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-insufficient_information-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "insufficient_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "en", "patient_context": {"age_group": "unknown", "symptoms": ["Something feels wrong, but I cannot describe it."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-contradictory_information-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "contradictory_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "fr", "patient_context": {"age_group": "adult", "symptoms": ["La personne décrit un malaise soudain puis affirme qu'il dure depuis plusieurs semaines ; elle dit avoir de la fièvre puis le nie."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-contradictory_information-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "contradictory_information",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "moderate",
+    "request": {"language": "en", "patient_context": {"age_group": "adult", "symptoms": ["The person describes sudden faintness, then says it has lasted for weeks; they report fever and then deny it."], "duration": null, "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-other-fr",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "other",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "deferred",
+    "request": {"language": "fr", "patient_context": {"age_group": "adult", "symptoms": ["Petite zone de peau sèche inchangée depuis plusieurs mois, déjà examinée, sans douleur, fièvre ni extension ; contrôle planifié."], "duration": "plusieurs mois", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  },
+  {
+    "id": "reserve-triage-v1-other-en",
+    "synthetic": true,
+    "split": "held_out_project_reserve",
+    "category": "other",
+    "reference_status": "proposed_educational_only",
+    "expected_level": "deferred",
+    "request": {"language": "en", "patient_context": {"age_group": "adult", "symptoms": ["Small area of dry skin unchanged for months, already assessed, without pain, fever or spread; follow-up is planned."], "duration": "several months", "medical_history": [], "allergies": [], "medications": [], "vitals": {}}}
+  }
+]

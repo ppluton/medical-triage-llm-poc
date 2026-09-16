@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-11",
+  "status": "technical_review_completed_not_clinical",
+  "canonical_sha256": "76ad26ea87ef16b0a1ea4d3ced43f2a253b5f146bfed8515447b6810c593707f",
+  "reason": "Duplicate option text observed in source and rendered prompt; exclude rather than invent correction.",
+  "exclusions": [
+    {
+      "record_id": "sft-source-01b6be9d7e9b532f0e84775c",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    },
+    {
+      "record_id": "sft-source-1133c2b65fcd8f9540324797",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    },
+    {
+      "record_id": "sft-source-210c47540ab7a5a0abebc2e0",
+      "split": "train",
+      "reason": "duplicate_source_option_text_reviewed"
+    }
+  ]
+}

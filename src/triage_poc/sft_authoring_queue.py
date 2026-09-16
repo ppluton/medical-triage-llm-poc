@@ -66,6 +66,7 @@ class SourceAnchor:
     source_locator: str
     question: str
     answer: str
+    deduplication_text: str | None = None
 
     @property
     def selection_digest(self) -> str:
@@ -158,7 +159,9 @@ def _mediqal_test_question_keys(repository_path: Path) -> set[str]:
     return keys
 
 
-def iter_mediqal_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
+def iter_mediqal_anchors(
+    repository_path: Path, *, include_options: bool = False
+) -> Iterator[SourceAnchor]:
     """Yield MediQAl MCQ anchors from train/validation, never test or OEQ rows."""
 
     test_question_keys = _mediqal_test_question_keys(repository_path)
@@ -180,6 +183,11 @@ def iter_mediqal_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
                 grounded_question = "\n\n".join(
                     part for part in (clinical_case, question) if part
                 )
+                original_question = grounded_question
+                if include_options:
+                    options = [f"{key.upper()}. {str(row.get('answer_' + key) or '').strip()}"
+                               for key in "abcde" if str(row.get("answer_" + key) or "").strip()]
+                    grounded_question += "\n\nOptions:\n" + "\n".join(options)
                 source_id = str(row.get("id") or "").strip()
                 locator = f"{config_name}/{split}.json:{source_id or line_number}"
                 yield SourceAnchor(
@@ -188,10 +196,13 @@ def iter_mediqal_anchors(repository_path: Path) -> Iterator[SourceAnchor]:
                     source_locator=locator,
                     question=grounded_question,
                     answer="\n".join(correct_answers),
+                    deduplication_text=original_question,
                 )
 
 
-def iter_frenchmedmcqa_anchors(processed_path: Path) -> Iterator[SourceAnchor]:
+def iter_frenchmedmcqa_anchors(
+    processed_path: Path, *, include_options: bool = False
+) -> Iterator[SourceAnchor]:
     """Yield reconstructed train/validation MCQA anchors, never test rows."""
 
     for split in ("train", "validation"):
@@ -205,6 +216,11 @@ def iter_frenchmedmcqa_anchors(processed_path: Path) -> Iterator[SourceAnchor]:
             answer = "\n".join(value for value in correct_answers if value)
             if not question or not answer:
                 continue
+            original_question = question
+            if include_options:
+                options = [f"{key}. {str(value).strip()}" for key, value in answers.items()
+                           if str(value).strip()]
+                question += "\n\nOptions:\n" + "\n".join(options)
             source_record_id = str(row.get("id", "")).strip()
             locator = f"{split}:{source_record_id}"
             yield SourceAnchor(
@@ -213,6 +229,7 @@ def iter_frenchmedmcqa_anchors(processed_path: Path) -> Iterator[SourceAnchor]:
                 source_locator=locator,
                 question=question,
                 answer=answer,
+                deduplication_text=original_question,
             )
 
 

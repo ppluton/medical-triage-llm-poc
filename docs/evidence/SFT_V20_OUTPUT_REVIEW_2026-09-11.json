@@ -1,0 +1,108 @@
+{
+  "date": "2026-09-11",
+  "status": "assistant_textual_review_complete_not_clinical_validation",
+  "reviewer": "Codex",
+  "protocol": "Compare complete selected option sets to source references, reject missing/extra options; separate termination and substantive answer. Frozen generation indices are zero-based.",
+  "mcq_source_answer_agreement": {
+    "base": 5,
+    "50": 6,
+    "100": 5,
+    "150": 7
+  },
+  "records": [
+    {
+      "record_id": "sft-source-1550cf426ebc418e5687d267",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-141322b67de7a67f88744b53",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-148f4f77ba8f9d88f342fffb",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-1426133419621878f691f7c3",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": true
+    },
+    {
+      "record_id": "sft-source-1322dd39170409d0f5ba991a",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": true
+    },
+    {
+      "record_id": "sft-source-134e300b683d865a495bb74e",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-1525c330bb68b7d5c94c4566",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-139b53140fe59d64e815a540",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": true
+    },
+    {
+      "record_id": "sft-source-14129c2aead5d6aaf6827be1",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-62fdc247563e3d49bd041110",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-66e3558cd52fe12aee3b41cf",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": true
+    },
+    {
+      "record_id": "sft-source-6a0546e13be0101dda58fbe0",
+      "checkpoint_50_agrees": true,
+      "checkpoint_100_agrees": true
+    },
+    {
+      "record_id": "sft-source-686b234bfba4c2fbdccc6274",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-62fa0a06b8ab307d6e30571f",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    },
+    {
+      "record_id": "sft-source-604f53d7e1e180ae0a583709",
+      "checkpoint_50_agrees": false,
+      "checkpoint_100_agrees": false
+    }
+  ],
+  "english_non_answer_indices": {
+    "50": [
+      0,
+      9,
+      14
+    ],
+    "100": [
+      8
+    ]
+  },
+  "input_sha256": {
+    "checkpoint_50.json": "a041486b585c8b2b58491eb103951dfce4d4a657cf78658705ac39cf6cf8e550",
+    "checkpoint_100.json": "969a48c3a84a0d30d3e34c6bdfa9ce8fb6288c554655c39079025cfef324b096"
+  },
+  "limits": [
+    "Assistant textual comparison, not independent human or clinical validation.",
+    "All 15 French outputs reviewed per checkpoint; English review is diagnostic, not exhaustive clinical scoring.",
+    "Reference agreement does not certify current medical truth."
+  ]
+}

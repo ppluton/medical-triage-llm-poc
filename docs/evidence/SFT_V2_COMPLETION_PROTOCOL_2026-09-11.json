@@ -1,0 +1,22 @@
+{
+  "purpose": "controlled_completion_loss_micro",
+  "dataset_version": "v2",
+  "input_scope": "smoke",
+  "max_steps": 20,
+  "train_records": 64,
+  "validation_records": 3,
+  "test_records_used": 0,
+  "notebook_sha256": "4c6241808816d3070809e445009dff46febfd9a25f6b3682d20cccf8a159e7fc",
+  "files_sha256": {
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/sft_termination.py": "007fcbadb2f34dd293468829cbdec6fb67af5fa4ead6bf8afa62fb53abdc7e57",
+    "scripts/run_sft_termination_experiment.py": "f695d639cfa79f1f499ab043125acd2ba24ad843d1afcdf062aaabfe02fc962c"
+  },
+  "input_manifest_sha256": "345e5c75875c2bed35a817949539d3479170a9021a310c41f4313b0237a6686b",
+  "loss_scope": "completion",
+  "kaggle_kernel": "pierrepluton/chsa-source-sft-qwen3",
+  "kaggle_version": 17,
+  "status": "completed",
+  "control_version": 16
+}

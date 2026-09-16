@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-16",
+  "status": "passed_for_controlled_educational_training_not_publication",
+  "input": {
+    "manifest_id": "derived-source-medical-qa-sft-v2.1-reviewed",
+    "canonical_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "records": 4700,
+    "direct_findings": 31,
+    "direct_records": 22
+  },
+  "output": {
+    "manifest_id": "derived-source-medical-qa-sft-v2.2-privacy-finalized",
+    "canonical_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2",
+    "records": 4700,
+    "train": 3721,
+    "validation": 479,
+    "test": 500,
+    "patient_name_placeholders": 31
+  },
+  "post_finalization_scan": {
+    "job": "val_8d3b6c685c05",
+    "exit_code": 0,
+    "fields_scanned": 9400,
+    "direct_identifier_findings": 0,
+    "contextual_review_required": 3199,
+    "passed_no_contextual_detection": 1501,
+    "private_findings_sha256": "ae3ee16c5a8e39e7099af9954da0ccce54af7a11adca1f43d8c4be2be4343c32",
+    "text_free_decisions_sha256": "99b5469637a3867b1dd8ec2cc69fc30a4580b24c49c70c90158c19e6d4d28b7b"
+  },
+  "validation": {
+    "schema_valid_records": 4700,
+    "preflight_passed": true,
+    "test_rendered_for_training": 0,
+    "targeted_tests": "5 passed",
+    "ruff": "passed"
+  },
+  "limits": [
+    "The technical controls do not establish legal anonymization or RGPD compliance.",
+    "Contextual PERSON, LOCATION and DATE_TIME detections are retained under the public-source policy.",
+    "External dataset publication remains blocked pending human and legal review.",
+    "No clinical review or validation was performed."
+  ]
+}

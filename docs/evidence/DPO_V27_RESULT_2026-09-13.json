@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-13",
+  "status": "training_completed_saved_weights_verified",
+  "kernel_version": 27,
+  "optimizer_steps": 20,
+  "train_metrics": {
+    "train_runtime": 464.143,
+    "train_samples_per_second": 0.345,
+    "train_steps_per_second": 0.043,
+    "total_flos": 0.0,
+    "train_loss": 0.644437649846077,
+    "epoch": 0.3755868544600939
+  },
+  "weight_checks": {
+    "reference_unchanged": true,
+    "policy_changed_tensors": 392,
+    "policy_total_tensors": 392
+  },
+  "reference_matches_actual_sft_file": true,
+  "test_records_used": 0,
+  "evaluation": [
+    {
+      "eval_loss": 0.6332303285598755,
+      "eval_runtime": 60.0061,
+      "eval_samples_per_second": 0.9,
+      "eval_steps_per_second": 0.9,
+      "eval_rewards/chosen": 0.4147403836250305,
+      "eval_rewards/rejected": 0.2657884359359741,
+      "eval_rewards/accuracies": 0.6481481194496155,
+      "eval_rewards/margins": 0.148951917886734,
+      "eval_logps/chosen": -517.0338745117188,
+      "eval_logps/rejected": -418.9460754394531,
+      "eval_logits/chosen": 5.278653621673584,
+      "eval_logits/rejected": 5.354738235473633,
+      "epoch": 0.19
+    },
+    {
+      "eval_loss": 0.6223292946815491,
+      "eval_runtime": 60.1859,
+      "eval_samples_per_second": 0.897,
+      "eval_steps_per_second": 0.897,
+      "eval_rewards/chosen": 0.47511669993400574,
+      "eval_rewards/rejected": 0.29338958859443665,
+      "eval_rewards/accuracies": 0.6481481194496155,
+      "eval_rewards/margins": 0.1817270964384079,
+      "eval_logps/chosen": -516.4301147460938,
+      "eval_logps/rejected": -418.6700744628906,
+      "eval_logits/chosen": 5.270413875579834,
+      "eval_logits/rejected": 5.349599838256836,
+      "epoch": 0.38
+    }
+  ],
+  "source_hashes": {
+    "run_summary.json": "dd65fa9a7612bc76ca46cd102353ca5b853fe1545569338ed7b42fb7f39a970a",
+    "weight_checks.json": "b2fccea349de8c9f38c0e0d60f807a44251b60261b2179504df88d3447922e78"
+  },
+  "package_versions": {
+    "torch": "2.10.0+cu128",
+    "transformers": "4.57.6",
+    "peft": "0.18.1",
+    "trl": "0.23.1",
+    "datasets": "4.3.0"
+  },
+  "clinical_validation": "not_performed",
+  "saved_artifact_check": "DPO_V27_ARTIFACT_CHECK_2026-09-13.json"
+}

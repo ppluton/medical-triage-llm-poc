@@ -1,9 +1,30 @@
-experiment: dpo-qwen3-1.7b
-base_checkpoint: sft-lora-approved-checkpoint-required
+# Descriptive recipe; scripts/run_dpo.py constructs and records the TRL DPOConfig.
+# This does not approve data or establish clinical validity.
+experiment: dpo-qwen3-1.7b-educational-v1
+status: proposed
+runner: scripts/run_dpo.py
+base_checkpoint: selected-sft-verified-by-manifest
+sft_manifest_argument: required
+reference_checkpoint: same-sft-frozen
 mode: direct_preference_optimization
-dataset_manifest_status_required: approved
+dataset_manifest_status_required: approved_for_educational_dpo
+comparison_decision_required: accepted_for_educational_dpo
+clinical_review_status: not_performed
 seed: 42
+trl_version: 0.23.1
 dpo:
-  beta: proposed
-  learning_rate: proposed
-  epochs: proposed
+  beta: 0.1
+  learning_rate: 0.000005
+  max_steps_default: 20
+  max_steps_allowed: [1, 500]
+  train_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_prompt_length: 1024
+  max_length: 2048
+  precision: fp16
+  eval_steps: 10
+  save_steps: 10
+  save_total_limit: 2
+  model_adapter_name: policy
+  ref_adapter_name: reference
+  push_to_hub: false

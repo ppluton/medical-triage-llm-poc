@@ -1,0 +1,72 @@
+{
+  "manifest_id": "derived-ultramedical-dpo-v2-project-reviewed",
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "approved_for_educational_dpo",
+  "clinical_review_status": "not_performed",
+  "local_artifact_directory": "artifacts/dpo-reviewed-v2",
+  "local_manifest": {
+    "path": "manifest.json",
+    "sha256": "688b917a459352089f1817702d7b6f203dac4123b439783d8be4775d5797c02e",
+    "byte_size": 601565
+  },
+  "artifacts": {
+    "train": {
+      "path": "train.jsonl",
+      "records": 426,
+      "sha256": "bfc3e63be9c8a43bec76e27febe0e308a86910ec8503e0bdc982d292ec246e7b",
+      "byte_size": 2345053
+    },
+    "validation": {
+      "path": "validation.jsonl",
+      "records": 54,
+      "sha256": "4f829ec1a1592e6bea822cc2ee73ff8b56c251c09cd6d7d90d815e1257d0b1ae",
+      "byte_size": 321822
+    }
+  },
+  "parent": {
+    "directory": "artifacts/dpo-reviewed-v1",
+    "manifest_sha256": "66cd0e5907663831b9de86e88dad9ec8f20ffd9ccf1a3ab03b3e463684bffa9f",
+    "train_sha256": "5a3bb76a303c4c0ae0cb59ad1d36c96f3f1831e80af12c179c3f2f40385f6674",
+    "validation_sha256": "2052ae0ad58ad63e12d2f0ab08ce8f42538432eb7d9af90f5752b3f23a1c53e8"
+  },
+  "source": {
+    "manifest_id": "src-ultramedical-preference-761eb79",
+    "revision": "761eb7935310ba662a96d93c5af342e5269d5759",
+    "sha256": "d40f19d8feb6f56e2310207e065716eb791449e2acd215b5705726869cdc926c",
+    "language": "en"
+  },
+  "sft_protection": {
+    "manifest_sha256": "57e5f170e8467985a109ccf8eab6729b0d6af2ff7cac53bf75ec497b5adc853a",
+    "canonical_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "protected_records": 4700,
+    "test_answers_used": 0
+  },
+  "review": {
+    "decision_id": "ADR-014",
+    "decision_date": "2026-09-12",
+    "decision_sha256": "80bc6ae14806532fc7fd31d0652ba017e62bddd1d865f85e30b144c9c49e9fb0",
+    "reviewer": "Codex assisted technical review; no independent human or clinical review",
+    "pending_rationales": 0
+  },
+  "payload_fields_unchanged": [
+    "record_id",
+    "split",
+    "language",
+    "prompt",
+    "chosen",
+    "rejected",
+    "source_label_type",
+    "source"
+  ],
+  "script": {
+    "path": "scripts/finalize_dpo_review.py",
+    "sha256": "2f56eb4751465dd082ed7eba8312d4f6a06173ce274eeffb9920ab0b3c779336"
+  },
+  "limits": [
+    "Source biomedical preferences are not validated triage preferences.",
+    "No healthcare professional reviewed or approved this dataset.",
+    "The English-only dataset does not establish French preference alignment.",
+    "The local full manifest and JSONL artifacts remain outside the public Git repository."
+  ]
+}

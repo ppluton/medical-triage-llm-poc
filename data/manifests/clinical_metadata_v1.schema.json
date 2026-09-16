@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ppluton/medical-triage-llm-poc/schemas/clinical_metadata_v1.schema.json",
+  "title": "Clinical metadata for corpus records v1",
+  "description": "Traceable clinical metadata for source-derived or synthetic corpus records. Empty values remain explicit when the source does not provide them; this schema does not establish clinical validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "language",
+    "data_origin",
+    "metadata_status",
+    "patient_context",
+    "source",
+    "confidence",
+    "quality"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_id": {
+      "type": "string",
+      "pattern": "^meta-[a-z0-9][a-z0-9-]{5,127}$"
+    },
+    "language": { "enum": ["fr", "en"] },
+    "data_origin": { "enum": ["synthetic", "source_derived"] },
+    "metadata_status": {
+      "enum": [
+        "source_provided",
+        "extracted_pending_review",
+        "clinically_reviewed",
+        "not_available"
+      ]
+    },
+    "patient_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "age_group",
+        "symptoms",
+        "medical_history",
+        "vitals",
+        "vulnerability_factors"
+      ],
+      "properties": {
+        "age_group": {
+          "enum": ["pediatric", "adult", "older_adult", "unknown"]
+        },
+        "symptoms": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "duration": { "type": ["string", "null"], "maxLength": 120 },
+        "evolution": { "type": ["string", "null"], "maxLength": 120 },
+        "intensity": { "type": ["string", "null"], "maxLength": 120 },
+        "associated_symptoms": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "medical_history": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "vitals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "heart_rate_bpm",
+            "temperature_c",
+            "respiratory_rate_bpm",
+            "oxygen_saturation_pct",
+            "systolic_bp_mmhg",
+            "diastolic_bp_mmhg"
+          ],
+          "properties": {
+            "heart_rate_bpm": { "type": ["number", "null"], "minimum": 0 },
+            "temperature_c": { "type": ["number", "null"], "minimum": 20, "maximum": 50 },
+            "respiratory_rate_bpm": { "type": ["number", "null"], "minimum": 0 },
+            "oxygen_saturation_pct": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+            "systolic_bp_mmhg": { "type": ["number", "null"], "minimum": 0 },
+            "diastolic_bp_mmhg": { "type": ["number", "null"], "minimum": 0 }
+          }
+        },
+        "vulnerability_factors": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_manifest_id",
+        "source_dataset",
+        "immutable_revision",
+        "source_record_id",
+        "source_locator",
+        "source_license"
+      ],
+      "properties": {
+        "source_manifest_id": {
+          "type": "string",
+          "pattern": "^src-[a-z0-9][a-z0-9-]{5,127}$"
+        },
+        "source_dataset": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "immutable_revision": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "source_record_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "source_locator": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "source_license": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "basis", "scope", "review_status"],
+      "properties": {
+        "value": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "basis": {
+          "enum": [
+            "source_provided",
+            "automatic_extraction",
+            "human_review",
+            "not_available"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "metadata_extraction",
+            "source_answer",
+            "preference",
+            "clinical_label",
+            "not_available"
+          ]
+        },
+        "review_status": { "enum": ["not_available", "proposed", "reviewed"] },
+        "note": { "type": ["string", "null"], "maxLength": 500 }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anonymization_status", "clinical_review_status"],
+      "properties": {
+        "anonymization_status": {
+          "enum": [
+            "not_run",
+            "passed_direct_identifiers_only",
+            "pending_contextual_review",
+            "passed_after_manual_review",
+            "failed"
+          ]
+        },
+        "clinical_review_status": {
+          "enum": ["not_performed", "pending", "approved", "rejected"]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "metadata_status": { "const": "not_available" } } },
+      "then": {
+        "properties": {
+          "patient_context": {
+            "properties": {
+              "age_group": { "const": "unknown" },
+              "symptoms": { "maxItems": 0 },
+              "associated_symptoms": { "maxItems": 0 },
+              "medical_history": { "maxItems": 0 },
+              "vulnerability_factors": { "maxItems": 0 },
+              "duration": { "type": "null" },
+              "evolution": { "type": "null" },
+              "intensity": { "type": "null" },
+              "vitals": {
+                "properties": {
+                  "heart_rate_bpm": { "type": "null" },
+                  "temperature_c": { "type": "null" },
+                  "respiratory_rate_bpm": { "type": "null" },
+                  "oxygen_saturation_pct": { "type": "null" },
+                  "systolic_bp_mmhg": { "type": "null" },
+                  "diastolic_bp_mmhg": { "type": "null" }
+                }
+              }
+            }
+          },
+          "confidence": {
+            "properties": {
+              "value": { "type": "null" },
+              "basis": { "const": "not_available" },
+              "scope": { "const": "not_available" },
+              "review_status": { "const": "not_available" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

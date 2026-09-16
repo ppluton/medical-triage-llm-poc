@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-14",
+  "status": "draft",
+  "run": 32,
+  "script_version_id": 349509492,
+  "code": "37c80f1",
+  "metrics": {
+    "sft": {
+      "requests": 18,
+      "successes": 12,
+      "priority_matches_proposed": 6,
+      "critical_maximum": 4,
+      "client_p50_ms": 21878.19,
+      "client_p95_ms": 42708.68,
+      "failed_ids": [
+        "dev-triage-v2-respiratory_distress-fr",
+        "dev-triage-v2-pediatric-fr",
+        "dev-triage-v2-insufficient_information-fr",
+        "dev-triage-v2-contradictory_information-fr",
+        "dev-triage-v2-contradictory_information-en",
+        "dev-triage-v2-other-fr"
+      ]
+    },
+    "dpo": {
+      "requests": 18,
+      "successes": 12,
+      "priority_matches_proposed": 5,
+      "critical_maximum": 4,
+      "client_p50_ms": 10896.78,
+      "client_p95_ms": 33609.52,
+      "failed_ids": [
+        "dev-triage-v2-respiratory_distress-fr",
+        "dev-triage-v2-pediatric-fr",
+        "dev-triage-v2-insufficient_information-fr",
+        "dev-triage-v2-contradictory_information-fr",
+        "dev-triage-v2-contradictory_information-en",
+        "dev-triage-v2-other-fr"
+      ]
+    }
+  },
+  "files_sha256": {
+    "summary.json": "f1962d6ca024f1c84f5d4c2918ca209f4ece3631de1b9c7749cb2afc3da3349a",
+    "models.json": "726bee44a1642672228459a51cec5e0c73a47d325040fb8baa3f55cf3302637e",
+    "vllm.log": "9524065308b22364a95dc53136404b2645e6f5c1190d0dd623a040fddad312c6",
+    "cuda-linker.json": "c22239d69ae6723b3e8053aead0689cb1bcde9b20ffec3bd62a087df4820b530",
+    "dpo/api.log": "65eaf7c4c00b3669b920c5919fea15ff09aeee96b6c407841c2f5b8f5d8f5f3c",
+    "dpo/audit-proof.json": "caaece373713afd85d6bfa2ebf97700b11911a1c5f8670286935a2f68ca68d31",
+    "dpo/endpoint.json": "ca32690dd12dee0b34db117521aba546aa4d0c02ff09d22a38984d775e2a5b84",
+    "dpo/audit.jsonl": "5194e1200be80f16e52e49623782751bee99650e5f822fffc6f422bc543cd636",
+    "sft/api.log": "43b1d4471aa076e118aaac3e52e43665615914038f910fd0880976c46119cc05",
+    "sft/audit-proof.json": "014eb72beea629bae22476ac8d57d8b52b9e3c7b861cbb513452b22f74199022",
+    "sft/endpoint.json": "24a8520bccf71ca0106446cc3d493a289d8267a3ee004cb66b63e1ce2c319eb3",
+    "sft/audit.jsonl": "df2bf8029d8d72ceea0ba7b4676fdc696ed80f18d518fc90b292d7a2860adcc0"
+  },
+  "clinical_validation": false
+}

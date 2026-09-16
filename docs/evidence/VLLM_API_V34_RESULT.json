@@ -1,0 +1,51 @@
+{
+  "status": "draft",
+  "run": 34,
+  "code": "c096755",
+  "builder": "d3417ca",
+  "metrics": {
+    "sft": {
+      "requests": 18,
+      "successes": 18,
+      "failures": 0,
+      "client_p50_ms": 7719.14,
+      "client_p95_ms": 38323.16,
+      "priority_matches": 8,
+      "critical_maximum": 6,
+      "predicted_levels": {
+        "maximum": 13,
+        "moderate": 0,
+        "deferred": 5
+      }
+    },
+    "dpo": {
+      "requests": 18,
+      "successes": 18,
+      "failures": 0,
+      "client_p50_ms": 7178.31,
+      "client_p95_ms": 22010.88,
+      "priority_matches": 8,
+      "critical_maximum": 6,
+      "predicted_levels": {
+        "maximum": 13,
+        "moderate": 0,
+        "deferred": 5
+      }
+    }
+  },
+  "files_sha256": {
+    "summary.json": "1288f5fd71fd6ea381415401125b54f29e820a3c32c12d5cec84b1f06db07eb0",
+    "models.json": "99ee4b4d597275debd4de3ad889527cf55aba84cea0b47a5065f214331bc29bb",
+    "vllm.log": "e223c9e4ca68dd0cfc3c559a8a9a6564bc695d8fe506a8834c7a59da4c9c9f1f",
+    "cuda-linker.json": "bc02852489139f5997f12ce1c0f7ed5abd653094fc39fe11b92f23b6d6b275df",
+    "dpo/api.log": "50d8553a8e8a4f29be969dfe0a4f2e4db11515d64f9f5577c6b7dfec6d44bae9",
+    "dpo/audit-proof.json": "372dfbc8608bd91ffef3f906edc3c59d4221ce3a4bf65d4d32df09ac04b90b61",
+    "dpo/endpoint.json": "3cdb0cb9a74bd965f3dc7bf4a33fec469ba3d9df917a2e8c16a926b2a577895d",
+    "dpo/audit.jsonl": "fa2fc5139a4089344844cf297fffaf9cfc7967d65009e6a95840925aedd43a37",
+    "sft/api.log": "41d715cd4e28c8acbc99330b4bdb2d0c9c59bb732907e0cbd79a173a9838a5ac",
+    "sft/audit-proof.json": "f102f5fbf4cc3c01bb530536510ffe63de9ff56a6b29237f2e959ce952d53838",
+    "sft/endpoint.json": "0d5a94a90adb2117ac328c6221bcc1ff6d3d0e05fccd2b5050a99b270eb5dffc",
+    "sft/audit.jsonl": "e997e94d3c7a557b46b0f8d3c14214686be41224c512988256479e1c88b8fef6"
+  },
+  "clinical_validation": false
+}

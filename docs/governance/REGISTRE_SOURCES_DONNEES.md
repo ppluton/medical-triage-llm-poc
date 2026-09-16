@@ -1,7 +1,7 @@
 # Registre de gouvernance des sources de données
 
-- **Date :** 2026-09-03
-- **Statut :** draft — source MediQAl corrigée et file v2 générée ; aucune source externe approuvée pour l'entraînement
+- **Date :** 2026-09-16
+- **Statut :** draft — révisions épinglées et candidat SFT v2.1 audité ; portes RGPD et clinique ouvertes
 - **Périmètre :** sources citées par `SPEC_POC_TRIAGE_MEDICAL.md`
 - **Propriétaire :** projet d'étude POC Agent IA de triage médical
 
@@ -14,7 +14,7 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 | Source | Usage envisagé | Licence affichée à la source | Statut actuel | Décision avant ingestion |
 |---|---|---|---|---|
 | MediQAl | QCM médicaux francophones comme ancrages documentaires | CC BY 4.0 | candidate auditée, fuite de split mesurée | Révision `5af3494…` épinglée ; test et recouvrements avec test exclus ; revue PII et clinique requise |
-| FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Respecter les splits natifs ; ne pas transformer automatiquement les QCM en recommandations de triage |
+| FrenchMedMCQA | Couverture française, baseline MCQA | Apache-2.0 | candidate sous contrôle | Archive épinglée `be9a03f…` ; splits projet reconstruits après déduplication ; ne pas présenter ce découpage comme le benchmark original |
 | MedQuAD | Questions-réponses médicales générales | CC BY 4.0 | candidate auditée | Révision `577bd37…` épinglée ; exclure les sous-ensembles 10–12 ; revue PII et clinique requise avant toute sélection |
 | UltraMedical-Preference | Paires de préférences pour DPO | MIT | candidate auditée, fuite de split | Révision `761eb79…` épinglée ; reconstruire les splits ; réserver le test à l'évaluation |
 
@@ -39,17 +39,17 @@ Ce registre permet de décider si une source peut entrer dans le pipeline. Une l
 ### FrenchMedMCQA
 
 - **Référence primaire :** [dataset `qanastek/frenchmedmcqa`](https://huggingface.co/datasets/qanastek/frenchmedmcqa)
-- **Version à épingler avant téléchargement :** révision Hugging Face (commit SHA), à renseigner dans le manifeste.
+- **Version acquise :** révision Hugging Face `be9a03fde01d9f05107b14941af1ad99897691cf`, archive et checksum consignés dans `data/manifests/src-frenchmedmcqa-deft-2023-full.json`.
 - **Contenu :** 3 105 questions de QCM médical en français, issues d'examens français de spécialisation en pharmacie ; cinq propositions et une ou plusieurs réponses correctes.
 - **Licence affichée :** Apache License 2.0.
 - **Déclaration de données sensibles :** la dataset card indique l'absence d'informations personnelles ou sensibles.
 - **Usage POC envisagé :** baseline de compréhension médicale francophone et évaluation de format QCM ; ce corpus ne contient pas, à lui seul, une politique de triage.
-- **Risques / contrôles :** préserver les splits natifs ; ne pas convertir mécaniquement une bonne réponse d'examen en conseil médical ni en niveau de priorité ; soumettre toute transformation SFT à une revue clinique.
+- **Risques / contrôles :** les splits natifs contiennent des questions normalisées communes ; le projet utilise des splits reconstruits et ne les présente pas comme l'évaluation officielle. Ne pas convertir mécaniquement une bonne réponse d'examen en conseil médical ni en niveau de priorité ; soumettre toute transformation clinique à une revue adaptée.
 
 ### MedQuAD
 
 - **Référence primaire :** [dépôt `abachaa/MedQuAD`](https://github.com/abachaa/MedQuAD)
-- **Version à épingler avant téléchargement :** commit Git précis et checksum de l'archive, à renseigner dans le manifeste.
+- **Version acquise :** commit Git `577bd37b96c02d1833b2c9eed2de9f96964e96cb`, archive et checksum consignés dans `data/manifests/src-medquad-577bd37.json`.
 - **Contenu :** 47 457 paires question-réponse provenant de 12 sites NIH, avec annotations complémentaires dans les fichiers XML.
 - **Licence affichée :** Creative Commons Attribution 4.0 International (CC BY 4.0).
 - **Restriction documentée :** le dépôt a retiré les réponses de trois sous-ensembles pour respecter le droit d'auteur de MedlinePlus (A.D.A.M. Medical Encyclopedia, médicaments et compléments).
@@ -77,9 +77,9 @@ Une source ou un sous-ensemble ne passe de `candidate sous contrôle` à `approv
 6. Contrôle de format, de langue, de doublons et de contenu dangereux exécuté.
 7. Validation de l'adéquation clinique demandée lorsque le contenu est utilisé pour produire une priorité, une recommandation ou une règle d'escalade.
 
-## État d’acquisition au 2026-09-03
+## État d’acquisition au 2026-09-16
 
-MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference ont été acquis localement dans `data/raw/`, hors Git, à des révisions épinglées. Les quatre manifestes restent `candidate`. Les miroirs `nthngdy/frenchmedmcqa` et `keivalya/MedQuad-MedicalQnADataset` transmis comme références secondaires ne remplacent pas les sources canoniques déjà auditées : leurs dataset cards n'affichent pas de licence et leurs périmètres diffèrent des corpus canoniques.
+MediQAl, FrenchMedMCQA, MedQuAD et UltraMedical-Preference ont été acquis localement dans des espaces `data/raw/` hors Git, à des révisions épinglées. Les quatre manifestes restent `candidate` car les contrôles de provenance et d'intégrité ne remplacent ni la revue contextuelle PII, ni l'avis juridique, ni la validation clinique. Les miroirs `nthngdy/frenchmedmcqa` et `keivalya/MedQuad-MedicalQnADataset` transmis comme références secondaires ne remplacent pas les sources canoniques déjà auditées : leurs dataset cards n'affichent pas de licence et leurs périmètres diffèrent des corpus canoniques.
 
 ## Ce que ce document prouve et ne prouve pas
 

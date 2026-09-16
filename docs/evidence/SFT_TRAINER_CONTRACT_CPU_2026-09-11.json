@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "environment": "local_cpu_tiny_random_model",
+  "actual_trl_label_records": 4200,
+  "supervised_prompt_tokens": 0,
+  "all_response_tokens_supervised": true,
+  "native_eos_per_record": 1,
+  "synthetic_training_only": true,
+  "medical_training_steps": 0,
+  "resume": {
+    "continuous_steps": 4,
+    "interrupted_at": 2,
+    "resumed_to": 4,
+    "adapter_tensors_bitwise_equal": true,
+    "required_files": [
+      "adapter_model.safetensors",
+      "optimizer.pt",
+      "scheduler.pt",
+      "rng_state.pth",
+      "trainer_state.json"
+    ]
+  },
+  "versions": {
+    "torch": "2.13.0",
+    "transformers": "5.5.0",
+    "trl": "0.23.1",
+    "peft": "0.18.1",
+    "datasets": "4.3.0",
+    "accelerate": "1.14.0"
+  },
+  "script_sha256": "40e5d8c15e087f17f42783f030bcc19dae4819cb35773f241e572555261d29b3",
+  "limits": [
+    "CPU proof does not cover CUDA quantization, Unsloth or fp16 scaler resume."
+  ]
+}

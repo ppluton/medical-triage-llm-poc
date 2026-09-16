@@ -6,6 +6,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from triage_poc.source_sft import render_source_sft_conversation
+
 
 class SourceSftPreflightError(RuntimeError):
     """Raised when a source-derived SFT artifact is not safe to train."""
@@ -57,7 +59,7 @@ def _validate_rendered(rows: list[dict[str, object]], split: str) -> set[str]:
 
 
 def validate_source_sft_artifacts(
-    manifest_path: Path, artifact_directory: Path
+    manifest_path: Path, artifact_directory: Path, *, audit_candidate: bool = False
 ) -> tuple[
     dict[str, object],
     list[dict[str, object]],
@@ -67,7 +69,10 @@ def validate_source_sft_artifacts(
     """Validate hashes, counts, conversations, and test isolation."""
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("status") != "ready_for_local_educational_sft":
+    allowed = {"ready_for_local_educational_sft"}
+    if audit_candidate:
+        allowed.add("candidate_pending_pilot")
+    if manifest.get("status") not in allowed:
         raise SourceSftPreflightError("The derived dataset is not approved for local SFT.")
     if manifest.get("triage_label_count") != 0:
         raise SourceSftPreflightError("Source QA SFT must not contain triage labels.")
@@ -98,6 +103,13 @@ def validate_source_sft_artifacts(
     validation_ids = _validate_rendered(validation, "validation")
     if train_ids & validation_ids:
         raise SourceSftPreflightError("Train and validation record IDs overlap.")
+    canonical_ids = [record.get("record_id") for record in canonical]
+    if any(not isinstance(value, str) or not value for value in canonical_ids):
+        raise SourceSftPreflightError("Invalid canonical record ID.")
+    if len(set(canonical_ids)) != len(canonical_ids):
+        raise SourceSftPreflightError("Duplicate canonical record ID.")
+    if any(record.get("split") not in {"train", "validation", "test"} for record in canonical):
+        raise SourceSftPreflightError("Invalid canonical split.")
     canonical_splits = {
         str(record.get("record_id")): record.get("split") for record in canonical
     }
@@ -108,6 +120,14 @@ def validate_source_sft_artifacts(
         raise SourceSftPreflightError("A rendered train ID has the wrong canonical split.")
     if any(canonical_splits.get(record_id) != "validation" for record_id in validation_ids):
         raise SourceSftPreflightError("A rendered validation ID has the wrong canonical split.")
+    for split, rendered_ids in (("train", train_ids), ("validation", validation_ids)):
+        expected_ids = {key for key, value in canonical_splits.items() if value == split}
+        if not expected_ids or rendered_ids != expected_ids:
+            raise SourceSftPreflightError(f"Rendered {split} does not cover its canonical split.")
+    canonical_by_id = {record["record_id"]: record for record in canonical}
+    for row in train + validation:
+        if row != render_source_sft_conversation(canonical_by_id[row["record_id"]]):
+            raise SourceSftPreflightError("Rendered content differs from its canonical record.")
     return manifest, canonical, train, validation
 
 
@@ -137,3 +157,34 @@ def token_length_summary(
         "over_max_sequence_length": sum(length > max_sequence_length for length in lengths),
         "max_sequence_length": max_sequence_length,
     }
+
+
+def rendered_token_summary(rows, tokenizer, *, max_sequence_length: int) -> dict:
+    """Inspect exact trainer text, including template overhead and terminal EOS."""
+    if not rows or max_sequence_length <= 0 or tokenizer.eos_token_id is None:
+        raise SourceSftPreflightError("Rows, positive context size and EOS are required.")
+    lengths = []
+    missing_eos = 0
+    for row in rows:
+        text = tokenizer.apply_chat_template(row["messages"], tokenize=False,
+                                             add_generation_prompt=False)
+        ids = tokenizer.encode(text, add_special_tokens=False)
+        lengths.append(len(ids))
+        missing_eos += not ids or ids[-1] != tokenizer.eos_token_id
+    return {"method": "exact_training_chat_template", "count": len(rows),
+            "maximum": max(lengths), "max_sequence_length": max_sequence_length,
+            "over_max_sequence_length": sum(n > max_sequence_length for n in lengths),
+            "missing_terminal_native_eos": missing_eos,
+            "pad_equals_eos": tokenizer.pad_token_id == tokenizer.eos_token_id}
+
+
+def preflight_failures(summaries: dict) -> list[str]:
+    failures = []
+    for split, summary in summaries.items():
+        if summary["over_max_sequence_length"]:
+            failures.append(f"{split}: rendered sequences exceed the context limit")
+        if summary["missing_terminal_native_eos"]:
+            failures.append(f"{split}: native EOS is not the terminal training token")
+        if summary["pad_equals_eos"]:
+            failures.append(f"{split}: padding can mask EOS targets")
+    return failures

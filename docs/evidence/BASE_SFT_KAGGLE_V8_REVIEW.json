@@ -1,0 +1,23 @@
+{
+  "status": "draft",
+  "date": "2026-09-05",
+  "reviewer": "Codex automated technical review, no clinical reviewer",
+  "comparison_sha256": "5f17eccce3fdf0ac72ec54f12e930f72ccc358a0fe47a832c016579cc01b9aba",
+  "decision": "hold_for_generation_diagnostic",
+  "rationale": "Source-reference likelihood improves but all SFT generations reach the cap; repetitive outputs require inference and stop-token diagnosis before DPO.",
+  "clinical_review_status": "not_performed",
+  "variants": {
+    "base": {
+      "generations": 30,
+      "at_256_token_cap": 15,
+      "contains_cjk_characters": 0,
+      "median_generation_latency_ms": 13710.612117500004
+    },
+    "sft": {
+      "generations": 30,
+      "at_256_token_cap": 30,
+      "contains_cjk_characters": 6,
+      "median_generation_latency_ms": 26311.753543500003
+    }
+  }
+}

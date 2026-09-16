@@ -1,0 +1,48 @@
+{
+  "status": "supervised_token_volume_audited",
+  "dataset_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+  "counts": {
+    "train": {
+      "abachaa/MedQuAD": {
+        "records": 1746,
+        "completion_tokens_including_eos": 408644,
+        "hpo_records": 291,
+        "hpo_completion_tokens": 129281
+      },
+      "ANR-MALADES/MediQAl": {
+        "records": 1176,
+        "completion_tokens_including_eos": 21823
+      },
+      "qanastek/frenchmedmcqa": {
+        "records": 799,
+        "completion_tokens_including_eos": 25004
+      }
+    },
+    "validation": {
+      "abachaa/MedQuAD": {
+        "records": 230,
+        "completion_tokens_including_eos": 53910,
+        "hpo_records": 42,
+        "hpo_completion_tokens": 19086
+      },
+      "ANR-MALADES/MediQAl": {
+        "records": 149,
+        "completion_tokens_including_eos": 2856
+      },
+      "qanastek/frenchmedmcqa": {
+        "records": 100,
+        "completion_tokens_including_eos": 3078
+      }
+    }
+  },
+  "test_records_used": 0,
+  "limits": [
+    "Token volume describes exposure, not measured gradient contribution or medical truth.",
+    "The role of repeated templates in generation failures is not causally proven."
+  ],
+  "tokenizer_files_sha256": {
+    "tokenizer.json": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09",
+    "tokenizer_config.json": "8afc76e17070a6a722817babaf72189e1e9022f1ba94566226811a9c242c7708",
+    "chat_template.jinja": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb"
+  }
+}

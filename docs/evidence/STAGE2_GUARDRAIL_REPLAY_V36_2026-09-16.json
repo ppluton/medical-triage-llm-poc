@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-16",
+  "status": "completed_historical_output_replay_not_new_inference",
+  "guardrail_version": "proposed-guardrails-v1",
+  "api_version": "0.4.0",
+  "prompt_version": "triage-demo-v6-proposed",
+  "source_run": "api-dialogue-v36",
+  "scenario_records": 18,
+  "models": {
+    "base": {
+      "guardrail_status_counts": {"corrected": 7, "model_output": 3, "safe_fallback": 8},
+      "priority_exact_match_rate_after_replay": 0.8888888888888888,
+      "critical_recall_after_replay": 1.0,
+      "critical_red_flag_coverage_after_replay": 1.0,
+      "uncertainty_priority_floor_rate_after_replay": 1.0
+    },
+    "sft": {
+      "guardrail_status_counts": {"corrected": 5, "model_output": 3, "safe_fallback": 10},
+      "priority_exact_match_rate_after_replay": 0.8888888888888888,
+      "critical_recall_after_replay": 1.0,
+      "critical_red_flag_coverage_after_replay": 1.0,
+      "uncertainty_priority_floor_rate_after_replay": 1.0
+    },
+    "dpo": {
+      "guardrail_status_counts": {"corrected": 5, "model_output": 2, "safe_fallback": 11},
+      "priority_exact_match_rate_after_replay": 0.8888888888888888,
+      "critical_recall_after_replay": 1.0,
+      "critical_red_flag_coverage_after_replay": 1.0,
+      "uncertainty_priority_floor_rate_after_replay": 1.0
+    }
+  },
+  "validation": {
+    "targeted_tests": "45 passed, 1 external deprecation warning",
+    "full_regression": "196 passed, 1 external deprecation warning in 45.41s",
+    "full_regression_job": "val_007b112e429f",
+    "ruff_all_sources_scripts_tests": "passed",
+    "clinical_validation": "not_performed"
+  },
+  "input_sha256": {
+    "scenarios": "9311282ded9c56946f4cb2a4e47bcddf503669f338cb9e590740de8f360e6029",
+    "base_endpoint": "97aa7d97acbb919fbfd2da3568335c1b73a3937a3980e3b75d559531f20ba765",
+    "sft_endpoint": "396215e5cfab79499d31feff83fe10f6976ad4642f1f81dc6453d3dda068f63c",
+    "dpo_endpoint": "3afc7a8b2bbce9eb5978a406fcb6712f7e9b7381431003fd1573c6b035fc097d"
+  },
+  "code_sha256": {
+    "guardrails": "570d833c8a3f69c09a944e8d54e1ecb40e096daf70b19b90477c4232cb1ad642",
+    "guardrail_replay": "d5f24c39e5bf6ef27914e3cd3fba67e64673399ee0dab27539cef3d37c41c520",
+    "anonymization": "c23df1ddb549a44b91fc0a29a5268584e224efd06daf96961ec86130aa681a2e",
+    "api": "bc549e4d3ee9d92d1fbe77da005ae578837258ab2b5f20c45bfe72fcf34ad29a",
+    "serving": "817a082a8f7b7a990e852c6871525083a4e591dd73b0f885dea0dd6661dac0cb",
+    "triage_prompt": "4d2933bc69b4dfed32836716c4f74fd6b0fcb460617d543a86328cf821be35c8",
+    "replay_script": "b8648e3706a16636880d93005d564c576b46139bbda94e41965c0d2df0a6f567"
+  },
+  "private_artifact_sha256": {
+    "full_replay_summary": "e72c0def69d4ba9749f70843a246e749f2cffe0b26da246448dc24a2ba65691b"
+  },
+  "limits": [
+    "Saved v36 outputs were replayed locally; no model inference was repeated.",
+    "Fallback activation does not prove all unsupported claims are detected.",
+    "The development set was previously observed and is not a blind final test.",
+    "The priority references and deterministic rules are proposed educational POC policy, not clinically validated thresholds."
+  ]
+}

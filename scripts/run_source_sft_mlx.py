@@ -11,7 +11,11 @@ import random
 from collections import Counter
 from pathlib import Path
 
-from triage_poc.source_sft_preflight import validate_source_sft_artifacts
+from triage_poc.source_sft_preflight import (
+    preflight_failures,
+    rendered_token_summary,
+    validate_source_sft_artifacts,
+)
 
 TARGET_MODULES = (
     "q_proj",
@@ -52,8 +56,9 @@ def stable_validation_sample(
 
 def main() -> int:
     args = parse_args()
-    if args.max_steps <= 0:
-        raise ValueError("--max-steps must be positive.")
+    if not 1 <= args.max_steps <= 20:
+        raise ValueError("This micro-run is limited to 1–20 steps; "
+                         "full training needs readiness evidence.")
     if not args.model_path.is_dir():
         raise FileNotFoundError(f"Model snapshot not found: {args.model_path}.")
     manifest, canonical, train, validation = validate_source_sft_artifacts(
@@ -70,7 +75,7 @@ def main() -> int:
         for row in validation_sample
     )
     print(
-        "Source SFT MLX preflight passed: "
+        "Source SFT MLX artifact checks passed (tokenizer audit pending): "
         f"train={len(train)}, validation_sample={len(validation_sample)}, "
         f"sources={dict(sorted(validation_sources.items()))}."
     )
@@ -88,6 +93,11 @@ def main() -> int:
         chat_template="qwen3",
         random_state=args.seed,
     )
+    failures = preflight_failures({split: rendered_token_summary(rows, tokenizer,
+        max_sequence_length=2048)
+        for split, rows in (("train", train), ("validation", validation))})
+    if failures:
+        raise ValueError("Training format preflight failed: " + "; ".join(failures))
     model = FastLanguageModel.get_peft_model(
         model,
         r=16,

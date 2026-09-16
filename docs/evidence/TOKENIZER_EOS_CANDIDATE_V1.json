@@ -1,0 +1,8 @@
+{
+  "status": "candidate_not_trained",
+  "vocabulary_unchanged": true,
+  "source_template_sha256": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb",
+  "template_sha256": "b1b89facc7bb7ad8def7ff08d87b39112663dfe269ab04d2d338c40a229254f8",
+  "purpose": "replace_final_assistant_terminator_with_native_eos",
+  "eos_token_id": 151643
+}

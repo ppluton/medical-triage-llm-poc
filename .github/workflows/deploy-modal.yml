@@ -1,0 +1,52 @@
+name: Deploy Modal demonstration
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_deploy:
+        description: "Confirm the capped educational GPU deployment"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: modal-private-demonstration
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ inputs.confirm_deploy }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: modal-demo
+    permissions:
+      contents: read
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ vars.MODAL_ENVIRONMENT }}
+      TRIAGE_API_TOKEN: ${{ secrets.TRIAGE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Install deployment and smoke-test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements/modal.txt -r requirements/api.txt
+          python -m pip install --no-deps -e .
+      - name: Validate predeployment inputs without printing secrets
+        run: python scripts/validate_modal_deployment_environment.py --predeploy
+      - name: Deploy the checksum-locked application
+        run: modal deploy -m deploy.modal_app
+      - name: Resolve the deployed Web Function URL
+        run: echo "TRIAGE_MODAL_URL=$(python scripts/resolve_modal_server_url.py)" >> "$GITHUB_ENV"
+      - name: Validate the resolved endpoint origin
+        run: python scripts/validate_modal_deployment_environment.py
+      - name: Run two synthetic authenticated smoke scenarios
+        run: >-
+          python scripts/evaluate_triage_endpoint.py
+          --url "$TRIAGE_MODAL_URL"
+          --scenarios data/samples/modal-smoke-scenarios.json
+          --output modal-smoke.json

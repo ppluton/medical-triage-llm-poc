@@ -1,0 +1,107 @@
+{
+  "artifacts": {
+    "canonical": {
+      "byte_size": 9620078,
+      "path": "source-sft-v2.2.jsonl",
+      "record_count": 4700,
+      "sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2"
+    },
+    "privacy_decisions": {
+      "byte_size": 1412496,
+      "path": "privacy-decisions.jsonl",
+      "record_count": 4700,
+      "sha256": "ccd30c57aa35337c17fe65c344b2890cb743eb1706bb2f0b3e070e1d778313d5"
+    },
+    "train_qwen3": {
+      "byte_size": 4586922,
+      "path": "train-qwen3.jsonl",
+      "record_count": 3721,
+      "sha256": "d8a07d031e56993e12b81f892aa984e8755a5d4027e5ef0527fddef6477e9766"
+    },
+    "validation_qwen3": {
+      "byte_size": 589639,
+      "path": "validation-qwen3.jsonl",
+      "record_count": 479,
+      "sha256": "4c99d1f69063d822345c13d87f30da559c451332f4f2282280efa2c034da6e0b"
+    }
+  },
+  "code_revision": "ff158aa",
+  "contracts": {
+    "clinical_metadata_schema": {
+      "path": "data/manifests/clinical_metadata_v1.schema.json",
+      "sha256": "1ca0224867b9658c0b80cad8885464a0d856217c2d179ab2ddef1aacda12bbde"
+    },
+    "record_schema": {
+      "path": "data/manifests/source_medical_qa_sft_v2_2.schema.json",
+      "sha256": "8714bcd2f15adae21498acea08dd0b4bf38c702a3649e742c417f808641f4ea3"
+    }
+  },
+  "date": "2026-09-16",
+  "language_counts": {
+    "en": 2226,
+    "fr": 2474
+  },
+  "limits": [
+    "Technical privacy controls do not establish legal anonymization or RGPD compliance.",
+    "Contextual NER candidates were retained to avoid corrupting medical terms and citations.",
+    "The artifact is admitted only for controlled local educational training, not publication.",
+    "No clinical review or validation was performed."
+  ],
+  "manifest_id": "derived-source-medical-qa-sft-v2.2-privacy-finalized",
+  "parent": {
+    "canonical_sha256": "687617f5e3b50de6b7d21adfd7b400a7a1d6bfb6ab01f7555b24de51f906567d",
+    "findings_sha256": "97de628526d1a0915fb8e2041666fa92d560f30c1f10657e75f07dd598d75965"
+  },
+  "related_dpo": {
+    "manifest_id": "derived-ultramedical-dpo-v2-project-reviewed",
+    "path": "data/manifests/derived-ultramedical-dpo-v2-project-reviewed.json",
+    "sha256": "f176b0484a3009c298c50735c3e27c023ce4134ba64d08b944200b0d9013bc04"
+  },
+  "privacy_review": {
+    "contextual_policy": "retain_public_medical_context_without_direct_identifier_pattern",
+    "contextual_records_disposed": 3201,
+    "direct_entity_counts": {
+      "PATIENT_NAME": 31
+    },
+    "direct_findings_masked": 31,
+    "direct_records_masked": 22,
+    "external_publication_status": "blocked_pending_legal_and_human_review",
+    "rgpd_certification": "not_claimed",
+    "technical_status": "passed_for_controlled_educational_training"
+  },
+  "record_count": 4700,
+  "run_id": "sft-privacy-finalization-2026-09-16",
+  "schema_version": "1.0.0",
+  "source_counts": {
+    "ANR-MALADES/MediQAl": 1475,
+    "abachaa/MedQuAD": 2226,
+    "qanastek/frenchmedmcqa": 999
+  },
+  "split_counts": {
+    "test": 500,
+    "train": 3721,
+    "validation": 479
+  },
+  "status": "ready_for_local_educational_sft",
+  "training_launched": false,
+  "triage_label_count": 0,
+  "verification": {
+    "post_finalization_scan": {
+      "date": "2026-09-16",
+      "direct_identifier_findings": 0,
+      "job": "val_8d3b6c685c05",
+      "private_findings_sha256": "ae3ee16c5a8e39e7099af9954da0ccce54af7a11adca1f43d8c4be2be4343c32",
+      "record_status_counts": {
+        "contextual_review_required": 3199,
+        "passed_no_contextual_detection": 1501
+      },
+      "text_free_decisions_sha256": "99b5469637a3867b1dd8ec2cc69fc30a4580b24c49c70c90158c19e6d4d28b7b"
+    },
+    "preflight": {
+      "canonical_schema_valid_records": 4700,
+      "test_records_not_rendered": 500,
+      "train_records": 3721,
+      "validation_records": 479
+    }
+  }
+}

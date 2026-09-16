@@ -1,0 +1,70 @@
+{
+  "manifest_id": "qwen3-1.7b-base-kaggle-private-v1",
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "private_resource_ready_runtime_verification_pending",
+  "source": {
+    "repository": "unsloth/Qwen3-1.7B-Base",
+    "upstream_base": "Qwen/Qwen3-1.7B-Base",
+    "revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+    "url": "https://huggingface.co/unsloth/Qwen3-1.7B-Base/tree/e249956c10337100486d07afb77e3eb2b30906b8"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "declared_in_source_model_card": true,
+    "kaggle_metadata": "apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "kaggle": {
+    "dataset_id": 12040702,
+    "dataset_slug": "pierrepluton/qwen3-1-7b-base-e249956c",
+    "private": true,
+    "status": "ready",
+    "input_path": "/kaggle/input/qwen3-1-7b-base-e249956c",
+    "remote_file_count": 12
+  },
+  "integrity": {
+    "model_filename": "model.safetensors",
+    "model_byte_size": 3441185608,
+    "model_sha256_verified_before_upload": "6df85b39330e5a425ee36253d0f894e4387e4f0a15b9c53cb467d668e6b3a841",
+    "tokenizer_filename": "tokenizer.json",
+    "tokenizer_sha256_verified_before_upload": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "snapshot_manifest_sha256": "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1",
+    "remote_manifest_redownload_sha256": "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1",
+    "remote_model_rehash": "pending_first_attached_runtime"
+  },
+  "future_notebook_policy": {
+    "auto_attach_dataset": true,
+    "load_model_from_kaggle_input": true,
+    "preflight_before_dependency_install": true,
+    "verify_every_manifest_file": true,
+    "huggingface_model_download": false
+  },
+  "v38_candidate": {
+    "status": "prepared_not_launched",
+    "run_name": "api-local-base-v38",
+    "notebook_sha256": "579c9d28b8d14592c261008ff05db375949ff07c2e7ea5ede50043647be580b4",
+    "metadata_sha256": "30ee0cc80e56d4f69fa965f1c3151ed89d084bee247f9f7cabc2f66778ec5772",
+    "embedded_files": 48,
+    "checkout_mismatches": 0
+  },
+  "validation": {
+    "snapshot_unit_tests": "8 passed",
+    "full_regression": "205 passed, 1 external deprecation warning in 34.68s",
+    "full_regression_job": "val_ebcbf75e2104",
+    "ruff": "passed"
+  },
+  "code_sha256": {
+    "snapshot_builder": "b8dbcf394e4effa7c3f162c77d591b944b0704b60feb652b513ad6bab8d06fd3",
+    "runtime_verifier": "6449925aff2fb9c18f5dd9ae591f08a8503846b537f22d5c58e00aaa08bf2508",
+    "notebook_builder": "3b7f79b3984f671ee84d7fecc99ed8d879fcded806bcad1be2b601d457bae9f4",
+    "runtime_runner": "4d7744deb770cd6fdc514a9d510fbf10f707f9beec60449843fc0dc3098e1f2a"
+  },
+  "limits": [
+    "The private Kaggle copy is a reproducibility cache, not a new model release.",
+    "The upload source was verified before transfer and the remote manifest was re-downloaded; the 3.2 GB remote model will be rehashed by the first attached runtime.",
+    "The SFT inference tokenizer remains selected by the vLLM recipe to preserve prior serving behavior; the exact source tokenizer is retained beside the base weights for provenance.",
+    "Future runs read SFT and DPO adapters directly from Kaggle input instead of copying their full archives into notebook output.",
+    "vLLM and API dependency installation is not yet cached by this resource."
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "status": "frozen_reference_length_audited",
+  "validation_file_sha256": "554ee8ad2b8349f7df024796ad58d2bd27464b6dd5a7de56a3b760a305c74f25",
+  "generation_cap": 512,
+  "generation_records": 30,
+  "reference_completions_exceeding_cap": 3,
+  "maximum_reference_completion_tokens": 669,
+  "records": [
+    {
+      "record_id": "sft-source-22b95096fa337ac8bde24c37",
+      "reference_completion_tokens_including_eos": 23
+    },
+    {
+      "record_id": "sft-source-20cbcb01c5bf844aecfa60a2",
+      "reference_completion_tokens_including_eos": 228
+    },
+    {
+      "record_id": "sft-source-210c3ac9a9e7873fc02a53df",
+      "reference_completion_tokens_including_eos": 274
+    },
+    {
+      "record_id": "sft-source-209b66a1a832aeb4bba70d5f",
+      "reference_completion_tokens_including_eos": 214
+    },
+    {
+      "record_id": "sft-source-21d429a6de71caf9a110e400",
+      "reference_completion_tokens_including_eos": 636
+    },
+    {
+      "record_id": "sft-source-20b160aa65532e207823f34b",
+      "reference_completion_tokens_including_eos": 669
+    },
+    {
+      "record_id": "sft-source-1fad1d0fbf11cdd0c778b003",
+      "reference_completion_tokens_including_eos": 144
+    },
+    {
+      "record_id": "sft-source-2176dbd1b517b126fa887e2f",
+      "reference_completion_tokens_including_eos": 150
+    },
+    {
+      "record_id": "sft-source-2006dd343eeb49346d74fb41",
+      "reference_completion_tokens_including_eos": 89
+    },
+    {
+      "record_id": "sft-source-21b32e8b6252fb21e74e817b",
+      "reference_completion_tokens_including_eos": 197
+    },
+    {
+      "record_id": "sft-source-22acb952efe6ce6368ee769b",
+      "reference_completion_tokens_including_eos": 544
+    },
+    {
+      "record_id": "sft-source-2193913b2e28c19b37bf7731",
+      "reference_completion_tokens_including_eos": 190
+    },
+    {
+      "record_id": "sft-source-2070e415f6f7374d59ac956d",
+      "reference_completion_tokens_including_eos": 185
+    },
+    {
+      "record_id": "sft-source-1fab1bf7eba4c61bbdbacb10",
+      "reference_completion_tokens_including_eos": 314
+    },
+    {
+      "record_id": "sft-source-204ad73dc403848153790f24",
+      "reference_completion_tokens_including_eos": 322
+    },
+    {
+      "record_id": "sft-source-1550cf426ebc418e5687d267",
+      "reference_completion_tokens_including_eos": 31
+    },
+    {
+      "record_id": "sft-source-141322b67de7a67f88744b53",
+      "reference_completion_tokens_including_eos": 9
+    },
+    {
+      "record_id": "sft-source-148f4f77ba8f9d88f342fffb",
+      "reference_completion_tokens_including_eos": 6
+    },
+    {
+      "record_id": "sft-source-1426133419621878f691f7c3",
+      "reference_completion_tokens_including_eos": 4
+    },
+    {
+      "record_id": "sft-source-1322dd39170409d0f5ba991a",
+      "reference_completion_tokens_including_eos": 16
+    },
+    {
+      "record_id": "sft-source-134e300b683d865a495bb74e",
+      "reference_completion_tokens_including_eos": 9
+    },
+    {
+      "record_id": "sft-source-1525c330bb68b7d5c94c4566",
+      "reference_completion_tokens_including_eos": 22
+    },
+    {
+      "record_id": "sft-source-139b53140fe59d64e815a540",
+      "reference_completion_tokens_including_eos": 14
+    },
+    {
+      "record_id": "sft-source-14129c2aead5d6aaf6827be1",
+      "reference_completion_tokens_including_eos": 6
+    },
+    {
+      "record_id": "sft-source-62fdc247563e3d49bd041110",
+      "reference_completion_tokens_including_eos": 18
+    },
+    {
+      "record_id": "sft-source-66e3558cd52fe12aee3b41cf",
+      "reference_completion_tokens_including_eos": 68
+    },
+    {
+      "record_id": "sft-source-6a0546e13be0101dda58fbe0",
+      "reference_completion_tokens_including_eos": 11
+    },
+    {
+      "record_id": "sft-source-686b234bfba4c2fbdccc6274",
+      "reference_completion_tokens_including_eos": 30
+    },
+    {
+      "record_id": "sft-source-62fa0a06b8ab307d6e30571f",
+      "reference_completion_tokens_including_eos": 91
+    },
+    {
+      "record_id": "sft-source-604f53d7e1e180ae0a583709",
+      "reference_completion_tokens_including_eos": 33
+    }
+  ],
+  "limit": "Reference length is contextual, not a reason to excuse repetitive or incorrect output."
+}

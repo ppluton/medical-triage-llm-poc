@@ -1,0 +1,20 @@
+{
+  "purpose": "corrected_v2_pipeline_micro",
+  "dataset_version": "v2",
+  "input_scope": "smoke",
+  "max_steps": 20,
+  "train_records": 64,
+  "validation_records": 3,
+  "test_records_used": 0,
+  "notebook_sha256": "0267a8370db6181f5447323f4cd34c6f000a7e89c94bc2b8b9650c48c21353a4",
+  "files_sha256": {
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/sft_termination.py": "2c691f95c3e9709d92fbcc82ac68d6c101c6f8cfa7b09c64cee620cb2f820660",
+    "scripts/run_sft_termination_experiment.py": "286578021e60573651d30445b5a9a69e7f1dfdb6953e2a55283e91e4c0f354e7"
+  },
+  "input_manifest_sha256": "345e5c75875c2bed35a817949539d3479170a9021a310c41f4313b0237a6686b",
+  "kaggle_kernel": "pierrepluton/chsa-source-sft-qwen3",
+  "kaggle_version": 16,
+  "status": "completed"
+}

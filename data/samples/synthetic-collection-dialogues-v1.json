@@ -1,0 +1,108 @@
+[
+  {
+    "id": "collection-fr",
+    "synthetic": true,
+    "split": "development",
+    "source_scenario": "dev-triage-v2-other-fr",
+    "reference_status": "technical_collection_only_no_clinical_reference",
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Gêne légère du poignet, stable depuis six mois, déjà évaluée, sans traumatisme, aggravation, fièvre ni symptôme associé ; rendez-vous de suivi déjà prévu."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    },
+    "answers": {
+      "duration": {
+        "status": "value",
+        "value": "six mois"
+      },
+      "evolution": {
+        "status": "value",
+        "value": "stable, sans aggravation"
+      },
+      "intensity": {
+        "status": "value",
+        "value": "légère"
+      },
+      "associated_symptoms": {
+        "status": "absent"
+      },
+      "medical_history": {
+        "status": "unavailable"
+      },
+      "allergies": {
+        "status": "unavailable"
+      },
+      "medications": {
+        "status": "unavailable"
+      },
+      "vulnerability_factors": {
+        "status": "unavailable"
+      },
+      "vitals": {
+        "status": "unavailable"
+      }
+    }
+  },
+  {
+    "id": "collection-en",
+    "synthetic": true,
+    "split": "development",
+    "source_scenario": "dev-triage-v2-other-en",
+    "reference_status": "technical_collection_only_no_clinical_reference",
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": [
+          "Mild wrist discomfort, stable for six months, already assessed, no injury, worsening, fever or associated symptom; follow-up already scheduled."
+        ],
+        "duration": null,
+        "medical_history": [],
+        "allergies": [],
+        "medications": [],
+        "vitals": {}
+      }
+    },
+    "answers": {
+      "duration": {
+        "status": "value",
+        "value": "six months"
+      },
+      "evolution": {
+        "status": "value",
+        "value": "stable, no worsening"
+      },
+      "intensity": {
+        "status": "value",
+        "value": "mild"
+      },
+      "associated_symptoms": {
+        "status": "absent"
+      },
+      "medical_history": {
+        "status": "unavailable"
+      },
+      "allergies": {
+        "status": "unavailable"
+      },
+      "medications": {
+        "status": "unavailable"
+      },
+      "vulnerability_factors": {
+        "status": "unavailable"
+      },
+      "vitals": {
+        "status": "unavailable"
+      }
+    }
+  }
+]

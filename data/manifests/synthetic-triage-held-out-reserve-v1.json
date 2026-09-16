@@ -1,0 +1,49 @@
+{
+  "manifest_id": "synthetic-triage-held-out-reserve-v1",
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "frozen_not_evaluated",
+  "artifact": {
+    "path": "data/samples/synthetic-triage-held-out-reserve-v1.json",
+    "sha256": "18597ecee62f63939f66be394a581906e89f994ee83759f9077e5568afce34b7",
+    "records": 18
+  },
+  "development_reference": {
+    "path": "data/samples/synthetic-triage-development-v2.json",
+    "sha256": "9311282ded9c56946f4cb2a4e47bcddf503669f338cb9e590740de8f360e6029",
+    "records": 18
+  },
+  "counts": {
+    "categories": {
+      "chest_pain": 2,
+      "contradictory_information": 2,
+      "insufficient_information": 2,
+      "neurological_deficit": 2,
+      "other": 2,
+      "pediatric": 2,
+      "pregnancy": 2,
+      "respiratory_distress": 2,
+      "vulnerability": 2
+    },
+    "languages": {
+      "en": 9,
+      "fr": 9
+    },
+    "proposed_levels": {
+      "deferred": 2,
+      "maximum": 8,
+      "moderate": 8
+    }
+  },
+  "isolation": {
+    "identifier_overlap": 0,
+    "exact_request_digest_overlap": 0,
+    "selection_or_model_outputs_seen": false
+  },
+  "clinical_validation": "not_performed",
+  "limits": [
+    "References are proposed for an educational POC and are not clinical thresholds.",
+    "Exact request isolation does not exclude semantic similarity or paraphrases.",
+    "The reserve must not influence prompts, checkpoints, hyperparameters, or guardrails."
+  ]
+}

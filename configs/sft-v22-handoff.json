@@ -1,0 +1,16 @@
+{
+  "schema_version": "sft-handoff-v1",
+  "date": "2026-09-12",
+  "status": "verified_artifacts_not_clinical_approval",
+  "checkpoint": "kaggle-v22-step-500",
+  "base_model": "unsloth/Qwen3-1.7B-Base",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "files": {
+    "adapter_model.safetensors": "5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d",
+    "adapter_config.json": "c898716e6750dd1131e319aa2346731c5a0c0a38e29214a200a36076b06f4372",
+    "tokenizer.json": "476870a1f2fb6f6a2759a6ede2383bf9d5d738f17844563b65c91965b722ae09",
+    "tokenizer_config.json": "99edf6e0f078f19ec1be394705811708c274663768997ca32b9e4c0cbf4447f5",
+    "chat_template.jinja": "f2e03cfdf930fb26e7c88ca83abc3a0c1e7c5b1fe68ee43ba81d0c47c8460ceb"
+  },
+  "source_run_sha256": "45d6c88ef5e17e150a38f5ca7593212619ff854febe10901635f98913a6edb75"
+}

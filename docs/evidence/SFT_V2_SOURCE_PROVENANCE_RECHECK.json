@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-11",
+  "status": "passed",
+  "sources": {
+    "medquad": {
+      "revision": "577bd37b96c02d1833b2c9eed2de9f96964e96cb",
+      "tracked_changes": false
+    },
+    "mediqal": {
+      "revision": "5af34948a74c7b8807c476204a21149ffb00ea2c",
+      "tracked_changes": false
+    },
+    "frenchmedmcqa": {
+      "zip_sha256": "58724ce1ac97b01b89ad5a6d4d1d9b9de3379d36feaaa11058d88aad8a2af4c9",
+      "rebuilt_train_source_matches": 2191,
+      "policy": "rebuilt project splits; not an evaluation on the original benchmark test split"
+    }
+  },
+  "clinical_validation": "not_performed"
+}

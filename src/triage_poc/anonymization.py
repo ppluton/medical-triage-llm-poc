@@ -6,6 +6,7 @@ pipeline. It does not establish legal compliance or clinical validation.
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -13,12 +14,15 @@ from typing import Protocol
 
 from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer, RecognizerResult
 from presidio_analyzer.nlp_engine import NlpEngineProvider
+from presidio_analyzer.predefined_recognizers import EmailRecognizer
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
+from tldextract import TLDExtract
 
 SUPPORTED_LANGUAGES = frozenset({"fr", "en"})
 PII_ENTITIES = (
     "PERSON",
+    "PATIENT_NAME",
     "PHONE_NUMBER",
     "EMAIL_ADDRESS",
     "CREDIT_CARD",
@@ -27,6 +31,18 @@ PII_ENTITIES = (
     "LOCATION",
     "DATE_TIME",
     "PATIENT_REFERENCE",
+)
+SERVING_PII_ENTITIES = (
+    "PATIENT_NAME",
+    "PHONE_NUMBER",
+    "EMAIL_ADDRESS",
+    "CREDIT_CARD",
+    "IBAN_CODE",
+    "IP_ADDRESS",
+    "PATIENT_REFERENCE",
+)
+GENERATED_PLACEHOLDER_PATTERN = re.compile(
+    rf"<({'|'.join(re.escape(entity) for entity in PII_ENTITIES)})>"
 )
 
 
@@ -72,6 +88,15 @@ class AnonymizationResult:
     audit: AnonymizationAudit
 
 
+class OfflineEmailRecognizer(EmailRecognizer):
+    """Use the bundled public suffix snapshot without network or writable caches."""
+
+    _extract = TLDExtract(suffix_list_urls=(), cache_dir=None)
+
+    def validate_result(self, pattern_text: str):
+        return self._extract(pattern_text).fqdn != ""
+
+
 def build_presidio_analyzer() -> AnalyzerEngine:
     """Build a bilingual Presidio analyzer with a French patient-reference recognizer.
 
@@ -99,8 +124,47 @@ def build_presidio_analyzer() -> AnalyzerEngine:
             )
         ],
     )
+    patient_name_recognizers = [
+        PatternRecognizer(
+            supported_entity="PATIENT_NAME",
+            supported_language="fr",
+            patterns=[
+                Pattern(
+                    name="fr_explicit_patient_name",
+                    regex=(
+                        r"\b(?:je m['’]appelle|nom du patient\s*(?:est|:)|M(?:me|lle)?\.?|"
+                        r"Monsieur|Madame)\s+[A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+"
+                        r"(?:[-'][A-ZÀ-ÖØ-Ý]?[a-zà-öø-ÿ]+)?"
+                        r"(?:\s+[A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+"
+                        r"(?:[-'][A-ZÀ-ÖØ-Ý]?[a-zà-öø-ÿ]+)?){0,2}\b"
+                    ),
+                    score=0.85,
+                )
+            ],
+        ),
+        PatternRecognizer(
+            supported_entity="PATIENT_NAME",
+            supported_language="en",
+            patterns=[
+                Pattern(
+                    name="en_explicit_patient_name",
+                    regex=(
+                        r"\b(?:my name is|patient(?:'s)? name\s*(?:is|:)|Mr\.?|Mrs\.?|Ms\.?)"
+                        r"\s+[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?"
+                        r"(?:\s+[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?){0,2}\b"
+                    ),
+                    score=0.85,
+                )
+            ],
+        ),
+    ]
     analyzer = AnalyzerEngine(nlp_engine=provider.create_engine(), supported_languages=["fr", "en"])
+    analyzer.registry.remove_recognizer("EmailRecognizer")
+    for language in SUPPORTED_LANGUAGES:
+        analyzer.registry.add_recognizer(OfflineEmailRecognizer(supported_language=language))
     analyzer.registry.add_recognizer(registry_recognizer)
+    for recognizer in patient_name_recognizers:
+        analyzer.registry.add_recognizer(recognizer)
     return analyzer
 
 
@@ -147,11 +211,19 @@ class TextAnonymizer:
                 analyzer_results=detections,
                 operators=operators,
             )
-            residual = self._analyzer.analyze(
-                text=output.text,
-                entities=self._entities,
-                language=language,
-            )
+            residual = [
+                result
+                for result in self._analyzer.analyze(
+                    text=output.text,
+                    entities=self._entities,
+                    language=language,
+                )
+                if not _is_inside_generated_placeholder(
+                    output.text,
+                    result,
+                    {detection.entity_type for detection in detections},
+                )
+            ]
         except Exception as exc:  # Presidio configuration and runtime errors must stop ingestion.
             raise AnonymizationConfigurationError(
                 "PII anonymization could not complete safely."
@@ -173,3 +245,18 @@ class TextAnonymizer:
 
 def _count_entities(results: Sequence[RecognizerResult]) -> dict[str, int]:
     return dict(sorted(Counter(result.entity_type for result in results).items()))
+
+
+def _is_inside_generated_placeholder(
+    text: str,
+    result: RecognizerResult,
+    generated_entities: set[str],
+) -> bool:
+    """Ignore NER hits on placeholders created by this anonymization pass only."""
+
+    return any(
+        match.group(1) in generated_entities
+        and match.start() <= result.start
+        and result.end <= match.end()
+        for match in GENERATED_PLACEHOLDER_PATTERN.finditer(text)
+    )

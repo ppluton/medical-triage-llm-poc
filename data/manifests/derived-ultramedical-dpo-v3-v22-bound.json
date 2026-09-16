@@ -1,0 +1,53 @@
+{
+  "manifest_id": "derived-ultramedical-dpo-v3-v22-bound",
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "approved_for_educational_dpo",
+  "clinical_review_status": "not_performed",
+  "language": "en",
+  "source": {
+    "manifest_id": "src-ultramedical-preference-761eb79",
+    "revision": "761eb7935310ba662a96d93c5af342e5269d5759",
+    "sha256": "d40f19d8feb6f56e2310207e065716eb791449e2acd215b5705726869cdc926c"
+  },
+  "artifacts": {
+    "train": {
+      "path": "train.jsonl",
+      "records": 426,
+      "byte_size": 2345053,
+      "sha256": "f7eb839a9b0d5c74a6da34ffc6c3d6fee2397b7eb84e372db39e743f39926d65"
+    },
+    "validation": {
+      "path": "validation.jsonl",
+      "records": 54,
+      "byte_size": 321822,
+      "sha256": "45f17fc40509bcc9bc893fa7c679485c3937ada2590e1afd886ed823cf0041f3"
+    }
+  },
+  "full_manifest": {
+    "path": "manifest.json",
+    "byte_size": 603192,
+    "sha256": "8374a9e26abaf82d49f7b27022ada27beec1bf295f08c9ecef8dbfbebcda1a35"
+  },
+  "lineage": {
+    "parent_manifest_sha256": "688b917a459352089f1817702d7b6f203dac4123b439783d8be4775d5797c02e",
+    "decision_sha256": "5cd0ac5c3793d5da3d32c1bb1616f9f7ef1f8faa5b965af03deb7e0b531ef5ef",
+    "sft_manifest_sha256": "44328484b9c05dc58304007037cbcca17d57d49ac08949b356c8c314c8ae99c0",
+    "protected_sft_canonical_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2"
+  },
+  "isolation": {
+    "dpo_records": 480,
+    "payload_rows_unchanged": 480,
+    "current_sft_records": 4700,
+    "current_sft_prompt_hashes_protected": 4700,
+    "protected_prompt_hashes_total": 8343,
+    "dpo_current_sft_prompt_overlap": 0,
+    "test_answers_used": 0
+  },
+  "limits": [
+    "Source biomedical preferences are not validated triage preferences.",
+    "No healthcare professional reviewed or approved this dataset.",
+    "The English-only dataset does not establish French preference alignment.",
+    "The full manifest and JSONL artifacts remain outside the public Git repository."
+  ]
+}

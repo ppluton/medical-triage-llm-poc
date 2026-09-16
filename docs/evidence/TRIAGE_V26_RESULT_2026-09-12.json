@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-12",
+  "status": "completed",
+  "kernel_version": 26,
+  "script_version_id": 349329192,
+  "optimizer_steps": 0,
+  "test_records_used": 0,
+  "reload_identical_generations": 30,
+  "prompt_version": "triage-demo-v3-proposed",
+  "source_hashes": {
+    "summary.json": "7b09e97c3bf11d666fa83edc6695824d7917f0f1f88c7cc89b8481676b3e596c",
+    "sft.json": "44eed71d4ed31656f52bd750552ffc073a010147909131ee2d47cac46780e2da",
+    "reload.json": "9cc439e5db7b002c9c9c6fcd2ac1cde5688c07795eb528dd93c07e38d7951a74",
+    "adapter_reload.json": "40501d3ab9b48d3e82dcbabbf7673693c44717f976db03b15b496962753502e5",
+    "base.json": "1f6b38c1bd4cf56b47018332d8a61421bba84c655c433c1560c239b2697ff1df"
+  },
+  "stages": {
+    "base": {
+      "records": 18,
+      "valid_schema": 0,
+      "invalid_schema": 18,
+      "agreement_on_all_records": 0.0,
+      "valid_only_metrics": null,
+      "clinical_validation": "not_performed",
+      "limits": [
+        "Proposed synthetic references, not clinical truth.",
+        "Question counts do not measure relevance or safety.",
+        "Raw generation, no constrained decoding or API guardrails."
+      ],
+      "eos_terminated": 12,
+      "capped_512": 6,
+      "critical_cases": 6,
+      "valid_correct_critical_on_all_critical": 0
+    },
+    "sft": {
+      "records": 18,
+      "valid_schema": 12,
+      "invalid_schema": 6,
+      "agreement_on_all_records": 0.3333333333333333,
+      "valid_only_metrics": {
+        "total": 12,
+        "exact_match_rate": 0.5,
+        "critical_recall": 0.5,
+        "under_triage_count": 6,
+        "over_triage_count": 0,
+        "confusion_matrix": {
+          "maximum": {
+            "maximum": 2,
+            "moderate": 2,
+            "deferred": 0
+          },
+          "moderate": {
+            "maximum": 0,
+            "moderate": 2,
+            "deferred": 4
+          },
+          "deferred": {
+            "maximum": 0,
+            "moderate": 0,
+            "deferred": 2
+          }
+        }
+      },
+      "clinical_validation": "not_performed",
+      "limits": [
+        "Proposed synthetic references, not clinical truth.",
+        "Question counts do not measure relevance or safety.",
+        "Raw generation, no constrained decoding or API guardrails."
+      ],
+      "eos_terminated": 12,
+      "capped_512": 6,
+      "critical_cases": 6,
+      "valid_correct_critical_on_all_critical": 2
+    }
+  }
+}

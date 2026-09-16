@@ -35,6 +35,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest-output", required=True, type=Path)
     parser.add_argument("--code-revision", required=True)
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--previous-canonical", required=True, type=Path)
     return parser.parse_args()
 
 
@@ -51,17 +52,26 @@ def _write_jsonl(path: Path, rows: list[dict[str, object]]) -> dict[str, object]
 
 def main() -> int:
     args = parse_args()
+    if args.output_directory.exists() or args.manifest_output.exists():
+        raise ValueError("Choose fresh versioned outputs; existing datasets must be preserved")
+    prior_hash = hashlib.sha256(args.previous_canonical.read_bytes()).hexdigest()
+    if prior_hash != "da7b7913cc70a4cd1c340d8afb1bfcc910af5eb7b8511f81b18f356d8420b347":
+        raise ValueError("This v2 rebuild requires the frozen v1 canonical split assignments")
+    previous = [json.loads(line) for line in args.previous_canonical.read_text().splitlines()]
+    previous_splits = {row["record_id"]: row["split"] for row in previous}
+    if len(previous_splits) != len(previous):
+        raise ValueError("Previous canonical IDs are not unique")
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
     validator = Draft202012Validator(schema)
 
     mediqa_train = (
         anchor
-        for anchor in iter_mediqal_anchors(args.mediqal_repository)
+        for anchor in iter_mediqal_anchors(args.mediqal_repository, include_options=True)
         if "/train.json:" in anchor.source_locator
     )
     french_train = (
         anchor
-        for anchor in iter_frenchmedmcqa_anchors(args.frenchmedmcqa_rebuilt)
+        for anchor in iter_frenchmedmcqa_anchors(args.frenchmedmcqa_rebuilt, include_options=True)
         if anchor.source_locator.startswith("train:")
     )
     records, summary = build_source_sft_dataset(
@@ -73,6 +83,7 @@ def main() -> int:
         TextAnonymizer(entities=SOURCE_DIRECT_IDENTIFIER_ENTITIES),
         code_revision=args.code_revision,
         run_id=args.run_id,
+        previous_splits=previous_splits,
     )
     for record in records:
         validator.validate(record)
@@ -84,7 +95,7 @@ def main() -> int:
         raise ValueError("Post-anonymization question duplicates detected.")
 
     args.output_directory.mkdir(parents=True, exist_ok=True)
-    canonical = _write_jsonl(args.output_directory / "source-sft-v1.jsonl", records)
+    canonical = _write_jsonl(args.output_directory / "source-sft-v2.jsonl", records)
     train_records = [record for record in records if record["split"] == "train"]
     validation_records = [record for record in records if record["split"] == "validation"]
     train = _write_jsonl(
@@ -97,10 +108,20 @@ def main() -> int:
     )
     manifest = {
         "schema_version": "1.0.0",
-        "manifest_id": "derived-source-medical-qa-sft-v1",
+        "manifest_id": "derived-source-medical-qa-sft-v2",
         "status": "ready_for_local_educational_sft",
+        "pipeline_code_sha256": {name: hashlib.sha256(
+            (Path(__file__).resolve().parents[1] / name).read_bytes()).hexdigest()
+            for name in ["scripts/build_source_sft_dataset.py", "src/triage_poc/source_sft.py",
+                         "src/triage_poc/sft_authoring_queue.py",
+                         "src/triage_poc/anonymization.py"]},
         "run_id": args.run_id,
         "code_revision": args.code_revision,
+        "previous_canonical_sha256": hashlib.sha256(
+            args.previous_canonical.read_bytes()).hexdigest(),
+        "mcq_options": "source_choices_preserved_before_anonymization",
+        "long_content_policy": "rejected_not_truncated",
+        "split_policy": "preserve_previous_source_record_assignments",
         "record_count": len(records),
         "source_counts": summary["source_counts"],
         "language_counts": summary["language_counts"],
