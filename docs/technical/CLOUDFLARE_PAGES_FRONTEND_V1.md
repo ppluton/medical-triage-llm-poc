@@ -1,7 +1,7 @@
 # Frontend Cloudflare Pages v1
 
 - Date : 2026-09-16
-- Statut : `active_predeployment`
+- Statut : `frontend_deployed_backend_pending`
 - Sources : [ADR-021](../decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md),
   documentation Cloudflare citée dans l'ADR.
 
@@ -55,7 +55,8 @@ GitHub sont des opérations séparées à confirmer.
 ## État de preuve
 
 Le 16 septembre, le build Wrangler 4.132.0 compile, `npm audit` retourne zéro vulnérabilité,
-20 tests ciblés passent et le runtime local retourne 200 pour la page, 401 pour un mauvais
-jeton et 405 pour une méthode non autorisée. Le projet Cloudflare `chsa-triage-poc` est créé
-et le paquet de sept fichiers est chargé dans le tableau de bord. La publication, le domaine
-personnalisé, les secrets et le raccord Modal ne sont pas encore revendiqués dans cet état.
+22 tests ciblés passent et le runtime local retourne 200 pour la page, 401 pour un mauvais
+jeton et 405 pour une méthode non autorisée. Le projet Cloudflare `chsa-triage-poc` est publié
+sur `https://triage-poc.pierrepluton.com` ; la page, le contrat, les en-têtes et le certificat
+ont été observés depuis l'extérieur. La [preuve de déploiement](../evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
+sépare cette réussite du raccord Modal encore absent.

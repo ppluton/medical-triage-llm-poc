@@ -23,6 +23,10 @@ synthétiques de démonstration distincts de la réserve finale désormais figé
 Le serveur cloud, son accès privé et son coût doivent avoir une cible autorisée.
 Un appel au fournisseur simulé n'est pas une démonstration du modèle.
 
+Le frontend public de soutenance est `https://triage-poc.pierrepluton.com`. Son accessibilité
+et son certificat sont prouvés séparément du backend : tant que Modal n'est pas raccordé, le
+proxy répond 503 et la démonstration d'inférence n'est pas considérée comme terminée.
+
 L'interface `/demo` sert de poste de démonstration : sélectionner le scénario français de
 douleur thoracique, lancer l'évaluation, commenter la priorité, les informations manquantes,
 la latence et l'identifiant d'audit ; basculer ensuite sur le scénario neurologique anglais.

@@ -98,7 +98,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage :** parcours réel observé, URL et accès transmissibles au jury, trace retrouvable. Un notebook Kaggle avec API sur localhost n’est pas ce livrable. Une CI de tests/build n’est pas une CD.
 
-**État au 16 septembre :** la démonstration Kaggle + Cloudflare de l'[ADR-019](docs/decisions/ADR-019-demonstration-zero-cout.md) reste un secours éphémère. Pour satisfaire la CD demandée, l'[ADR-020](docs/decisions/ADR-020-reactiver-modal-budget-borne.md) réactive Modal Starter sous les plafonds 5 USD d'usage total et 0 USD de dépense nette. L'[ADR-021](docs/decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md) sépare le frontend dans Cloudflare Pages, cible `triage-poc.pierrepluton.com` et conserve le jeton Modal côté serveur. Le projet Pages et son paquet sont préparés ; publication, domaine, secrets, volume Modal, GPU, endpoint, smoke distant et exécutions GitHub restent à prouver.
+**État au 16 septembre :** la démonstration Kaggle + Cloudflare de l'[ADR-019](docs/decisions/ADR-019-demonstration-zero-cout.md) reste un secours éphémère. Pour satisfaire la CD demandée, l'[ADR-020](docs/decisions/ADR-020-reactiver-modal-budget-borne.md) réactive Modal Starter sous les plafonds 5 USD d'usage total et 0 USD de dépense nette. L'[ADR-021](docs/decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md) sépare le frontend dans Cloudflare Pages. `https://triage-poc.pierrepluton.com` répond désormais en HTTPS avec l'interface et son contrat ; le proxy retourne volontairement 503 tant que les secrets et l'endpoint Modal manquent. Les volumes, le GPU, l'inférence réelle, l'audit distant et les exécutions CD restent à prouver.
 
 ## 6 — Assembler la première livraison et préparer l’oral
 
@@ -119,13 +119,13 @@ La première version peut être identifiée comme brouillon avec écarts explici
 
 ## Plan jusqu’à demain
 
-1. Publier le frontend Cloudflare Pages et activer `triage-poc.pierrepluton.com`.
-2. Créer les volumes et secrets Modal autorisés, transférer les poids vérifiés et déployer l'endpoint.
-3. Raccorder les secrets Cloudflare au domaine Modal, puis exécuter les smoke tests FR/EN et rapprocher l'audit.
-4. Exécuter les CD GitHub manuelles, figer les preuves dans le rapport et chronométrer l'oral.
+1. Créer les volumes et secrets Modal autorisés, transférer les poids vérifiés et déployer l'endpoint.
+2. Raccorder les secrets Cloudflare au domaine Modal, puis exécuter les smoke tests FR/EN et rapprocher l'audit.
+3. Exécuter les CD GitHub manuelles et vérifier les révisions déployées.
+4. Figer les preuves dans le rapport, générer les livrables finaux et chronométrer l'oral.
 
 **Résultat final de l’étape modèle :** la [réserve v46](docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md) recharge le SFT sélectionné, vérifie le snapshot Base et évalue une seule fois les dix-huit cas gelés. Elle obtient 0 JSON conforme, 17 plafonds sur 18 et une répétition moyenne de 0,8289 ; les dix-huit sorties sont signalées par la revue de projet. Ce résultat négatif est figé et ne servira pas à régler le modèle, le prompt ou les garde-fous.
 
 **État de la livraison locale :** le rapport, le support et le déroulé de démonstration intègrent désormais le SFT retenu et le résultat négatif de la réserve. Le candidat PDF de cinq pages et le PowerPoint de dix slides ont été rendus et contrôlés. Le nommage officiel reste à confirmer.
 
-**Prochaine action concrète : publier le paquet Cloudflare Pages déjà chargé, puis associer `triage-poc.pierrepluton.com`.** L'interface répondra d'abord `503` tant que Modal n'est pas raccordé ; cette séparation est volontaire et empêche de confondre frontend publié et inférence GPU prouvée.
+**Prochaine action concrète : créer les ressources Modal bornées, charger les poids vérifiés et déployer l'endpoint GPU.** Le frontend public reste en échec fermé jusqu'au raccord des secrets ; cette séparation empêche de confondre publication web et inférence vLLM prouvée.

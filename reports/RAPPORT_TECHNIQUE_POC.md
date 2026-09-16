@@ -122,12 +122,12 @@ La régression locale complète passe 245 tests au 16 septembre. La v37 a exécu
 La démonstration Kaggle + Cloudflare préparée par l'ADR-019 reste un secours éphémère : son premier run dédié a échoué sur le service Kaggle Secrets avant le démarrage de vLLM et ne prouve pas une CD. L'ADR-020 réactive donc Modal Starter comme cible pilote principale. Avant toute ressource, le portail a confirmé 30 USD de crédits mensuels, 0 USD consommé, une limite d'usage totale de 5 USD et une limite de dépense nette de 0 USD. La définition borne la T4 à un conteneur, revient à zéro après 120 secondes d'inactivité, vérifie les checksums Base/SFT et expose uniquement FastAPI protégée par Bearer token. Le workflow GitHub Actions exige un déclenchement manuel, une confirmation et l'environnement `modal-demo`. Le déploiement, l'URL, le smoke extérieur et l'audit distant restent à observer ; les volumes doivent être supprimés après récupération des preuves pour éviter un coût de stockage résiduel.
 
 L'ADR-021 sépare le frontend du conteneur GPU. Le projet Cloudflare Pages
-`chsa-triage-poc` cible `triage-poc.pierrepluton.com` et embarque une Function qui compare le
+`chsa-triage-poc` est publié sur `https://triage-poc.pierrepluton.com` et embarque une Function qui compare le
 jeton jury en temps constant, borne le JSON à 32 Kio et remplace ce jeton par le secret Modal.
 Le build Wrangler compile, l'audit npm ne relève aucune vulnérabilité et le runtime local
-refuse les mauvais jetons. Ces observations ne prouvent encore ni publication, ni domaine,
-ni raccord Modal ; elles évitent seulement d'exposer un secret ou de réveiller le GPU pour
-servir les actifs statiques.
+refuse les mauvais jetons. La page, le contrat, les en-têtes de sécurité et le certificat du
+sous-domaine ont été observés depuis l'extérieur. Le proxy public retourne encore 503 faute de
+secrets Modal ; cette preuve ne couvre donc ni le modèle, ni l'audit distant, ni la latence GPU.
 
 Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation sans dépense](../docs/evidence/FREE_DEMO_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
 
