@@ -25,9 +25,9 @@ proxifié de `triage-poc.pierrepluton.com` vers `chsa-triage-poc.pages.dev`.
 | `POST /v1/triage` avant secrets Modal | HTTP 503, backend non configuré |
 | Certificat TLS | CN et SAN `triage-poc.pierrepluton.com`, Google Trust Services WE1 |
 
-Au moment de la vérification, le site était déjà joignable en HTTPS tandis que le tableau de
-bord affichait encore `Verifying`. L'accès public et le certificat sont donc observés ; le
-statut fournisseur `Active` devra être relevé séparément après propagation.
+Lors du premier contrôle, le site était déjà joignable en HTTPS tandis que le tableau de bord
+affichait encore `Verifying`. Après propagation et actualisation, le statut fournisseur est
+passé à `Active`. L'accès public, le certificat et l'activation Cloudflare sont donc observés.
 
 ## CI et limites
 
