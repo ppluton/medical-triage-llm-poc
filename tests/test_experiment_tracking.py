@@ -4,7 +4,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from triage_poc.experiment_tracking import build_tracking_payload, log_completed_run
+from triage_poc.comparison import sha256
+from triage_poc.experiment_tracking import (
+    build_dpo_tracking_payload,
+    build_tracking_payload,
+    log_completed_run,
+)
 
 
 def _write(path, value):
@@ -130,3 +135,51 @@ def test_logs_to_explicit_local_store_with_fake_mlflow(tmp_path):
     assert mlflow.uri.endswith("/mlruns/mlflow.db")
     assert mlflow.created_experiment[1].endswith("/mlruns/artifacts")
     assert len(mlflow.logged) == 3
+
+
+def test_builds_text_free_dpo_tracking_payload(tmp_path):
+    dataset = _write(tmp_path / "dataset.json", {"status": "approved_for_educational_dpo"})
+    sft = _write(
+        tmp_path / "sft.json",
+        {"files": {"adapter_model.safetensors": "a" * 64}},
+    )
+    summary = _write(
+        tmp_path / "dpo-summary.json",
+        {
+            "status": "completed_educational_dpo",
+            "test_records_used": 0,
+            "dataset_manifest_sha256": sha256(dataset),
+            "sft_manifest_sha256": sha256(sft),
+            "sft_sha256": "a" * 64,
+            "base_revision": "b" * 40,
+            "config": {
+                "max_steps": 20,
+                "beta": 0.1,
+                "learning_rate": 5e-6,
+                "gradient_accumulation_steps": 8,
+                "seed": 42,
+            },
+            "train_metrics": {"train_loss": 0.6, "train_runtime": 10.0},
+            "weight_checks": {
+                "reference_unchanged": True,
+                "policy_changed_tensors": 2,
+            },
+        },
+    )
+    state = _write(
+        tmp_path / "trainer-state.json",
+        {"log_history": [{"eval_loss": 0.5, "eval_rewards/accuracies": 0.75}]},
+    )
+    verification = _write(
+        tmp_path / "verification.json",
+        {
+            "status": "saved_weights_verified",
+            "adapter_sha256": "c" * 64,
+            "run_summary_sha256": sha256(summary),
+            "test_records_used": 0,
+        },
+    )
+    payload = build_dpo_tracking_payload(summary, state, dataset, sft, verification)
+    assert payload["metrics"]["final_eval_preference_accuracy"] == 0.75
+    assert payload["tags"]["reference_unchanged"] == "true"
+    assert state not in payload["artifacts"]

@@ -64,6 +64,78 @@ def build_tracking_payload(
     }
 
 
+def build_dpo_tracking_payload(
+    summary_path: Path,
+    trainer_state_path: Path,
+    dataset_manifest_path: Path,
+    sft_manifest_path: Path,
+    verification_path: Path,
+) -> dict[str, Any]:
+    """Validate a completed DPO lineage and expose only aggregated, text-free values."""
+
+    summary = json.loads(summary_path.read_text())
+    state = json.loads(trainer_state_path.read_text())
+    dataset_manifest = json.loads(dataset_manifest_path.read_text())
+    sft_manifest = json.loads(sft_manifest_path.read_text())
+    verification = json.loads(verification_path.read_text())
+    if summary.get("status") != "completed_educational_dpo" or summary.get(
+        "test_records_used"
+    ) != 0:
+        raise ValueError("Tracking requires a completed DPO run without test records.")
+    from triage_poc.comparison import sha256
+
+    if summary.get("dataset_manifest_sha256") != sha256(dataset_manifest_path):
+        raise ValueError("DPO dataset manifest checksum mismatch.")
+    if summary.get("sft_manifest_sha256") != sha256(sft_manifest_path):
+        raise ValueError("DPO SFT handoff checksum mismatch.")
+    if (
+        verification.get("status") != "saved_weights_verified"
+        or verification.get("adapter_sha256") is None
+        or verification.get("run_summary_sha256") != sha256(summary_path)
+        or verification.get("test_records_used") != 0
+    ):
+        raise ValueError("Saved DPO weights require a matching verification artifact.")
+    if dataset_manifest.get("status") != "approved_for_educational_dpo":
+        raise ValueError("DPO dataset is not approved for the documented educational scope.")
+    if sft_manifest.get("files", {}).get("adapter_model.safetensors") != summary.get(
+        "sft_sha256"
+    ):
+        raise ValueError("DPO summary and SFT identity differ.")
+    evaluations = [row for row in state.get("log_history", []) if "eval_loss" in row]
+    if not evaluations:
+        raise ValueError("DPO trainer state lacks evaluation metrics.")
+    final_eval = evaluations[-1]
+    config = summary.get("config", {})
+    checks = summary.get("weight_checks", {})
+    return {
+        "params": {
+            "base_revision": summary["base_revision"],
+            "sft_sha256": summary["sft_sha256"],
+            "dataset_manifest_sha256": summary["dataset_manifest_sha256"],
+            "max_steps": config["max_steps"],
+            "beta": config["beta"],
+            "learning_rate": config["learning_rate"],
+            "gradient_accumulation_steps": config["gradient_accumulation_steps"],
+            "seed": config["seed"],
+        },
+        "metrics": {
+            "optimizer_steps": float(config["max_steps"]),
+            "train_loss": float(summary["train_metrics"]["train_loss"]),
+            "train_runtime_seconds": float(summary["train_metrics"]["train_runtime"]),
+            "final_eval_loss": float(final_eval["eval_loss"]),
+            "final_eval_preference_accuracy": float(final_eval["eval_rewards/accuracies"]),
+            "policy_changed_tensors": float(checks["policy_changed_tensors"]),
+        },
+        "tags": {
+            "run_status": summary["status"],
+            "clinical_validation": "not_performed",
+            "privacy_scope": "text_free_tracking_only",
+            "reference_unchanged": str(checks["reference_unchanged"]).lower(),
+        },
+        "artifacts": [summary_path, sft_manifest_path, verification_path],
+    }
+
+
 def log_completed_run(
     payload: dict[str, Any],
     tracking_directory: Path,

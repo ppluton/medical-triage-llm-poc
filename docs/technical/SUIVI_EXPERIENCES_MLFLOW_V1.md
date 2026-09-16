@@ -46,6 +46,12 @@ pilote, 150 étapes et 392 tenseurs modifiés. Les seuls artefacts copiés sont 
 configuration, le résumé text-free et le manifeste de données ; aucun `base.json`,
 `pilot_end.json` ou texte généré n'est présent dans le store.
 
+Le DPO v41 a été importé avec l'identifiant
+`1009a86e35c64021a75b572a9448f23d`. Le store contient uniquement les métriques
+agrégées de loss, préférence, durée et tenseurs modifiés, ainsi que le résumé text-free,
+le handoff SFT et la preuve de poids sauvegardés. Les paires `chosen/rejected`, le trainer
+state complet et les sorties générées ne sont pas journalisés.
+
 ## Limites
 
 Le store local améliore la traçabilité et la reprise, mais ne constitue pas une sauvegarde
