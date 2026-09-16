@@ -30,13 +30,13 @@ def main() -> None:
         "comparison-summary",
         "sft-manifest",
         "sft-adapter",
-        "dpo-run",
         "reserve-manifest",
         "reserve",
         "development-reference",
         "output",
     ):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--dpo-run", type=Path)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("Fresh one-shot reserve output required")
@@ -50,7 +50,15 @@ def main() -> None:
     selected = decision["selected_variant"]
     identity = load_sft_identity(args.sft_manifest, args.sft_adapter)
     base_snapshot = verify_base_snapshot(Path(identity["base_model"]))
-    dpo_proof = verify_completed_dpo(args.dpo_run, args.sft_manifest, args.sft_adapter)
+    if selected == "dpo":
+        if args.dpo_run is None:
+            raise ValueError("The selected DPO candidate requires its verified run directory")
+        dpo_proof = verify_completed_dpo(args.dpo_run, args.sft_manifest, args.sft_adapter)
+    else:
+        dpo_proof = {
+            "status": "not_loaded_selected_variant_sft",
+            "selection_decision_sha256": sha256(args.selection),
+        }
     scenarios = json.loads(args.reserve.read_text())
 
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -76,6 +84,7 @@ def main() -> None:
     ):
         raise ValueError("Loaded SFT tensors differ from the saved adapter")
     if selected == "dpo":
+        assert args.dpo_run is not None
         dpo_adapter = args.dpo_run / "adapter/policy"
         model.load_adapter(str(dpo_adapter), adapter_name="dpo", is_trainable=False)
         if adapter_fingerprint(model, "dpo") != saved_adapter_fingerprint(

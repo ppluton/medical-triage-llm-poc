@@ -80,10 +80,13 @@ def main() -> None:
     bootstrap = (
         f"encoded={encoded!r}\n"
         f"sft_manifest_hash={sha256(sft_manifest)!r}\n"
-        f"dpo_summary_hash={sha256(dpo_summary)!r}\n"
-        f"dpo_adapter_hash={dpo_proof['adapter_sha256']!r}\n"
         f"run_name={RUN_NAME!r}\n"
     )
+    if decision["selected_variant"] == "dpo":
+        bootstrap += (
+            f"dpo_summary_hash={sha256(dpo_summary)!r}\n"
+            f"dpo_adapter_hash={dpo_proof['adapter_sha256']!r}\n"
+        )
     bootstrap += """from pathlib import Path
 import base64, hashlib, json, lzma, os, shutil, subprocess, sys
 root=Path('/kaggle/working/selected-reserve-code')
@@ -96,23 +99,25 @@ def locate(filename,digest):
     return matches[0]
 sft_manifest=locate('SFT_HANDOFF_MANIFEST.json',sft_manifest_hash)
 sft=sft_manifest.parent
-dpo_summary=locate('RUN_SUMMARY.json',dpo_summary_hash)
-dpo_weight=locate('adapter_model.safetensors',dpo_adapter_hash)
-if dpo_weight.parent.name!='policy': raise ValueError('Unexpected DPO policy layout')
-dpo=Path('/kaggle/working/selected-dpo-v41')
-shutil.copytree(dpo_weight.parent,dpo/'adapter/policy')
-shutil.copy2(dpo_summary,dpo/'run_summary.json')
 subprocess.run([sys.executable,'-m','pip','install','-q','-r',str(root/'requirements.txt')],check=True)
 subprocess.run([sys.executable,'-m','pip','uninstall','-y','torchao'],check=True)
 command=[sys.executable,str(root/'scripts/run_selected_reserve.py'),
     '--selection',str(root/'selection/model-selection.json'),
     '--comparison-summary',str(root/'selection/comparison-summary.json'),
     '--sft-manifest',str(root/'configs/sft-v39-handoff.json'),
-    '--sft-adapter',str(sft),'--dpo-run',str(dpo),
+    '--sft-adapter',str(sft),
     '--reserve-manifest',str(root/'data/manifests/synthetic-triage-held-out-reserve-v1.json'),
     '--reserve',str(root/'data/samples/synthetic-triage-held-out-reserve-v1.json'),
     '--development-reference',str(root/'data/samples/synthetic-triage-development-v2.json'),
     '--output',str(Path('/kaggle/working')/run_name)]
+if 'dpo_summary_hash' in globals():
+    dpo_summary=locate('RUN_SUMMARY.json',dpo_summary_hash)
+    dpo_weight=locate('adapter_model.safetensors',dpo_adapter_hash)
+    if dpo_weight.parent.name!='policy': raise ValueError('Unexpected DPO policy layout')
+    dpo=Path('/kaggle/working/selected-dpo-v41')
+    shutil.copytree(dpo_weight.parent,dpo/'adapter/policy')
+    shutil.copy2(dpo_summary,dpo/'run_summary.json')
+    command.extend(['--dpo-run',str(dpo)])
 subprocess.run(command,env=dict(os.environ,PYTHONPATH=str(root/'src'),
     PYTHONUNBUFFERED='1',CUDA_VISIBLE_DEVICES='0',TOKENIZERS_PARALLELISM='false'),
     check=True,timeout=3600)
@@ -126,7 +131,9 @@ subprocess.run(command,env=dict(os.environ,PYTHONPATH=str(root/'src'),
     ):
         raise ValueError("Only the authorized private free T4 notebook may be used")
     meta["kernel_sources"] = []
-    meta["dataset_sources"] = [BASE_DATASET_ID, SFT_DATASET_ID, DPO_DATASET_ID]
+    meta["dataset_sources"] = [BASE_DATASET_ID, SFT_DATASET_ID]
+    if decision["selected_variant"] == "dpo":
+        meta["dataset_sources"].append(DPO_DATASET_ID)
     notebook = {
         "nbformat": 4,
         "nbformat_minor": 5,
@@ -170,7 +177,9 @@ subprocess.run(command,env=dict(os.environ,PYTHONPATH=str(root/'src'),
         "dpo_adapter_sha256": dpo_proof["adapter_sha256"],
         "base_dataset_source": BASE_DATASET_ID,
         "sft_dataset_source": SFT_DATASET_ID,
-        "dpo_dataset_source": DPO_DATASET_ID,
+        "dpo_dataset_source": (
+            DPO_DATASET_ID if decision["selected_variant"] == "dpo" else None
+        ),
         "clinical_validation": "not_performed",
     }
     args.report.write_text(json.dumps(report, indent=2) + "\n")
