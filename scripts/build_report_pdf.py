@@ -30,9 +30,17 @@ def main():
     styles["Heading2"].keepWithNext = True
     styles["Heading2"].fontSize = 13
     styles["Heading2"].textColor = colors.HexColor("#154c62")
+    styles["Heading3"].keepWithNext = True
+    styles["Heading3"].fontSize = 11
+    styles["Heading3"].leading = 14
+    styles["Heading3"].textColor = colors.HexColor("#154c62")
 
     def inline(text):
-        text = re.sub(r"\[([^]]+)\]\(([^)]+)\)", lambda m: m[1] + " (" + m[2] + ")", text)
+        text = re.sub(
+            r"\[([^]]+)\]\(([^)]+)\)",
+            lambda m: m[1] + (" (" + m[2] + ")" if "://" in m[2] else ""),
+            text,
+        )
         text = escape(text.replace("—", "-").replace("–", "-").replace("≤", "<="))
         text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
         return text.replace("`", "")
@@ -71,6 +79,8 @@ def main():
             style, line = styles["Heading1"], line[2:]
         elif line.startswith("## "):
             style, line = styles["Heading2"], line[3:]
+        elif line.startswith("### "):
+            style, line = styles["Heading3"], line[4:]
         story.append(Paragraph(inline(line), style))
         i += 1
 
