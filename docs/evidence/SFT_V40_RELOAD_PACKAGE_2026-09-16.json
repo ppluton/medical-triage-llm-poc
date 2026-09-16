@@ -1,0 +1,27 @@
+{
+  "status": "prepared_for_authorized_private_launch",
+  "notebook_bytes": 971028,
+  "notebook_sha256": "20b11fb9540be2d3c4326c21a54ee90145543815262a913fe66b4dab4b774ba8",
+  "files_sha256": {
+    "scripts/run_source_sft_pilot.py": "ba43b5ca90ec7e0ce1cf609c60c9e83788f00b1feee128be2385031cb901a19f",
+    "src/triage_poc/__init__.py": "acfb1c31a131fc1a72001f242ebbeae49bc85b90cf2334417e1a98fd97900e15",
+    "src/triage_poc/comparison.py": "ec8327a76716cfb226b5dfffcd5d9b2a561ab67d5e0109acf74d90b82441ce8c",
+    "src/triage_poc/model_snapshot.py": "6449925aff2fb9c18f5dd9ae591f08a8503846b537f22d5c58e00aaa08bf2508",
+    "src/triage_poc/sft_pilot.py": "712a8023ff96b6d00041b718d7aada413d674168e1761dbf450dc7cb90ca6841",
+    "src/triage_poc/sft_termination.py": "007fcbadb2f34dd293468829cbdec6fb67af5fa4ead6bf8afa62fb53abdc7e57",
+    "configs/sft-v2.2-final-pilot.json": "775be88f06252d74c4358eec69ff710bace2cd1f207da06d244a133334699956",
+    "configs/qwen3-source-sft-chat-template.jinja": "b44d8063c3b49558db444116213856583a953510918d3eac9c58bf1b35c905b0"
+  },
+  "data_sha256": {
+    "train-qwen3.jsonl": "d8a07d031e56993e12b81f892aa984e8755a5d4027e5ef0527fddef6477e9766",
+    "validation-qwen3.jsonl": "4c99d1f69063d822345c13d87f30da559c451332f4f2282280efa2c034da6e0b"
+  },
+  "codec": "lzma_base85_compact_rows_exact_reconstruction_verified",
+  "test_records_used": 0,
+  "kernel": "pierrepluton/chsa-source-sft-qwen3",
+  "private": true,
+  "gpu": "NvidiaTeslaT4",
+  "mode": "read_only_pilot_reload",
+  "source_pilot_summary_sha256": "41a7e0c8e54154bac44f4bb6a21e3fe5a5b80a97523409b86a359f1f7b7972b2",
+  "optimizer_steps_to_execute": 0
+}

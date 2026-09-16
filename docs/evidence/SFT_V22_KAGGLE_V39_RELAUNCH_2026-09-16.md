@@ -1,7 +1,7 @@
 # Relance SFT v2.2 — Kaggle v39
 
 - Date : 2026-09-16
-- Statut observé : `RUNNING`
+- Statut observé : `COMPLETE`
 - Notebook privé : `pierrepluton/chsa-source-sft-qwen3`, version 39
 - Révision de correction : `9258fe4`
 - Notebook SHA-256 : `3772c9c49e88645803a6586049aafaa4dd1c03e0c21bd53b2db96d035c790520`
@@ -23,5 +23,8 @@ tokenizer ; les poids et le vocabulaire du snapshot restent inchangés.
 
 La v39 utilise exactement les mêmes hashes train/validation, le même snapshot Base, la même
 seed et les mêmes hyperparamètres bornés que v38. Aucun test n'est embarqué. Le statut
-`RUNNING` prouve la relance seulement ; smoke, reprise, 150 étapes et résultats restent à
-observer.
+`RUNNING` prouvait la relance seulement. Le statut Kaggle est ensuite passé à `COMPLETE`.
+Les artefacts ont été téléchargés dans `artifacts/kaggle/sft-v22-v39-reports/` et sont
+analysés dans la [preuve de résultat v39](SFT_V39_RESULT_2026-09-16.md). Le run principal
+a atteint 150 étapes et produit les checkpoints 50/100/150. La vérification de recharge
+du checkpoint principal est déléguée à la v40 en lecture seule.
