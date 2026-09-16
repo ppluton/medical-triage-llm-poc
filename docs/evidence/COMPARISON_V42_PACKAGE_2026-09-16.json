@@ -1,0 +1,16 @@
+{
+  "status": "prepared_for_authorized_private_launch",
+  "run_name": "current-comparison-v42",
+  "notebook_sha256": "d3f872434e33d8ad3a3bb68133a62cb5470d4b699c6b9284a07c862e0c5fe685",
+  "optimizer_steps": 0,
+  "sft_manifest_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5",
+  "sft_adapter_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+  "dpo_run_sha256": "5e72ce63cc0c19e243a34093c67d53a61092188d96b9c6738a045032e2146514",
+  "dpo_adapter_sha256": "ae66169e4a52077803fc5403bf088bf599f7813f86e5ec3cdb82df584fd4b565",
+  "validation_records": 479,
+  "qa_generation_records": 30,
+  "synthetic_development_records": 18,
+  "test_records_used": 0,
+  "held_out_triage_reserve_used": false,
+  "sft_dataset_source": "pierrepluton/chsa-sft-v39-step150-c911f9c6"
+}
