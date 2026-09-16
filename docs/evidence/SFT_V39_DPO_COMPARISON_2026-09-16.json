@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-16",
+  "status": "completed",
+  "scope": "paired validation comparison for bounded educational DPO handoff",
+  "sft_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+  "sft_handoff_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5",
+  "dataset_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2",
+  "test_records_used": 0,
+  "comparison": {
+    "base": {
+      "mean_example_response_nll": 1.4569168090820312,
+      "native_eos_terminated": 20,
+      "reached_token_cap": 10,
+      "exact_normalized_reference_matches": 0,
+      "mean_repeated_token_4gram_fraction": 0.34466439593316733
+    },
+    "sft": {
+      "mean_example_response_nll": 0.7118023037910461,
+      "native_eos_terminated": 22,
+      "reached_token_cap": 8,
+      "exact_normalized_reference_matches": 7,
+      "mean_repeated_token_4gram_fraction": 0.23853377068603024
+    }
+  },
+  "reload": {
+    "status": "pilot_fresh_reload_verified",
+    "identical_generations": 30,
+    "absolute_loss_delta": 0.0,
+    "optimizer_steps_executed": 0,
+    "summary_sha256": "01f447bb2b7cf1f4290a320f3a67937d6e361c90702bd38cdd577aad9cf2a82a"
+  },
+  "decision_scope": "The SFT is technically admissible as policy and frozen reference for a bounded educational DPO run.",
+  "clinical_validation": "not_performed",
+  "limits": [
+    "Lower validation NLL does not establish clinical quality or triage benefit.",
+    "Eight of thirty SFT generations still reached the token cap.",
+    "The preference dataset is English-only and not clinically validated.",
+    "No held-out triage reserve record was opened or used."
+  ]
+}

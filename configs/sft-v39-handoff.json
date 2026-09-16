@@ -1,0 +1,21 @@
+{
+  "schema_version": "sft-handoff-v1",
+  "date": "2026-09-16",
+  "status": "verified_artifacts_not_clinical_approval",
+  "checkpoint": "kaggle-v39-step-150",
+  "base_model": "/kaggle/input/qwen3-1-7b-base-e249956c",
+  "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+  "files": {
+    "adapter_model.safetensors": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+    "adapter_config.json": "5b533994412bd4a635c52d1c43026f30046515a5b25aa07ea86b9c91f3eaf6cb",
+    "tokenizer.json": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+    "tokenizer_config.json": "99edf6e0f078f19ec1be394705811708c274663768997ca32b9e4c0cbf4447f5",
+    "chat_template.jinja": "b44d8063c3b49558db444116213856583a953510918d3eac9c58bf1b35c905b0"
+  },
+  "source_run_sha256": "41a7e0c8e54154bac44f4bb6a21e3fe5a5b80a97523409b86a359f1f7b7972b2",
+  "reload_summary_sha256": "01f447bb2b7cf1f4290a320f3a67937d6e361c90702bd38cdd577aad9cf2a82a",
+  "dataset_manifest_sha256": "44328484b9c05dc58304007037cbcca17d57d49ac08949b356c8c314c8ae99c0",
+  "dataset_sha256": "309c8708d6ed083bdad0c7ce1c2b0cbb2fdb49f0972d1c93be3533bb2e0316e2",
+  "test_records_used": 0,
+  "clinical_validation": "not_performed"
+}

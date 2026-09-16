@@ -1,0 +1,17 @@
+{
+  "status": "prepared_for_authorized_private_launch",
+  "mode": "bounded_educational_dpo",
+  "run_name": "source-dpo-v41",
+  "notebook_sha256": "24040a24e3d027ef453b3ca8d23f4a90021077b111927045b9f097ccb092965c",
+  "source_sft_summary_sha256": "41a7e0c8e54154bac44f4bb6a21e3fe5a5b80a97523409b86a359f1f7b7972b2",
+  "sft_handoff_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5",
+  "sft_adapter_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+  "dataset_manifest_sha256": "8374a9e26abaf82d49f7b27022ada27beec1bf295f08c9ecef8dbfbebcda1a35",
+  "comparison_sha256": "640d01cc1ad4babadc3563a950bccb66c8e87a2acf2215fe886697124f567a92",
+  "decision_sha256": "a7e7758232527b6c07e9da4249fc34205a30804c4b09989c4b2ec137d087bff4",
+  "optimizer_steps_cap": 20,
+  "test_records_used": 0,
+  "held_out_triage_reserve_used": false,
+  "private": true,
+  "gpu": "NvidiaTeslaT4"
+}

@@ -1,7 +1,7 @@
 # Lancement de la vérification de recharge SFT — Kaggle v40
 
 - Date : 2026-09-16
-- Statut observé : `RUNNING`
+- Statut observé : `COMPLETE`
 - Notebook privé : `pierrepluton/chsa-source-sft-qwen3`, version 40
 - Mode : read_only_pilot_reload
 - Étapes d'optimisation prévues : 0
@@ -13,5 +13,6 @@ Elle recopie l'archive avant vérification, recharge le checkpoint 150 dans un n
 processus, compare les trente générations greedy et la NLL, puis évalue les checkpoints
 50 et 100. Aucun entraînement et aucun test final ne sont autorisés par ce paquet.
 
-Le statut `RUNNING` prouve uniquement le lancement. La recharge et les métriques restent
-à vérifier après récupération des sorties terminales.
+Le statut `RUNNING` prouvait uniquement le lancement. La v40 est ensuite passée à
+`COMPLETE` ; ses sorties téléchargées et vérifiées sont décrites dans
+[le résultat v40](SFT_V40_RELOAD_RESULT_2026-09-16.md).
