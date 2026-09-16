@@ -1,7 +1,13 @@
-name: Archived - Modal demonstration (disabled)
+name: Deploy Modal demonstration
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_deploy:
+        description: "Confirm the capped educational GPU deployment"
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
   group: modal-private-demonstration
@@ -9,8 +15,9 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ false }}
+    if: ${{ inputs.confirm_deploy }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment: modal-demo
     permissions:
       contents: read

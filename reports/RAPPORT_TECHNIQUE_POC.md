@@ -119,13 +119,21 @@ L'audit local conserve désormais le contexte anonymisé transmis au modèle et 
 
 La régression locale complète passe 245 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau.
 
-Pierre a fixé une contrainte de dépense nulle. L'ADR-019 remplace donc la proposition Modal par une démonstration interactive : Kaggle fournit la T4 gratuite déjà utilisée par le projet et Cloudflare Quick Tunnel une URL HTTPS temporaire. Le notebook privé attache uniquement le snapshot Base et le SFT v39, vérifie leurs checksums et celui de `cloudflared`, conserve vLLM/FastAPI en boucle locale et expose seulement l'API authentifiée. Le contrat local et la régression passent 245 tests. Aucun GPU, endpoint ou service payant n'a été créé. L'URL réelle, le smoke extérieur et l'audit de session restent à observer ; Quick Tunnel est sans SLA et n'est pas une CD GPU permanente.
+La démonstration Kaggle + Cloudflare préparée par l'ADR-019 reste un secours éphémère : son premier run dédié a échoué sur le service Kaggle Secrets avant le démarrage de vLLM et ne prouve pas une CD. L'ADR-020 réactive donc Modal Starter comme cible pilote principale. Avant toute ressource, le portail a confirmé 30 USD de crédits mensuels, 0 USD consommé, une limite d'usage totale de 5 USD et une limite de dépense nette de 0 USD. La définition borne la T4 à un conteneur, revient à zéro après 120 secondes d'inactivité, vérifie les checksums Base/SFT et expose uniquement FastAPI protégée par Bearer token. Le workflow GitHub Actions exige un déclenchement manuel, une confirmation et l'environnement `modal-demo`. Le déploiement, l'URL, le smoke extérieur et l'audit distant restent à observer ; les volumes doivent être supprimés après récupération des preuves pour éviter un coût de stockage résiduel.
+
+L'ADR-021 sépare le frontend du conteneur GPU. Le projet Cloudflare Pages
+`chsa-triage-poc` cible `triage-poc.pierrepluton.com` et embarque une Function qui compare le
+jeton jury en temps constant, borne le JSON à 32 Kio et remplace ce jeton par le secret Modal.
+Le build Wrangler compile, l'audit npm ne relève aucune vulnérabilité et le runtime local
+refuse les mauvais jetons. Ces observations ne prouvent encore ni publication, ni domaine,
+ni raccord Modal ; elles évitent seulement d'exposer un secret ou de réveiller le GPU pour
+servir les actifs statiques.
 
 Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation sans dépense](../docs/evidence/FREE_DEMO_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le candidat PDF et le support de soutenance ont été générés et contrôlés localement ; leur nom de remise doit encore être confirmé. La clôture de démonstration nécessite encore une session Kaggle active, l'URL Cloudflare éphémère et un smoke test distant ; elle ne nécessite plus de budget.
+La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le candidat PDF et le support de soutenance ont été générés et contrôlés localement ; leur nom de remise doit encore être confirmé. La clôture de démonstration nécessite encore la publication Cloudflare, l'endpoint Modal, le smoke test distant et la preuve d'audit ; Kaggle reste uniquement le secours éphémère.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 

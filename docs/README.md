@@ -11,9 +11,10 @@ Sources : mission OpenClassrooms, cadrage et spécification du dépôt.
 4. [Corpus de l’étape 1](technical/CORPUS_ETAPE_1_V1.md) — sources, SFT, DPO, métadonnées et portes restantes.
 5. [Processus RGPD du corpus](governance/PROCESSUS_RGPD_CORPUS_V1.md) — méthode, preuves et limites.
 6. [Livrables](../reports/LIVRABLES.md) — fichiers attendus pour la remise.
-7. [Démonstration Kaggle + Cloudflare](technical/DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) — parcours actif sans dépense, implémenté mais non encore exécuté extérieurement.
-8. [Déploiement Modal v1](technical/MODAL_DEPLOYMENT_V1.md) — cible historique payante, préparée mais non déployée et remplacée par l'ADR-019.
-9. [Historique documentaire](HISTORIQUE_DOCUMENTAIRE.md) — anciennes étapes et liens conservés.
+7. [Déploiement Modal v1](technical/MODAL_DEPLOYMENT_V1.md) — cible pilote principale, bornée à 5 USD de crédits et 0 USD de dépense nette, non encore déployée.
+8. [Frontend Cloudflare Pages](technical/CLOUDFLARE_PAGES_FRONTEND_V1.md) — frontend stable et proxy sécurisé vers Modal, préflight local terminé.
+9. [Démonstration Kaggle + Cloudflare](technical/DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) — secours éphémère sans dépense, dont le premier run dédié a échoué avant vLLM.
+10. [Historique documentaire](HISTORIQUE_DOCUMENTAIRE.md) — anciennes étapes et liens conservés.
 
 Le [cadrage](../CADRAGE_MISSION.md) et la [spécification](../SPEC_POC_TRIAGE_MEDICAL.md) restent les références. Le guide organise leur réalisation ; il ne réduit pas leurs exigences.
 

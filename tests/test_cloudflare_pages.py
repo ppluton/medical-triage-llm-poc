@@ -52,3 +52,16 @@ def test_cloudflare_proxy_is_fail_closed_and_streams_modal_response():
     assert "body," in source
     assert "new Response(upstream.body" in source
     assert "console.log" not in source
+
+
+def test_cloudflare_deploy_workflow_is_manual_and_gated():
+    workflow = (
+        REPOSITORY_ROOT / ".github" / "workflows" / "deploy-cloudflare-pages.yml"
+    ).read_text()
+    assert "workflow_dispatch:" in workflow
+    assert "confirm_deploy:" in workflow
+    assert "if: ${{ inputs.confirm_deploy }}" in workflow
+    assert "environment: cloudflare-demo" in workflow
+    assert "CLOUDFLARE_API_TOKEN" in workflow
+    assert "--project-name=chsa-triage-poc" in workflow
+    assert "push:" not in workflow

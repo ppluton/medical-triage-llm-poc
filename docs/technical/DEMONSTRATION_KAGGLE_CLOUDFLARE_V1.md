@@ -23,12 +23,16 @@ Le lanceur échoue avant démarrage si :
 ## Construction du notebook privé
 
 Le builder attache uniquement les deux ressources privées checksum-lockées (Base et SFT v39)
-et crée deux cellules : installation bornée, puis préflight et service interactif.
+et crée deux cellules : installation bornée, puis préflight et service interactif. Il produit
+un notebook privé distinct, `pierrepluton/chsa-free-demo-qwen3`, afin de ne jamais écraser le
+notebook historique `pierrepluton/chsa-source-sft-qwen3` ni ses versions de preuve.
 
 ```bash
 .venv/bin/python scripts/build_kaggle_free_demo.py \
   --metadata artifacts/kaggle/api-guardrails-v37/kernel-metadata.json \
   --output /chemin/prive/kaggle-free-demo
+
+kaggle kernels push -p /chemin/prive/kaggle-free-demo
 ```
 
 Le notebook généré n'est pas destiné à une exécution planifiée permanente : la seconde

@@ -35,6 +35,10 @@ Le notebook contient une cellule d'installation et une cellule interactive de se
 privé, demande une T4 et ne monte aucun DPO. Le token est lu depuis le secret Kaggle
 `TRIAGE_API_TOKEN` sans être sérialisé dans le paquet.
 
+Le builder publie sous l'identifiant privé distinct `pierrepluton/chsa-free-demo-qwen3` et
+retire l'identifiant numérique ainsi que l'image Docker hérités des métadonnées sources. Un
+push de démonstration ne peut donc pas remplacer le notebook historique d'entraînement.
+
 Régression complète via `codex-validate` : Ruff passe, puis `245 passed` avec deux avertissements
 de dépréciation Starlette/AnyIO déjà non bloquants. Job : `val_4c5c9d4f3132`, code 0.
 

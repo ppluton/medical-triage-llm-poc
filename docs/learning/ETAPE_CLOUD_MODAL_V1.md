@@ -1,7 +1,8 @@
 # Préparer une démonstration GPU à coût borné
 
 - Date : 2026-09-16
-- Statut : `superseded` par [la démonstration sans dépense](DEMONSTRATION_ZERO_COUT_2026-09-16.md)
+- Statut : `reactivated_with_budget_guardrails` par
+  [ADR-020](../decisions/ADR-020-reactiver-modal-budget-borne.md)
 - Sources : documentation Modal officielle citée dans
   `docs/technical/MODAL_DEPLOYMENT_V1.md`, preuves v37, sélection v43 et réserve v46.
 
@@ -30,8 +31,18 @@ service distant, authentification, persistance, smoke test et décision clinique
 - le Bearer token de l'API n'est pas le token de déploiement Modal ;
 - une CD manuelle et protégée reste une CD vérifiable sans déclencher des dépenses à chaque push.
 
-## Décision ultérieure
+## Évolution de la décision
 
-Pierre a ensuite exclu toute dépense. Aucun volume, secret ou endpoint Modal n'a été créé et
-le workflow historique est désactivé. Le parcours actif réutilise la T4 gratuite Kaggle et un
-Quick Tunnel Cloudflare éphémère ; voir l'ADR-019.
+Pierre a d'abord exclu toute dépense et l'ADR-019 a retenu Kaggle + Quick Tunnel. Après
+constat que cette voie ne prouvait pas la CD demandée, un compte Starter a été créé. Avant
+toute ressource, l'usage total a été borné à 5 USD de crédits et la dépense nette à 0 USD.
+Modal redevient la cible pilote ; Kaggle reste le secours éphémère.
+
+L'[ADR-021](../decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md) sépare ensuite
+le frontend : Cloudflare Pages sert l'interface sans réveiller le GPU, tandis que sa Function
+protégée appelle Modal uniquement lors d'une évaluation.
+
+La démonstration ne doit pas prendre la forme d'un chat libre. Le produit combine un
+formulaire initial court et une conversation guidée : l'API nomme le champ manquant, le
+client range la réponse dans ce champ et renvoie le contexte consolidé. Ce choix conserve la
+validation de schéma, distingue inconnu/absent/indisponible et rend chaque tour auditable.

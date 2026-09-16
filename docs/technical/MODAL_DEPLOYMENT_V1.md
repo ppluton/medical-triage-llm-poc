@@ -1,7 +1,8 @@
 # Déploiement privé Modal v1
 
 - Date : 2026-09-16
-- Statut : `superseded_not_deployed` par [ADR-019](../decisions/ADR-019-demonstration-zero-cout.md)
+- Statut : `active_predeployment` par
+  [ADR-020](../decisions/ADR-020-reactiver-modal-budget-borne.md)
 - Sources : [serveur vLLM Modal](https://modal.com/docs/examples/vllm_inference),
   [serveurs Modal](https://modal.com/docs/guide/servers),
   [volumes](https://modal.com/docs/guide/volumes),
@@ -10,9 +11,10 @@
 
 ## But et limites
 
-Ce document conserve la cible T4 payante préparée avant que Pierre fixe une contrainte de
-dépense nulle. Aucun déploiement Modal n'a eu lieu ; le parcours actif est désormais la
-[démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md).
+Ce document décrit la cible T4 réactivée après configuration d'une limite de 5 USD d'usage
+total et de 0 USD de dépense nette. Aucun déploiement Modal n'a encore eu lieu ; la
+[démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) reste le secours
+éphémère si la cible principale échoue.
 
 `deploy/modal_app.py` prépare une cible T4 pour la démonstration pédagogique. Un seul
 conteneur conserve deux environnements Python séparés : vLLM écoute uniquement en boucle
@@ -22,9 +24,19 @@ Le nombre de conteneurs est limité à un, le minimum vaut zéro et la fenêtre 
 vaut 120 secondes. Cette configuration limite le risque de coût oublié ; elle ne constitue
 pas un plafond de facturation fournisseur.
 
-La définition est locale et n'a créé aucune ressource Modal. Elle ne prouve ni compatibilité
-GPU sur cette cible, ni URL accessible, ni CD exécutée, ni performance clinique. Ce parcours
-est archivé et ne doit pas être exécuté sous la décision active de dépense nulle.
+La même FastAPI peut servir une interface statique bilingue sur `/demo` pour le secours et
+les tests directs. La cible pilote sépare toutefois le frontend via
+[Cloudflare Pages](CLOUDFLARE_PAGES_FRONTEND_V1.md) afin qu'une consultation de page ne
+réveille pas le GPU. La page ne contient aucune
+logique de décision, n'appelle que `/v1/triage` sur la même origine et ne persiste pas le
+Bearer token. L'interface et ses ressources sont publiques pour permettre l'ouverture de la
+page ; le proxy Cloudflare et l'API Modal utilisent deux secrets distincts.
+Elle utilise uniquement des scénarios synthétiques et affiche explicitement le statut de POC.
+
+La définition locale n'a encore créé aucune ressource Modal. Elle ne prouve ni compatibilité
+GPU sur cette cible, ni URL accessible, ni CD exécutée, ni performance clinique. Son
+exécution reste conditionnée aux plafonds observés dans la
+[preuve budgétaire](../evidence/MODAL_BUDGET_GUARDRAILS_2026-09-16.md).
 
 ## Identité des artefacts
 
@@ -111,9 +123,9 @@ un échec de synchronisation bloque la réponse.
 
 ## Déploiement continu borné
 
-`.github/workflows/deploy-modal.yml` est conservé pour l'historique mais son job est désactivé
-par une condition constante. Avant son archivage, il était manuel (`workflow_dispatch`) et
-utilisait l'environnement GitHub `modal-demo`. Cet environnement devait exiger une approbation et fournir
+`.github/workflows/deploy-modal.yml` est manuel (`workflow_dispatch`), exige l'entrée
+`confirm_deploy=true`, borne le job à 45 minutes et utilise l'environnement GitHub
+`modal-demo`. Cet environnement doit exiger une approbation et fournir
 `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET`, `TRIAGE_API_TOKEN` et la variable
 `MODAL_ENVIRONMENT`. L'URL n'est pas un secret à préconfigurer : après le premier déploiement,
 le workflow la résout depuis `modal.Server.from_name(...).get_url()`, valide son origine HTTPS,

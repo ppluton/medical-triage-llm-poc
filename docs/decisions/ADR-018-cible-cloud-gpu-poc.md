@@ -1,7 +1,8 @@
 # ADR-018 — Cible GPU cloud du POC
 
 - Date : 2026-09-16
-- Statut : `superseded` par [ADR-019](ADR-019-demonstration-zero-cout.md)
+- Statut : `superseded` par [ADR-020](ADR-020-reactiver-modal-budget-borne.md) après le
+  passage intermédiaire par [ADR-019](ADR-019-demonstration-zero-cout.md)
 - Propriétaire : Pierre
 - Statut clinique : non applicable ; aucune validation clinique
 - Sources : [tarifs Modal](https://modal.com/pricing), [GPU Modal](https://modal.com/docs/guide/gpu), [endpoints Modal](https://modal.com/docs/guide/dedicated-endpoints), [tarifs RunPod](https://www.runpod.io/pricing), [GPU Spaces Hugging Face](https://huggingface.co/docs/hub/spaces-gpus), [Docker Spaces](https://huggingface.co/docs/hub/main/en/spaces-sdks-docker)
@@ -43,16 +44,14 @@ peut arrêter le coût, au prix d’un démarrage à froid. La visibilité prot�
 application accessible — dépend d’un plan payant, et le conteneur unique demande de réunir ou
 superviser vLLM et FastAPI.
 
-## Proposition historique
+## Évolution de la décision
 
-Cette proposition Modal n'est plus active. Pierre a fixé le 16 septembre 2026 une contrainte
-de dépense nulle. L'[ADR-019](ADR-019-demonstration-zero-cout.md) retient donc une
-démonstration éphémère Kaggle + Cloudflare, sans création de ressource Modal.
+Pierre a d'abord fixé le 16 septembre 2026 une contrainte de dépense nulle. L'[ADR-019](ADR-019-demonstration-zero-cout.md) a donc retenu une démonstration éphémère Kaggle + Cloudflare. Après création d'un compte Starter, l'[ADR-020](ADR-020-reactiver-modal-budget-borne.md) réactive Modal avec 5 USD d'usage total et 0 USD de dépense nette autorisée.
 
-## Décision remplacée
+## Décision courante
 
-La demande d'autorisation de budget est annulée. Les fichiers Modal sont conservés comme
-travail technique historique, mais ne doivent pas être déployés dans le parcours sans coût.
+La cible Modal est de nouveau autorisée dans ces plafonds stricts. Kaggle + Cloudflare reste
+le secours si le pilote Modal ne peut pas être exécuté sans dépasser ces limites.
 
 ## Conséquences
 

@@ -1,7 +1,8 @@
 # ADR-019 — Démonstration extérieure sans dépense
 
 - Date : 2026-09-16
-- Statut : `approved`
+- Statut : `approved_fallback` — cible principale remplacée par
+  [ADR-020](ADR-020-reactiver-modal-budget-borne.md)
 - Propriétaire : Pierre
 - Statut clinique : non applicable ; aucune validation clinique
 - Sources : [Railway Plans](https://docs.railway.com/pricing/plans),
