@@ -1,0 +1,17 @@
+{
+  "status": "prepared_for_authorized_one_shot_private_launch",
+  "run_name": "selected-triage-reserve-v1",
+  "selected_variant": "sft",
+  "notebook_sha256": "fe84e617b5a4fb413fcbab260bc0b526eaae76d3639911ba1ae08b658191415a",
+  "optimizer_steps": 0,
+  "reserve_records": 18,
+  "selection_sha256": "cc4b4d5041c72cde22182b6bad0eb87aaf758830ea0c25f4f2f9441bfc1e2455",
+  "comparison_summary_sha256": "63c290c1c8261bb1baab1435733557086658d91ce6c6678a1e91b221a2cf9083",
+  "sft_manifest_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5",
+  "dpo_summary_sha256": "5e72ce63cc0c19e243a34093c67d53a61092188d96b9c6738a045032e2146514",
+  "dpo_adapter_sha256": "ae66169e4a52077803fc5403bf088bf599f7813f86e5ec3cdb82df584fd4b565",
+  "base_dataset_source": "pierrepluton/qwen3-1-7b-base-e249956c",
+  "sft_dataset_source": "pierrepluton/chsa-sft-v39-step150-c911f9c6",
+  "dpo_dataset_source": "pierrepluton/chsa-dpo-v41-policy-ae66169e-apache2",
+  "clinical_validation": "not_performed"
+}
