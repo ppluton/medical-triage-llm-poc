@@ -9,21 +9,21 @@
 
 Le CHSA souhaite un assistant de triage initial qui recueille les symptômes, demande les informations utiles, propose l'un des niveaux `maximum`, `moderate` ou `deferred`, explique sa proposition et conserve une trace exploitable. Ce projet d'étude doit démontrer une faisabilité technique ; il ne constitue pas un outil de diagnostic, de prescription ou de décision clinique autonome.
 
-La chaîne actuelle comprend un corpus bilingue corrigé, un SFT général de Qwen3-1.7B-Base à 500 étapes et une comparaison QA avec la Base. L’intégration réelle vLLM/API est démontrée par v34 sur GPU T4 en accès local privé : 18 réponses conformes sur 18 pour chaque adaptateur, sans erreur sur ce lot. La qualité du triage reste insuffisante : 8 priorités sur 18 correspondent aux références pédagogiques proposées, avec absence du niveau intermédiaire et de questions sur les cas incomplets. Un essai DPO de vingt étapes est terminé (v27), avec poids sauvegardés vérifiés. La comparaison commune v28 est terminée : Base 0/18 JSON conformes, SFT et DPO 1/18 chacun dans le runtime Transformers FP4. Aucun gain de triage DPO n’est démontré. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
+La chaîne actuelle comprend un corpus bilingue v2.2 finalisé par des contrôles techniques de confidentialité, un nouveau pilote SFT de Qwen3-1.7B-Base à 150 étapes et une lignée DPO réancrée sur ce corpus. Le pilote v39 réduit la NLL validation de 1,4569 à 0,7118 et produit un checkpoint complet ; sa recharge principale est encore vérifiée par la v40 en lecture seule. L’intégration historique vLLM/API est démontrée par v37 sur GPU T4 en accès local privé. La revue aveugle commune signale 7/17 sorties Base, 6/17 SFT et 6/17 DPO ; aucun bénéfice DPO n’est démontré. Les garde-fous évitent un délai dangereux dans ce lot, mais corrigent encore la majorité des sorties. Aucun gain de pertinence clinique ni déploiement hospitalier n'est établi.
 
 | Livrable demandé | Preuve disponible | Écart restant |
 |---|---|---|
-| Dataset bilingue documenté | SFT v2.1 : 4 700 lignes, provenance et transformations suivies | Lot DPO 426/54 admis pour expérimentation pédagogique ; validation clinique absente |
-| SFT puis DPO comparés | Comparaison commune v28 terminée, sans gain de triage DPO | Test réservé v35 terminé et vérifié ; comparaison API enrichie v36 en cours |
-| Endpoint cloud vLLM/API | Intégration réelle v34, 18/18 réponses conformes par variante, audit et latence mesurés | Compléter le parcours de questions, vérifier le redémarrage, déployer sur cible autorisée |
-| GitHub Actions tests/déploiement | Workflow de tests et conteneur écrit | Exécution distante vérifiée et déploiement automatisé |
+| Dataset bilingue documenté | SFT v2.2 : 4 700 lignes, 31 masques sur 22 lignes, zéro identifiant direct au rescan | Publication externe, certification RGPD et validation clinique absentes |
+| SFT puis DPO comparés | SFT v39 exécuté ; baseline Base/SFT/DPO v37 et résultat négatif DPO documentés | Recharge v40, nouveau DPO depuis v39 et ouverture unique de la réserve |
+| Endpoint cloud vLLM/API | Intégration réelle v37, audit, dialogues et garde-fous mesurés | Déployer et tester sur une cible extérieure autorisée |
+| GitHub Actions tests/déploiement | 215 tests ; image et factory privée vérifiées localement | Exécution GitHub distante vérifiée et déploiement automatisé |
 | Rapport et soutenance | Présente synthèse et preuves intermédiaires | Mesures finales, PDF ≤20 pages et démonstration |
 
 ## 2. Données et gouvernance
 
 Les sources retenues sont MediQAl, FrenchMedMCQA et MedQuAD pour le SFT, et UltraMedical-Preference pour le DPO. La provenance, les licences et les transformations sont décrites dans les manifestes et documents de gouvernance. Les liens de l'école vers FrenchMedMCQA et MedQuAD sont mal formés ; les familles de sources correspondent, mais l'équivalence exacte des reconditionnements n'est pas établie par l'audit. Les données brutes et les poids restent hors Git.
 
-Le premier corpus comptait 5 000 lignes. Notre transformation perdait des propositions QCM dans 2 249 des 2 250 QCM de développement, tronquait 101 réponses et n'enseignait pas correctement l'arrêt natif de la réponse. Ces erreurs relèvent de notre préparation, pas d'une défaillance démontrée des sources. Les corrections et exclusions documentées conduisent au corpus v2.1 :
+Le premier corpus comptait 5 000 lignes. Notre transformation perdait des propositions QCM dans 2 249 des 2 250 QCM de développement, tronquait 101 réponses et n'enseignait pas correctement l'arrêt natif de la réponse. Ces erreurs relèvent de notre préparation, pas d'une défaillance démontrée des sources. Les corrections, exclusions et masquages documentés conduisent au corpus v2.2 :
 
 | Split | Lignes | Usage |
 |---|---:|---|
@@ -31,11 +31,11 @@ Le premier corpus comptait 5 000 lignes. Notre transformation perdait des propos
 | Validation | 479 | Suivi, comparaison et choix de développement |
 | Test | 500 | Évaluation finale réservée ; non utilisée pour régler le modèle |
 
-Les choix et réponses complets, le masquage du prompt et la présence d'un EOS supervisé ont été contrôlés sur les 4 200 exemples de développement. Le corpus reste bilingue, sans imposer l'égalité du nombre de tokens français et anglais. Les réponses MedQuAD sont souvent longues ; l'équilibre des lignes ne garantit donc pas l'équilibre des tokens. La cible scolaire est d'environ 5 000 paires, avec priorité à la qualité.
+Les choix et réponses complets, le masquage du prompt et la présence d'un EOS supervisé ont été contrôlés sur les 4 200 exemples de développement. Une revue technique a ensuite masqué 31 occurrences `PATIENT_NAME` sur 22 lignes ; le rescan des 9 400 champs ne trouve plus d'identifiant direct. Les détections contextuelles de personnes, lieux et dates ont été conservées sous la politique des sources publiques afin de ne pas corrompre le contenu médical. Cette décision ne constitue ni une anonymisation exhaustive ni une certification RGPD. Le corpus reste bilingue, sans imposer l'égalité du nombre de tokens français et anglais. Les réponses MedQuAD sont souvent longues ; l'équilibre des lignes ne garantit donc pas l'équilibre des tokens. La cible scolaire est d'environ 5 000 paires, avec priorité à la qualité.
 
 Les réponses QA sources ne sont pas des annotations de priorité de triage. Les scans d'identifiants et la revue technique ne sont pas une validation clinique ni une preuve d'anonymisation exhaustive. Les scénarios de démonstration sont synthétiques et leurs références portent le statut `proposed_educational_only`.
 
-Preuves : [audit de pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [audit de réalignement](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), [manifeste SFT corrigé](../data/manifests/derived-source-medical-qa-sft-v2.1-reviewed.json).
+Preuves : [audit de pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md), [finalisation de confidentialité](../docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md), [manifeste SFT v2.2](../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json) et [lignée DPO v3](../docs/evidence/DPO_V22_LINEAGE_REBIND_2026-09-16.md).
 
 ## 3. Méthode et entraînements SFT
 
@@ -47,7 +47,9 @@ Le SFT corrigé a progressé jusqu'à 150 puis 500 étapes. La continuation v22 
 
 L'adaptateur SFT 500 a pour SHA-256 `5c195a8c83bfd6493e7ffd74ec20e3d97207f9b650850aabd8de25afffea626d`. Une archive correcte ne prouve pas à elle seule que l'inférence dans un nouveau processus reproduit les sorties.
 
-Preuves : [SFT historique](../docs/evidence/SFT_KAGGLE_FULL_RUN_2026-09-04.md), [résultat v22](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [identité du checkpoint](../configs/sft-v22-handoff.json).
+Afin que les poids livrés correspondent au corpus final, la v39 redémarre depuis la Base exacte et entraîne 150 étapes sur v2.2. Son adaptateur porte le SHA-256 `c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413`. Les 392 tenseurs LoRA sont finis et modifiés ; la NLL validation atteint 0,711802. Huit générations sur trente atteignent encore le plafond, toutes sur MedQuAD. La recharge du checkpoint principal reste la porte v40 avant admission comme référence DPO.
+
+Preuves : [SFT historique](../docs/evidence/SFT_KAGGLE_FULL_RUN_2026-09-04.md), [résultat v22](../docs/evidence/SFT_V22_RESULT_2026-09-12.md), [pilote final v39](../docs/evidence/SFT_V39_RESULT_2026-09-16.md).
 
 ## 4. Évaluation Base/SFT et résultats négatifs
 
@@ -106,13 +108,13 @@ Une extension locale de collecte (API 0.3.0) suit les rubriques renseignées, le
 
 L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. Deux processus API locaux successifs ont également conservé les réponses dans le même journal. La synchronisation du fichier est exigée avant restitution ; son échec produit un refus 503. Cette [preuve locale de redémarrage](../docs/evidence/AUDIT_RESTART_LOCAL_2026-09-14.md) ne prouve pas la durabilité du futur volume distant. La politique de stockage et de conservation reste à définir avant déploiement.
 
-La régression locale complète passe 171 tests au 16 septembre. La v36 a été lancée pour comparer Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN ; ses résultats restent en attente. La configuration GitHub Actions couvre tests et conteneur ; le déploiement automatisé et son exécution distante restent à terminer. L'unique autorisation GPU actuelle est le notebook Kaggle privé sur quota gratuit. Un endpoint cloud nécessite une cible et un coût explicitement autorisés, puis une démonstration du modèle via vLLM et FastAPI. Aucun endpoint ni modèle public n'est annoncé.
+La régression locale complète passe 215 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau. La configuration GitHub Actions couvre tests et conteneur ; le déploiement automatisé et son exécution distante restent à terminer. L'unique autorisation GPU actuelle est le notebook Kaggle privé sur quota gratuit. Un endpoint cloud nécessite une cible et un coût explicitement autorisés, puis une démonstration du modèle via vLLM et FastAPI. Aucun endpoint ni modèle public n'est annoncé.
 
 Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md).
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT est établie par v25. Les comparaisons communes QA du DPO, sur validation et test réservé, sont réalisées. La clôture nécessite encore un parcours de questions complémentaires opérationnel et des contrôles adaptés aux informations insuffisantes, l’analyse qualitative complémentaire et une démonstration sur une cible accessible autorisée. La v35 terminée compare Base, SFT et DPO sur les 500 exemples de test et 50 générations sélectionnées de manière déterministe, sans entraînement. Son protocole Transformers FP4 est distinct de la démonstration vLLM FP16 ; ses résultats ne serviront pas à régler les modèles. Voir le [gel et lancement v35](../docs/evidence/FINAL_QA_V35_LAUNCH.md). La clôture comprend aussi l'audit conforme au mandat, les mesures de latence, le déploiement GitHub Actions et le PDF final avec ses preuves.
+La recharge de l'ancien SFT est établie par v25 ; celle du nouveau SFT v39 reste soumise à v40. Les comparaisons historiques QA du DPO, sur validation et test, sont réalisées et conservées comme baseline négative. Une nouvelle réserve synthétique FR/EN de 18 cas a été gelée avant le résultat v39 ; elle ne sera ouverte qu'une fois le nouveau SFT et son DPO sélectionnés. La clôture nécessite encore le nouveau DPO borné, l'ouverture unique de cette réserve, une démonstration sur cible accessible autorisée, le déploiement GitHub Actions et le PDF final avec ses preuves.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 
