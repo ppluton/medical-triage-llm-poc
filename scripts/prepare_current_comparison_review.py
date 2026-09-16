@@ -5,7 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
-from triage_poc.comparison_review import prepare_raw_comparison_review
+from triage_poc.comparison_review import prepare_all_raw_comparison_review
 
 
 def main() -> None:
@@ -24,7 +24,7 @@ def main() -> None:
         variant: json.loads((args.run / f"{variant}.json").read_text())["triage"]
         for variant in ("base", "sft", "dpo")
     }
-    queue, key, coverage = prepare_raw_comparison_review(
+    queue, key, coverage = prepare_all_raw_comparison_review(
         scenarios, outputs, seed=args.seed
     )
     args.queue.parent.mkdir(parents=True, exist_ok=True)
@@ -36,7 +36,7 @@ def main() -> None:
             {
                 "review_records": len(queue),
                 "key_records": len(key),
-                "omitted_scenarios": len(coverage["omissions"]),
+                "schema_invalid_records": coverage["schema_invalid_records"],
                 "seed": args.seed,
             }
         )

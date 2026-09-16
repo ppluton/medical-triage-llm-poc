@@ -16,14 +16,35 @@ spec.loader.exec_module(module)
 
 def test_recomputes_metrics_and_rejects_missing_or_falsified_observations(tmp_path):
     validation = tmp_path / "validation.jsonl"
-    validation.write_text("\n".join(json.dumps({"record_id": str(i)}) for i in range(479)))
+    validation.write_text(
+        "\n".join(
+            json.dumps(
+                {
+                    "record_id": str(i),
+                    "messages": [
+                        {"role": "user", "content": f"question {i}"},
+                        {"role": "assistant", "content": f"answer {i}"},
+                    ],
+                }
+            )
+            for i in range(479)
+        )
+    )
     prior = tmp_path / "prior.json"
     prior.write_text(json.dumps({"records": [{"record_id": str(i)} for i in range(30)]}))
     scenarios = Path("data/samples/synthetic-triage-development-v2.json")
     cases = json.loads(scenarios.read_text())
     data = {
         "losses": [{"record_id": str(i), "response_nll": 1.0} for i in range(479)],
-        "qa": [{"record_id": str(i), "eos_terminated": True} for i in range(30)],
+        "qa": [
+            {
+                "record_id": str(i),
+                "eos_terminated": True,
+                "generated_token_ids": [100 + i, 151643],
+                "output": f"answer {i}",
+            }
+            for i in range(30)
+        ],
         "triage": [{"id": r["id"], "output": "invalid"} for r in cases],
     }
     metric = {
@@ -49,6 +70,8 @@ def test_recomputes_metrics_and_rejects_missing_or_falsified_observations(tmp_pa
     result = module.verify(tmp_path, validation, prior, scenarios)
     assert result["comparison"]["dpo"]["critical_total"] == 6
     assert result["comparison"]["dpo"]["critical_valid_maximum"] == 0
+    assert result["comparison"]["dpo"]["qa_exact_normalized_reference_matches"] == 30
+    assert result["comparison"]["dpo"]["qa_reached_token_cap"] == 0
     data["losses"][0]["response_nll"] = 9.0
     (tmp_path / "dpo.json").write_text(json.dumps(data))
     with pytest.raises(ValueError, match="Summary differs"):

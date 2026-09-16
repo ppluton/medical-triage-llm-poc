@@ -2,7 +2,10 @@
 
 import json
 
-from triage_poc.comparison_review import prepare_raw_comparison_review
+from triage_poc.comparison_review import (
+    prepare_all_raw_comparison_review,
+    prepare_raw_comparison_review,
+)
 
 
 def _scenario(identifier):
@@ -55,3 +58,15 @@ def test_omits_scenario_if_one_variant_has_invalid_schema():
     assert coverage["scenario_records_included"] == 1
     assert coverage["omissions"][0]["scenario_id"] == "two"
     assert coverage["omissions"][0]["failures"][0]["variant"] == "dpo"
+
+
+def test_all_raw_queue_preserves_invalid_outputs_for_blind_review():
+    scenarios = [_scenario("one"), _scenario("two")]
+    outputs = {name: [_output("one"), _output("two")] for name in ("base", "sft", "dpo")}
+    outputs["dpo"][1]["output"] = "not-json"
+    queue, key, coverage = prepare_all_raw_comparison_review(scenarios, outputs, seed=143)
+    assert len(queue) == len(key) == 6
+    assert coverage["schema_invalid_records"] == 1
+    assert coverage["omissions"] == []
+    assert sum(not row["valid_schema"] for row in queue) == 1
+    assert all("variant" not in row for row in queue)

@@ -9,6 +9,10 @@ def _evidence():
     row = {
         "mean_example_response_nll": 0.7,
         "qa_eos_terminated": 25,
+        "qa_reached_token_cap": 5,
+        "qa_exact_normalized_reference_matches": 6,
+        "qa_empty_outputs": 0,
+        "qa_mean_repeated_token_4gram_fraction": 0.1,
         "triage_valid_schema": 17,
         "triage_agreement_on_all_records": 0.6,
         "critical_valid_maximum": 7,

@@ -20,6 +20,14 @@ def _metric_rows(verified: dict, qualitative: dict) -> dict[str, dict[str, float
         rows[variant] = {
             "mean_example_response_nll": float(current["mean_example_response_nll"]),
             "qa_eos_terminated": float(current["qa_eos_terminated"]),
+            "qa_reached_token_cap": float(current["qa_reached_token_cap"]),
+            "qa_exact_normalized_reference_matches": float(
+                current["qa_exact_normalized_reference_matches"]
+            ),
+            "qa_empty_outputs": float(current["qa_empty_outputs"]),
+            "qa_mean_repeated_token_4gram_fraction": float(
+                current["qa_mean_repeated_token_4gram_fraction"]
+            ),
             "triage_valid_schema": float(current["triage_valid_schema"]),
             "triage_agreement_on_all_records": float(
                 current["triage_agreement_on_all_records"]
@@ -41,7 +49,13 @@ def select_candidate(verified: dict[str, Any], qualitative: dict[str, Any]) -> d
         raise ValueError("A complete blinded project review is required")
     rows = _metric_rows(verified, qualitative)
     sft, dpo = rows["sft"], rows["dpo"]
-    lower_is_better = {"mean_example_response_nll", "flagged_records"} | {
+    lower_is_better = {
+        "mean_example_response_nll",
+        "qa_reached_token_cap",
+        "qa_empty_outputs",
+        "qa_mean_repeated_token_4gram_fraction",
+        "flagged_records",
+    } | {
         name for name in sft if name.startswith("flag_")
     }
     regressions = []

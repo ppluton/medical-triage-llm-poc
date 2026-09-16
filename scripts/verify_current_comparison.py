@@ -4,9 +4,11 @@
 import argparse
 import json
 import math
+from collections import Counter
 from pathlib import Path
 
 from triage_poc.comparison import sha256
+from triage_poc.pilot_report import normalize_answer
 from triage_poc.triage_probe import score_outputs
 
 
@@ -25,7 +27,11 @@ def verify(directory, validation, prior_qa, scenarios):
     ):
         if sha256(path) != summary["input_hashes"][name]:
             raise ValueError("Input checksum mismatch: " + name)
-    ids = [json.loads(line)["record_id"] for line in validation.read_text().splitlines()]
+    validation_rows = [json.loads(line) for line in validation.read_text().splitlines()]
+    ids = [row["record_id"] for row in validation_rows]
+    references = {
+        row["record_id"]: row["messages"][-1]["content"] for row in validation_rows
+    }
     qa_ids = [row["record_id"] for row in json.loads(prior_qa.read_text())["records"]]
     cases = json.loads(scenarios.read_text())
     if len(ids) != 479 or len(set(ids)) != 479 or len(qa_ids) != 30 or len(set(qa_ids)) != 30:
@@ -44,6 +50,25 @@ def verify(directory, validation, prior_qa, scenarios):
         values = [r["response_nll"] for r in data["losses"]]
         if any(not math.isfinite(v) or v < 0 for v in values):
             raise ValueError("Invalid loss measurement")
+        repetitions = []
+        exact = empty = caps = 0
+        for row in data["qa"]:
+            tokens = row.get("generated_token_ids")
+            output = row.get("output")
+            if (
+                not isinstance(tokens, list)
+                or not tokens
+                or len(tokens) > 512
+                or not isinstance(output, str)
+            ):
+                raise ValueError("Invalid saved QA generation")
+            exact += normalize_answer(output) == normalize_answer(references[row["record_id"]])
+            empty += not output.strip()
+            caps += len(tokens) == 512
+            grams = Counter(tuple(tokens[i : i + 4]) for i in range(len(tokens) - 3))
+            repetitions.append(
+                sum(count - 1 for count in grams.values()) / max(1, sum(grams.values()))
+            )
         metrics = {
             "mean_example_response_nll": sum(values) / len(values),
             "loss_records": len(values),
@@ -56,6 +81,10 @@ def verify(directory, validation, prior_qa, scenarios):
         results[stage] = {
             "mean_example_response_nll": metrics["mean_example_response_nll"],
             "qa_eos_terminated": metrics["qa_eos_terminated"],
+            "qa_reached_token_cap": caps,
+            "qa_exact_normalized_reference_matches": exact,
+            "qa_empty_outputs": empty,
+            "qa_mean_repeated_token_4gram_fraction": sum(repetitions) / len(repetitions),
             "triage_valid_schema": metrics["triage"]["valid_schema"],
             "triage_agreement_on_all_records": metrics["triage"]["agreement_on_all_records"],
             "critical_total": len(critical),
