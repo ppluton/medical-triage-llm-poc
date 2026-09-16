@@ -158,7 +158,7 @@ def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp
                        "TRIAGE_AUDIT_PATH": str(tmp_path / "audit.jsonl")}.items():
         monkeypatch.setenv(key, value)
     client = TestClient(create_serving_app())
-    demo = client.get("/demo")
+    demo = client.get("/demo/")
     assert demo.status_code == 200
     assert "TRIAGE_API_TOKEN" not in demo.text
     assert demo.headers["cache-control"] == "no-store"

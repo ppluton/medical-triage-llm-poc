@@ -144,7 +144,7 @@ def create_serving_app():
     async def require_access(request: Request, call_next):
         public_demo = (
             request.url.path in {"/", "/demo", "/docs", "/openapi.json", "/redoc"}
-            or request.url.path.startswith("/demo/assets/")
+            or request.url.path.startswith("/demo/")
         )
         if not public_demo and not hmac.compare_digest(
             request.headers.get("authorization", ""), "Bearer " + token

@@ -26,10 +26,10 @@ def test_openapi_exposes_current_api_version():
 def test_demo_ui_is_packaged_and_redirected_without_external_assets():
     client = TestClient(create_app(FakeProvider()))
     redirect = client.get("/", follow_redirects=False)
-    page = client.get("/demo")
-    script = client.get("/demo/assets/app.js")
+    page = client.get("/demo/")
+    script = client.get("/demo/app.js")
 
-    assert redirect.status_code == 307 and redirect.headers["location"] == "/demo"
+    assert redirect.status_code == 307 and redirect.headers["location"] == "/demo/"
     assert page.status_code == 200
     assert "POC pédagogique" in page.text
     assert "aucune donnée patient réelle" in page.text
