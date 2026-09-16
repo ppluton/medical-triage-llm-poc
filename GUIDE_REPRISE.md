@@ -124,4 +124,6 @@ La première version peut être identifiée comme brouillon avec écarts explici
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
-**Prochaine action concrète : laisser terminer la réserve v46, vérifier son préflight et ses dix-huit observations sans réutiliser le résultat pour régler le modèle.** Mettre ensuite à jour le rapport, le support et la démonstration avec le SFT retenu. La cible cloud GPU et son coût nécessitent encore une décision explicite de Pierre.
+**Résultat final de l’étape modèle :** la [réserve v46](docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md) recharge le SFT sélectionné, vérifie le snapshot Base et évalue une seule fois les dix-huit cas gelés. Elle obtient 0 JSON conforme, 17 plafonds sur 18 et une répétition moyenne de 0,8289 ; les dix-huit sorties sont signalées par la revue de projet. Ce résultat négatif est figé et ne servira pas à régler le modèle, le prompt ou les garde-fous.
+
+**Prochaine action concrète : mettre à jour le rapport, le support et la démonstration avec le SFT retenu et le résultat négatif de la réserve.** La cible cloud GPU et son coût nécessitent encore une décision explicite de Pierre.

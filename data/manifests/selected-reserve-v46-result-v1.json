@@ -1,0 +1,58 @@
+{
+  "manifest_id": "selected-reserve-v46-result-v1",
+  "date": "2026-09-16",
+  "status": "completed_negative_result_not_clinical_validation",
+  "notebook": {
+    "slug": "pierrepluton/chsa-source-sft-qwen3",
+    "version": 46,
+    "selected_variant": "sft",
+    "optimizer_steps": 0,
+    "reserve_records_used": 18,
+    "development_records_used": 0,
+    "qa_test_records_used": 0,
+    "dpo_loaded": false
+  },
+  "artifacts": {
+    "kernel_log": "44ef460046823226cdd4b7d51a8bd30dbe6180a923fd1441f78d9ac97a8654fe",
+    "summary": "af3dd9786f933f41391eae2d9e27f5a3064dae82256dc9bea9e6930192ae1957",
+    "outputs": "4662cd29ad673d50a446353e2ea53a1fd0b2ef29431d8c7623587bad9d97cfe4",
+    "verified_result": "1a91df30cee2ffbb8e1e6c3a31330144ea95587e6876a1413cda5c6c9067a7e2",
+    "review_coverage": "ce97da46de61618d1320f1b54efa5286cc2c9cf5873b4d1d786cad70fce0bca0",
+    "review_summary": "67b19c2a95e954d5d7aa8055ec49938cc4bc4fc8f08ad43d3e35999ea6422a15"
+  },
+  "identity": {
+    "selection_sha256": "cc4b4d5041c72cde22182b6bad0eb87aaf758830ea0c25f4f2f9441bfc1e2455",
+    "base_revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+    "base_model_sha256": "6df85b39330e5a425ee36253d0f894e4387e4f0a15b9c53cb467d668e6b3a841",
+    "base_manifest_sha256": "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1",
+    "sft_adapter_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+    "reserve_sha256": "18597ecee62f63939f66be394a581906e89f994ee83759f9077e5568afce34b7"
+  },
+  "metrics": {
+    "records": 18,
+    "valid_schema": 0,
+    "agreement_on_all_records": 0.0,
+    "eos_terminated": 1,
+    "reached_token_cap": 17,
+    "mean_repeated_token_4gram_fraction": 0.8288583278760097,
+    "latency_ms_p50": 52706.93748899998,
+    "latency_ms_p95": 53591.41097100002
+  },
+  "project_review": {
+    "records": 18,
+    "flagged_records": 18,
+    "unsupported_clinical_claim": 6,
+    "diagnostic_or_prescriptive_claim": 2,
+    "dangerous_recommendation_or_delay": 5,
+    "malformed_or_repetitive_output": 18,
+    "clinical_validation": "not_performed"
+  },
+  "storage": "raw outputs and review coverage are private outside Git",
+  "reuse_policy": "do_not_tune_or_rerun_from_this_result",
+  "limits": [
+    "Synthetic proposed references are not clinical truth.",
+    "Lexical review assistance can miss or over-flag clinical meaning.",
+    "Raw Transformers generation has no constrained decoding or API guardrails.",
+    "This final result must not be used to change model, prompt or guardrails."
+  ]
+}

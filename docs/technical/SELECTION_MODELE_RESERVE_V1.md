@@ -1,7 +1,7 @@
 # Sélection du modèle et ouverture unique de la réserve
 
 - Date : 2026-09-16
-- Statut : `implemented_not_executed`
+- Statut : `executed_negative_result`
 - Statut clinique : aucune validation clinique
 - Sources : `scripts/verify_current_comparison.py`, `scripts/prepare_current_comparison_review.py`, `scripts/select_current_candidate.py`, `scripts/run_selected_reserve.py`, `scripts/build_kaggle_selected_reserve.py`
 
@@ -51,5 +51,7 @@ la règle `do_not_tune_or_rerun_from_this_result`.
 
 L’unicité du run est une règle de protocole et de versionnage, pas un mécanisme de sécurité
 impossible à contourner. La réserve reste synthétique, ses références sont proposées et sa
-revue finale n’est pas clinique. Le présent document ne prouve pas encore l’exécution GPU :
-il décrit une chaîne implémentée qui reste conditionnée par la fin de la comparaison v43.
+revue finale n’est pas clinique. La v46 exécute finalement cette chaîne sur le SFT retenu.
+Elle confirme 0 JSON conforme sur 18, 17 plafonds de génération et une répétition moyenne de
+0,8289. Le résultat est figé sans réglage ultérieur ; voir
+`docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md`.
