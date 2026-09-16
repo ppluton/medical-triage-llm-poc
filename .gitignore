@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+.dev.vars*
 secrets/
 
 # Medical data and generated artifacts
@@ -24,6 +25,8 @@ __pycache__/
 .ruff_cache/
 .venv/
 venv/
+node_modules/
+.wrangler/
 dist/
 build/
 *.log
@@ -33,3 +36,5 @@ build/
 !dist/index.html
 !dist/styles.css
 !dist/app.js
+/deploy/cloudflare_pages/dist/
+/deploy/cloudflare_pages/.wrangler-check/
