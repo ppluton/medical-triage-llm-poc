@@ -27,7 +27,9 @@ def test_cloudflare_pages_build_contains_static_demo_without_secrets(tmp_path):
     routes = (output / "_routes.json").read_text()
     assert 'href="styles.css"' in page and 'src="app.js"' in page
     assert 'fetch("/v1/triage"' in script
-    assert '"include": ["/v1/triage"]' in routes
+    assert '"include": ["/v1/triage", "/v1/healthz"]' in routes
+    assert 'fetch("/v1/healthz"' in script
+    assert "readyDeadline" in script
     combined = "\n".join(path.read_text() for path in output.rglob("*") if path.is_file())
     assert "MODAL_API_TOKEN" not in combined
     assert "DEMO_ACCESS_TOKEN" not in combined
@@ -42,9 +44,13 @@ def test_cloudflare_proxy_is_fail_closed_and_streams_modal_response():
         / "v1"
         / "triage.js"
     ).read_text()
-    assert 'target.protocol !== "https:"' in source
-    assert '.endsWith(".modal.run")' in source
-    assert "crypto.subtle.timingSafeEqual" in source
+    shared = (
+        REPOSITORY_ROOT / "deploy" / "cloudflare_pages" / "functions" / "_shared.js"
+    ).read_text()
+    assert 'target.protocol !== "https:"' in shared
+    assert '[".modal.run", ".modal.direct"]' in shared
+    assert "target.hostname.endsWith(suffix)" in shared
+    assert "crypto.subtle.timingSafeEqual" in shared
     assert 'return jsonResponse(401, "Unauthorized")' in source
     assert 'return jsonResponse(503, "Demonstration backend is not configured")' in source
     assert "readBoundedBody(request)" in source
@@ -52,6 +58,7 @@ def test_cloudflare_proxy_is_fail_closed_and_streams_modal_response():
     assert "body," in source
     assert "new Response(upstream.body" in source
     assert "console.log" not in source
+    assert "console.log" not in shared
 
 
 def test_cloudflare_deploy_workflow_is_manual_and_gated():

@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/v1/triage"],
+  "include": ["/v1/triage", "/v1/healthz"],
   "exclude": []
 }

@@ -22,7 +22,7 @@ Le frontend statique et un proxy minimal sont déployés dans le projet Cloudfla
 `chsa-triage-poc`, avec le domaine cible `triage-poc.pierrepluton.com`. Le navigateur appelle
 uniquement `POST /v1/triage` sur la même origine. La Pages Function vérifie un jeton d'accès
 de démonstration, borne le corps à 32 Kio, puis transmet la requête au domaine Modal
-`.modal.run` avec un jeton backend distinct conservé comme secret Cloudflare.
+`.modal.run` ou `.modal.direct` avec un jeton backend distinct conservé comme secret Cloudflare.
 
 Le frontend, le proxy et le backend n'acceptent que des scénarios synthétiques pour cette
 démonstration. Le proxy ne journalise ni corps, ni jeton. Les actifs statiques ne réveillent

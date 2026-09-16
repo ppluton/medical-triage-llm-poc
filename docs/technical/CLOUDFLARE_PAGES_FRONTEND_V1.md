@@ -1,7 +1,7 @@
 # Frontend Cloudflare Pages v1
 
 - Date : 2026-09-16
-- Statut : `frontend_deployed_backend_pending`
+- Statut : `frontend_deployed_backend_wiring_pending`
 - Sources : [ADR-021](../decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md),
   documentation Cloudflare citée dans l'ADR.
 
@@ -11,22 +11,25 @@
 Navigateur
   -> https://triage-poc.pierrepluton.com
   -> Cloudflare Pages : HTML, CSS, JavaScript
-  -> Pages Function POST /v1/triage
+  -> Pages Functions GET /v1/healthz puis POST /v1/triage
   -> Modal : FastAPI + vLLM + Qwen3-1.7B SFT v39
   -> volume d'audit privé
 ```
 
 Le build copie les actifs versionnés de `src/triage_poc/demo_ui/` vers
 `deploy/cloudflare_pages/dist/`. Il ajoute une page de contrat, des en-têtes de sécurité et
-une route Function unique. `_routes.json` évite d'invoquer la Function pour les actifs
+deux routes Function. `_routes.json` évite d'invoquer la Function pour les actifs
 statiques. Le dossier `dist/` et les secrets locaux restent hors Git.
 
 ## Contrat du proxy
 
-La Function accepte uniquement `POST /v1/triage`, `Content-Type: application/json`, un corps
+La Function de santé accepte uniquement `GET /v1/healthz`. Le frontend l'interroge toutes les
+5 secondes pendant au plus 130 secondes et n'envoie aucune donnée clinique avant que Modal
+soit prêt. La Function de triage accepte uniquement `POST /v1/triage`,
+`Content-Type: application/json`, un corps
 d'au plus 32 Kio et un Bearer token égal au secret `DEMO_ACCESS_TOKEN`. La comparaison passe
 par deux empreintes SHA-256 et `crypto.subtle.timingSafeEqual`. La destination doit être HTTPS
-et se terminer par `.modal.run`. Le proxy remplace le jeton public par `MODAL_API_TOKEN`,
+et se terminer par `.modal.run` ou `.modal.direct`. Le proxy remplace le jeton public par `MODAL_API_TOKEN`,
 retourne le flux de réponse sans le journaliser et impose `Cache-Control: no-store`.
 
 Variables et secrets à configurer après création de l'endpoint Modal :
@@ -59,4 +62,6 @@ Le 16 septembre, le build Wrangler 4.132.0 compile, `npm audit` retourne zéro v
 jeton et 405 pour une méthode non autorisée. Le projet Cloudflare `chsa-triage-poc` est publié
 sur `https://triage-poc.pierrepluton.com` ; la page, le contrat, les en-têtes et le certificat
 ont été observés depuis l'extérieur. La [preuve de déploiement](../evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
-sépare cette réussite du raccord Modal encore absent.
+sépare cette réussite du raccord Modal encore absent. Le backend Modal est désormais déployé
+et vérifié séparément ; l'injection des trois valeurs Cloudflare et le smoke public restent à
+effectuer.
