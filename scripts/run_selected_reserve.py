@@ -18,6 +18,7 @@ from triage_poc.dpo import (
     verify_completed_dpo,
 )
 from triage_poc.final_reserve import validate_frozen_reserve, validate_model_selection
+from triage_poc.model_snapshot import verify_base_snapshot
 from triage_poc.triage_probe import messages_for_scenario, score_outputs
 from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT
 
@@ -48,6 +49,7 @@ def main() -> None:
     )
     selected = decision["selected_variant"]
     identity = load_sft_identity(args.sft_manifest, args.sft_adapter)
+    base_snapshot = verify_base_snapshot(Path(identity["base_model"]))
     dpo_proof = verify_completed_dpo(args.dpo_run, args.sft_manifest, args.sft_adapter)
     scenarios = json.loads(args.reserve.read_text())
 
@@ -144,6 +146,7 @@ def main() -> None:
         "seed": 42,
         "base_model": identity["base_model"],
         "base_revision": identity["base_revision"],
+        "base_snapshot": base_snapshot,
         "package_versions": {
             package: importlib.metadata.version(package)
             for package in ("torch", "transformers", "peft", "bitsandbytes")
