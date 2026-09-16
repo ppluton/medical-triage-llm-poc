@@ -1,7 +1,7 @@
 # Frontend Cloudflare Pages v1
 
 - Date : 2026-09-16
-- Statut : `frontend_deployed_backend_wiring_pending`
+- Statut : `public_path_verified`
 - Sources : [ADR-021](../decisions/ADR-021-separer-frontend-cloudflare-backend-modal.md),
   documentation Cloudflare citée dans l'ADR.
 
@@ -24,13 +24,14 @@ statiques. Le dossier `dist/` et les secrets locaux restent hors Git.
 ## Contrat du proxy
 
 La Function de santé accepte uniquement `GET /v1/healthz`. Le frontend l'interroge toutes les
-5 secondes pendant au plus 130 secondes et n'envoie aucune donnée clinique avant que Modal
+5 secondes pendant au plus 190 secondes et n'envoie aucune donnée clinique avant que Modal
 soit prêt. La Function de triage accepte uniquement `POST /v1/triage`,
 `Content-Type: application/json`, un corps
 d'au plus 32 Kio et un Bearer token égal au secret `DEMO_ACCESS_TOKEN`. La comparaison passe
 par deux empreintes SHA-256 et `crypto.subtle.timingSafeEqual`. La destination doit être HTTPS
-et se terminer par `.modal.run` ou `.modal.direct`. Le proxy remplace le jeton public par `MODAL_API_TOKEN`,
-retourne le flux de réponse sans le journaliser et impose `Cache-Control: no-store`.
+et se terminer par `.modal.run` ou `.modal.direct`. Le proxy remplace le jeton public par
+`MODAL_API_TOKEN`, refuse explicitement toute redirection amont, tamponne la petite réponse
+JSON avant de la retourner sans la journaliser et impose `Cache-Control: no-store`.
 
 Variables et secrets à configurer après création de l'endpoint Modal :
 
@@ -57,11 +58,10 @@ GitHub sont des opérations séparées à confirmer.
 
 ## État de preuve
 
-Le 16 septembre, le build Wrangler 4.132.0 compile, `npm audit` retourne zéro vulnérabilité,
-22 tests ciblés passent et le runtime local retourne 200 pour la page, 401 pour un mauvais
-jeton et 405 pour une méthode non autorisée. Le projet Cloudflare `chsa-triage-poc` est publié
-sur `https://triage-poc.pierrepluton.com` ; la page, le contrat, les en-têtes et le certificat
-ont été observés depuis l'extérieur. La [preuve de déploiement](../evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
-sépare cette réussite du raccord Modal encore absent. Le backend Modal est désormais déployé
-et vérifié séparément ; l'injection des trois valeurs Cloudflare et le smoke public restent à
-effectuer.
+Le 16 septembre, le build Wrangler 4.132.0 compile et les tests ciblés passent. Le projet
+Cloudflare `chsa-triage-poc` est publié sur `https://triage-poc.pierrepluton.com`. Les trois
+valeurs sont configurées côté fournisseur, les deux secrets restent chiffrés, un mauvais jeton
+retourne 401 et `/v1/healthz` retourne 200 avec le bon jeton. Deux scénarios synthétiques FR/EN
+ont traversé le frontend public, le proxy, Modal, FastAPI, vLLM et l'audit privé. La
+[preuve de déploiement](../evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md) conserve les
+mesures et les limites de cette vérification.

@@ -20,8 +20,8 @@ hospitalier ni sur une validation clinique.
 - image : `vllm/vllm-openai:v0.15.0` épinglée par digest ;
 - volumes : `chsa-triage-models-v1` et `chsa-triage-audit-v1` ;
 - capacité : T4, un conteneur au maximum, zéro conteneur minimum, extinction après 120 s d'inactivité ;
-- origine du service : `https://ppluton--chsa-triage-poc-triageservice.us-east.modal.direct` ;
-- contrôle applicatif : `proposed-guardrails-v2`.
+- origine du service : `https://ppluton--chsa-triage-poc-triageservice-serve.modal.run` ;
+- contrôle applicatif : `proposed-guardrails-v3`.
 
 Le secret Bearer est stocké dans Modal et n'est ni inclus dans Git ni reproduit dans cette
 preuve. Le dossier Base distant contient les 13 fichiers attendus, dont le poids de 3,2 GiB ;
@@ -36,6 +36,12 @@ les signes neurologiques lorsqu'ils étaient fournis dans deux éléments de lis
 `moderate` a été conservé comme résultat négatif privé, puis la détection a été corrigée et
 versionnée `proposed-guardrails-v2`.
 
+Le smoke public a ensuite révélé une formulation libre ambiguë sur le scénario thoracique
+(`attendre` malgré un niveau `maximum`). La version `proposed-guardrails-v3` reconnaît
+désormais l'intensité fournie dans un champ séparé et remplace systématiquement la sortie libre
+par une formulation déterministe d'évaluation professionnelle immédiate lorsqu'un signal
+d'alerte explicite est détecté.
+
 Après redéploiement et attente explicite de `/healthz = 200` :
 
 - 2 requêtes, 2 succès HTTP et contrat, 0 échec ;
@@ -49,7 +55,23 @@ Après redéploiement et attente explicite de `/healthz = 200` :
 Un appel lancé immédiatement après redéploiement a reçu deux réponses `503` pendant le cold
 start. La santé est devenue disponible après environ 110 secondes. Le frontend vérifie donc
 désormais `/v1/healthz` et affiche une phase de réveil avant d'envoyer une unique requête de
-triage.
+triage. Deux cold starts via le chemin public ont ensuite été observés à 111 et 117,5 secondes ;
+la fenêtre frontend est fixée à 190 secondes.
+
+## Vérification publique finale
+
+Sur `https://triage-poc.pierrepluton.com`, avec les scénarios synthétiques intégrés :
+
+- douleur thoracique FR : `maximum`, garde-fou v3 `safe_fallback`, 34 984,70 ms,
+  interaction `fcd6ffaf-6ad8-468d-83ef-5f5111fd311f` ;
+- déficit neurologique EN : `maximum`, garde-fou v3 `safe_fallback`, 29 567,75 ms,
+  interaction `f0334a77-5024-47ac-ab89-b7e80604bab3` ;
+- les quatre signaux affichés proviennent des entrées synthétiques ;
+- les deux identifiants ont été retrouvés dans le volume d'audit, avec
+  `privacy_status=passed` et `schema_validated_not_clinically_validated`.
+
+L'export d'audit privé final porte l'empreinte SHA-256
+`2517f80aecfc5b165430d0fb88f622999febe6200910dc10f8dcfc08ca9bcf42`.
 
 ## Empreintes des preuves privées
 
@@ -66,6 +88,8 @@ anonymisés. Ils restent hors Git ; leurs empreintes permettent de contrôler le
 - le démarrage réel de vLLM sur T4 et l'exécution de l'API FastAPI ;
 - le contrat de réponse, la protection Bearer et la traçabilité sur deux cas synthétiques ;
 - la correction déterministe du scénario neurologique séparé en plusieurs symptômes.
+- le chemin public complet Cloudflare Pages → Modal → FastAPI/vLLM → audit privé ;
+- la neutralisation déterministe du texte libre pour les signaux d'alerte proposés.
 
 ## Limites
 
@@ -74,4 +98,4 @@ anonymisés. Ils restent hors Git ; leurs empreintes permettent de contrôler le
 - la latence observée ne constitue pas encore un benchmark en charge ;
 - le cold start est incompatible avec une attente instantanée et doit être annoncé en démo ;
 - les volumes persistants peuvent générer un coût de stockage même sans GPU actif ;
-- le déploiement Cloudflare et son chemin public de bout en bout sont des preuves séparées.
+- l'endpoint public reste un pilote pédagogique protégé par token, pas une mise en production.

@@ -40,7 +40,7 @@ jobs:
         run: python scripts/validate_modal_deployment_environment.py --predeploy
       - name: Deploy the checksum-locked application
         run: modal deploy -m deploy.modal_app
-      - name: Resolve the deployed Server URL
+      - name: Resolve the deployed Web Function URL
         run: echo "TRIAGE_MODAL_URL=$(python scripts/resolve_modal_server_url.py)" >> "$GITHUB_ENV"
       - name: Validate the resolved endpoint origin
         run: python scripts/validate_modal_deployment_environment.py

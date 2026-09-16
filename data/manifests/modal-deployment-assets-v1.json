@@ -45,14 +45,19 @@
   "deployment": {
     "image_built_remotely": true,
     "endpoint_created": true,
-    "endpoint_origin": "https://ppluton--chsa-triage-poc-triageservice.us-east.modal.direct",
-    "guardrail_version": "proposed-guardrails-v2",
+    "endpoint_origin": "https://ppluton--chsa-triage-poc-triageservice-serve.modal.run",
+    "guardrail_version": "proposed-guardrails-v3",
     "smoke_test_performed": true,
     "smoke_requests": 2,
     "smoke_successes": 2,
     "smoke_client_p50_ms": 19362.01,
     "smoke_client_p95_ms": 31455.41,
     "audit_entries_matched": 2,
+    "public_frontend_smoke_performed": true,
+    "public_frontend_smoke_successes": 2,
+    "public_frontend_smoke_latencies_ms": [34984.7, 29567.75],
+    "public_frontend_audit_entries_matched": 2,
+    "public_cold_start_seconds_observed": [111, 117.5],
     "metered_cost_usd_at_snapshot": 0.05,
     "billed_cost_usd_at_snapshot": 0.0,
     "github_cd_executed": false
@@ -60,7 +65,8 @@
   "evidence": {
     "smoke_report_sha256": "525e7697b56e588e8bdb96c481d0e32a7c8f38e78cafaa7d6d48c08a984c875d",
     "audit_export_sha256": "9c17571dbac96777acac40d111d726a55fdca324db2a07238e6173ac6158496e",
-    "audit_verification_sha256": "00f9b8d61cf8a406ecb193d337962c9f0a8a3276e15f9d5c27d14f6d81d39d30"
+    "audit_verification_sha256": "00f9b8d61cf8a406ecb193d337962c9f0a8a3276e15f9d5c27d14f6d81d39d30",
+    "public_audit_export_sha256": "2517f80aecfc5b165430d0fb88f622999febe6200910dc10f8dcfc08ca9bcf42"
   },
   "clinical_validation": "not_performed"
 }

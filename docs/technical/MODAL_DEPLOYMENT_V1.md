@@ -4,7 +4,7 @@
 - Statut : `deployed_backend_smoke_verified` par
   [ADR-020](../decisions/ADR-020-reactiver-modal-budget-borne.md)
 - Sources : [serveur vLLM Modal](https://modal.com/docs/examples/vllm_inference),
-  [serveurs Modal](https://modal.com/docs/guide/servers),
+  [fonctions web Modal](https://modal.com/docs/guide/webhooks),
   [volumes](https://modal.com/docs/guide/volumes),
   [mise à l'échelle](https://modal.com/docs/guide/scale) et
   [déploiement continu](https://modal.com/docs/guide/continuous-deployment).
@@ -16,7 +16,8 @@ total et de 0 USD de dépense nette. Le backend Modal a été déployé et véri
 [démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) reste le secours
 éphémère si la cible principale échoue.
 
-`deploy/modal_app.py` prépare une cible T4 pour la démonstration pédagogique. Un seul
+`deploy/modal_app.py` prépare une cible T4 exposée par une Web Function `.modal.run`, retenue
+pour sa compatibilité vérifiée avec Cloudflare Pages Functions. Un seul
 conteneur conserve deux environnements Python séparés : vLLM écoute uniquement en boucle
 locale et la factory FastAPI authentifiée est le seul serveur exposé. Cette séparation reprend
 la recette réellement vérifiée par Kaggle v37 et évite de modifier les dépendances de vLLM.
@@ -31,6 +32,8 @@ réveille pas le GPU. La page ne contient aucune
 logique de décision, n'appelle que `/v1/triage` sur la même origine et ne persiste pas le
 Bearer token. L'interface et ses ressources sont publiques pour permettre l'ouverture de la
 page ; le proxy Cloudflare et l'API Modal utilisent deux secrets distincts.
+Le frontend tolère jusqu'à 190 secondes de réveil ; les cold starts publics observés ont pris
+111 et 117,5 secondes.
 Elle utilise uniquement des scénarios synthétiques et affiche explicitement le statut de POC.
 
 Les volumes, le secret et l'app existent dans `ppluton/main`. La compatibilité T4, le service
@@ -103,7 +106,7 @@ modal deploy -m deploy.modal_app --env main
 ```
 
 Le secret `chsa-triage-api-v1` doit contenir un jeton aléatoire d'au moins 32 caractères. Le
-token Modal et le token applicatif restent distincts. Le endpoint HTTPS est routable mais
+token Cloudflare et le token applicatif Modal restent distincts. Le endpoint HTTPS est routable mais
 refuse toute requête sans `Authorization: Bearer ...`.
 
 ## Smoke test et audit
@@ -131,7 +134,7 @@ un échec de synchronisation bloque la réponse.
 `modal-demo`. Cet environnement doit exiger une approbation et fournir
 `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET`, `TRIAGE_API_TOKEN` et la variable
 `MODAL_ENVIRONMENT`. L'URL n'est pas un secret à préconfigurer : après le premier déploiement,
-le workflow la résout depuis `modal.Server.from_name(...).get_url()`, valide son origine HTTPS,
+le workflow la résout depuis `modal.Cls.from_name(...)().serve.get_web_url()`, valide son origine HTTPS,
 puis lance les deux scénarios synthétiques. Il ne
 publie pas l'audit ni le token comme artefacts.
 

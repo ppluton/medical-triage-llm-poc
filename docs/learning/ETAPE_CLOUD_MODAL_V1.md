@@ -8,11 +8,15 @@
 
 ## Ce qui a été fait
 
-La cible Modal a été préparée sans la déployer. La définition assemble vLLM et l'API dans le
+La cible Modal a été préparée puis déployée. La définition assemble vLLM et l'API dans le
 même conteneur GPU tout en gardant leurs environnements Python séparés, monte les poids depuis
 un volume privé et persiste l'audit dans un autre volume. Elle vérifie les checksums avant le démarrage, limite l'autoscaling à un conteneur et
 revient à zéro après inactivité. Un workflow GitHub manuel et deux scénarios de smoke test
 synthétiques complètent la préparation.
+
+Le chemin public final utilise une Web Function Modal `.modal.run`, compatible avec le proxy
+Cloudflare. Deux cold starts ont pris environ deux minutes. Les scénarios thoracique FR et
+neurologique EN ont ensuite été exécutés depuis le frontend public et rapprochés de l'audit.
 
 ## Pourquoi cette étape est nécessaire
 
@@ -30,6 +34,9 @@ service distant, authentification, persistance, smoke test et décision clinique
 - le SFT v39 est le seul adaptateur servi, conformément à la sélection antérieure à la réserve ;
 - le Bearer token de l'API n'est pas le token de déploiement Modal ;
 - une CD manuelle et protégée reste une CD vérifiable sans déclencher des dépenses à chaque push.
+- pour un signal d'alerte proposé, une priorité correcte ne suffit pas : le texte libre doit
+  aussi être remplacé par une formulation déterministe qui ne suggère jamais d'attendre ;
+- un cold start doit être mesuré sur le vrai chemin public avant de choisir le délai du frontend.
 
 ## Évolution de la décision
 
