@@ -1,11 +1,12 @@
 """Test the one-shot reserve gates without reading the real held-out scenarios."""
 
 import json
+from pathlib import Path
 
 import pytest
 
 from triage_poc.evaluation_reserve import sha256
-from triage_poc.final_reserve import validate_model_selection
+from triage_poc.final_reserve import validate_frozen_reserve, validate_model_selection
 
 
 def _files(tmp_path):
@@ -68,3 +69,15 @@ def test_rejects_comparison_that_used_test_data(tmp_path):
     decision.write_text(json.dumps(selection))
     with pytest.raises(ValueError):
         validate_model_selection(decision, comparison)
+
+
+def test_frozen_reserve_accepts_relocated_identical_files():
+    root = Path(__file__).resolve().parents[1]
+    result = validate_frozen_reserve(
+        root / "data/manifests/synthetic-triage-held-out-reserve-v1.json",
+        (root / "data/samples/synthetic-triage-held-out-reserve-v1.json").resolve(),
+        (root / "data/samples/synthetic-triage-development-v2.json").resolve(),
+    )
+    assert result["artifact"]["sha256"] == (
+        "18597ecee62f63939f66be394a581906e89f994ee83759f9077e5568afce34b7"
+    )

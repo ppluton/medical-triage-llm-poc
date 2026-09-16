@@ -41,7 +41,12 @@ def validate_frozen_reserve(
     """Recompute the frozen reserve manifest before its one authorized evaluation."""
     expected = json.loads(manifest_path.read_text())
     actual = freeze_triage_reserve(reserve_path, development_path)
-    if expected != actual:
+    comparable_expected = json.loads(json.dumps(expected))
+    comparable_actual = json.loads(json.dumps(actual))
+    for section in ("artifact", "development_reference"):
+        comparable_expected.get(section, {}).pop("path", None)
+        comparable_actual.get(section, {}).pop("path", None)
+    if comparable_expected != comparable_actual:
         raise ValueError("The held-out reserve differs from its frozen manifest")
     if (
         actual.get("status") != "frozen_not_evaluated"
