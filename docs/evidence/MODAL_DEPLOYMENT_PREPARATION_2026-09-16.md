@@ -22,6 +22,8 @@
 - le workflow GitHub est manuel et référence un environnement protégé `modal-demo`.
 - régression complète finale `val_d3cacf40d752` : 240 tests réussis, deux avertissements de
   dépréciation externes connus ; Ruff réussi sur `src`, `scripts`, `tests` et `deploy`.
+- contrôle Modal non mutant après le commit : `modal token info` indique `Token missing` ;
+  aucun profil authentifié n'est actuellement disponible sur cette machine.
 
 Le contrôle teste la construction locale de la définition, la commande vLLM, le refus des
 checksums divergents et la synchronisation bloquante du volume d'audit. Il ne construit pas
