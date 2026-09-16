@@ -22,8 +22,8 @@ Sources : [mission](../../CADRAGE_MISSION.md), [spécification](../../SPEC_POC_T
 1. La [comparaison QA v35](../evidence/FINAL_QA_V35_RESULT.md) est terminée : fichiers et calculs vérifiés sur les 500 exemples réservés et 50 générations déterministes par modèle. Le protocole est figé ; les résultats ne serviront pas à régler les modèles.
 2. Terminer la démonstration réelle de collecte et la comparaison API Base/SFT/DPO. Le [candidat avec dialogues](VLLM_DEMONSTRATION_V1.md) a été lancé comme v36 le 16 septembre ; l'API 0.4.0 et ses garde-fous ont ensuite été testés localement et rejoués hors ligne. Le candidat v37 avec vraie inférence reste à exécuter. Aucun nouveau SFT ni DPO n'est décidé.
 3. Mesurer les corrections et remplacements conservateurs sur le runtime réel. Le replay v36 améliore les mesures critiques proposées mais remplace la majorité des sorties SFT/DPO ; cela contient les défauts connus sans démontrer une meilleure qualité du modèle. Les seuils et références restent proposés, sans approbation clinique.
-4. Exécuter la [démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) à dépense nulle, puis conserver le smoke et l'audit. Le code local ne prouve pas encore l'URL extérieure et Quick Tunnel n'est pas une CD GPU permanente.
-5. Produire le PDF final et dérouler la soutenance sur les preuves obtenues, avec les résultats négatifs et les limites explicites.
+4. La démonstration principale utilise désormais [Modal](MODAL_DEPLOYMENT_V1.md) et [Cloudflare Pages](CLOUDFLARE_PAGES_FRONTEND_V1.md). Le domaine HTTPS, l'authentification, deux scénarios synthétiques et leur audit ont été observés. Kaggle + Quick Tunnel reste uniquement un secours historique.
+5. Finaliser le PDF et le PowerPoint à partir de ces preuves, puis répéter la soutenance avec un réveil Modal anticipé et une preuve de secours.
 
 ## Preuves et limites
 

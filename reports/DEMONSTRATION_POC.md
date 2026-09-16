@@ -1,8 +1,8 @@
 # Démonstration du POC de triage médical
 
 - Date : 2026-09-16
-- Statut : draft vérifié contre les preuves v39 à v46 — démonstration cloud non exécutée
-- Sources : `CADRAGE_MISSION.md`, `SPEC_POC_TRIAGE_MEDICAL.md`, rapport technique, preuves SFT v39/v40, DPO v41, comparaison v43, réserve v46 et API v34/v37.
+- Statut : `final_candidate` — démonstration cloud exécutée sur deux scénarios synthétiques
+- Sources : `CADRAGE_MISSION.md`, `SPEC_POC_TRIAGE_MEDICAL.md`, rapport technique, preuves SFT v39/v40, DPO v41, comparaison v43, réserve v46, API v34/v37, Modal et Cloudflare.
 
 ## Déroulé de quinze minutes
 
@@ -23,9 +23,10 @@ synthétiques de démonstration distincts de la réserve finale désormais figé
 Le serveur cloud, son accès privé et son coût doivent avoir une cible autorisée.
 Un appel au fournisseur simulé n'est pas une démonstration du modèle.
 
-Le frontend public de soutenance est `https://triage-poc.pierrepluton.com`. Son accessibilité
-et son certificat sont prouvés séparément du backend : tant que Modal n'est pas raccordé, le
-proxy répond 503 et la démonstration d'inférence n'est pas considérée comme terminée.
+Le frontend public de soutenance est `https://triage-poc.pierrepluton.com`. Son accessibilité,
+son certificat et son raccord à Modal sont observés. Le proxy refuse les mauvais tokens et
+transmet les appels autorisés à l'endpoint GPU. Deux scénarios synthétiques FR/EN ont produit
+une réponse gouvernée puis une trace d'audit rapprochée.
 
 L'interface `/demo` sert de poste de démonstration : sélectionner le scénario français de
 douleur thoracique, lancer l'évaluation, commenter la priorité, les informations manquantes,
@@ -51,7 +52,7 @@ La réserve v46, ouverte une seule fois sur le SFT choisi, produit 0/18 JSON con
 
 L'API v34 produit néanmoins 18/18 réponses conformes par adaptateur grâce au schéma contraint et aux garde-fous, avec 8/18 priorités correspondant aux références pédagogiques proposées. Elle n'utilise pas le niveau intermédiaire et les cas incomplets restent faibles. La v37 confirme l'exécution Base/SFT/DPO et deux dialogues FR/EN ; les garde-fous interviennent fréquemment. La démonstration doit donc porter sur une chaîne gouvernée et non sur une autonomie du modèle.
 
-La démonstration publique ou sur une cible extérieure reste à établir. Ce déroulé est un support, pas une preuve de soutenance réalisée. Le test final QA ne sert pas à répéter la démonstration.
+La démonstration publique est établie sur deux cas synthétiques : douleur thoracique en français et déficit neurologique en anglais. Les deux appels ont retourné `maximum`, utilisé le fallback sûr v3 et été retrouvés dans l'audit privé. Cette preuve ne couvre ni la charge, ni la disponibilité continue, ni une validation clinique. Ce déroulé reste un support ; le test final QA ne sert pas à répéter la démonstration.
 
 ## Explication orale des résultats
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the versioned interim report without changing its evidence claims."""
+"""Render the versioned final-candidate report without changing its evidence claims."""
 
 import argparse
 import re
@@ -87,7 +87,11 @@ def main():
     def footer(canvas, doc):
         canvas.setFont("Helvetica", 8)
         canvas.setFillColor(colors.HexColor("#526575"))
-        canvas.drawString(56, 28, "CHSA | Brouillon - POC pédagogique, sans validation clinique")
+        canvas.drawString(
+            56,
+            28,
+            "CHSA | Candidat final - POC pédagogique, sans validation clinique",
+        )
         canvas.drawRightString(539, 28, str(doc.page))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -98,7 +102,7 @@ def main():
         rightMargin=56,
         topMargin=45,
         bottomMargin=48,
-        title="POC CHSA - rapport intermédiaire",
+        title="POC CHSA - rapport technique final",
     ).build(story, onFirstPage=footer, onLaterPages=footer)
 
 

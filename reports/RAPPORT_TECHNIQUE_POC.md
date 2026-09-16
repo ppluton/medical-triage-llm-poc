@@ -1,9 +1,9 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
 - **Date :** 2026-09-16
-- **Statut :** draft finalisé côté modèle — démonstration extérieure sans dépense préparée
+- **Statut :** candidat final — modèle, démonstration cloud et CI documentés
 - **Sources :** [cadrage](../CADRAGE_MISSION.md), [spécification](../SPEC_POC_TRIAGE_MEDICAL.md), [audit de mission](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md) et preuves liées ci-dessous.
-- **Format final :** candidat PDF de cinq pages généré et vérifié ; le nom de remise définitif dépend encore de l'identité et du mois de démarrage confirmés.
+- **Format final :** source du rapport final ; le PDF de remise est généré et contrôlé localement.
 
 ## 1. Objectif et état du POC
 
@@ -15,9 +15,9 @@ La chaîne actuelle comprend un corpus bilingue v2.2 finalisé par des contrôle
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.2 : 4 700 lignes, 31 masques sur 22 lignes, zéro identifiant direct au rescan | Publication externe, certification RGPD et validation clinique absentes |
 | SFT puis DPO comparés | SFT v39 rechargé ; DPO v41 vérifié ; sélection v43 et réserve v46 terminées | Validation clinique indépendante absente ; triage brut final non conforme |
-| Endpoint cloud vLLM/API | Intégration réelle v37 ; parcours Kaggle + Cloudflare à 0 € implémenté | Lancer le notebook et conserver URL, smoke et audit extérieurs |
-| GitHub Actions tests/déploiement | Tests et conteneur passés sur la PR #4 ; 245 tests locaux sur le parcours gratuit | Quick Tunnel interactif, pas de CD GPU permanente prouvée |
-| Rapport et soutenance | Rapport et support générés à partir des preuves finales du modèle | Nommage final et démonstration extérieure |
+| Endpoint cloud vLLM/API | Modal T4 scale-to-zero, frontend Cloudflare et domaine HTTPS actifs ; deux appels synthétiques rapprochés de l'audit | Benchmark en charge et validation clinique absents |
+| GitHub Actions tests/déploiement | 252 tests CI, Ruff, build Docker et contrôles du conteneur passés sur la PR #4 ; workflows Modal et Cloudflare versionnés | Les CD restent manuelles et protégées pour borner publication et coût GPU |
+| Rapport et soutenance | Rapport, PowerPoint v47 et fiche orale alignés avec les preuves finales et l'infrastructure déployée | Répétition de la soutenance et validation du nom de remise |
 
 ## 2. Données et gouvernance
 
@@ -117,23 +117,25 @@ Une extension locale de collecte (API 0.3.0) suit les rubriques renseignées, le
 
 L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. Deux processus API locaux successifs ont également conservé les réponses dans le même journal. La synchronisation du fichier est exigée avant restitution ; son échec produit un refus 503. Cette [preuve locale de redémarrage](../docs/evidence/AUDIT_RESTART_LOCAL_2026-09-14.md) ne prouve pas la durabilité du futur volume distant. La politique de stockage et de conservation reste à définir avant déploiement.
 
-La régression locale complète passe 245 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau.
+La CI finale de la PR #4 passe 252 tests, Ruff, la validation des manifestes, le build Docker, le smoke du conteneur sans modèle et le contrôle de la factory privée authentifiée. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique.
 
-La démonstration Kaggle + Cloudflare préparée par l'ADR-019 reste un secours éphémère : son premier run dédié a échoué sur le service Kaggle Secrets avant le démarrage de vLLM et ne prouve pas une CD. L'ADR-020 réactive donc Modal Starter comme cible pilote principale. Avant toute ressource, le portail a confirmé 30 USD de crédits mensuels, 0 USD consommé, une limite d'usage totale de 5 USD et une limite de dépense nette de 0 USD. La définition borne la T4 à un conteneur, revient à zéro après 120 secondes d'inactivité, vérifie les checksums Base/SFT et expose uniquement FastAPI protégée par Bearer token. Le workflow GitHub Actions exige un déclenchement manuel, une confirmation et l'environnement `modal-demo`. Le déploiement, l'URL, le smoke extérieur et l'audit distant restent à observer ; les volumes doivent être supprimés après récupération des preuves pour éviter un coût de stockage résiduel.
+La démonstration Kaggle + Cloudflare préparée par l'ADR-019 reste un secours éphémère après un échec sur Kaggle Secrets. L'ADR-020 retient Modal comme cible pilote principale. L'application `chsa-triage-poc` utilise un GPU T4, au plus un conteneur et un retour à zéro après 120 secondes. Elle vérifie les checksums Base/SFT avant chargement, sert FastAPI avec vLLM et persiste l'audit dans un volume Modal. L'endpoint est protégé par Bearer token. Au dernier contrôle, l'application restait déployée avec zéro tâche active ; cette observation confirme le scale-to-zero, pas un coût futur nul.
 
-L'ADR-021 sépare le frontend du conteneur GPU. Le projet Cloudflare Pages
-`chsa-triage-poc` est publié sur `https://triage-poc.pierrepluton.com` et embarque une Function qui compare le
-jeton jury en temps constant, borne le JSON à 32 Kio et remplace ce jeton par le secret Modal.
-Le build Wrangler compile, l'audit npm ne relève aucune vulnérabilité et le runtime local
-refuse les mauvais jetons. La page, le contrat, les en-têtes de sécurité et le certificat du
-sous-domaine ont été observés depuis l'extérieur. Le proxy public retourne encore 503 faute de
-secrets Modal ; cette preuve ne couvre donc ni le modèle, ni l'audit distant, ni la latence GPU.
+L'ADR-021 sépare le frontend du conteneur GPU. Le projet Cloudflare Pages `chsa-triage-poc`
+est publié sur `https://triage-poc.pierrepluton.com`. Sa Function compare le jeton jury en
+temps constant, borne le JSON à 32 Kio, refuse les redirections amont et remplace le jeton par
+le secret Modal. La page, les en-têtes de sécurité, le certificat et les refus 401/405 ont été
+observés depuis l'extérieur. Deux scénarios synthétiques ont ensuite exercé tout le chemin :
+douleur thoracique en français et déficit neurologique en anglais. Les deux réponses valent
+`maximum`, utilisent le fallback sûr v3 et correspondent à une trace d'audit privée. Les
+latences chaudes étaient 34,98 et 29,57 secondes ; deux cold starts publics avaient pris 111
+et 117,5 secondes. Ces observations ne constituent pas un test de charge.
 
-Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation sans dépense](../docs/evidence/FREE_DEMO_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
+Preuves : [déploiement Modal](../docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md), [déploiement Cloudflare et tests publics](../docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md) et [CI finale de la PR #4](https://github.com/ppluton/medical-triage-llm-poc/actions/runs/35100607235).
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le candidat PDF et le support de soutenance ont été générés et contrôlés localement ; leur nom de remise doit encore être confirmé. La clôture de démonstration nécessite encore la publication Cloudflare, l'endpoint Modal, le smoke test distant et la preuve d'audit ; Kaggle reste uniquement le secours éphémère.
+La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le frontend Cloudflare, l'endpoint Modal et deux interactions auditées fournissent la preuve du pilote public. Le rapport et le support de soutenance sont générés localement ; leur nom de remise doit encore être confirmé.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 
