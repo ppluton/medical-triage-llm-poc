@@ -98,7 +98,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage :** parcours réel observé, URL et accès transmissibles au jury, trace retrouvable. Un notebook Kaggle avec API sur localhost n’est pas ce livrable. Une CI de tests/build n’est pas une CD.
 
-**État au 16 septembre :** l'image API est construite localement et ses modes sans fournisseur et factory privée authentifiée passent hors réseau. Compose vLLM/API est préparé. La [cible Modal v1](docs/technical/MODAL_DEPLOYMENT_V1.md) assemble localement le SFT sélectionné, le rehash des poids, l'audit persistant, l'extinction automatique et un workflow GitHub manuel protégé. Aucun compte, volume, secret, GPU ou endpoint Modal n'a été créé : le coût, le déploiement et le smoke distant restent soumis à l'autorisation explicite de Pierre.
+**État au 16 septembre :** Pierre a fixé une contrainte de dépense nulle. L'[ADR-019](docs/decisions/ADR-019-demonstration-zero-cout.md) remplace donc la proposition Modal : Kaggle fournit temporairement la T4 gratuite et Cloudflare Quick Tunnel l'URL HTTPS. Le [lanceur et le notebook privé](docs/technical/DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) sont implémentés, checksum-lockés et passent la [validation locale](docs/evidence/FREE_DEMO_PREPARATION_2026-09-16.md) avec 245 tests. Aucun compte, secret, GPU ou endpoint payant n'a été créé. L'exécution Kaggle interactive, l'URL réelle et le smoke extérieur restent à observer ; Quick Tunnel ne constitue pas une CD permanente.
 
 ## 6 — Assembler la première livraison et préparer l’oral
 
@@ -120,7 +120,7 @@ La première version peut être identifiée comme brouillon avec écarts explici
 ## Plan jusqu’à demain
 
 1. Maintenant : ranger la documentation et reprendre l’inventaire/revue du corpus ; arrêter les expériences parallèles non nécessaires.
-2. Ensuite : choisir l’environnement externe autorisé, faire l’essai court et mesurer le débit. Fixer alors la durée réaliste du SFT/DPO et réserver du temps pour leur évaluation.
+2. Ensuite : lancer le notebook privé de démonstration sans dépense, relever l'URL éphémère et exécuter le smoke FR/EN depuis l'extérieur.
 3. En parallèle du calcul : préparer endpoint/CD, rapport et dossier de livraison à partir des preuves existantes, sans annoncer les résultats futurs.
 4. Avant la remise : figer les artefacts, vérifier leur ouverture et leurs liens, dérouler la démo et chronométrer l’oral. Éviter une nouvelle expérience de dernière minute qui empêcherait d’évaluer le modèle livré.
 
@@ -128,4 +128,4 @@ La première version peut être identifiée comme brouillon avec écarts explici
 
 **État de la livraison locale :** le rapport, le support et le déroulé de démonstration intègrent désormais le SFT retenu et le résultat négatif de la réserve. Le candidat PDF de cinq pages et le PowerPoint de dix slides ont été rendus et contrôlés. Le nommage officiel reste à confirmer.
 
-**Prochaine action concrète : choisir et autoriser une cible cloud GPU avec un plafond de coût, puis exécuter le déploiement, le smoke test distant et le parcours de démonstration.** Sans cette décision externe, l'endpoint cloud et la CD ne peuvent pas être déclarés livrés.
+**Prochaine action concrète : exécuter le notebook privé Kaggle + Cloudflare déjà préparé, puis conserver l'URL éphémère, le smoke FR/EN et l'audit comme preuve de soutenance.** Cette voie respecte la dépense nulle. Elle prouvera une démonstration extérieure temporaire, pas une CD GPU permanente.

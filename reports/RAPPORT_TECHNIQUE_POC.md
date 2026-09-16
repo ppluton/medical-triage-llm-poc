@@ -1,7 +1,7 @@
 # Rapport technique — POC d'assistance au triage médical CHSA
 
 - **Date :** 2026-09-16
-- **Statut :** draft finalisé côté modèle — cible cloud encore non autorisée
+- **Statut :** draft finalisé côté modèle — démonstration extérieure sans dépense préparée
 - **Sources :** [cadrage](../CADRAGE_MISSION.md), [spécification](../SPEC_POC_TRIAGE_MEDICAL.md), [audit de mission](../docs/evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md) et preuves liées ci-dessous.
 - **Format final :** candidat PDF de cinq pages généré et vérifié ; le nom de remise définitif dépend encore de l'identité et du mois de démarrage confirmés.
 
@@ -15,9 +15,9 @@ La chaîne actuelle comprend un corpus bilingue v2.2 finalisé par des contrôle
 |---|---|---|
 | Dataset bilingue documenté | SFT v2.2 : 4 700 lignes, 31 masques sur 22 lignes, zéro identifiant direct au rescan | Publication externe, certification RGPD et validation clinique absentes |
 | SFT puis DPO comparés | SFT v39 rechargé ; DPO v41 vérifié ; sélection v43 et réserve v46 terminées | Validation clinique indépendante absente ; triage brut final non conforme |
-| Endpoint cloud vLLM/API | Intégration réelle v37, audit, dialogues et garde-fous mesurés | Déployer et tester sur une cible extérieure autorisée |
-| GitHub Actions tests/déploiement | 240 tests et conteneur passés sur la PR #4 ; CD Modal manuelle préparée | Déploiement Modal, endpoint et smoke test |
-| Rapport et soutenance | Rapport et support générés à partir des preuves finales du modèle | Cible cloud, nommage final et démonstration extérieure |
+| Endpoint cloud vLLM/API | Intégration réelle v37 ; parcours Kaggle + Cloudflare à 0 € implémenté | Lancer le notebook et conserver URL, smoke et audit extérieurs |
+| GitHub Actions tests/déploiement | Tests et conteneur passés sur la PR #4 ; 245 tests locaux sur le parcours gratuit | Quick Tunnel interactif, pas de CD GPU permanente prouvée |
+| Rapport et soutenance | Rapport et support générés à partir des preuves finales du modèle | Nommage final et démonstration extérieure |
 
 ## 2. Données et gouvernance
 
@@ -117,15 +117,15 @@ Une extension locale de collecte (API 0.3.0) suit les rubriques renseignées, le
 
 L'audit local conserve désormais le contexte anonymisé transmis au modèle et la réponse délivrée, avec identifiant, versions, statut et durée. Les textes de sortie sont aussi contrôlés avant restitution. Un test d'intégration avec modèle et anonymiseur simulés vérifie la correspondance HTTP/JSONL et les refus en cas d'échec. Cette [preuve locale](../docs/evidence/API_AUDIT_CONTENT_2026-09-12.md) ne valide ni la détection exhaustive des identifiants ni la persistance distante. Deux processus API locaux successifs ont également conservé les réponses dans le même journal. La synchronisation du fichier est exigée avant restitution ; son échec produit un refus 503. Cette [preuve locale de redémarrage](../docs/evidence/AUDIT_RESTART_LOCAL_2026-09-14.md) ne prouve pas la durabilité du futur volume distant. La politique de stockage et de conservation reste à définir avant déploiement.
 
-La régression locale complète passe 240 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau.
+La régression locale complète passe 245 tests au 16 septembre. La v37 a exécuté Base/SFT/DPO via la même API et deux dialogues de six échanges FR/EN. Les garde-fous empêchent les mesures critiques manquantes et les retards dangereux observés, mais interviennent sur 13/18 sorties SFT et 14/18 sorties DPO ; ils ne transforment pas ces mesures en validation clinique. L'image API se construit localement et les modes sans fournisseur et factory privée authentifiée passent hors réseau.
 
-La cible Modal v1 est maintenant implémentée localement : environnements vLLM/API séparés dans un conteneur T4, poids privés rehashés avant démarrage, audit synchronisé, authentification Bearer, retour à zéro après inactivité et CD GitHub manuelle protégée. Le dossier de transfert réutilise le poids Base local par lien physique et contient uniquement le SFT retenu. La définition est acceptée par `modal==1.5.5`. La PR #4 exécute aussi la CI distante : les jobs `test` et `container` passent. En revanche, aucune ressource, image distante, URL ou dépense Modal n'a été créée. L’ADR-018 reste `proposed` tant que Pierre n'a pas autorisé le fournisseur et un plafond de coût. Aucun endpoint ni modèle public n'est annoncé.
+Pierre a fixé une contrainte de dépense nulle. L'ADR-019 remplace donc la proposition Modal par une démonstration interactive : Kaggle fournit la T4 gratuite déjà utilisée par le projet et Cloudflare Quick Tunnel une URL HTTPS temporaire. Le notebook privé attache uniquement le snapshot Base et le SFT v39, vérifie leurs checksums et celui de `cloudflared`, conserve vLLM/FastAPI en boucle locale et expose seulement l'API authentifiée. Le contrat local et la régression passent 245 tests. Aucun GPU, endpoint ou service payant n'a été créé. L'URL réelle, le smoke extérieur et l'audit de session restent à observer ; Quick Tunnel est sans SLA et n'est pas une CD GPU permanente.
 
-Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation Modal](../docs/evidence/MODAL_DEPLOYMENT_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
+Preuves : [validation locale historique](../docs/evidence/POST_SFT_IMPLEMENTATION_2026-09-05.md), [évaluation de l'endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md), [préparation sans dépense](../docs/evidence/FREE_DEMO_PREPARATION_2026-09-16.md) et [CI GitHub](../docs/evidence/GITHUB_CI_MODAL_PREPARATION_2026-09-16.md).
 
 ## 7. Conditions de clôture et limites
 
-La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le candidat PDF et le support de soutenance ont été générés et contrôlés localement ; leur nom de remise doit encore être confirmé. La clôture cloud reste conditionnée par une cible accessible, un budget autorisé, la CD et un smoke test distant.
+La recharge du SFT v39, le DPO v41, la comparaison v43 et l'ouverture unique de la réserve v46 sont terminés. Le résultat final interdit toute conclusion favorable sur le triage brut : le composant modèle nécessite le schéma contraint, les garde-fous et la décision humaine. Le candidat PDF et le support de soutenance ont été générés et contrôlés localement ; leur nom de remise doit encore être confirmé. La clôture de démonstration nécessite encore une session Kaggle active, l'URL Cloudflare éphémère et un smoke test distant ; elle ne nécessite plus de budget.
 
 Les résultats automatiques, la revue humaine et la validation clinique sont distincts. Aucun rappel critique, taux de sous-triage ou de réponses dangereuses n'est établi sur une référence cliniquement validée. Les sources de connaissances et préférences ouvertes ne remplacent pas cette référence. Le niveau de validation attendu pour la soutenance doit être clarifié avec le mentor, sans attribuer une validation fictive au travail réalisé.
 

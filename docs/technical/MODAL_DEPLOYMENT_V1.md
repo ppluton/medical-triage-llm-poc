@@ -1,7 +1,7 @@
 # Déploiement privé Modal v1
 
 - Date : 2026-09-16
-- Statut : `implemented_locally_not_deployed`
+- Statut : `superseded_not_deployed` par [ADR-019](../decisions/ADR-019-demonstration-zero-cout.md)
 - Sources : [serveur vLLM Modal](https://modal.com/docs/examples/vllm_inference),
   [serveurs Modal](https://modal.com/docs/guide/servers),
   [volumes](https://modal.com/docs/guide/volumes),
@@ -9,6 +9,10 @@
   [déploiement continu](https://modal.com/docs/guide/continuous-deployment).
 
 ## But et limites
+
+Ce document conserve la cible T4 payante préparée avant que Pierre fixe une contrainte de
+dépense nulle. Aucun déploiement Modal n'a eu lieu ; le parcours actif est désormais la
+[démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md).
 
 `deploy/modal_app.py` prépare une cible T4 pour la démonstration pédagogique. Un seul
 conteneur conserve deux environnements Python séparés : vLLM écoute uniquement en boucle
@@ -19,8 +23,8 @@ vaut 120 secondes. Cette configuration limite le risque de coût oublié ; elle 
 pas un plafond de facturation fournisseur.
 
 La définition est locale et n'a créé aucune ressource Modal. Elle ne prouve ni compatibilité
-GPU sur cette cible, ni URL accessible, ni CD exécutée, ni performance clinique. Le
-déploiement demeure soumis au choix et au plafond de coût approuvés par Pierre.
+GPU sur cette cible, ni URL accessible, ni CD exécutée, ni performance clinique. Ce parcours
+est archivé et ne doit pas être exécuté sous la décision active de dépense nulle.
 
 ## Identité des artefacts
 
@@ -107,8 +111,9 @@ un échec de synchronisation bloque la réponse.
 
 ## Déploiement continu borné
 
-`.github/workflows/deploy-modal.yml` est uniquement manuel (`workflow_dispatch`) et utilise
-l'environnement GitHub `modal-demo`. Cet environnement doit exiger une approbation et fournir
+`.github/workflows/deploy-modal.yml` est conservé pour l'historique mais son job est désactivé
+par une condition constante. Avant son archivage, il était manuel (`workflow_dispatch`) et
+utilisait l'environnement GitHub `modal-demo`. Cet environnement devait exiger une approbation et fournir
 `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET`, `TRIAGE_API_TOKEN` et la variable
 `MODAL_ENVIRONMENT`. L'URL n'est pas un secret à préconfigurer : après le premier déploiement,
 le workflow la résout depuis `modal.Server.from_name(...).get_url()`, valide son origine HTTPS,

@@ -1,4 +1,4 @@
-name: Deploy private Modal demonstration
+name: Archived - Modal demonstration (disabled)
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     environment: modal-demo
     permissions:

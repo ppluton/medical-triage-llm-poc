@@ -1,7 +1,7 @@
 # ADR-018 — Cible GPU cloud du POC
 
 - Date : 2026-09-16
-- Statut : `proposed`
+- Statut : `superseded` par [ADR-019](ADR-019-demonstration-zero-cout.md)
 - Propriétaire : Pierre
 - Statut clinique : non applicable ; aucune validation clinique
 - Sources : [tarifs Modal](https://modal.com/pricing), [GPU Modal](https://modal.com/docs/guide/gpu), [endpoints Modal](https://modal.com/docs/guide/dedicated-endpoints), [tarifs RunPod](https://www.runpod.io/pricing), [GPU Spaces Hugging Face](https://huggingface.co/docs/hub/spaces-gpus), [Docker Spaces](https://huggingface.co/docs/hub/main/en/spaces-sdks-docker)
@@ -43,20 +43,16 @@ peut arrêter le coût, au prix d’un démarrage à froid. La visibilité prot�
 application accessible — dépend d’un plan payant, et le conteneur unique demande de réunir ou
 superviser vLLM et FastAPI.
 
-## Proposition
+## Proposition historique
 
-Pour une démonstration courte sans serveur permanent, **Modal est l’option recommandée sous
-réserve de validation du compte et du budget**, car l’extinction automatique limite le risque
-de coût oublié et le crédit Starter peut couvrir un POC. RunPod Pod est l’alternative la plus
-directe si la priorité est de réutiliser le compose avec le moins d’adaptation. Hugging Face
-est pertinent si Pierre préfère une URL de Space et possède déjà le plan requis.
+Cette proposition Modal n'est plus active. Pierre a fixé le 16 septembre 2026 une contrainte
+de dépense nulle. L'[ADR-019](ADR-019-demonstration-zero-cout.md) retient donc une
+démonstration éphémère Kaggle + Cloudflare, sans création de ressource Modal.
 
-## Décision requise
+## Décision remplacée
 
-Pierre doit choisir le fournisseur, autoriser un plafond de dépense et connecter le compte
-correspondant. La décision doit préciser : fournisseur, plafond, région si nécessaire, durée
-de disponibilité avant arrêt et visibilité de l’endpoint. Aucun déploiement ni secret ne sera
-créé avant cette autorisation.
+La demande d'autorisation de budget est annulée. Les fichiers Modal sont conservés comme
+travail technique historique, mais ne doivent pas être déployés dans le parcours sans coût.
 
 ## Conséquences
 

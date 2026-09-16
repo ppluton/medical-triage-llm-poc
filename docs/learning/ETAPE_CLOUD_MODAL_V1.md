@@ -1,7 +1,7 @@
 # Préparer une démonstration GPU à coût borné
 
 - Date : 2026-09-16
-- Statut : `draft`
+- Statut : `superseded` par [la démonstration sans dépense](DEMONSTRATION_ZERO_COUT_2026-09-16.md)
 - Sources : documentation Modal officielle citée dans
   `docs/technical/MODAL_DEPLOYMENT_V1.md`, preuves v37, sélection v43 et réserve v46.
 
@@ -30,9 +30,8 @@ service distant, authentification, persistance, smoke test et décision clinique
 - le Bearer token de l'API n'est pas le token de déploiement Modal ;
 - une CD manuelle et protégée reste une CD vérifiable sans déclencher des dépenses à chaque push.
 
-## Ce qui reste ouvert
+## Décision ultérieure
 
-Pierre doit autoriser le fournisseur et un plafond de coût. Il faut ensuite créer les volumes
-et secrets, transférer les artefacts, déployer, exécuter le smoke test, rapprocher l'audit et
-observer l'extinction effective. Tant que ces actions ne sont pas réalisées, la cible reste
-une implémentation locale non prouvée sur GPU Modal.
+Pierre a ensuite exclu toute dépense. Aucun volume, secret ou endpoint Modal n'a été créé et
+le workflow historique est désactivé. Le parcours actif réutilise la T4 gratuite Kaggle et un
+Quick Tunnel Cloudflare éphémère ; voir l'ADR-019.
