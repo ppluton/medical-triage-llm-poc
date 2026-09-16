@@ -1,7 +1,7 @@
 # Déploiement privé Modal v1
 
 - Date : 2026-09-16
-- Statut : `active_predeployment` par
+- Statut : `deployed_backend_smoke_verified` par
   [ADR-020](../decisions/ADR-020-reactiver-modal-budget-borne.md)
 - Sources : [serveur vLLM Modal](https://modal.com/docs/examples/vllm_inference),
   [serveurs Modal](https://modal.com/docs/guide/servers),
@@ -12,7 +12,7 @@
 ## But et limites
 
 Ce document décrit la cible T4 réactivée après configuration d'une limite de 5 USD d'usage
-total et de 0 USD de dépense nette. Aucun déploiement Modal n'a encore eu lieu ; la
+total et de 0 USD de dépense nette. Le backend Modal a été déployé et vérifié le 16 septembre ; la
 [démonstration Kaggle + Cloudflare](DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md) reste le secours
 éphémère si la cible principale échoue.
 
@@ -33,10 +33,11 @@ Bearer token. L'interface et ses ressources sont publiques pour permettre l'ouve
 page ; le proxy Cloudflare et l'API Modal utilisent deux secrets distincts.
 Elle utilise uniquement des scénarios synthétiques et affiche explicitement le statut de POC.
 
-La définition locale n'a encore créé aucune ressource Modal. Elle ne prouve ni compatibilité
-GPU sur cette cible, ni URL accessible, ni CD exécutée, ni performance clinique. Son
-exécution reste conditionnée aux plafonds observés dans la
-[preuve budgétaire](../evidence/MODAL_BUDGET_GUARDRAILS_2026-09-16.md).
+Les volumes, le secret et l'app existent dans `ppluton/main`. La compatibilité T4, le service
+vLLM, deux requêtes synthétiques et leur audit sont observés dans la
+[preuve de déploiement](../evidence/MODAL_DEPLOYMENT_2026-09-16.md). Cela ne prouve ni le CD
+GitHub exécuté, ni une performance clinique. L'exploitation reste conditionnée aux plafonds
+observés dans la [preuve budgétaire](../evidence/MODAL_BUDGET_GUARDRAILS_2026-09-16.md).
 
 ## Identité des artefacts
 
@@ -97,8 +98,8 @@ modal volume create chsa-triage-models-v1 --version=2
 modal volume create chsa-triage-audit-v1 --version=2
 modal volume put chsa-triage-models-v1 /absolute/path/to/chsa-modal-stage-v1/base /
 modal volume put chsa-triage-models-v1 /absolute/path/to/chsa-modal-stage-v1/adapter /
-modal secret create chsa-triage-api-v1 TRIAGE_API_TOKEN="$TRIAGE_API_TOKEN"
-modal deploy -m deploy.modal_app
+modal secret create chsa-triage-api-v1 --from-json /chemin/prive/modal-secret.json
+modal deploy -m deploy.modal_app --env main
 ```
 
 Le secret `chsa-triage-api-v1` doit contenir un jeton aléatoire d'au moins 32 caractères. Le
@@ -107,7 +108,9 @@ refuse toute requête sans `Authorization: Bearer ...`.
 
 ## Smoke test et audit
 
-Après déploiement, exécuter les deux scénarios synthétiques FR/EN :
+Après déploiement, attendre d'abord que `/healthz` retourne 200 : un cold start T4 observé a
+pris environ 110 secondes et les appels immédiats ont reçu 503. Exécuter ensuite les deux
+scénarios synthétiques FR/EN :
 
 ```bash
 .venv/bin/python scripts/evaluate_triage_endpoint.py \

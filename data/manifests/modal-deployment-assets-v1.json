@@ -2,10 +2,10 @@
   "manifest_id": "modal-deployment-assets-v1",
   "schema_version": "1.0.0",
   "date": "2026-09-16",
-  "status": "verified_local_stage_not_uploaded",
+  "status": "deployed_backend_smoke_verified",
   "provider": "Modal",
   "resources": {
-    "app": "chsa-triage-demo",
+    "app": "chsa-triage-poc",
     "server": "TriageService",
     "model_volume": "chsa-triage-models-v1",
     "audit_volume": "chsa-triage-audit-v1",
@@ -39,14 +39,28 @@
   "transfer": {
     "local_stage_verified": true,
     "base_weight_reused_by_hardlink": true,
-    "remote_volume_created": false,
-    "remote_upload_performed": false
+    "remote_volume_created": true,
+    "remote_upload_performed": true
   },
   "deployment": {
-    "image_built_remotely": false,
-    "endpoint_created": false,
-    "smoke_test_performed": false,
+    "image_built_remotely": true,
+    "endpoint_created": true,
+    "endpoint_origin": "https://ppluton--chsa-triage-poc-triageservice.us-east.modal.direct",
+    "guardrail_version": "proposed-guardrails-v2",
+    "smoke_test_performed": true,
+    "smoke_requests": 2,
+    "smoke_successes": 2,
+    "smoke_client_p50_ms": 19362.01,
+    "smoke_client_p95_ms": 31455.41,
+    "audit_entries_matched": 2,
+    "metered_cost_usd_at_snapshot": 0.05,
+    "billed_cost_usd_at_snapshot": 0.0,
     "github_cd_executed": false
+  },
+  "evidence": {
+    "smoke_report_sha256": "525e7697b56e588e8bdb96c481d0e32a7c8f38e78cafaa7d6d48c08a984c875d",
+    "audit_export_sha256": "9c17571dbac96777acac40d111d726a55fdca324db2a07238e6173ac6158496e",
+    "audit_verification_sha256": "00f9b8d61cf8a406ecb193d337962c9f0a8a3276e15f9d5c27d14f6d81d39d30"
   },
   "clinical_validation": "not_performed"
 }

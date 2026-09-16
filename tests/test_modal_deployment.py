@@ -46,7 +46,7 @@ def test_vllm_command_serves_only_the_selected_sft_adapter(tmp_path):
     adapter = tmp_path / "adapter"
     command = build_vllm_command(base, adapter, port=8123)
 
-    assert command[:3] == ["python", "-m", "vllm.entrypoints.openai.api_server"]
+    assert command[:3] == ["python3", "-m", "vllm.entrypoints.openai.api_server"]
     assert command[command.index("--model") + 1] == str(base)
     assert command[command.index("--tokenizer") + 1] == str(adapter)
     assert command[command.index("--lora-modules") + 1] == f"{SELECTED_MODEL_NAME}={adapter}"
@@ -85,8 +85,12 @@ def test_deployment_environment_validation_returns_no_secrets():
     assert environment["MODAL_TOKEN_SECRET"] not in serialized
     assert environment["TRIAGE_API_TOKEN"] not in serialized
 
-    with pytest.raises(ValueError, match="credential-free HTTPS origin"):
+    with pytest.raises(ValueError, match="trusted credential-free Modal HTTPS origin"):
         validate_deployment_environment({**environment, "TRIAGE_MODAL_URL": "http://bad"})
+    with pytest.raises(ValueError, match="trusted credential-free Modal HTTPS origin"):
+        validate_deployment_environment(
+            {**environment, "TRIAGE_MODAL_URL": "https://example.com"}
+        )
     with pytest.raises(ValueError, match="at least 32"):
         validate_deployment_environment({**environment, "TRIAGE_API_TOKEN": "short"})
 

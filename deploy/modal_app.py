@@ -45,14 +45,19 @@ SPACY_MODELS = (
 )
 
 image = (
-    modal.Image.from_registry(VLLM_IMAGE)
+    modal.Image.from_registry(
+        VLLM_IMAGE,
+        setup_dockerfile_commands=[
+            "RUN ln -sf /usr/bin/python3 /usr/bin/python",
+        ],
+    )
     .entrypoint([])
     .add_local_file("requirements/api.txt", "/tmp/chsa/requirements-api.txt", copy=True)
     .add_local_file("pyproject.toml", "/tmp/chsa/project/pyproject.toml", copy=True)
     .add_local_file("README.md", "/tmp/chsa/project/README.md", copy=True)
     .add_local_dir("src", "/tmp/chsa/project/src", copy=True)
     .run_commands(
-        "python -m venv /opt/chsa-api",
+        "python3 -m venv /opt/chsa-api",
         "/opt/chsa-api/bin/pip install --no-cache-dir -r /tmp/chsa/requirements-api.txt",
         "/opt/chsa-api/bin/pip install --no-cache-dir --no-deps /tmp/chsa/project",
         "/opt/chsa-api/bin/pip install --no-cache-dir --no-deps " + " ".join(SPACY_MODELS),

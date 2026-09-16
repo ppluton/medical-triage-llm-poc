@@ -12,7 +12,7 @@ from triage_poc.model_snapshot import BASE_SERVED_MODEL_NAME, verify_base_snapsh
 
 SELECTED_MODEL_NAME = "chsa-selected"
 SELECTED_MODEL_VERSION = "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413"
-MODAL_APP_NAME = "chsa-triage-demo"
+MODAL_APP_NAME = "chsa-triage-poc"
 MODAL_SERVER_NAME = "TriageService"
 EXPECTED_ADAPTER_BASE = "/kaggle/input/qwen3-1-7b-base-e249956c"
 EXPECTED_ADAPTER_FILES = {
@@ -50,16 +50,19 @@ def validate_deployment_environment(
             "modal_environment": environment["MODAL_ENVIRONMENT"],
         }
     parsed = urlparse(environment["TRIAGE_MODAL_URL"])
+    trusted_modal_host = bool(parsed.hostname) and parsed.hostname.endswith(
+        (".modal.run", ".modal.direct")
+    )
     if (
         parsed.scheme != "https"
-        or not parsed.hostname
+        or not trusted_modal_host
         or parsed.username
         or parsed.password
         or parsed.query
         or parsed.fragment
         or parsed.path not in {"", "/"}
     ):
-        raise ValueError("TRIAGE_MODAL_URL must be a credential-free HTTPS origin")
+        raise ValueError("TRIAGE_MODAL_URL must be a trusted credential-free Modal HTTPS origin")
     return {
         "status": "deployment_environment_valid",
         "modal_environment": environment["MODAL_ENVIRONMENT"],
@@ -114,7 +117,7 @@ def build_vllm_command(
     base_directory = Path(base_directory)
     adapter_directory = Path(adapter_directory)
     return [
-        "python",
+        "python3",
         "-m",
         "vllm.entrypoints.openai.api_server",
         "--model",

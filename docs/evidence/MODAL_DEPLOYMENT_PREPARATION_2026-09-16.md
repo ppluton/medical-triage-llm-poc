@@ -9,7 +9,7 @@
 ## Vérifications observées
 
 - import local de `deploy.modal_app` réussi avec le SDK Modal épinglé ;
-- définition `chsa-triage-demo` et classe `TriageService` construites sans authentification ;
+- définition `chsa-triage-poc` et classe `TriageService` construites sans authentification Modal, avec authentification Bearer applicative obligatoire ;
 - cinq fichiers réels du SFT v39 rehashés avec succès, dont l'adaptateur
   `c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413` ;
 - dossier privé local de transfert préparé : onze fichiers Base et six fichiers SFT ;
