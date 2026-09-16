@@ -168,6 +168,19 @@ def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp
     assert len((tmp_path / "audit.jsonl").read_text().splitlines()) == 1
 
 
+def test_jsonl_audit_can_sync_its_volume_parent(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(
+        "triage_poc.serving.subprocess.run",
+        lambda command, **kwargs: calls.append((command, kwargs)),
+    )
+    audit = JsonlAudit(tmp_path / "audit/interactions.jsonl", sync_parent=True)
+    audit.write({"synthetic": True})
+    assert calls == [
+        (["sync", str(tmp_path / "audit")], {"check": True, "timeout": 10})
+    ]
+
+
 def test_failed_output_privacy_check_keeps_audit_content_free(tmp_path):
     class OutputBlocked(Redactor):
         def anonymize(self, text, language):

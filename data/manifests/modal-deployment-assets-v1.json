@@ -1,0 +1,52 @@
+{
+  "manifest_id": "modal-deployment-assets-v1",
+  "schema_version": "1.0.0",
+  "date": "2026-09-16",
+  "status": "verified_local_stage_not_uploaded",
+  "provider": "Modal",
+  "resources": {
+    "app": "chsa-triage-demo",
+    "server": "TriageService",
+    "model_volume": "chsa-triage-models-v1",
+    "audit_volume": "chsa-triage-audit-v1",
+    "api_secret": "chsa-triage-api-v1"
+  },
+  "runtime": {
+    "modal_sdk": "1.5.5",
+    "gpu": "T4",
+    "min_containers": 0,
+    "max_containers": 1,
+    "scaledown_window_seconds": 120,
+    "vllm_image": "vllm/vllm-openai:v0.15.0@sha256:97187c9535fd6d6040444d68bb073f17344fd454e9241cc7a4e998141f244543"
+  },
+  "base": {
+    "revision": "e249956c10337100486d07afb77e3eb2b30906b8",
+    "license": "Apache-2.0",
+    "files_verified": 11,
+    "model_size_bytes": 3441185608,
+    "model_sha256": "6df85b39330e5a425ee36253d0f894e4387e4f0a15b9c53cb467d668e6b3a841",
+    "manifest_sha256": "920a5897431d1dfc62502815c5ec4929a149d5f324e6f5b2b3d86db4a691f0d1"
+  },
+  "adapter": {
+    "selected_variant": "sft",
+    "checkpoint": "kaggle-v39-step-150",
+    "model_name": "chsa-selected",
+    "files_verified": 5,
+    "adapter_model_size_bytes": 69782384,
+    "adapter_model_sha256": "c911f9c631be825f4af5c7dff5a87409d1ee91d4c28e2b0b1571e808e055d413",
+    "handoff_manifest_sha256": "5a8ffc133b42b5cb7b72ec75daed1190e8701286203e9d03c8de15d010004da5"
+  },
+  "transfer": {
+    "local_stage_verified": true,
+    "base_weight_reused_by_hardlink": true,
+    "remote_volume_created": false,
+    "remote_upload_performed": false
+  },
+  "deployment": {
+    "image_built_remotely": false,
+    "endpoint_created": false,
+    "smoke_test_performed": false,
+    "github_cd_executed": false
+  },
+  "clinical_validation": "not_performed"
+}

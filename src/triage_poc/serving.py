@@ -4,6 +4,7 @@ from __future__ import annotations
 import hmac
 import json
 import os
+import subprocess
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -18,8 +19,9 @@ from triage_poc.triage_prompt import PROMPT_VERSION, SYSTEM_PROMPT, generation_s
 
 
 class JsonlAudit:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, *, sync_parent: bool = False):
         self.path = path
+        self.sync_parent = sync_parent
         path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, record: dict) -> None:
@@ -31,6 +33,8 @@ class JsonlAudit:
             os.fsync(descriptor)
         finally:
             os.close(descriptor)
+        if self.sync_parent:
+            subprocess.run(["sync", str(self.path.parent)], check=True, timeout=10)
 
 
 class VllmProvider:
@@ -128,7 +132,13 @@ def create_serving_app():
         raise ValueError("Set a private TRIAGE_API_TOKEN of at least 32 characters.")
     provider = VllmProvider(os.environ["TRIAGE_VLLM_URL"], os.environ["TRIAGE_MODEL_NAME"],
                             os.environ["TRIAGE_MODEL_VERSION"])
-    app = create_app(provider, JsonlAudit(Path(os.environ["TRIAGE_AUDIT_PATH"])))
+    app = create_app(
+        provider,
+        JsonlAudit(
+            Path(os.environ["TRIAGE_AUDIT_PATH"]),
+            sync_parent=os.environ.get("TRIAGE_AUDIT_SYNC_PARENT") == "1",
+        ),
+    )
 
     @app.middleware("http")
     async def require_access(request: Request, call_next):

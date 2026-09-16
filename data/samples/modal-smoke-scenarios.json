@@ -1,0 +1,28 @@
+[
+  {
+    "id": "modal-smoke-fr-001",
+    "synthetic": true,
+    "request": {
+      "language": "fr",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": ["douleur thoracique soudaine", "essoufflement"],
+        "duration": "depuis vingt minutes",
+        "vitals": {}
+      }
+    }
+  },
+  {
+    "id": "modal-smoke-en-001",
+    "synthetic": true,
+    "request": {
+      "language": "en",
+      "patient_context": {
+        "age_group": "adult",
+        "symptoms": ["sudden weakness of the right arm", "difficulty speaking"],
+        "duration": "for ten minutes",
+        "vitals": {}
+      }
+    }
+  }
+]

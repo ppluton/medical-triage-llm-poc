@@ -98,7 +98,7 @@ Faire un seul essai court de préparation : chargement, quelques étapes, sauveg
 
 **Condition de passage :** parcours réel observé, URL et accès transmissibles au jury, trace retrouvable. Un notebook Kaggle avec API sur localhost n’est pas ce livrable. Une CI de tests/build n’est pas une CD.
 
-**État au 16 septembre :** l'image API est construite localement et ses modes sans fournisseur et factory privée authentifiée passent hors réseau. Compose vLLM/API est préparé. La cible cloud, le coût, le déploiement automatisé et le smoke distant restent ouverts.
+**État au 16 septembre :** l'image API est construite localement et ses modes sans fournisseur et factory privée authentifiée passent hors réseau. Compose vLLM/API est préparé. La [cible Modal v1](docs/technical/MODAL_DEPLOYMENT_V1.md) assemble localement le SFT sélectionné, le rehash des poids, l'audit persistant, l'extinction automatique et un workflow GitHub manuel protégé. Aucun compte, volume, secret, GPU ou endpoint Modal n'a été créé : le coût, le déploiement et le smoke distant restent soumis à l'autorisation explicite de Pierre.
 
 ## 6 — Assembler la première livraison et préparer l’oral
 
