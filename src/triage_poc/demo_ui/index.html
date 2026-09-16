@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHSA — Démonstrateur de triage</title>
+    <meta name="description" content="Démonstrateur pédagogique bilingue du POC de triage CHSA.">
+    <link rel="stylesheet" href="/demo/assets/styles.css">
+    <script src="/demo/assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="identity" href="/demo" aria-label="Accueil de la démonstration CHSA">
+        <span class="identity-mark" aria-hidden="true"><i></i><i></i></span>
+        <span><strong>CHSA</strong><small>Centre Hospitalier Saint-Aurélien</small></span>
+      </a>
+      <div class="environment"><span></span> Environnement pilote · données synthétiques</div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="context">Assistant de triage initial — preuve de concept</p>
+          <h1 id="page-title">Recueillir les faits.<br>Rendre l’incertitude visible.</h1>
+        </div>
+        <p class="intro-copy" data-i18n="intro">
+          Cette interface illustre une chaîne gouvernée : collecte, anonymisation, modèle,
+          garde-fous et audit. Elle ne produit ni diagnostic ni décision médicale autonome.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <section class="intake-panel" aria-labelledby="intake-title">
+          <div class="section-heading">
+            <div>
+              <p class="step">01 / Contexte synthétique</p>
+              <h2 id="intake-title" data-i18n="intakeTitle">Informations disponibles</h2>
+            </div>
+            <div class="language-switch" aria-label="Langue de la démonstration">
+              <button type="button" class="language active" data-language="fr">FR</button>
+              <button type="button" class="language" data-language="en">EN</button>
+            </div>
+          </div>
+
+          <div class="presets" aria-label="Scénarios synthétiques">
+            <button type="button" class="preset active" data-preset="chest">
+              <span>Douleur thoracique</span><small>FR · adulte</small>
+            </button>
+            <button type="button" class="preset" data-preset="stroke">
+              <span>Déficit neurologique</span><small>EN · adult</small>
+            </button>
+          </div>
+
+          <form id="triage-form" novalidate>
+            <div class="field-row">
+              <label>
+                <span data-i18n="ageGroup">Groupe d’âge</span>
+                <select id="age-group" required>
+                  <option value="adult" data-i18n="adult">Adulte</option>
+                  <option value="pediatric" data-i18n="pediatric">Pédiatrique</option>
+                  <option value="older_adult" data-i18n="olderAdult">Personne âgée</option>
+                  <option value="unknown" data-i18n="unknown">Inconnu</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="duration">Durée</span>
+                <input id="duration" maxlength="2000" autocomplete="off">
+              </label>
+            </div>
+
+            <label>
+              <span data-i18n="symptoms">Symptômes observés</span>
+              <textarea id="symptoms" rows="3" required maxlength="2000"></textarea>
+              <small data-i18n="listHelp">Une information par ligne.</small>
+            </label>
+
+            <div class="field-row">
+              <label>
+                <span data-i18n="evolution">Évolution</span>
+                <input id="evolution" maxlength="2000" autocomplete="off">
+              </label>
+              <label>
+                <span data-i18n="intensity">Intensité</span>
+                <input id="intensity" maxlength="2000" autocomplete="off">
+              </label>
+            </div>
+
+            <details>
+              <summary data-i18n="details">Ajouter les éléments disponibles</summary>
+              <div class="details-grid">
+                <label>
+                  <span data-i18n="associated">Signes associés</span>
+                  <textarea id="associated" rows="2" maxlength="2000"></textarea>
+                </label>
+                <label>
+                  <span data-i18n="history">Antécédents pertinents</span>
+                  <textarea id="history" rows="2" maxlength="2000"></textarea>
+                </label>
+                <label>
+                  <span data-i18n="vulnerability">Facteurs de vulnérabilité</span>
+                  <textarea id="vulnerability" rows="2" maxlength="2000"></textarea>
+                </label>
+                <div class="vitals">
+                  <label><span>FC</span><input id="heart-rate" type="number" min="0" max="300" inputmode="decimal"><small>bpm</small></label>
+                  <label><span>SpO₂</span><input id="spo2" type="number" min="0" max="100" step="0.1" inputmode="decimal"><small>%</small></label>
+                  <label><span>Temp.</span><input id="temperature" type="number" min="25" max="45" step="0.1" inputmode="decimal"><small>°C</small></label>
+                </div>
+              </div>
+            </details>
+
+            <div class="access-block">
+              <label>
+                <span data-i18n="accessToken">Jeton d’accès à la démonstration</span>
+                <input id="token" type="password" minlength="32" autocomplete="off" required>
+                <small data-i18n="tokenHelp">Utilisé pour cet appel uniquement. Il n’est pas enregistré.</small>
+              </label>
+              <button id="submit" type="submit">
+                <span data-i18n="assess">Lancer l’évaluation encadrée</span>
+                <span class="button-state" aria-hidden="true"></span>
+              </button>
+            </div>
+            <p id="form-error" class="form-error" role="alert" hidden></p>
+          </form>
+        </section>
+
+        <section class="result-panel" aria-labelledby="result-title" aria-live="polite">
+          <div class="section-heading">
+            <div>
+              <p class="step">02 / Sortie gouvernée</p>
+              <h2 id="result-title" data-i18n="resultTitle">Évaluation proposée</h2>
+            </div>
+            <span id="status" class="status idle" data-i18n="waiting">En attente</span>
+          </div>
+
+          <div id="empty-result" class="empty-result">
+            <div class="pulse" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p data-i18n="empty">Sélectionnez un scénario ou saisissez un contexte synthétique, puis lancez l’évaluation.</p>
+          </div>
+
+          <div id="result" class="result" hidden>
+            <div id="priority" class="priority moderate">
+              <span data-i18n="priority">Priorité proposée</span>
+              <strong id="priority-value">—</strong>
+            </div>
+            <p id="summary" class="summary"></p>
+
+            <div class="result-section">
+              <h3 data-i18n="considered">Éléments considérés</h3>
+              <ul id="rationale"></ul>
+            </div>
+            <div class="result-section questions">
+              <h3 data-i18n="questions">Informations à compléter</h3>
+              <ul id="questions"></ul>
+            </div>
+            <div id="red-flags-section" class="result-section alert" hidden>
+              <h3 data-i18n="redFlags">Signaux d’alerte relevés</h3>
+              <ul id="red-flags"></ul>
+            </div>
+
+            <div class="trace">
+              <div><span data-i18n="latency">Latence API</span><strong id="latency">—</strong></div>
+              <div><span data-i18n="interaction">Interaction</span><strong id="interaction">—</strong></div>
+              <div><span data-i18n="model">Version modèle</span><strong id="model">—</strong></div>
+            </div>
+            <p id="safety" class="safety"></p>
+
+            <form id="follow-up-form" class="follow-up" hidden>
+              <div class="follow-up-heading">
+                <span data-i18n="guidedLabel">Conversation guidée</span>
+                <strong data-i18n="guidedTitle">Compléter sans recommencer</strong>
+              </div>
+              <div id="guided-questions"></div>
+              <button id="follow-up-submit" type="submit" data-i18n="reassess">
+                Ajouter les réponses et réévaluer
+              </button>
+              <p id="follow-up-error" class="form-error" role="alert" hidden></p>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <span>POC pédagogique · aucune donnée patient réelle</span>
+      <a href="/docs">Contrat OpenAPI</a>
+    </footer>
+  </body>
+</html>

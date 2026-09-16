@@ -16,6 +16,12 @@ L'environnement et l'authentification restent ceux de la factory privée vLLM. �
 
 Le client présente les questions de `collection.questions` et écrit chaque réponse dans le champ indiqué par `field`. Il conserve les réponses précédentes et renvoie le contexte complet au prochain appel. Deux questions au maximum sont proposées à la fois, dans l'ordre des rubriques de collecte. Les questions libres produites par le modèle dans `follow_up_questions` restent distinctes ; elles ne constituent pas des champs automatiquement interprétables.
 
+L'interface `/demo` implémente désormais ce contrat sous forme hybride : formulaire initial,
+priorité immédiate, puis conversation guidée sur les deux champs structurés suivants. Une
+réponse renseignée, une absence explicite et une information indisponible restent trois états
+distincts. Le navigateur conserve le contexte uniquement en mémoire et renvoie le contexte
+complet à chaque tour ; le serveur ne maintient pas de session conversationnelle cachée.
+
 Champs supplémentaires facultatifs : `evolution`, `intensity` (texte), `associated_symptoms`, `vulnerability_factors` (listes de textes). Les champs libres suivent l'anonymisation entrée/sortie et l'audit existants. `confirmed_absent` peut contenir uniquement les noms de champs de liste pour lesquels une absence a été explicitement déclarée ; `unavailable_fields` indique des rubriques que l'opérateur ne peut renseigner. Ces noms sont des énumérations bornées. Une liste vide seule reste inconnue. Une constante `null` n'est pas une mesure.
 
 ## Exemple synthétique sur trois appels
@@ -50,7 +56,12 @@ L'API continue de demander une évaluation à chaque appel : elle n'attend pas u
 
 Tests reproductibles : `PYTHONPATH=src python -m pytest -q tests/test_collection.py tests/test_api.py tests/test_serving.py tests/test_endpoint_evaluation.py`.
 
-Les tests synthétiques avec fournisseur simulé vérifient les tours FR/EN, les contradictions de statut, le suivi des inconnues et le raccord d'anonymisation/audit. Ils ne prouvent pas le comportement du modèle réel avec le prompt v5, ni un parcours rendu dans une interface, ni la pertinence clinique. Une vérification GPU séparée doit mesurer ces limites, sans toucher au test QA figé de v35.
+Les tests synthétiques avec fournisseur simulé vérifient les tours FR/EN, les contradictions
+de statut, le suivi des inconnues, le raccord d'anonymisation/audit et la présence des
+ressources de l'interface. La revue visuelle locale et le parcours rendu restent une preuve
+séparée ; aucun de ces tests ne prouve le comportement du modèle réel ni la pertinence
+clinique. Une vérification GPU séparée doit mesurer ces limites, sans toucher au test QA figé
+de v35.
 
 ## Pilote reproductible des échanges — 14 septembre
 

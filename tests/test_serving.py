@@ -158,6 +158,13 @@ def test_private_factory_authenticates_before_provider_or_audit(monkeypatch, tmp
                        "TRIAGE_AUDIT_PATH": str(tmp_path / "audit.jsonl")}.items():
         monkeypatch.setenv(key, value)
     client = TestClient(create_serving_app())
+    demo = client.get("/demo")
+    assert demo.status_code == 200
+    assert "TRIAGE_API_TOKEN" not in demo.text
+    assert demo.headers["cache-control"] == "no-store"
+    assert "frame-ancestors 'none'" in demo.headers["content-security-policy"]
+    assert client.get("/docs").status_code == 200
+    assert client.get("/openapi.json").status_code == 200
     assert client.post("/v1/triage", json=BODY).status_code == 401
     assert client.get("/healthz").status_code == 401
     assert not calls and not (tmp_path / "audit.jsonl").exists()

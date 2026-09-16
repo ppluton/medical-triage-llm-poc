@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import time
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Annotated, Literal, Protocol
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from triage_poc.collection import (
@@ -110,6 +113,16 @@ class AuditSink(Protocol):
 
 def create_app(provider: TriageProvider | None = None, audit: AuditSink | None = None) -> FastAPI:
     app = FastAPI(title="Medical triage POC", version=API_VERSION)
+    demo_directory = Path(__file__).with_name("demo_ui")
+    app.mount("/demo/assets", StaticFiles(directory=demo_directory), name="demo-assets")
+
+    @app.get("/", include_in_schema=False)
+    def root():
+        return RedirectResponse("/demo", status_code=307)
+
+    @app.get("/demo", include_in_schema=False)
+    def demo():
+        return FileResponse(demo_directory / "index.html")
 
     @app.get("/healthz")
     def health():

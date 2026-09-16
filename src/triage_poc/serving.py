@@ -142,8 +142,23 @@ def create_serving_app():
 
     @app.middleware("http")
     async def require_access(request: Request, call_next):
-        if not hmac.compare_digest(request.headers.get("authorization", ""), "Bearer " + token):
-            return JSONResponse({"detail": "Unauthorized"}, status_code=401)
-        return await call_next(request)
+        public_demo = (
+            request.url.path in {"/", "/demo", "/docs", "/openapi.json", "/redoc"}
+            or request.url.path.startswith("/demo/assets/")
+        )
+        if not public_demo and not hmac.compare_digest(
+            request.headers.get("authorization", ""), "Bearer " + token
+        ):
+            response = JSONResponse({"detail": "Unauthorized"}, status_code=401)
+        else:
+            response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; script-src 'self'; style-src 'self'; "
+            "connect-src 'self'; img-src 'self'; base-uri 'none'; frame-ancestors 'none'"
+        )
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response
 
     return app

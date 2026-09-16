@@ -23,6 +23,12 @@ synthétiques de démonstration distincts de la réserve finale désormais figé
 Le serveur cloud, son accès privé et son coût doivent avoir une cible autorisée.
 Un appel au fournisseur simulé n'est pas une démonstration du modèle.
 
+L'interface `/demo` sert de poste de démonstration : sélectionner le scénario français de
+douleur thoracique, lancer l'évaluation, commenter la priorité, les informations manquantes,
+la latence et l'identifiant d'audit ; basculer ensuite sur le scénario neurologique anglais.
+Le token est saisi au début de la session et n'est ni conservé par le navigateur ni montré au
+public. Le contrat `/docs` complète la preuve d'intégrabilité, sans remplacer le parcours réel.
+
 La mesure se fait avec `scripts/evaluate_triage_endpoint.py`, puis le rapprochement
 avec `scripts/verify_endpoint_audit.py`. Le token passe par `TRIAGE_API_TOKEN`,
 jamais dans une diapositive ou une commande publiée. Les rapports bruts restent
