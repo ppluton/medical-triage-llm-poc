@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from triage_poc.api import ModelResult, TriageLevel
 
-GUARDRAIL_VERSION = "proposed-guardrails-v1"
+GUARDRAIL_VERSION = "proposed-guardrails-v2"
 _SEVERITY: dict[TriageLevel, int] = {"deferred": 0, "moderate": 1, "maximum": 2}
 
 
@@ -62,8 +62,27 @@ def _result_values(result: ModelResult) -> list[str]:
 
 def explicit_warning_signs(context: dict) -> list[str]:
     """Return supplied symptom strings matching the bounded proposed warning policy."""
+    symptoms = [*context.get("symptoms", []), *context.get("associated_symptoms", [])]
+    combined = _normalize(" ".join(symptoms))
+    neurological_cluster = (
+        any(token in combined for token in ("sudden", "soudaine", "soudain"))
+        and (
+            "arm weakness" in combined
+            or ("weakness" in combined and "arm" in combined)
+            or ("faiblesse" in combined and "bras" in combined)
+        )
+        and any(
+            token in combined
+            for token in (
+                "speech difficulty",
+                "difficulty speaking",
+                "trouble soudain de la parole",
+                "trouble de la parole",
+            )
+        )
+    )
     matches = []
-    for symptom in [*context.get("symptoms", []), *context.get("associated_symptoms", [])]:
+    for symptom in symptoms:
         text = _normalize(symptom)
         chest = ("chest pain" in text or "douleur thoracique" in text) and any(
             token in text for token in ("intense", "persistent", "persistante", "severe")
@@ -74,17 +93,6 @@ def explicit_warning_signs(context: dict) -> list[str]:
             or "cannot finish a sentence" in text
             or "ne peut pas finir une phrase" in text
         )
-        neurological = (
-            any(token in text for token in ("sudden", "soudaine", "soudain"))
-            and (
-                "arm weakness" in text
-                or ("faiblesse" in text and "bras" in text)
-            )
-            and any(
-                token in text
-                for token in ("speech difficulty", "trouble soudain de la parole")
-            )
-        )
         consciousness = any(
             token in text
             for token in ("altered consciousness", "perte de connaissance", "conscience alteree")
@@ -93,9 +101,11 @@ def explicit_warning_signs(context: dict) -> list[str]:
             token in text
             for token in ("severe deterioration", "aggravation severe", "deterioration severe")
         )
-        if chest or breathing or neurological or consciousness or deterioration:
+        if chest or breathing or consciousness or deterioration:
             matches.append(symptom)
-    return matches[:2]
+    if neurological_cluster:
+        matches.extend(symptoms)
+    return list(dict.fromkeys(matches))[:2]
 
 
 def proposed_priority_floor(context: dict) -> tuple[TriageLevel | None, str | None]:

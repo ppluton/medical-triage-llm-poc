@@ -47,6 +47,15 @@ def test_french_neurological_warning_is_detected_despite_intervening_adjective()
     assert decision.result.red_flags == context["symptoms"]
 
 
+def test_english_neurological_warning_is_detected_across_separate_symptoms():
+    context = _context("sudden weakness of the right arm")
+    context["symptoms"].append("difficulty speaking")
+    decision = apply_proposed_guardrails(context, _result("moderate"), "en")
+    assert decision.result.triage_level == "maximum"
+    assert decision.result.red_flags == context["symptoms"]
+    assert "explicit_proposed_warning_sign" in decision.reasons
+
+
 def test_unknown_state_cannot_be_reported_as_stable_or_absent():
     context = _context("I do not feel well.", age_group="unknown")
     decision = apply_proposed_guardrails(
