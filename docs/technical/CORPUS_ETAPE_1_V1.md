@@ -1,6 +1,6 @@
 # Corpus de l’étape 1 — état reproductible
 
-Date : 2026-09-16 — Statut : prêt pour entraînement pédagogique contrôlé ; publication bloquée
+Date : 2026-09-16 — Statut : publié à des fins pédagogiques sur [Hugging Face](https://huggingface.co/datasets/Pedro1321/chsa-triage-medical-qa-fr-en) ([ADR-022](../decisions/ADR-022-publier-dataset-et-adaptateurs-hugging-face.md))
 
 Sources : [spécification d’exécution](../archive/SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT v2.2](../../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [finalisation PII](../evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md).
 

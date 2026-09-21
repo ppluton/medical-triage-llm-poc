@@ -54,7 +54,9 @@ Un artefact ne peut être présenté comme anonymisé et prêt à diffuser que s
 
 La [finalisation v2.2](../evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md) franchit la
 porte technique pour l'entraînement pédagogique contrôlé : toutes les alertes directes sont
-masquées et les alertes contextuelles reçoivent une disposition text-free. Elle ne franchit
-pas la porte de publication externe, qui reste bloquée sans revue humaine et juridique.
+masquées et les alertes contextuelles reçoivent une disposition text-free. La publication
+pédagogique sur Hugging Face est décidée par
+l'[ADR-022](../decisions/ADR-022-publier-dataset-et-adaptateurs-hugging-face.md) : sources déjà
+publiques sous licences ouvertes, sans donnée patient réelle.
 Cette documentation justifie la méthode suivie et ses limites ; elle ne délivre pas une
 certification RGPD.
