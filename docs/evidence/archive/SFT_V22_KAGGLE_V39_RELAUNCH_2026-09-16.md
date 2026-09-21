@@ -25,6 +25,6 @@ La v39 utilise exactement les mêmes hashes train/validation, le même snapshot 
 seed et les mêmes hyperparamètres bornés que v38. Aucun test n'est embarqué. Le statut
 `RUNNING` prouvait la relance seulement. Le statut Kaggle est ensuite passé à `COMPLETE`.
 Les artefacts ont été téléchargés dans `artifacts/kaggle/sft-v22-v39-reports/` et sont
-analysés dans la [preuve de résultat v39](SFT_V39_RESULT_2026-09-16.md). Le run principal
+analysés dans la [preuve de résultat v39](../SFT_V39_RESULT_2026-09-16.md). Le run principal
 a atteint 150 étapes et produit les checkpoints 50/100/150. La vérification de recharge
 du checkpoint principal est déléguée à la v40 en lecture seule.

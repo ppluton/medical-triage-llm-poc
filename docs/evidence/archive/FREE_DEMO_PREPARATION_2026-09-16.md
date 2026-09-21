@@ -4,8 +4,8 @@
 - Statut : `passed_local_contract_not_deployed`
 - Révision : travail local postérieur à `46dba87`, à figer au prochain commit
 - Environnement : macOS arm64, Python 3.13, aucun GPU ni endpoint extérieur lancé
-- Sources : [ADR-019](../decisions/ADR-019-demonstration-zero-cout.md),
-  [guide technique](../technical/DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md)
+- Sources : [ADR-019](../../decisions/ADR-019-demonstration-zero-cout.md),
+  [guide technique](../../technical/DEMONSTRATION_KAGGLE_CLOUDFLARE_V1.md)
 
 ## Question
 

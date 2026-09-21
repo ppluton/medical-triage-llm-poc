@@ -110,31 +110,46 @@ Réponse courte au jury : « Le résultat négatif n’est pas caché. Il devien
 8. L’API renvoie l’avertissement et un identifiant d’interaction.
 9. L’audit privé conserve versions, décisions et durée, sans journaliser les secrets.
 
-## Démonstration
+## Déroulé de démonstration
 
-La démonstration doit rester courte, reproductible et limitée aux scénarios synthétiques fournis.
+La démonstration doit rester courte, reproductible et limitée aux scénarios synthétiques fournis. Elle porte sur une chaîne gouvernée (API, garde-fous, erreurs, traçabilité, décision humaine) et non sur une autonomie du modèle.
+
+### Conditions
+
+- Modèle : SFT v39 retenu avant ouverture de la réserve ; consigner son empreinte, le prompt, la version du serveur et le code.
+- Données : exclusivement des scénarios synthétiques de démonstration, distincts de la réserve finale figée.
+- Cible : le serveur cloud, son accès privé et son coût doivent avoir une cible autorisée. Un appel au fournisseur simulé n’est pas une démonstration du modèle.
+- Frontend public : [triage-poc.pierrepluton.com](https://triage-poc.pierrepluton.com/). Le proxy refuse les mauvais tokens et transmet les appels autorisés à l’endpoint GPU Modal. Le contrat `/docs` complète la preuve d’intégrabilité, sans remplacer le parcours réel.
+- Mesure hors démonstration : `scripts/evaluate_triage_endpoint.py`, puis rapprochement avec `scripts/verify_endpoint_audit.py`. Le token passe par `TRIAGE_API_TOKEN`, jamais dans une diapositive ou une commande publiée. Les rapports bruts restent hors Git.
 
 ### Préparation
 
-Copier le token sans l’afficher :
-
-```bash
-jq -r '.DEMO_ACCESS_TOKEN' /Users/ppluton/.config/chsa-triage-poc/cloudflare-secrets.json | pbcopy
-```
-
-Ouvrir ensuite [triage-poc.pierrepluton.com](https://triage-poc.pierrepluton.com/).
+Récupérer le token de démonstration depuis le gestionnaire de secrets et le copier dans le presse-papiers sans l’afficher. Le token est saisi au début de la session ; il n’est ni conservé par le navigateur ni montré au public.
 
 ### Scénario conseillé
 
-Utiliser « Douleur thoracique » en français. Montrer :
+Dans l’interface `/demo`, utiliser « Douleur thoracique » en français, puis basculer sur le scénario neurologique anglais. Montrer :
 
 - les informations structurées et l’étiquette synthétique ;
 - le token collé sans être affiché ailleurs ;
 - le statut de réveil du modèle ;
-- la priorité `maximum` ;
+- la priorité `maximum` et les informations manquantes ;
 - les signaux d’alerte ;
 - l’avertissement de non-diagnostic ;
-- l’identifiant d’interaction qui permet le rapprochement d’audit.
+- la latence et l’identifiant d’interaction qui permet le rapprochement d’audit.
+
+### État établi avant la démonstration
+
+- SFT v39 et DPO v41 terminés, rechargeables et vérifiés. Sur le développement v43, NLL Base/SFT/DPO = 1,532/0,830/0,829 ; le DPO ajoute un signal diagnostic ou prescriptif en revue aveugle et n’est pas retenu.
+- Réserve v46, ouverte une seule fois : 0/18 JSON conforme, 17/18 sorties au plafond, 18/18 malformées ou répétitives. Aucun réglage ni réentraînement n’a suivi.
+- API v34 : 18/18 réponses conformes grâce au schéma contraint et aux garde-fous, 8/18 priorités égales aux références pédagogiques proposées ; niveau intermédiaire non utilisé, cas incomplets faibles. La v37 confirme l’exécution Base/SFT/DPO et deux dialogues FR/EN.
+- Démonstration publique vérifiée sur deux cas synthétiques (douleur thoracique FR, déficit neurologique EN) : `maximum`, fallback sûr v3, interactions retrouvées dans l’audit privé. Cette preuve ne couvre ni la charge, ni la disponibilité continue, ni une validation clinique.
+
+### Explication orale des résultats
+
+« Le SFT apprend à mieux reproduire les réponses du corpus. Le DPO apprend à préférer certaines réponses aux autres. Nous avons exécuté les deux étapes, puis comparé les trois modèles sur les mêmes exemples de développement. Le DPO améliore certaines métriques de forme, mais pas assez pour compenser une régression qualitative ; nous avons donc retenu le SFT avant d’ouvrir la réserve. Sur cette réserve, le modèle brut échoue au contrat de triage. Nous ne le présentons pas comme prêt à trier des patients. La démonstration porte sur la chaîne API, ses garde-fous, ses erreurs, sa traçabilité et la décision humaine. »
+
+Un JSON valide ne prouve pas une bonne priorité : vérifier aussi les informations inventées et les questions posées. Les priorités de référence des scénarios restent proposées, sans validation clinique.
 
 ### Si Modal est froid
 
@@ -142,7 +157,7 @@ Expliquer : « Le GPU est volontairement arrêté quand personne n’utilise le 
 
 ### Si la démonstration échoue
 
-Ne pas improviser un diagnostic. Montrer la preuve de déploiement et dire exactement : « Le chemin public a déjà été vérifié sur deux scénarios synthétiques et rapproché de l’audit. L’échec actuel concerne la disponibilité de démonstration, pas une nouvelle preuve clinique. »
+Ne pas improviser un diagnostic. Montrer l’erreur et le journal technique expurgé, puis la preuve de déploiement, et dire exactement : « Le chemin public a déjà été vérifié sur deux scénarios synthétiques et rapproché de l’audit. L’échec actuel concerne la disponibilité de démonstration, pas une nouvelle preuve clinique. » Ne pas remplacer silencieusement la réponse par une sortie préécrite ou par un autre modèle ; une capture d’une exécution antérieure doit porter sa version et être présentée comme telle.
 
 ## Questions probables du jury
 
@@ -211,9 +226,9 @@ Ils évitent de présenter une fausse réussite, expliquent les garde-fous et re
 ## Checklist le jour J
 
 - Batterie, réseau et partage d’écran vérifiés.
-- PowerPoint v47 ouvert en local.
+- PowerPoint ouvert en mode présentateur (notes orales incluses), PDF de secours à côté.
 - Frontend public ouvert dans un onglet séparé.
-- Token copié dans le presse-papiers sans affichage.
+- Token récupéré depuis le gestionnaire de secrets et copié sans affichage.
 - Modal réveillé cinq minutes avant la démonstration si le budget le permet.
 - Preuves v43, v46, Modal et Cloudflare ouvertes en secours.
 - Chronomètre : 12 minutes de slides, 3 minutes de démonstration.

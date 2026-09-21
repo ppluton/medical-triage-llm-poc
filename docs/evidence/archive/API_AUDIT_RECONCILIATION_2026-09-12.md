@@ -2,7 +2,7 @@
 
 - Date : 2026-09-12
 - Statut : draft — contrôle local ; aucune exécution cloud
-- Sources : `scripts/verify_endpoint_audit.py`, `tests/test_endpoint_audit.py`, [guide](../technical/EVALUATION_ENDPOINT_V1.md).
+- Sources : `scripts/verify_endpoint_audit.py`, `tests/test_endpoint_audit.py`, [guide](../../technical/EVALUATION_ENDPOINT_V1.md).
 
 Le contrôle compare chaque réponse réussie du rapport d'évaluation à une seule entrée
 du journal fourni. Les sorties différentes, entrées absentes/dupliquées, versions

@@ -11,8 +11,8 @@ Peut-on comparer les checkpoints sur les mêmes entrées, empêcher un DPO sans 
 Validation sur macOS, Python 3.13, environnement local existant ; les transports HTTP du fournisseur sont simulés. Commandes depuis le worktree :
 
 ```bash
-PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python -m pytest -q
-/Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/ruff check src scripts tests
+PYTHONPATH=src .venv/bin/python -m pytest -q
+.venv/bin/ruff check src scripts tests
 ```
 
 ## Résultats observés

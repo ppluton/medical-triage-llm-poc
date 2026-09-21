@@ -45,7 +45,7 @@
   "deployment": {
     "image_built_remotely": true,
     "endpoint_created": true,
-    "endpoint_origin": "https://ppluton--chsa-triage-poc-triageservice-serve.modal.run",
+    "endpoint_origin": "<modal-endpoint>",
     "guardrail_version": "proposed-guardrails-v3",
     "smoke_test_performed": true,
     "smoke_requests": 2,

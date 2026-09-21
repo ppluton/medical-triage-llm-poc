@@ -22,7 +22,7 @@ n'a été lancé pour cette modification ; les mesures v25 restent historiques.
 Environnement : macOS, branche `codex/complete-poc-evaluation`, Python 3.13 du venv
 principal, import du worktree imposé par `PYTHONPATH=src`.
 
-Commande : `PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python -m pytest tests/test_triage_probe.py tests/test_serving.py -q`.
+Commande : `PYTHONPATH=src .venv/bin/python -m pytest tests/test_triage_probe.py tests/test_serving.py -q`.
 
 Résultat : 13 tests réussis en 6,52 s ; avertissement Starlette/httpx de dépréciation.
 Ruff signale initialement deux ordres d'import, corrigés ; contrôle final réussi.

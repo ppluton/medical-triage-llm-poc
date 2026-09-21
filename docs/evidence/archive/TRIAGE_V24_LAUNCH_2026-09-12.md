@@ -2,7 +2,7 @@
 
 - Date : 2026-09-12
 - Statut : draft — version 24 terminée en erreur au contrôle de recharge
-- Sources : [échec v23](TRIAGE_V23_LAUNCH_2026-09-12.md), [runner](../../scripts/run_triage_probe.py).
+- Sources : [échec v23](../TRIAGE_V23_LAUNCH_2026-09-12.md), [runner](../../../scripts/run_triage_probe.py).
 - Environnement : notebook privé `pierrepluton/chsa-source-sft-qwen3`, T4 gratuite ; mêmes dépendances et checkpoint v22 que v23.
 
 ## Hypothèse et modification bornée

@@ -2,7 +2,7 @@
 
 Date : 2026-09-16 — Statut : draft
 
-Sources : [guide de reprise](../../GUIDE_REPRISE.md), [fiche technique active](../technical/CORPUS_ETAPE_1_V1.md), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), consigne de l’étape données.
+Sources : [guide de reprise](../archive/GUIDE_REPRISE.md), [fiche technique active](../technical/CORPUS_ETAPE_1_V1.md), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), consigne de l’étape données.
 
 ## Ce qui a été fait
 

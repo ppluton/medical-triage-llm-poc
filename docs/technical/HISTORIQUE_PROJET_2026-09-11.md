@@ -242,4 +242,4 @@ Source : [preuve locale post-SFT](../evidence/POST_SFT_IMPLEMENTATION_2026-09-05
 
 ## 7. Comment utiliser cette documentation
 
-Ce document est le fil chronologique professionnel. La [synthèse pédagogique](../learning/34-retour-sur-la-demarche-du-projet.md) explique les notions et les changements de raisonnement. Les documents `evidence/` sont les sources des chiffres ; les ADR consignent les décisions ; les scripts/configurations servent à reproduire les opérations. Le rapport final doit s'appuyer sur ces preuves, pas sur une note d'apprentissage ou un statut de lancement.
+Ce document est le fil chronologique professionnel. La [synthèse pédagogique](../learning/33-retour-sur-la-demarche-du-projet.md) explique les notions et les changements de raisonnement. Les documents `evidence/` sont les sources des chiffres ; les ADR consignent les décisions ; les scripts/configurations servent à reproduire les opérations. Le rapport final doit s'appuyer sur ces preuves, pas sur une note d'apprentissage ou un statut de lancement.

@@ -164,17 +164,21 @@ Without a configured model provider, the local API deliberately returns `503` in
 ## Repository map
 
 ```text
-configs/                  versioned experiment configurations
+configs/                  versioned experiment configurations (see configs/README.md)
 data/manifests/           schemas, provenance, counts, and checksums
 data/samples/             synthetic fixtures only
 deploy/cloudflare_pages/  Cloudflare frontend and proxy
 deploy/modal_app.py       Modal GPU deployment
 docs/decisions/           architecture and governance decisions
-docs/evidence/            observed results and evidence limits
+docs/archive/             superseded planning documents
+docs/evidence/            observed results and evidence limits (INDEX.md, archive/)
 docs/governance/          licenses, anonymization, and risks
-docs/learning/            educational explanations
+docs/learning/            numbered educational notes (README.md)
 docs/technical/           contracts and reproducible guides
+notebooks/                Kaggle Base/SFT comparison notebook
 reports/                  deliverables and defense material
+requirements/             pinned dependencies for API, Modal, and Kaggle DPO
+scripts/                  data, training, evaluation, deployment, and report builders
 src/triage_poc/           API, collection, guardrails, and audit
 tests/                    automated tests
 ```
@@ -189,6 +193,7 @@ tests/                    automated tests
 6. [Final reserve result](docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md)
 7. [Modal deployment](docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md)
 8. [Cloudflare deployment](docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
+9. [Evidence index, French](docs/evidence/INDEX.md)
 
 ## Limitations and next steps
 

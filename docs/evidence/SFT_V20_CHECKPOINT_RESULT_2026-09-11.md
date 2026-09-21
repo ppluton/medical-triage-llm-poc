@@ -48,7 +48,7 @@ Le passage des QA médicales à un assistant de triage structuré reste égaleme
 ## Reproduction locale de la synthèse
 
 ```sh
-PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python \
+PYTHONPATH=src .venv/bin/python \
   scripts/summarize_pilot_checkpoints.py \
   --config configs/sft-v2.1-pilot.json \
   --canonical data/processed/source-sft-v2.1-reviewed/source-sft-v2.1.jsonl \

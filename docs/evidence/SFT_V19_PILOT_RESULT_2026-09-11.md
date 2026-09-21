@@ -63,7 +63,7 @@ Aucun SFT long ni DPO n'est automatiquement approuvé par ce résultat. La déci
 ## Commande de synthèse
 
 ```sh
-PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python \
+PYTHONPATH=src .venv/bin/python \
   scripts/summarize_sft_pilot.py \
   --config configs/sft-v2.1-pilot.json \
   --canonical data/processed/source-sft-v2.1-reviewed/source-sft-v2.1.jsonl \

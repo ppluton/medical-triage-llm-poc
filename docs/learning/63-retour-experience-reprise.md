@@ -27,6 +27,6 @@ Les causes du faible effet DPO restent des hypothèses : durée, sélection des 
 
 ## Organisation retenue
 
-Suivre le [guide actif](../../GUIDE_REPRISE.md). À chaque étape : ce que l’on veut vérifier, l’entrée exacte, la vérification minimale utile, le résultat et la décision suivante. Conserver une note pédagogique et une preuve professionnelle ; réutiliser les documents existants plutôt que multiplier les variantes.
+Le [guide de reprise](../archive/GUIDE_REPRISE.md), désormais archivé, appliquait cette règle : à chaque étape : ce que l’on veut vérifier, l’entrée exacte, la vérification minimale utile, le résultat et la décision suivante. Conserver une note pédagogique et une preuve professionnelle ; réutiliser les documents existants plutôt que multiplier les variantes.
 
 Questions ouvertes : qualité et couverture du corpus à reprendre ; justification clinique des préférences ; cible GPU/coût ; cible d’endpoint ; heure exacte de remise. Une échéance courte impose de limiter les essais, pas de masquer ces questions.

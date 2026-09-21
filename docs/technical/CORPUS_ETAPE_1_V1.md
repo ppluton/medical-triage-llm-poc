@@ -2,7 +2,7 @@
 
 Date : 2026-09-16 — Statut : prêt pour entraînement pédagogique contrôlé ; publication bloquée
 
-Sources : [spécification d’exécution](../../SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT v2.2](../../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [finalisation PII](../evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md).
+Sources : [spécification d’exécution](../archive/SPEC_EXECUTION_V1.md), [registre des sources](../governance/REGISTRE_SOURCES_DONNEES.md), [manifeste SFT v2.2](../../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json), [preuve datée](../evidence/AUDIT_CORPUS_ETAPE_1_2026-09-16.md), [finalisation PII](../evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md).
 
 ## Objet
 
