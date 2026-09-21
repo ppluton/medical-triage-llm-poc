@@ -13,7 +13,7 @@
 - `POST /v1/triage` avec mauvais jeton : HTTP 401, sans appel backend.
 - `GET /v1/triage` : HTTP 405.
 - Paquet Cloudflare : sept fichiers, 53 Ko, aucun secret ni jeton de test.
-- Tableau de bord : compte `Pierre.pluton@outlook.fr`, projet `chsa-triage-poc`, paquet chargé
+- Tableau de bord : compte Cloudflare du projet, projet `chsa-triage-poc`, paquet chargé
   avec `7/7 files uploaded` avant l'action finale de publication.
 
 ## Limites de la preuve

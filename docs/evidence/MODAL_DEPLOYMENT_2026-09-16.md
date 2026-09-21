@@ -20,7 +20,7 @@ hospitalier ni sur une validation clinique.
 - image : `vllm/vllm-openai:v0.15.0` épinglée par digest ;
 - volumes : `chsa-triage-models-v1` et `chsa-triage-audit-v1` ;
 - capacité : T4, un conteneur au maximum, zéro conteneur minimum, extinction après 120 s d'inactivité ;
-- origine du service : `https://ppluton--chsa-triage-poc-triageservice-serve.modal.run` ;
+- origine du service : `<modal-endpoint>` ;
 - contrôle applicatif : `proposed-guardrails-v3`.
 
 Le secret Bearer est stocké dans Modal et n'est ni inclus dans Git ni reproduit dans cette

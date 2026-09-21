@@ -3,14 +3,14 @@
 Date : 2026-09-16 — Statut : `final_candidate`
 Sources : CADRAGE_MISSION.md, SPEC_POC_TRIAGE_MEDICAL.md, [consignes officielles de remise](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance), preuves référencées ci-dessous.
 
-Le [guide de reprise](../GUIDE_REPRISE.md) documente la démarche. Cette page indique l'état des candidats de remise et leurs limites.
+Le [rapport technique](RAPPORT_TECHNIQUE_POC.md) documente la démarche et l’[index des preuves](../docs/evidence/INDEX.md) relie chaque résultat à sa trace. Cette page indique l'état des candidats de remise et leurs limites.
 
 ## Parcours de lecture
 
 1. [Rapport technique](RAPPORT_TECHNIQUE_POC.md) : démarche, résultats, infrastructure cloud et limites.
-2. [Déroulé de démonstration](DEMONSTRATION_POC.md) et [fiche de soutenance](FICHE_SOUTENANCE.md) : parcours, définitions et réponses aux questions probables.
-3. [Guide de reprise](../GUIDE_REPRISE.md) : acquis vérifiés, séquence réalisée et écarts externes restants.
-4. PowerPoint local de douze slides — candidat v47 aligné avec Cloudflare, Modal, la CI et les preuves publiques.
+2. [Fiche de soutenance](FICHE_SOUTENANCE.md) : déroulé de démonstration, définitions et réponses aux questions probables.
+3. [Index des preuves](../docs/evidence/INDEX.md) : preuves finales citées par le rapport et preuves intermédiaires par étape.
+4. Présentation : PowerPoint de 14 slides avec notes orales (généré localement, hors Git) ; plan et notes dans [`PRESENTATION_POC.md`](PRESENTATION_POC.md).
 
 ## Livrables demandés par la mission
 
@@ -21,15 +21,15 @@ Le [guide de reprise](../GUIDE_REPRISE.md) documente la démarche. Cette page in
 | Comparaison des modèles | [Test final QA historique v35](../docs/evidence/FINAL_QA_V35_RESULT.md), [revue aveugle v43](../docs/evidence/COMPARISON_V43_RESULT_2026-09-16.md), [réserve finale v46](../docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md) | Réserve ouverte une fois sur le SFT retenu : 0/18 JSON conforme, résultat négatif figé et non réutilisé pour régler le système |
 | API de démonstration cloud | [Recette Modal](../docs/technical/MODAL_DEPLOYMENT_V1.md), [frontend Cloudflare](../docs/technical/CLOUDFLARE_PAGES_FRONTEND_V1.md), [preuve publique](../docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md), [garde-fous budgétaires](../docs/evidence/MODAL_BUDGET_GUARDRAILS_2026-09-16.md) | Frontend public HTTPS, Modal T4 scale-to-zero, authentification, deux inférences FR/EN et audit bout en bout observés ; aucune validation clinique |
 | CI/CD | [CI](../.github/workflows/ci.yml), [workflow Modal borné](../.github/workflows/deploy-modal.yml), [workflow Cloudflare](../.github/workflows/deploy-cloudflare-pages.yml) | 252 tests, Ruff, build et smoke Docker passés ; workflows de déploiement manuels protégés versionnés ; Direct Upload utilisé pour la preuve Cloudflare actuelle |
-| Rapport ≤20 pages | [Source du rapport](RAPPORT_TECHNIQUE_POC.md), [preuve du PDF v47](../docs/evidence/REPORT_PDF_V47_FINAL_2026-09-16.md) | Candidat A4 de six pages vérifié avec l'infrastructure publique ; nom de remise final à confirmer |
-| PowerPoint demandé | [Plan et notes](PRESENTATION_POC.md), [fiche orale](FICHE_SOUTENANCE.md), [preuve v47](../docs/evidence/PRESENTATION_V47_2026-09-16.md) | Douze slides vérifiées, quatre graphiques natifs, architecture cloud, CI/CD, démonstration et notes orales ; nom de remise final à confirmer |
+| Rapport ≤20 pages | [Source du rapport](RAPPORT_TECHNIQUE_POC.md), [script de génération](../scripts/build_report_pdf.py) | 20 pages A4, généré par `scripts/build_report_pdf.py` ; PDF hors Git ; nom de remise final à confirmer |
+| Présentation demandée | [Plan et notes](PRESENTATION_POC.md), [fiche orale](FICHE_SOUTENANCE.md) | PowerPoint 14 slides aligné sur le rapport final, notes orales incluses ; nom de remise final à confirmer |
 
 ## Artefacts lourds et confidentialité
 
-Les poids, jeux générés et journaux restent dans les archives privées ; leurs identités sont décrites dans les preuves et manifestes. Le dépôt public ne contient ni token, ni données patient identifiantes, ni poids de modèle. Les fichiers de démonstration sont synthétiques. Les anciennes expériences restent dans `docs/evidence/` pour la traçabilité et ne décrivent pas l'état courant.
+Les poids, jeux générés et journaux restent dans les archives privées ; leurs identités sont décrites dans les preuves et manifestes. Le dépôt public ne contient ni token, ni données patient identifiantes, ni poids de modèle. Les fichiers de démonstration sont synthétiques. Les anciennes expériences restent dans `docs/evidence/` et `docs/evidence/archive/` pour la traçabilité et ne décrivent pas l'état courant.
 
 Un résultat de test, un rapport PDF ou une présentation ne remplacent pas une validation clinique. Les priorités et préférences non approuvées restent explicitement proposées.
 
 ## Format de remise
 
-ZIP `Titre_du_projet_nom_prenom` ; fichiers `Nom_Prenom_numero_nom_livrable_mmaaaa` (mois de démarrage). Dataset HF/JSONL versionné sur un dépôt, poids finaux chargeables, rapport PDF de 20 pages maximum, URL cloud et CI/CD. Présentation de 15 minutes incluant la démo, puis discussion 10 minutes et débrief 5 minutes. Voir le guide pour la checklist complète.
+ZIP `Titre_du_projet_nom_prenom` ; fichiers `Nom_Prenom_numero_nom_livrable_mmaaaa` (mois de démarrage). Dataset HF/JSONL versionné sur un dépôt, poids finaux chargeables, rapport PDF de 20 pages maximum, URL cloud et CI/CD. Présentation de 15 minutes incluant la démo, puis discussion 10 minutes et débrief 5 minutes. Voir la [fiche de soutenance](FICHE_SOUTENANCE.md) pour la checklist du jour J.

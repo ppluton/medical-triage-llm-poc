@@ -3,7 +3,7 @@
 Date : 2026-09-16 — Statut : superseded pour le pilotage
 Sources : [mission](../../CADRAGE_MISSION.md), [spécification](../../SPEC_POC_TRIAGE_MEDICAL.md), [audit OpenClassrooms](../evidence/AUDIT_ALIGNEMENT_MISSION_2026-09-12.md), preuves liées ci-dessous.
 
-> Le [guide de reprise](../../GUIDE_REPRISE.md) remplace cet ordre de travail à la demande de Pierre. Cette page conserve l’état de la première réalisation.
+> Le [guide de reprise](../archive/GUIDE_REPRISE.md) remplace cet ordre de travail à la demande de Pierre. Cette page conserve l’état de la première réalisation.
 
 ## État de la première réalisation
 

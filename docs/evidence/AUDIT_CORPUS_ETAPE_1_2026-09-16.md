@@ -58,7 +58,7 @@ La première exécution française a signalé un faux résidu : le NER reclassai
 Commande d'intégration :
 
 ```bash
-PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python - <<'PY'
+PYTHONPATH=src .venv/bin/python - <<'PY'
 from triage_poc.anonymization import TextAnonymizer
 
 cases = {
@@ -96,7 +96,7 @@ Le schéma `clinical_metadata_v1.schema.json` rend obligatoires symptômes, ant�
 Validation ciblée exécutée après ajout :
 
 ```bash
-PYTHONPATH=src /Users/ppluton/Documents/ChatGPT/Medical_train_llm/.venv/bin/python \
+PYTHONPATH=src .venv/bin/python \
   -m pytest tests/test_anonymization.py tests/test_clinical_metadata_schema.py \
   tests/test_source_sft.py -q
 ```

@@ -170,17 +170,21 @@ Sans fournisseur de modèle configuré, l’API locale retourne volontairement `
 ## Organisation du dépôt
 
 ```text
-configs/                  configurations versionnées des expériences
+configs/                  configurations versionnées des expériences (voir configs/README.md)
 data/manifests/           schémas, provenance, compteurs et checksums
 data/samples/             fixtures synthétiques exclusivement
 deploy/cloudflare_pages/  frontend et proxy Cloudflare Pages
 deploy/modal_app.py       déploiement GPU Modal
 docs/decisions/           décisions d’architecture et de gouvernance
-docs/evidence/            résultats observés et limites de preuve
+docs/archive/             documents de pilotage remplacés
+docs/evidence/            résultats observés et limites de preuve (INDEX.md, archive/)
 docs/governance/          licences, anonymisation et risques
-docs/learning/            explications pédagogiques
+docs/learning/            notes pédagogiques numérotées (README.md)
 docs/technical/           contrats et guides reproductibles
+notebooks/                notebook Kaggle de comparaison Base/SFT
 reports/                  livrables et support de soutenance
+requirements/             dépendances figées pour l’API, Modal et le DPO Kaggle
+scripts/                  données, entraînement, évaluation, déploiement et génération du rapport
 src/triage_poc/           API, collecte, garde-fous et audit
 tests/                    tests automatisés
 ```
@@ -195,6 +199,7 @@ tests/                    tests automatisés
 6. [Résultat final de réserve](docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md)
 7. [Déploiement Modal](docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md)
 8. [Déploiement Cloudflare](docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
+9. [Index des preuves](docs/evidence/INDEX.md)
 
 ## Limites et suite
 

@@ -1,7 +1,7 @@
 # Déploiement Cloudflare Pages — 16 septembre 2026
 
 - Statut : `public_end_to_end_verified`
-- Compte Cloudflare observé : `Pierre.pluton@outlook.fr`
+- Compte Cloudflare observé : compte Cloudflare du projet
 - Projet Pages : `chsa-triage-poc`
 - Révision du frontend/proxy/backend : `1590a110def2ac1d31ef97f251969e0a73fad101`
 - Données : scénarios synthétiques uniquement ; aucune donnée patient réelle

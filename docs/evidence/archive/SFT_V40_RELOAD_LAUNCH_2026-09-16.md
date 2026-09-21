@@ -15,4 +15,4 @@ processus, compare les trente générations greedy et la NLL, puis évalue les c
 
 Le statut `RUNNING` prouvait uniquement le lancement. La v40 est ensuite passée à
 `COMPLETE` ; ses sorties téléchargées et vérifiées sont décrites dans
-[le résultat v40](SFT_V40_RELOAD_RESULT_2026-09-16.md).
+[le résultat v40](../SFT_V40_RELOAD_RESULT_2026-09-16.md).

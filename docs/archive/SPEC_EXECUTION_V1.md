@@ -1,10 +1,10 @@
 # Spécification d’exécution — première livraison CHSA
 
-Date : 2026-09-16 — Statut : draft, plan d’implémentation
+Date : 2026-09-16 — Statut : `superseded` (archivé le 2026-09-21 ; plan d’implémentation de la première livraison, remplacé par le [rapport technique](../../reports/RAPPORT_TECHNIQUE_POC.md))
 Responsable : Pierre. Échéance : **17 septembre 2026, 15 h Paris / 17 h Tbilissi**.
 Budget : **Kaggle privé gratuit uniquement**. Aucun GPU payant.
 
-Sources : [mission officielle](https://openclassrooms.com/fr/paths/2053/projects/3421/8585-mission---developpez-le-poc-d'un-agent-de-triage-medical), [livrables et soutenance](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance), [cadrage](CADRAGE_MISSION.md), [spécification de référence](SPEC_POC_TRIAGE_MEDICAL.md). Les deux pages ont été relues intégralement, y compris les étapes détaillées. Ce document rend les attentes exécutables ; il ne remplace pas les références.
+Sources : [mission officielle](https://openclassrooms.com/fr/paths/2053/projects/3421/8585-mission---developpez-le-poc-d'un-agent-de-triage-medical), [livrables et soutenance](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance), [cadrage](../../CADRAGE_MISSION.md), [spécification de référence](../../SPEC_POC_TRIAGE_MEDICAL.md). Les deux pages ont été relues intégralement, y compris les étapes détaillées. Ce document rend les attentes exécutables ; il ne remplace pas les références.
 
 ## 1. Produit à démontrer
 
@@ -85,4 +85,4 @@ FastAPI et vLLM conteneurisés. GitHub Actions exécute lint/tests, schémas/ano
 
 ZIP `Titre_du_projet_nom_prenom` ; fichiers `Nom_Prenom_numero_nom_livrable_mmaaaa`, mois de démarrage à confirmer. Discussion 10 min après présentation, puis débrief 5 min.
 
-Un dossier de première version distingue les éléments livrés et manquants. La livraison complète exige toutes les preuves ci-dessus. Le [guide](GUIDE_REPRISE.md) donne l’ordre de travail ; le [retour d’expérience](docs/learning/RETOUR_EXPERIENCE_REPRISE_2026-09-16.md) conserve les erreurs à ne pas reproduire.
+Un dossier de première version distingue les éléments livrés et manquants. La livraison complète exige toutes les preuves ci-dessus. Le [guide](GUIDE_REPRISE.md) donne l’ordre de travail ; le [retour d’expérience](../learning/63-retour-experience-reprise.md) conserve les erreurs à ne pas reproduire.
