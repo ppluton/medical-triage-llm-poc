@@ -2,10 +2,10 @@
 
 ## POC d’assistance au triage médical — Centre Hospitalier Saint-Aurélien
 
-- **Date :** 16 septembre 2026
-- **Statut :** draft de fond pour relecture, mise en page et soutenance
+- **Date :** 21 septembre 2026
+- **Statut :** `final_candidate` — contenu figé sous réserve de relecture finale
 - **Périmètre :** données, entraînement SFT/LoRA et DPO, évaluation, API, déploiement cloud, CI/CD et trajectoire vers un système fondé sur des preuves
-- **Format cible :** 20 pages maximum après mise en page PDF, illustrations et références comprises
+- **Format :** document Word A4 (20 pages maximum) ; version PDF générée par `scripts/build_report_pdf.py`
 - **Nature du projet :** preuve de concept pédagogique sur données ouvertes et scénarios synthétiques
 - **Limite essentielle :** ce POC n’est ni un dispositif médical, ni un outil de diagnostic, ni un système de décision clinique autonome
 
@@ -18,6 +18,8 @@ Le projet étudie la faisabilité d’un assistant conversationnel capable de re
 Le travail a permis de construire une chaîne technique complète et reproductible : inventaire et versionnement des sources, corpus bilingue, contrôles de confidentialité, séparation stricte des jeux, entraînements sur GPU, comparaison Base/SFT/DPO, conteneurisation, endpoint protégé et démonstration publique sur scénarios synthétiques. Le corpus SFT final contient **4 700 paires** : 3 721 pour l’entraînement, 479 pour la validation et 500 conservées pour le test. Il comprend 2 474 exemples français et 2 226 exemples anglais. Le lot DPO contient 426 paires d’entraînement et 54 de validation.
 
 Les résultats sont contrastés. Sur un protocole de développement commun, le SFT réduit la NLL moyenne de **1,532045 à 0,830098**, soit environ **45,8 %**, et réduit la répétition de 4-grammes d’environ **30,6 %**. Le DPO améliore encore légèrement la NLL, la terminaison et la répétition, mais n’augmente pas le nombre de réponses exactes. Surtout, ces gains portent sur la capacité à reproduire la distribution des réponses médicales du corpus, et non sur la justesse du triage. Sans schéma contraint ni garde-fous, SFT et DPO ne produisent chacun qu’un seul JSON valide sur 18 scénarios de développement. Le SFT retenu échoue ensuite sur les 18 scénarios de réserve : 0 JSON conforme, 17 générations au plafond, des répétitions importantes et au moins six faits patient inventés.
+
+Placé derrière l’API, le décodage contraint et les garde-fous déterministes, le système produit des réponses valides et retrouve les 6 cas critiques proposés sur le lot de développement. Mais les garde-fous corrigent ou remplacent la majorité des sorties : seules 5 réponses SFT sur 18 sont restituées telles quelles. La priorité observée est donc surtout celle des règles, pas celle du modèle.
 
 Le constat principal n’est donc pas que « le fine-tuning ne fonctionne pas ». Le SFT a bien appris son objectif. Le problème est un **désalignement entre les données et l’usage final** : les sources SFT sont principalement des questions-réponses médicales et des QCM, sans annotation de priorité de triage ; les préférences DPO sont généralistes, uniquement en anglais et non validées pour le triage. Un petit modèle peut apprendre à mieux répondre à ces données sans apprendre à distinguer de façon fiable l’urgence, l’information absente ou l’obligation de s’abstenir.
 
@@ -261,6 +263,8 @@ Le SFT final repart de la Base exacte, et non d’un ancien checkpoint entraîn�
 
 La loss ne porte pas sur le prompt utilisateur : seuls la réponse attendue et son signal de fin sont supervisés. Les 392 tenseurs LoRA sont vérifiés comme finis et modifiés. Une recharge dans un nouveau processus reproduit les 30 générations de contrôle à l’identique, ce qui prouve la portabilité de l’adaptateur dans l’environnement observé.
 
+Paramètres, métriques intermédiaires et manifeste de données de chaque run terminé sont importés dans un store MLflow 3.16 local (SQLite, hors Git), sans copier les sorties générées.
+
 ### 4.3 Recette DPO
 
 Le lot DPO contient 426 paires train et 54 validation, toutes en anglais. Le run final exécute 20 étapes depuis le SFT retenu. Les tenseurs de politique changent, tandis que la référence reste identique. La loss DPO de validation passe de 0,6355 à l’étape 10 à 0,6268 à l’étape 20 ; la préférence implicite atteint 66,7 %.
@@ -366,6 +370,8 @@ Le projet atteint les trois premiers niveaux sur certains périmètres. Il n’a
 | Réponses exactes normalisées, sur 30 | 0 | 5 | 5 | Gain SFT, aucun gain DPO |
 | Fraction de 4-grammes répétés | 0,2682 | 0,1860 | 0,1420 | Répétition réduite à chaque étape |
 
+Ces valeurs viennent de la comparaison commune en 4 bits. Le run d’entraînement SFT, évalué en FP16 dans son propre runner, rapporte une NLL de 1,4569 à 0,7118 sur les mêmes 479 exemples. Les deux séries vont dans le même sens mais ne sont pas comparables entre elles : seule la série commune sert à comparer Base, SFT et DPO.
+
 ### 6.2 Ce qui s’améliore réellement
 
 Entre Base et SFT :
@@ -424,13 +430,34 @@ Ce comportement est cohérent avec le fonctionnement d’un LLM. Le modèle ne r
 
 Le décodage JSON contraint corrige la forme, et les garde-fous peuvent remplacer certaines sorties dangereuses. Ils ne transforment pas la génération brute en raisonnement clinique validé.
 
-### 6.6 Décision modèle
+### 6.6 Le système complet : API, décodage contraint et garde-fous
+
+Les résultats précédents mesurent le modèle seul. Le service ajoute un schéma de sortie imposé à vLLM et des garde-fous déterministes : priorité plancher sur les signaux d’alerte explicites, règle `unknown ≠ absent`, détection des faits non fournis et remplacement conservateur des sorties malformées. Le même lot de 18 scénarios de développement a été rejoué à travers cette chaîne (API 0.4.0) pour Base, SFT et DPO :
+
+| Mesure, 18 scénarios | Base | SFT | DPO |
+|---|---:|---:|---:|
+| Réponses réussies | 17 | 18 | 18 |
+| Accord avec la priorité proposée | 16 | 15 | 15 |
+| Cas critiques classés `maximum`, sur 6 | 6 | 6 | 6 |
+| Sortie du modèle conservée telle quelle | 4 | 5 | 4 |
+| Sortie corrigée par un garde-fou | 8 | 5 | 5 |
+| Sortie entièrement remplacée | 5 | 8 | 9 |
+
+La Base échoue sur un scénario : la génération atteint la limite et l’API renvoie une erreur 502 plutôt qu’une réponse incomplète, ce qui est le comportement attendu. La revue aveugle qui suit relève encore 6 sorties SFT signalées sur 17, dont 3 faits non étayés et 5 corruptions ou répétitions, mais plus aucun délai dangereux.
+
+Trois limites encadrent cette lecture :
+
+- les garde-fous interviennent sur 13 sorties SFT sur 18 : la bonne priorité vient majoritairement des règles ;
+- le lot est un jeu de développement déjà consulté, sur lequel les règles ont été conçues ;
+- ce run utilise les adaptateurs antérieurs au corpus final v2.2. Le SFT v2.2 retenu n’a traversé la chaîne complète que lors des deux requêtes de démonstration décrites en 7.8.
+
+### 6.7 Décision modèle
 
 Le SFT reste le candidat du POC parce qu’il est plus simple et n’a pas la régression qualitative observée avec DPO. Cette sélection ne signifie pas qu’il est prêt. Elle signifie que l’adaptateur DPO supplémentaire n’apporte pas un bénéfice assez uniforme pour justifier sa complexité.
 
 Le résultat modèle doit être présenté ainsi :
 
-> Le SFT améliore fortement l’apprentissage des réponses du corpus, et le DPO améliore plusieurs propriétés de forme. Aucun des deux ne démontre une capacité fiable de triage. Le service déployé reste sûr uniquement parce qu’il impose un contrat, applique des garde-fous et maintient l’intervention humaine.
+> Le SFT améliore fortement l’apprentissage des réponses du corpus, et le DPO améliore plusieurs propriétés de forme. Aucun des deux ne démontre une capacité fiable de triage. Le service déployé est encadré par un contrat de sortie, des garde-fous et l’intervention humaine ; ce cadre limite les erreurs observées sans constituer une preuve de sécurité clinique.
 
 ---
 
@@ -439,15 +466,16 @@ Le résultat modèle doit être présenté ainsi :
 ### 7.1 Architecture déployée
 
 ```mermaid
-flowchart LR
-    U[Utilisateur<br/>scénario synthétique] --> CF[Cloudflare Pages<br/>frontend statique]
-    CF --> PX[Pages Function<br/>authentification + proxy]
-    PX --> M[Modal<br/>GPU T4 scale-to-zero]
-    M --> API[FastAPI<br/>validation + anonymisation]
-    API --> V[vLLM 0.15.0<br/>Qwen3 + LoRA]
-    V --> G[Schéma contraint<br/>garde-fous v3]
-    G --> A[(Volume d’audit<br/>privé)]
-    G --> PX
+flowchart TB
+    subgraph EDGE[Cloudflare — toujours disponible]
+        direction LR
+        U[Utilisateur<br/>scénario synthétique] --> CF[Pages<br/>frontend statique] --> PX[Pages Function<br/>authentification + proxy]
+    end
+    subgraph GPU[Modal — GPU T4 scale-to-zero]
+        direction LR
+        API[FastAPI<br/>validation + anonymisation] --> V[vLLM 0.15.0<br/>Qwen3 + LoRA SFT] --> G[Schéma contraint<br/>garde-fous v3] --> A[(Volume d’audit<br/>privé)]
+    end
+    EDGE <-->|secret amont côté serveur| GPU
 ```
 
 Le frontend et le GPU sont séparés. Le site statique reste disponible en permanence, tandis que le conteneur GPU revient à zéro après 120 secondes d’inactivité. Le navigateur ne connaît jamais le secret Modal : la Function Cloudflare vérifie le token de démonstration puis substitue le secret amont.
@@ -463,7 +491,13 @@ Le frontend et le GPU sont séparés. Le site statique reste disponible en perma
 7. Le service synchronise l’audit avant restitution ; un échec d’audit produit un refus 503.
 8. Le frontend affiche la priorité proposée, les éléments utilisés, l’incertitude et l’avertissement.
 
-### 7.3 Justification des composants
+La collecte des symptômes suit une grille explicite de dix rubriques : âge, durée, évolution, intensité, symptômes associés, antécédents, allergies, traitements, vulnérabilité et constantes. Tant qu’une rubrique n’est ni renseignée ni déclarée absente, l’API renvoie la question correspondante en français ou en anglais. Ce questionnaire est donc déterministe : l’ordre des questions ne s’adapte pas au raisonnement du modèle. Trois parcours de dialogue complets (12 appels) ont été exécutés sur GPU avec des audits réconciliés.
+
+### 7.3 Intégration au système d’information hospitalier
+
+Le POC expose un contrat HTTP JSON versionné, un identifiant d’interaction et un journal d’audit rapprochable. Il ne réalise aucune intégration réelle au SIH. Une intégration future passerait par un connecteur exposant les mêmes champs dans un standard d’interopérabilité (par exemple des ressources FHIR de type `Observation` ou `QuestionnaireResponse`), une authentification fédérée de l’établissement et une restitution dans l’outil du soignant plutôt que dans une interface séparée. Ces choix relèvent de la DSI et restent à spécifier.
+
+### 7.4 Justification des composants
 
 | Composant | Choix | Justification | Limite |
 |---|---|---|---|
@@ -476,7 +510,7 @@ Le frontend et le GPU sont séparés. Le site statique reste disponible en perma
 | Audit | Volume Modal JSONL | Persistance minimale et rapprochement des interactions | Politique de conservation à formaliser |
 | CI/CD | GitHub Actions | Tests, lint, manifestes et conteneur à chaque PR | CD manuelles pour protéger coût et publication |
 
-### 7.4 Inventaire des versions déployables
+### 7.5 Inventaire des versions déployables
 
 | Couche | Version ou identité |
 |---|---|
@@ -494,24 +528,27 @@ Le frontend et le GPU sont séparés. Le site statique reste disponible en perma
 
 Modal, Cloudflare et GitHub Actions sont des services gérés : ils n’exposent pas une unique « version de plateforme » comparable à une bibliothèque. La reproductibilité repose donc sur la version du SDK/CLI, la configuration, le code SHA, le nom de projet, la date, l’identité des artefacts et les preuves de déploiement.
 
-### 7.5 CI/CD
+### 7.6 CI/CD
 
 ```mermaid
-flowchart TD
-    C[Commit / Pull Request] --> T[252 tests + Ruff]
-    T --> J[Validation JSON des manifestes]
-    J --> D[Build Docker]
-    D --> S[Smoke sans réseau<br/>API + authentification]
-    S --> R{Revue et confirmation}
-    R -->|workflow_dispatch| MM[Déploiement Modal<br/>checksums + smoke synthétique]
-    R -->|workflow_dispatch| CP[Déploiement Cloudflare<br/>build + audit npm]
+flowchart TB
+    subgraph CI[CI automatique — chaque commit / PR, sans poids ni réseau]
+        direction LR
+        T[252 tests + Ruff] --> J[Validation JSON<br/>des manifestes] --> D[Build Docker] --> S[Smoke API<br/>+ authentification]
+    end
+    subgraph CD[CD manuelle — workflow_dispatch, environnements protégés]
+        direction LR
+        MM[Déploiement Modal<br/>checksums + smoke synthétique]
+        CP[Déploiement Cloudflare<br/>build + audit npm]
+    end
+    CI -->|revue et confirmation explicite| CD
 ```
 
 La CI automatique valide le code sans poids ni réseau. Les deux workflows CD sont manuels, utilisent des environnements GitHub protégés et demandent une confirmation explicite. Cette décision évite qu’un simple push démarre un GPU payant ou publie une nouvelle démonstration.
 
 La PR de livraison a passé 252 tests, Ruff, les manifestes, le build Docker et deux smokes de conteneur : API sans modèle, puis factory authentifiée sans inférence. Le déploiement Cloudflare observé a été réalisé par Direct Upload ; le workflow versionné constitue le chemin reproductible futur, mais n’a pas encore été observé en exécution réelle.
 
-### 7.6 Sécurité et traçabilité
+### 7.7 Sécurité et traçabilité
 
 Les contrôles implémentés incluent :
 
@@ -527,14 +564,14 @@ Les contrôles implémentés incluent :
 
 Les limites restantes sont importantes : token partagé de démonstration, absence d’identité individuelle, politique de conservation non approuvée, absence d’AIPD, absence de monitoring clinique et absence de protocole d’incident hospitalier.
 
-### 7.7 Latence et coût observés
+### 7.8 Latence et coût observés
 
 Deux scénarios synthétiques ont traversé le chemin public complet :
 
-- douleur thoracique FR : `maximum`, fallback sûr, 34,98 s à chaud ;
-- déficit neurologique EN : `maximum`, fallback sûr, 29,57 s à chaud.
+- douleur thoracique FR : `maximum`, remplacement conservateur par les garde-fous, 34,98 s à chaud ;
+- déficit neurologique EN : `maximum`, remplacement conservateur par les garde-fous, 29,57 s à chaud.
 
-Deux cold starts publics ont pris 111 et 117,5 secondes. Le frontend annonce donc le réveil et attend jusqu’à 190 secondes. L’ensemble construction, essais et smoke Modal a représenté 0,05 USD d’usage mesuré et 0 USD facturé après crédits lors de la preuve. Cette observation ne garantit pas le coût futur. Les volumes persistants peuvent coûter même lorsque le GPU est à zéro.
+Le chemin direct vers Modal, mesuré sur deux requêtes, donne un p50 de 19,4 s et un p95 de 31,5 s côté client. Deux cold starts publics ont pris 111 et 117,5 secondes. Le frontend annonce donc le réveil et attend jusqu’à 190 secondes. L’ensemble construction, essais et smoke Modal a représenté 0,05 USD d’usage mesuré et 0 USD facturé après crédits lors de la preuve. Cette observation ne garantit pas le coût futur. Les volumes persistants peuvent coûter même lorsque le GPU est à zéro.
 
 Ces latences conviennent à une démonstration, pas à un service de triage temps réel. Les leviers futurs sont : conteneur chaud pour un pilote programmé, modèle plus petit ou quantifié, compilation/caching maîtrisés, région proche, batching et mesure en charge.
 
@@ -563,7 +600,7 @@ La littérature ne conclut pas à une technique universellement supérieure. Une
 La première version ne doit pas commencer par l’architecture la plus complexe. Elle doit établir une baseline mesurable :
 
 1. corpus approuvé et versionné, par exemple recommandations HAS, NICE, OMS et protocoles locaux autorisés ;
-2. découpage respectant titres, sections, population, date et niveau de recommandation ;
+2. découpage respectant titres, sections, population, date et niveau de recommandation, en suivant les bonnes pratiques mesurées de découpage, recherche et reranking [19] ;
 3. recherche hybride : **BM25** pour les termes exacts et embeddings denses pour la proximité sémantique ;
 4. fusion des résultats puis reranking ;
 5. seuil de suffisance documentaire ;
@@ -583,30 +620,29 @@ MedRAG a évalué 41 combinaisons sur 7 663 questions médicales et observe des 
 | GraphRAG | Graphe d’entités et synthèses pour questions globales [13] | Explorer relations entre concepts, populations et recommandations | Coût d’indexation élevé ; inutile pour beaucoup de questions locales |
 | HippoRAG | Mémoire graphe et propagation pour questions multi-hop [14] | Piste pour relier plusieurs faits | Complexité prématurée pour le premier pilote |
 | RGAR | Itérer entre connaissance conceptuelle et faits patient [15] | Proche du raisonnement contextuel médical | Publication récente ; validation externe limitée |
-| DeepRAG | Décomposer une question biomédicale multi-hop et optimiser le processus [16] | Inspiration pour les cas complexes | Prépublication, tâche MedHopQA, pas un travail officiel du laboratoire DeepSeek |
+| DeepRAG | Décomposer une question biomédicale multi-hop et optimiser le processus [16] | Inspiration pour les cas complexes | Prépublication, résultats préliminaires sur MedHopQA ; ne pas en faire l’architecture par défaut |
 
-### 8.4 Clarification sur DeepSeek et DeepRAG
-
-DeepRAG utilise des capacités de décomposition hiérarchique attribuées à DeepSeek, associées à RAG Gym, à une supervision de processus et à des signaux issus d’UMLS. Il ne s’agit pas d’un article officiel du laboratoire DeepSeek. Les auteurs sont indépendants et les résultats annoncés sont préliminaires sur MedHopQA.
-
-Cette piste est intéressante pour décomposer une question complexe en sous-questions, mais elle ne doit pas devenir l’architecture par défaut du prochain prototype. Nous pouvons évaluer un modèle DeepSeek comme **candidat de raisonnement ou de benchmark**, et tester la décomposition comme méthode. Ni la marque du modèle ni le terme « deep » ne constituent une autorité médicale.
-
-### 8.5 Architecture cible proposée
+### 8.4 Architecture cible proposée
 
 ```mermaid
-flowchart TD
-    I[Contexte patient<br/>minimisé et structuré] --> C[Contrôles critiques<br/>déterministes]
-    C --> Q[Reformulation / décomposition<br/>sans ajouter de faits]
-    Q --> R[Recherche hybride<br/>BM25 + dense]
-    R --> RR[Reranking et diversité<br/>des sources]
-    RR --> E{Preuves suffisantes<br/>récentes et cohérentes ?}
-    E -->|Non| X[Abstention<br/>question complémentaire<br/>ou escalade humaine]
-    E -->|Oui| L[LLM comportemental<br/>SFT ciblé éventuel]
-    L --> F[Vérification des affirmations<br/>et citations]
-    F --> S{Schéma et sûreté<br/>valides ?}
-    S -->|Non| X
-    S -->|Oui| O[Proposition explicable<br/>jamais décision autonome]
-    O --> A[(Audit versionné)]
+flowchart TB
+    subgraph IN[1. Entrée]
+        direction LR
+        I[Contexte patient<br/>minimisé et structuré] --> C[Contrôles critiques<br/>déterministes] --> Q[Reformulation<br/>sans ajouter de faits]
+    end
+    subgraph KN[2. Connaissance — sinon abstention]
+        direction LR
+        R[Recherche hybride<br/>BM25 + dense] --> RR[Reranking et<br/>diversité des sources] --> E{Preuves suffisantes,<br/>récentes, cohérentes ?}
+    end
+    subgraph GEN[3. Génération contrôlée — sinon abstention]
+        direction LR
+        L[LLM comportemental<br/>SFT ciblé éventuel] --> F[Vérification des<br/>affirmations et citations] --> S{Schéma et sûreté<br/>valides ?}
+    end
+    subgraph OUT[4. Sortie auditée]
+        direction LR
+        O[Proposition explicable<br/>ou abstention / escalade humaine] --> AU[(Audit versionné)]
+    end
+    IN --> KN --> GEN --> OUT
 ```
 
 Cette architecture répartit les responsabilités :
@@ -617,7 +653,7 @@ Cette architecture répartit les responsabilités :
 - les règles gèrent les signaux critiques approuvés ;
 - le professionnel décide.
 
-### 8.6 Évaluer un RAG sans se raconter d’histoires
+### 8.5 Évaluer un RAG sans se raconter d’histoires
 
 L’évaluation doit être faite composant par composant :
 
@@ -719,7 +755,15 @@ Les préférences doivent pénaliser en priorité l’invention de faits, le sou
 - aucun automatisme de décision ;
 - arrêt du pilote si les seuils de sécurité régressent.
 
-### 9.6 Portes go/no-go proposées
+### 9.6 Projection industrielle : modèles de 32B+ paramètres
+
+Le cadrage prévoit d’étudier des modèles de 32B+ paramètres si le POC est concluant. Le POC n’est pas concluant sur le triage ; ce passage à l’échelle doit donc être traité comme une hypothèse à tester, pas comme la suite naturelle. Un modèle plus grand et déjà instruction-tuned suivra probablement mieux le schéma et les consignes, mais il ne corrigera pas l’absence de données de triage validées.
+
+Les conséquences d’infrastructure sont connues. Un modèle de 32B en 4 bits demande environ 16 à 20 Go de mémoire rien que pour les poids, contre moins de 2 Go pour Qwen3-1.7B dans la même précision : il faut un GPU de classe A100 ou H100 au lieu d’un T4. Le coût par heure et le cold start augmentent d’autant, ce qui rend le scale-to-zero moins intéressant et pousse vers un conteneur chaud aux heures de service. Un hébergement hospitalier ou HDS (Hébergeur de Données de Santé) certifié devient nécessaire dès qu’un contexte réel est traité.
+
+Le bon ordre est donc celui de la section 9.2 : comparer d’abord, sur le même jeu, le SFT actuel, un modèle plus capable sans fine-tuning et ce modèle avec RAG. La taille du modèle n’est retenue que si elle améliore la sûreté mesurée à un coût acceptable.
+
+### 9.7 Portes go/no-go proposées
 
 Les seuils numériques cliniques doivent être définis avec le référent médical. Le cadre de décision peut néanmoins être fixé dès maintenant :
 
@@ -732,7 +776,7 @@ Les seuils numériques cliniques doivent être définis avec le référent médi
 | Opérations | latence, coût, audit et disponibilité respectent le pilote | cold start ou perte d’audit incompatibles |
 | Gouvernance | responsable, droits, conservation et incident sont approuvés | responsabilité ou finalité ambiguë |
 
-### 9.7 Priorisation économique
+### 9.8 Priorisation économique
 
 La prochaine dépense ne devrait pas être un entraînement long. L’ordre rationnel est :
 
@@ -782,48 +826,22 @@ La suite recommandée n’oppose pas fine-tuning et RAG. Elle leur attribue des 
 
 ## 12. Références internes et preuves reproductibles
 
-### Données et gouvernance
+Chemins relatifs à la racine du dépôt [`ppluton/medical-triage-llm-poc`](https://github.com/ppluton/medical-triage-llm-poc).
 
-- [Registre des sources](../docs/governance/REGISTRE_SOURCES_DONNEES.md)
-- [Processus RGPD du corpus](../docs/governance/PROCESSUS_RGPD_CORPUS_V1.md)
-- [Audit du pipeline](../docs/evidence/PIPELINE_AUDIT_2026-09-05.md)
-- [Finalisation de confidentialité SFT v2.2](../docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md)
-- [Manifeste SFT v2.2](../data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json)
-- [Réancrage du lot DPO](../docs/evidence/DPO_V22_LINEAGE_REBIND_2026-09-16.md)
-
-### Entraînement et évaluation
-
-- [Résultat SFT final](../docs/evidence/SFT_V39_RESULT_2026-09-16.md)
-- [Preuve de recharge SFT](../docs/evidence/SFT_V40_RELOAD_RESULT_2026-09-16.md)
-- [Résultat DPO](../docs/evidence/DPO_V41_RESULT_2026-09-16.md)
-- [Comparaison et sélection](../docs/evidence/COMPARISON_V43_RESULT_2026-09-16.md)
-- [Réserve finale](../docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md)
-
-### API, déploiement et exploitation
-
-- [Évaluation vLLM/API](../docs/evidence/VLLM_API_V34_RESULT.md)
-- [Déploiement Modal](../docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md)
-- [Déploiement Cloudflare](../docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md)
-- [Évaluation de l’endpoint](../docs/technical/EVALUATION_ENDPOINT_V1.md)
-- [Frontend Cloudflare](../docs/technical/CLOUDFLARE_PAGES_FRONTEND_V1.md)
-- [CI finale sur `main`](https://github.com/ppluton/medical-triage-llm-poc/actions/runs/35103256545)
-
----
-
-## 13. Glossaire court
-
-| Terme | Définition accessible |
+| Sujet | Preuve |
 |---|---|
-| Adapter | Petit ensemble de poids ajouté au modèle de base |
-| Base model | Modèle préentraîné à continuer du texte, non spécialisé pour notre dialogue |
-| Checksum | Empreinte qui permet de vérifier qu’un fichier n’a pas changé |
-| DPO | Alignement à partir de paires réponse préférée / réponse rejetée |
-| EOS | Token indiquant la fin d’une génération |
-| Garde-fou | Contrôle externe au LLM qui refuse, corrige ou escalade une sortie |
-| Hallucination | Contenu plausible mais non étayé ou faux |
-| LoRA | Adaptation légère qui entraîne de petites matrices plutôt que tous les poids |
-| NLL | Mesure de probabilité attribuée aux réponses de référence ; plus faible est meilleur dans un protocole identique |
-| RAG | Recherche de documents puis génération fondée sur les passages récupérés |
-| SFT | Fine-tuning supervisé sur des paires instruction-réponse |
-| Triage | Priorisation initiale ; dans ce POC, uniquement une proposition pédagogique |
-| vLLM | Moteur de service optimisé pour l’inférence de LLM |
+| Registre des sources | `docs/governance/REGISTRE_SOURCES_DONNEES.md` |
+| Processus RGPD du corpus | `docs/governance/PROCESSUS_RGPD_CORPUS_V1.md` |
+| Audit du pipeline de données | `docs/evidence/PIPELINE_AUDIT_2026-09-05.md` |
+| Confidentialité SFT v2.2 | `docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md` |
+| Manifeste SFT v2.2 | `data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json` |
+| Réancrage du lot DPO | `docs/evidence/DPO_V22_LINEAGE_REBIND_2026-09-16.md` |
+| Résultat SFT final et recharge | `docs/evidence/SFT_V39_RESULT_2026-09-16.md`, `SFT_V40_RELOAD_RESULT_2026-09-16.md` |
+| Résultat DPO | `docs/evidence/DPO_V41_RESULT_2026-09-16.md` |
+| Comparaison et sélection | `docs/evidence/COMPARISON_V43_RESULT_2026-09-16.md` |
+| Réserve finale | `docs/evidence/SELECTED_RESERVE_V46_RESULT_2026-09-16.md` |
+| Système avec garde-fous et revue aveugle | `docs/evidence/VLLM_V37_RESULT_2026-09-16.md`, `STAGE2_SAFETY_V37_BLIND_REVIEW_2026-09-16.md` |
+| Suivi d’expériences MLflow | `docs/technical/SUIVI_EXPERIENCES_MLFLOW_V1.md` |
+| Déploiement Modal | `docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md` |
+| Déploiement Cloudflare | `docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md` |
+| CI finale sur `main` | [GitHub Actions, run 35103256545](https://github.com/ppluton/medical-triage-llm-poc/actions/runs/35103256545) |
