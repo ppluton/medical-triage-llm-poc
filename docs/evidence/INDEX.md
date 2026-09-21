@@ -20,6 +20,7 @@ Cet index classe les preuves versionnées. Une preuve décrit une mesure observ�
 - [STAGE2_SAFETY_V37_BLIND_REVIEW_2026-09-16.md](STAGE2_SAFETY_V37_BLIND_REVIEW_2026-09-16.md) — Revue qualitative aveugle des sorties v37.
 - [MODAL_DEPLOYMENT_2026-09-16.md](MODAL_DEPLOYMENT_2026-09-16.md) — Déploiement pilote Modal (GPU T4, scale-to-zero) et smoke tests rapprochés de l'audit.
 - [CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md](CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md) — Frontend Cloudflare Pages public, proxy authentifié vers Modal, deux scénarios synthétiques bout en bout.
+- [CD_GITHUB_ACTIONS_2026-09-21.md](CD_GITHUB_ACTIONS_2026-09-21.md) — Workflows de déploiement Modal et Cloudflare exécutés depuis `main`, parcours public vérifié après cold start, défauts corrigés.
 
 ## Preuves intermédiaires
 

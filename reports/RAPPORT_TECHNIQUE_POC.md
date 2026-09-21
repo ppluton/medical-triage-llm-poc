@@ -546,7 +546,7 @@ flowchart TB
 
 La CI automatique valide le code sans poids ni réseau. Les deux workflows CD sont manuels, utilisent des environnements GitHub protégés et demandent une confirmation explicite. Cette décision évite qu’un simple push démarre un GPU payant ou publie une nouvelle démonstration.
 
-La PR de livraison a passé 252 tests, Ruff, les manifestes, le build Docker et deux smokes de conteneur : API sans modèle, puis factory authentifiée sans inférence. Le déploiement Cloudflare observé a été réalisé par Direct Upload ; le workflow versionné constitue le chemin reproductible futur, mais n’a pas encore été observé en exécution réelle.
+La PR de livraison a passé 252 tests, Ruff, les manifestes, le build Docker et deux smokes de conteneur : API sans modèle, puis factory authentifiée sans inférence. Les deux workflows CD ont ensuite été exécutés depuis `main` : redéploiement Modal avec smoke 2/2, redéploiement Cloudflare, puis parcours public authentifié vérifié après un cold start de 131 s. Leur mise en service a révélé sept défauts de configuration, corrigés et documentés.
 
 ### 7.7 Sécurité et traçabilité
 
@@ -846,4 +846,5 @@ Chemins relatifs à la racine du dépôt [`ppluton/medical-triage-llm-poc`](http
 | Suivi d’expériences MLflow | `docs/technical/SUIVI_EXPERIENCES_MLFLOW_V1.md` |
 | Déploiement Modal | `docs/evidence/MODAL_DEPLOYMENT_2026-09-16.md` |
 | Déploiement Cloudflare | `docs/evidence/CLOUDFLARE_PAGES_DEPLOYMENT_2026-09-16.md` |
+| Déploiement continu par GitHub Actions | `docs/evidence/CD_GITHUB_ACTIONS_2026-09-21.md` |
 | CI finale sur `main` | [GitHub Actions, run 35103256545](https://github.com/ppluton/medical-triage-llm-poc/actions/runs/35103256545) |
