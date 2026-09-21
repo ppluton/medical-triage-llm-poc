@@ -48,7 +48,8 @@ jobs:
         run: |
           started=$(date +%s)
           for attempt in $(seq 1 12); do
-            status=$(curl -s -o /dev/null -w "%{http_code}" -m 160 "$TRIAGE_MODAL_URL/healthz" || true)
+            status=$(curl -s -o /dev/null -w "%{http_code}" -m 160 -H "Authorization: Bearer $TRIAGE_API_TOKEN" "$TRIAGE_MODAL_URL/healthz" || true)
+            echo "attempt $attempt: HTTP $status"
             if [ "$status" = "200" ]; then
               echo "Cold start ready after $(( $(date +%s) - started )) s (attempt $attempt)"
               exit 0
@@ -63,3 +64,9 @@ jobs:
           --url "$TRIAGE_MODAL_URL"
           --scenarios data/samples/modal-smoke-scenarios.json
           --output modal-smoke.json
+      - name: Summarize smoke results without response bodies
+        if: always()
+        run: >-
+          test -f modal-smoke.json && python -c "import json; r=json.load(open('modal-smoke.json'));
+          [print(x['id'], x['success'], x.get('http_status'), x.get('error'), x['client_latency_ms']) for x in r['records']]"
+          || echo "No smoke report"
