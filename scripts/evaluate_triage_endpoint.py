@@ -92,7 +92,7 @@ def main():
     with httpx.Client(
         base_url=args.url,
         headers={"Authorization": "Bearer " + token},
-        timeout=90,
+        timeout=190,
         follow_redirects=False,
     ) as client:
         report = evaluate(client, scenarios)
