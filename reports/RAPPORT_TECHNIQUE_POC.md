@@ -65,7 +65,7 @@ La réussite technique et la réussite clinique sont volontairement dissociées.
 
 | Niveau | Critère | État observé |
 |---|---|---|
-| Données | Corpus bilingue versionné, splits isolés, provenance et contrôles de confidentialité | Réalisé techniquement ; publication et certification RGPD non acquises |
+| Données | Corpus bilingue versionné, splits isolés, provenance et contrôles de confidentialité | Réalisé et publié sur Hugging Face ; certification RGPD non acquise |
 | Entraînement | SFT LoRA puis DPO reproductibles avec modèle et versions figés | Réalisé |
 | Comparaison | Base, SFT et DPO évalués sur un protocole commun | Réalisé sur développement ; résultat clinique non démontré |
 | Sûreté | Détection des sorties malformées, répétitives, dangereuses ou non étayées | Réalisé comme revue de projet, pas comme validation clinique |
@@ -215,7 +215,7 @@ Sur le corpus v2.2 :
 - aucun nom de patient, téléphone, email, carte, IBAN, IP ou référence patient directe n’a été retrouvé par le contrôle technique ;
 - 3 199 lignes conservent des candidats contextuels `PERSON`, `LOCATION` ou `DATE_TIME` sous une décision explicite, afin de ne pas masquer aveuglément auteurs, éponymes, anatomie ou durées.
 
-Cette chaîne ne constitue pas une certification d’anonymisation au sens du RGPD. La CNIL distingue l’anonymisation irréversible de la pseudonymisation ; un masquage automatique ne suffit pas à prouver qu’aucun recoupement n’est possible [6]. La publication du dataset reste donc bloquée avant revue humaine et juridique.
+Cette chaîne ne constitue pas une certification d’anonymisation au sens du RGPD. La CNIL distingue l’anonymisation irréversible de la pseudonymisation ; un masquage automatique ne suffit pas à prouver qu’aucun recoupement n’est possible [6]. Le dataset est publié à des fins pédagogiques sur Hugging Face, parce que toutes ses lignes proviennent de sources déjà publiques sous licences ouvertes ; sa fiche rappelle ces limites.
 
 ### 3.6 Traçabilité des transformations
 
@@ -835,6 +835,8 @@ Chemins relatifs à la racine du dépôt [`ppluton/medical-triage-llm-poc`](http
 | Audit du pipeline de données | `docs/evidence/PIPELINE_AUDIT_2026-09-05.md` |
 | Confidentialité SFT v2.2 | `docs/evidence/SFT_PRIVACY_FINALIZATION_2026-09-16.md` |
 | Manifeste SFT v2.2 | `data/manifests/derived-source-medical-qa-sft-v2.2-privacy-finalized.json` |
+| Dataset publié (SFT + DPO) | [huggingface.co/datasets/Pedro1321/chsa-triage-medical-qa-fr-en](https://huggingface.co/datasets/Pedro1321/chsa-triage-medical-qa-fr-en) |
+| Adaptateurs publiés (SFT v39, DPO v41) | [huggingface.co/Pedro1321/chsa-triage-qwen3-1.7b-lora](https://huggingface.co/Pedro1321/chsa-triage-qwen3-1.7b-lora) |
 | Réancrage du lot DPO | `docs/evidence/DPO_V22_LINEAGE_REBIND_2026-09-16.md` |
 | Résultat SFT final et recharge | `docs/evidence/SFT_V39_RESULT_2026-09-16.md`, `SFT_V40_RELOAD_RESULT_2026-09-16.md` |
 | Résultat DPO | `docs/evidence/DPO_V41_RESULT_2026-09-16.md` |
