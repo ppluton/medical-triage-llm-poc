@@ -1,178 +1,121 @@
 # Présentation du POC d’assistance au triage médical CHSA
 
-- Date : 2026-09-16
+- Date : 2026-09-21
 - Statut : `final_candidate`
-- Format : 12 diapositives, 16:9, 12 minutes de présentation et 3 minutes de démonstration
-- Support local : `output/pptx/poc-triage-medical-chsa-v47.pptx`
-- Sources : documents de cadrage, manifestes v2.2, résultats SFT v39, DPO v41, sélection v43, réserve v46, déploiements Modal et Cloudflare, CI de la PR #4 et [consignes de soutenance OpenClassrooms](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance)
+- Format : 14 diapositives 16:9, environ 12 minutes de présentation et 3 minutes de démonstration
+- Support : `poc-triage-medical-chsa.pptx`, généré localement hors Git (`output/`), notes orales incluses
+- Source unique des chiffres : [rapport technique](RAPPORT_TECHNIQUE_POC.md)
 
 ## Fil directeur
 
-Le projet ne cherche pas à présenter un modèle comme médecin autonome. Il démontre une chaîne technique gouvernée : données traçables, adaptation mesurée, résultat final négatif assumé, garde-fous explicites, endpoint cloud protégé et audit. Chaque affirmation de la soutenance correspond à une preuve versionnée.
+Le POC démontre une chaîne technique gouvernée et un résultat négatif mesuré : le fine-tuning apprend le corpus, mais le modèle seul ne sait pas trier ; les garde-fous encadrent la démonstration sans constituer une preuve de sécurité clinique. Chaque chiffre à l’écran provient du rapport et de ses preuves versionnées.
 
-## 1. POC d’assistance au triage médical
-
-**À l’écran**
-
-- Qwen3-1.7B, SFT LoRA, DPO, FastAPI, vLLM
-- Démonstrateur pédagogique CHSA
-- Décision humaine obligatoire
+## 1. Assistant IA de triage médical initial
 
 **Notes orales**
 
-Le POC recueille un contexte synthétique en français ou en anglais, propose un niveau de priorité encadré et conserve une trace d’audit. Il ne diagnostique pas, ne prescrit pas et ne remplace aucun professionnel. La présentation distingue ce que le modèle apprend, ce que le système sécurise et ce qui reste non validé.
+Bonjour. Je présente un POC d'assistant de triage initial pour le CHSA. Le système recueille un contexte, propose un des trois niveaux maximum, moderate ou deferred, l'explique et garde une trace d'audit. Il ne diagnostique pas, ne prescrit pas et ne remplace pas le soignant. Tout ce que je montre repose sur des données ouvertes et des scénarios synthétiques.
 
-## 2. Mission et périmètre
+## 2. Trois questions, pas « un LLM peut-il trier ? »
 
-**À l’écran**
-
-- Entrée : contexte symptomatique synthétique FR ou EN
-- Sorties : `maximum`, `moderate`, `deferred`
-- Avertissement et identifiant d’interaction
-- Aucun diagnostic ou usage sur de vrais patients
-- Valeur potentielle : collecte structurée, escalade conservatrice et traçabilité
+*Section : 1 · Mission*
 
 **Notes orales**
 
-L’objectif scolaire est une faisabilité technique de triage initial. L’API limite volontairement les sorties à trois valeurs. Sa valeur clinique potentielle réside dans une collecte plus structurée, une escalade prudente et une trace exploitable. Ces bénéfices restent des hypothèses à confirmer par une validation clinique indépendante.
+Le cadrage impose Qwen3-1.7B-Base, un SFT avec LoRA puis un DPO, un endpoint vLLM, une CI/CD et un rapport. Je n'ai pas cherché à répondre à la question : un LLM peut-il remplacer un triage clinique ? La réponse opérationnelle reste non. J'ai évalué trois questions techniques : adapter, aligner, déployer. Et j'ai séparé dès le départ la réussite technique de la réussite clinique.
 
-## 3. Chaîne de réalisation
+## 3. Chaque brique a un rôle différent
 
-**À l’écran**
-
-Sources ouvertes, gouvernance, corpus v2.2, SFT, DPO, comparaison, réserve, API et audit.
+*Section : 2 · Notions*
 
 **Notes orales**
 
-Le projet commence par les sources et leurs licences. Le pipeline nettoie et anonymise les données avant le SFT. Le DPO intervient ensuite sur des préférences séparées. Base, SFT et DPO sont comparés sur le même protocole de développement. Une réserve isolée sert au résultat final. Le modèle retenu est ensuite placé derrière FastAPI, vLLM et des garde-fous.
+Un modèle Base continue du texte : il ne sait pas suivre une consigne ni produire du JSON. Le SFT lui montre des paires question-réponse ; LoRA rend cet entraînement abordable en n'entraînant que de petites matrices ajoutées. Le DPO lui apprend à préférer une réponse à une autre. Point clé pour la suite : ces techniques n'ont pas le même rôle. Le fine-tuning apprend un comportement, le RAG apporte de la connaissance, les règles gèrent les signaux critiques.
 
-## 4. Corpus v2.2 et gouvernance
+## 4. Un corpus bilingue traçable… mais sans labels de triage
 
-**À l’écran**
-
-- 4 700 exemples bilingues
-- 3 721 train, 479 validation, 500 test
-- 2 474 FR et 2 226 EN
-- 31 occurrences de noms masquées sur 22 lignes
+*Section : 3 · Données*
 
 **Notes orales**
 
-Le premier corpus de 5 000 lignes contenait un défaut de transformation : 2 249 QCM sur 2 250 avaient perdu leurs choix. La correction privilégie la qualité et conduit à 4 700 exemples. Le rescan technique ne trouve plus d’identifiant direct, mais cela ne vaut ni certification RGPD ni anonymisation exhaustive.
+Les quatre sources imposées sont ouvertes, acquises à une révision figée, avec licence et checksum. Un audit du premier corpus a montré que la préparation avait perdu les choix de presque tous les QCM, tronqué des réponses et ne supervisait pas la fin de séquence. J'ai reconstruit plutôt que de viser le chiffre rond de 5 000. Mais retenez la limite : ce sont des questions médicales et des QCM. Il n'y a aucun label de priorité de triage. Cela explique une grande partie des résultats.
 
-## 5. SFT avec LoRA
+## 5. Anonymisation fail-closed, sans certification RGPD
 
-**À l’écran**
-
-- Qwen3-1.7B-Base, révision figée
-- Adaptateur LoRA, 150 étapes, seed 42
-- NLL validation : 1,4569 vers 0,7118 pendant le run
-- Recharge : 30 générations sur 30 identiques
+*Section : 3 · Gouvernance*
 
 **Notes orales**
 
-Le SFT montre au modèle les réponses attendues. LoRA entraîne de petits adaptateurs au lieu de modifier tous les poids, ce qui réduit l’empreinte GPU. La baisse de loss signifie que le modèle apprend mieux le corpus. Elle ne signifie pas 71 % de bonnes réponses et ne prouve aucune pertinence clinique. La recharge identique démontre la reproductibilité du checkpoint.
+Même avec des sources publiques, j'ai appliqué une chaîne de protection : minimisation, détection Presidio en français et en anglais, remplacement sans table de correspondance, puis rescan. Toute erreur bloque l'admission. Les candidats contextuels comme les noms d'auteurs ou les durées sont conservés sous une décision tracée, pour ne pas détruire le sens médical. Je ne revendique pas une anonymisation RGPD : ce serait une affirmation juridique que ce contrôle technique ne permet pas.
 
-## 6. DPO et décision de sélection
+## 6. SFT puis DPO, reproductibles et vérifiés
 
-**À l’écran**
-
-- 426 paires train, 54 validation
-- 20 étapes ; 392 tenseurs de politique modifiés
-- Meilleure terminaison et moins de répétition
-- SFT retenu à cause d’une régression qualitative DPO
+*Section : 4 · Entraînement*
 
 **Notes orales**
 
-Le DPO apprend à préférer une réponse choisie à une réponse rejetée. L’expérience a bien exécuté l’optimisation, mais elle reste courte et les préférences ne sont pas des décisions de triage validées. Le DPO améliore plusieurs métriques de forme sans améliorer le nombre de réponses exactes. La revue aveugle signale un cas diagnostic ou prescriptif supplémentaire. La règle de sélection retient donc le SFT v39.
+Le SFT repart de la Base exacte, avec LoRA rang 16, 150 étapes et une supervision limitée à la réponse et à son token de fin. J'ai vérifié que l'adaptateur rechargé reproduit exactement 30 générations sur 30. Le DPO part de ce SFT, 20 étapes sur 426 paires. Sa loss baisse et la préférence implicite atteint deux tiers : l'algorithme fait ce qu'on lui demande. Tout est fait sur GPU T4 Kaggle gratuit, avec checksums et versions figées.
 
-## 7. Réserve finale et conséquence de sûreté
+## 7. Le SFT apprend nettement le corpus ; le DPO améliore la forme
 
-**À l’écran**
-
-- 0 JSON conforme sur 18 scénarios
-- 17 sorties sur 18 au plafond de tokens
-- 18 sorties signalées
-- Au moins 6 faits patient inventés
+*Section : 5 · Résultats*
 
 **Notes orales**
 
-La réserve finale a été ouverte une seule fois après la sélection. Le modèle brut échoue au contrat de triage. Il répète, produit du texte malformé et invente des informations patient. Ce résultat négatif est essentiel : il montre que l’adaptateur seul ne peut pas constituer le produit. Le schéma contraint et les garde-fous deviennent des composants nécessaires du POC.
+Base, SFT et DPO sont rechargés dans le même runtime et évalués sur exactement les mêmes exemples. Le SFT réduit la NLL de 46 % et la répétition de 31 % ; il passe de 0 à 5 réponses exactes sur 30. Le fine-tuning a donc bien appris. Le DPO améliore surtout la forme : plus d'arrêts propres, moins de répétitions, mais aucun gain de contenu. Attention : la NLL mesure la ressemblance avec le corpus, pas la qualité du triage.
 
-## 8. Architecture cloud déployée
+## 8. Mais le modèle seul ne sait pas trier
 
-**À l’écran**
-
-Navigateur, Cloudflare Pages, Function proxy, Modal T4, FastAPI, vLLM, garde-fous et audit.
+*Section : 5 · Résultats*
 
 **Notes orales**
 
-Le frontend statique est hébergé sur Cloudflare Pages. Une Function contrôle le Bearer token et relaie la requête avec un token serveur. Modal démarre un GPU T4 à la demande, charge Qwen3 et l’adaptateur SFT, puis expose FastAPI et vLLM. Le service revient à zéro tâche après 120 secondes d’inactivité afin de préserver les crédits.
+Voici le résultat central, et il est négatif. Sans contrainte de format, SFT et DPO ne produisent qu'un JSON valide sur 18. Le SFT retenu, testé une seule fois sur la réserve isolée, obtient 0 sur 18, reste bloqué au plafond de longueur et invente des faits patient comme des constantes stables. Ce n'est pas que le fine-tuning ne marche pas : il a appris son objectif. C'est que l'objectif ne correspondait pas à la tâche. Ce résultat est gelé ; je ne l'ai pas utilisé pour retoucher le système.
 
-## 9. Preuve publique et protection
+## 9. Avec garde-fous : sorties valides, mais surtout grâce aux règles
 
-**À l’écran**
-
-- Domaine HTTPS actif
-- Rejet 401 avec mauvais token et 405 avec mauvaise méthode
-- Deux scénarios synthétiques FR/EN exercés de bout en bout
-- `maximum`, fallback sûr et audit rapproché pour les deux
+*Section : 6 · Système*
 
 **Notes orales**
 
-Le chemin public a été testé avec une douleur thoracique en français et un déficit neurologique en anglais. Les réponses ont été rapprochées du journal privé grâce à leurs identifiants. Les latences chaudes observées étaient environ 35 et 30 secondes. Deux cold starts ont pris 111 et 117,5 secondes. Cela prouve le raccord public sur deux cas, pas un benchmark en charge.
+Le service ne livre jamais la sortie brute. Il impose un schéma au décodage et applique des garde-fous déterministes. Sur les 18 scénarios, les six cas critiques ressortent bien en maximum. Mais regardez les barres : pour le SFT, 13 sorties sur 18 sont corrigées ou remplacées. La bonne priorité vient majoritairement des règles, pas du modèle. Ce run utilise les adaptateurs antérieurs au corpus final, sur un lot déjà consulté : c'est une preuve d'ingénierie, pas de sécurité clinique.
 
-## 10. CI/CD et reproductibilité
+## 10. Frontend toujours disponible, GPU uniquement à la demande
 
-**À l’écran**
-
-- 252 tests CI et Ruff
-- Build Docker et smoke du conteneur
-- Workflows Modal et Cloudflare à déclenchement manuel protégé
-- Versions, checksums, seeds, logs et décisions conservés
+*Section : 7 · Architecture*
 
 **Notes orales**
 
-La PR exécute les tests, le lint, la validation des manifestes et le build Docker. Les workflows de déploiement demandent une confirmation explicite pour éviter une publication ou une dépense GPU involontaire. Les poids lourds restent privés, mais leurs versions et empreintes sont consignées dans Git.
+Le site statique est sur Cloudflare Pages et reste disponible en permanence. Une Function Cloudflare vérifie le token de démonstration et appelle Modal avec un secret que le navigateur ne voit jamais. Côté Modal, un GPU T4 démarre à la demande et s'éteint après deux minutes d'inactivité. FastAPI valide et anonymise, vLLM génère sous schéma, les garde-fous vérifient, et l'audit est écrit avant toute réponse : s'il échoue, on renvoie une erreur. Le coût de la preuve a été de 5 centimes. En revanche un cold start prend environ deux minutes : c'est une démo, pas un service temps réel.
 
-## 11. Niveau de preuve et feuille de route
+## 11. Démo : deux scénarios synthétiques
 
-**À l’écran**
-
-- Prouvé : pipeline, entraînements, sélection, API cloud et audit sur deux cas
-- Partiel : robustesse et latence en conditions limitées
-- Non prouvé : pertinence clinique, charge, usage patient et conformité hospitalière
-- Suite : validation clinique, tests élargis, monitoring et procédure d’arrêt
+*Section : Démonstration*
 
 **Notes orales**
 
-Le POC satisfait l’attendu de démonstration technique et de reproductibilité. Il ne satisfait pas les conditions d’un usage réel. Une étape clinique indépendante doit valider les scénarios, les seuils et les risques. Un pilote hospitalier demanderait aussi une DPIA, une politique de conservation, une supervision et des procédures opérationnelles.
+Je lance la démo. Pendant le réveil du GPU, le frontend affiche l'attente. Premier scénario, douleur thoracique en français : la réponse donne maximum, les signaux d'alerte, l'avertissement et un identifiant d'interaction qu'on retrouve dans l'audit. Deuxième scénario en anglais. Je le dis clairement : dans ces deux cas, c'est le garde-fou qui a remplacé la sortie du modèle. Si la démo ne répond pas à temps, j'ai les captures et la preuve de déploiement.
 
-## 12. Conclusion et démonstration
+## 12. Répartir les responsabilités au lieu de tout demander aux poids
 
-**À l’écran**
-
-- Le SFT apprend le corpus et se recharge
-- Le DPO a été exécuté mais n’a pas été retenu
-- Le modèle brut échoue au triage final
-- Le système gouverné est déployé et auditable
+*Section : 8 · Stratégie*
 
 **Notes orales**
 
-Le résultat du projet tient dans cette distinction : l’entraînement améliore le composant modèle, tandis que l’architecture rend sa démonstration contrôlable. Je termine avec un scénario synthétique dans le frontend public. Si le GPU est froid, j’explique le scale-to-zero et j’utilise la preuve capturée plutôt que de dépasser le temps de soutenance.
+La leçon principale : on a demandé aux poids d'apprendre en même temps la connaissance, la procédure et la sécurité. Chaque technique est forte sur un besoin différent. L'architecture que je recommande sépare les rôles : des règles déterministes pour les signaux critiques, un RAG hybride pour une connaissance médicale versionnée et citable, un LLM pour comprendre et formuler, des vérificateurs pour la fidélité, et le professionnel qui décide.
 
-## Démonstration en trois minutes
+## 13. Mesurer avant de réentraîner
 
-1. Ouvrir `https://triage-poc.pierrepluton.com/`.
-2. Coller le token de démonstration sans l’afficher à l’écran.
-3. Choisir le scénario synthétique « Douleur thoracique ».
-4. Montrer les informations structurées puis lancer l’évaluation.
-5. Commenter la priorité, les signaux d’alerte, l’avertissement et l’identifiant d’interaction.
-6. Rappeler que le fallback déterministe protège la démonstration lorsque le texte brut du modèle n’est pas fiable.
+*Section : 9 · Recommandations*
 
-## Contrôles avant soutenance
+**Notes orales**
 
-- Réveiller Modal cinq minutes avant le passage si une démonstration immédiate est nécessaire.
-- Vérifier que le token est dans le presse-papiers, jamais visible dans les slides ou le terminal projeté.
-- Garder la preuve de déploiement ouverte comme solution de secours.
-- Utiliser uniquement les scénarios synthétiques fournis.
-- Ne jamais employer les expressions « validé cliniquement », « diagnostic » ou « prêt pour l’hôpital ».
+Ma recommandation est de ne pas dépenser le prochain budget en entraînement. D'abord un jeu d'évaluation de meilleure qualité et un corpus documentaire autorisé. Ensuite une baseline RAG comparée au modèle seul et à un modèle plus capable. Un nouveau SFT ou DPO seulement si un déficit de comportement précis est démontré, avec des données de triage validées par des soignants. Le passage à 32 milliards de paramètres prévu au cadrage reste une hypothèse : il change l'infrastructure et le coût, mais ne corrige pas l'absence de données de triage.
+
+## 14. Ce que le POC démontre, et ce qu'il ne démontre pas
+
+*Section : Conclusion*
+
+**Notes orales**
+
+Pour conclure : le POC atteint ses objectifs techniques et montre des pratiques souvent négligées, comme les checksums, l'isolement des jeux et la publication des résultats négatifs. Il ne démontre pas de capacité de triage du modèle, ni de sécurité clinique. La suite proposée donne à chaque brique sa responsabilité, puis exige une validation clinique indépendante. Merci, je suis prêt pour vos questions.
