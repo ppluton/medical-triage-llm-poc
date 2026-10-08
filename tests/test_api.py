@@ -95,5 +95,6 @@ def test_triage_exposes_actual_guardrail_intervention_without_raw_model_output()
         data = response.json()
         assert data["guardrail_status"] == status
         assert data["guardrail_version"] == "proposed-v3"
-        assert "guardrail_reasons" not in data
+        assert data["guardrail_reasons"] == []
+        assert data["model_proposal"] is None
         assert "raw_output" not in data

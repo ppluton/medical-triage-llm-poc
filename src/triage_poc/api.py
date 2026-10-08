@@ -26,6 +26,14 @@ SAFETY_NOTICE = (
     "Cette évaluation est une aide au triage et ne remplace pas un professionnel de santé."
 )
 API_VERSION = "0.4.0"
+PUBLIC_GUARDRAIL_REASONS = frozenset({
+    "explicit_proposed_warning_sign", "explicit_uncertainty_or_vulnerability",
+    "invented_vital_stability", "invented_stability_or_absence",
+    "invented_absence_of_other_symptoms", "invented_medical_history",
+    "invented_medication_status", "context_placeholder_in_output",
+    "html_entity_in_output", "schema_field_name_as_content", "repeated_phrase",
+    "likely_truncated_text", "proposed_priority_floor", "red_flags_grounded_from_input",
+})
 SAFETY_NOTICES = {
     "fr": SAFETY_NOTICE,
     "en": "This assessment assists triage and does not replace a healthcare professional.",
@@ -75,6 +83,7 @@ class PatientContext(StrictModel):
 class TriageRequest(StrictModel):
     language: Literal["fr", "en"]
     patient_context: PatientContext
+    include_model_proposal: bool = False
 
 
 class ModelResult(StrictModel):
@@ -88,6 +97,8 @@ class ModelResult(StrictModel):
 
 class TriageResponse(ModelResult):
     collection: CollectionProgress
+    model_proposal: ModelResult | None = None
+    guardrail_reasons: list[str] = Field(default_factory=list, max_length=20)
     guardrail_status: Literal["model_output", "corrected", "safe_fallback"] = "model_output"
     guardrail_version: str = "unconfigured"
     interaction_id: str
@@ -97,6 +108,7 @@ class TriageResponse(ModelResult):
 
 
 class ProviderResult(StrictModel):
+    model_proposal: ModelResult | None = None
     result: ModelResult
     model_version: str
     anonymized_input: TriageRequest
@@ -144,6 +156,10 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                 interaction_id=interaction_id, model_version=model_version,
                 safety_notice=SAFETY_NOTICES[request.language],
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
+                model_proposal=(
+                    inference.model_proposal if request.include_model_proposal else None),
+                guardrail_reasons=[reason for reason in inference.guardrail_reasons
+                                   if reason in PUBLIC_GUARDRAIL_REASONS],
                 guardrail_status=inference.guardrail_status,
                 guardrail_version=inference.guardrail_version,
                 collection=collection_progress(
@@ -154,6 +170,8 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                        "guardrail_status": inference.guardrail_status,
                        "guardrail_version": inference.guardrail_version,
                        "guardrail_reasons": inference.guardrail_reasons}
+            # Keep educational proposals out of the retained audit output.
+            content["output"]["model_proposal"] = None
             return response
         except HTTPException:
             raise

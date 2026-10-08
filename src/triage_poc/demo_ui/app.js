@@ -1,5 +1,13 @@
 const copy = {
   fr: {
+    proposalTitle: "Voir le modèle avant les garde-fous", proposalBefore: "1. Proposition du modèle", proposalRules: "2. Contrôles déclenchés",
+    proposalHelp: "Proposition non validée cliniquement. Son format et ses données identifiantes ont déjà été contrôlés. Ce n’est pas la sortie brute des tokens.",
+    proposalAfter: "3. Le résultat final après ces contrôles est affiché au-dessus.",
+    proposalMissing: "Proposition non fournie par cette version du service.",
+    noReasons: "Aucun motif d’intervention communiqué.",
+    apiTitle: "Montrer l’appel API FastAPI", apiHelp: "Dernier appel réel de cette page, via le proxy Cloudflare. Les en-têtes d’authentification ne sont pas affichés.",
+    apiDocs: "Ouvrir la documentation FastAPI / OpenAPI",
+
     journeyInput: "Saisir les faits", journeyInputHelp: "Un scénario fictif, des informations explicites.",
     journeyResult: "Comprendre le résultat", journeyResultHelp: "Une priorité et le rôle des garde-fous.",
     journeyComplete: "Compléter si nécessaire", journeyCompleteHelp: "Une information inconnue reste inconnue.",
@@ -31,6 +39,12 @@ const copy = {
     absentAnswer: "Aucun élément", answerRequired: "Répondez, indiquez une absence ou marquez l’information indisponible.",
   },
   en: {
+    proposalTitle: "Inspect the model before guardrails", proposalBefore: "1. Model proposal", proposalRules: "2. Triggered checks",
+    proposalHelp: "Not clinically validated. Format and identifying information have already been checked. This is not the raw token output.",
+    proposalAfter: "3. The final result after these checks appears above.",
+    proposalMissing: "Proposal not supplied by this service version.", noReasons: "No intervention reason reported.",
+    apiTitle: "Show the FastAPI request", apiHelp: "Last actual call from this page through the Cloudflare proxy. Authentication headers are not displayed.", apiDocs: "Open FastAPI / OpenAPI documentation",
+
     journeyInput: "Enter the facts", journeyInputHelp: "A fictional scenario with explicit information.",
     journeyResult: "Understand the result", journeyResultHelp: "A priority and the role of guardrails.",
     journeyComplete: "Fill in the gaps", journeyCompleteHelp: "Unknown information remains unknown.",
@@ -139,6 +153,8 @@ function renderResult(data) {
   byId("provenance").className = `provenance ${intervention}`;
   byId("provenance-title").textContent = copy[language][intervention][0];
   byId("provenance-description").textContent = copy[language][intervention][1];
+  byId("model-proposal").textContent = data.model_proposal ? JSON.stringify(data.model_proposal, null, 2) : copy[language].proposalMissing;
+  renderList("guardrail-reasons", (data.guardrail_reasons || []).map(describeReason), copy[language].noReasons);
   byId("summary").textContent = data.summary;
   renderList("rationale", data.clinical_rationale, language === "fr" ? "Aucun élément retourné." : "No element returned.");
   renderList("questions", data.follow_up_questions.length ? data.follow_up_questions : data.missing_information, language === "fr" ? "Aucune question complémentaire." : "No additional question.");
@@ -272,14 +288,18 @@ async function assess(context, errorElement, submit) {
     }
     byId("status").textContent = copy[language].running;
     byId("empty-result").querySelector("p").textContent = copy[language].running;
+    const payload = { language: requestLanguage, patient_context: context, include_model_proposal: true };
     const response = await fetch("/v1/triage", {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ language: requestLanguage, patient_context: context }),
+      body: JSON.stringify(payload),
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     currentContext = context;
-    renderResult(await response.json());
+    const data = await response.json();
+    byId("api-request").textContent = JSON.stringify(payload, null, 2);
+    byId("api-response").textContent = JSON.stringify(data, null, 2);
+    renderResult(data);
     byId("status").className = "status ready";
     byId("status").textContent = copy[language].ready;
   } catch (_) {
@@ -342,3 +362,65 @@ byId("triage-form").addEventListener("input", (event) => {
   if (!requestPending && event.target.id !== "token") clearResult();
 });
 applyPreset("chest");
+
+const reasonLabels = {
+  "explicit_proposed_warning_sign": [
+    "Signal d’alerte explicite : remplacement systématique par une règle proposée, même si le modèle avait la bonne priorité. Ce motif ne prouve pas une erreur du modèle.",
+    "Explicit warning sign: systematic replacement by a proposed rule, even if the model priority was correct. This reason does not prove a model error."
+  ],
+  "explicit_uncertainty_or_vulnerability": [
+    "Incertitude ou vulnérabilité explicite : plancher de priorité proposé.",
+    "Explicit uncertainty or vulnerability: proposed priority floor."
+  ],
+  "invented_vital_stability": [
+    "Stabilité des constantes non étayée par les entrées.",
+    "Vital stability unsupported by the input."
+  ],
+  "invented_stability_or_absence": [
+    "Stabilité ou absence de symptômes non étayée.",
+    "Unsupported stability or absence claim."
+  ],
+  "invented_absence_of_other_symptoms": [
+    "Absence d’autres symptômes non renseignée.",
+    "Absence of other symptoms not provided."
+  ],
+  "invented_medical_history": [
+    "Antécédents non étayés par les entrées.",
+    "Unsupported medical history."
+  ],
+  "invented_medication_status": [
+    "Traitement non étayé par les entrées.",
+    "Unsupported medication status."
+  ],
+  "context_placeholder_in_output": [
+    "Marqueur de contexte détecté dans le contenu.",
+    "Context placeholder detected in content."
+  ],
+  "html_entity_in_output": [
+    "Entité HTML détectée dans le texte.",
+    "HTML entity detected in output."
+  ],
+  "schema_field_name_as_content": [
+    "Nom de champ utilisé comme contenu.",
+    "Schema field name used as content."
+  ],
+  "repeated_phrase": [
+    "Répétition détectée par une heuristique.",
+    "Repetition detected by a heuristic."
+  ],
+  "likely_truncated_text": [
+    "Texte probablement tronqué selon une heuristique.",
+    "Likely truncated text according to a heuristic."
+  ],
+  "proposed_priority_floor": [
+    "Priorité remontée au plancher proposé.",
+    "Priority raised to proposed floor."
+  ],
+  "red_flags_grounded_from_input": [
+    "Signaux d’alerte réécrits à partir des entrées.",
+    "Warning signs rewritten from the input."
+  ]
+};
+function describeReason(code) {
+  return reasonLabels[code] ? `${reasonLabels[code][language === "fr" ? 0 : 1]} (${code})` : code;
+}

@@ -201,3 +201,8 @@ button:disabled { cursor: wait; opacity: .6; }
   .section-heading { flex-wrap: wrap; gap: 12px; }
   .guided-actions { flex-wrap: wrap; }
 }
+
+/* Educational evidence stays readable inside narrow result panels. */
+.technical-trace pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f4f6f8; padding: 16px; border-radius: 10px; font: 12px/1.65 ui-monospace, monospace; max-height: 440px; overflow: auto; }
+.technical-trace h3 { margin-top: 20px; font-size: 14px; }
+.technical-trace a { color: #155e75; }

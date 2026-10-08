@@ -1,0 +1,606 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Medical triage POC",
+    "version": "0.4.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/triage": {
+      "post": {
+        "summary": "Triage",
+        "operationId": "triage_v1_triage_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TriageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TriageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CollectionProgress": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "explicit-collection-v1-proposed"
+          },
+          "pending_fields": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "age_group",
+                "duration",
+                "evolution",
+                "intensity",
+                "associated_symptoms",
+                "medical_history",
+                "allergies",
+                "medications",
+                "vulnerability_factors",
+                "vitals"
+              ]
+            },
+            "type": "array",
+            "title": "Pending Fields"
+          },
+          "unavailable_fields": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "age_group",
+                "duration",
+                "evolution",
+                "intensity",
+                "associated_symptoms",
+                "medical_history",
+                "allergies",
+                "medications",
+                "vulnerability_factors",
+                "vitals"
+              ]
+            },
+            "type": "array",
+            "title": "Unavailable Fields"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/CollectionQuestion"
+            },
+            "type": "array",
+            "title": "Questions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "pending_fields",
+          "unavailable_fields",
+          "questions"
+        ],
+        "title": "CollectionProgress"
+      },
+      "CollectionQuestion": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "age_group",
+              "duration",
+              "evolution",
+              "intensity",
+              "associated_symptoms",
+              "medical_history",
+              "allergies",
+              "medications",
+              "vulnerability_factors",
+              "vitals"
+            ],
+            "title": "Field"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field",
+          "text"
+        ],
+        "title": "CollectionQuestion"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ModelResult": {
+        "properties": {
+          "triage_level": {
+            "type": "string",
+            "enum": [
+              "maximum",
+              "moderate",
+              "deferred"
+            ],
+            "title": "Triage Level"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Summary"
+          },
+          "clinical_rationale": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Clinical Rationale"
+          },
+          "missing_information": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Missing Information"
+          },
+          "follow_up_questions": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Follow Up Questions"
+          },
+          "red_flags": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Red Flags"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "triage_level",
+          "summary",
+          "clinical_rationale",
+          "missing_information"
+        ],
+        "title": "ModelResult"
+      },
+      "PatientContext": {
+        "properties": {
+          "age_group": {
+            "type": "string",
+            "enum": [
+              "pediatric",
+              "adult",
+              "older_adult",
+              "unknown"
+            ],
+            "title": "Age Group"
+          },
+          "symptoms": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Symptoms"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration"
+          },
+          "evolution": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evolution"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "associated_symptoms": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Associated Symptoms"
+          },
+          "vulnerability_factors": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Vulnerability Factors"
+          },
+          "confirmed_absent": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "associated_symptoms",
+                "medical_history",
+                "allergies",
+                "medications",
+                "vulnerability_factors"
+              ]
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Confirmed Absent"
+          },
+          "unavailable_fields": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "age_group",
+                "duration",
+                "evolution",
+                "intensity",
+                "associated_symptoms",
+                "medical_history",
+                "allergies",
+                "medications",
+                "vulnerability_factors",
+                "vitals"
+              ]
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Unavailable Fields"
+          },
+          "medical_history": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Medical History"
+          },
+          "allergies": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Allergies"
+          },
+          "medications": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Medications"
+          },
+          "vitals": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object",
+            "maxProperties": 20,
+            "title": "Vitals"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "age_group",
+          "symptoms"
+        ],
+        "title": "PatientContext"
+      },
+      "TriageRequest": {
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "title": "Language"
+          },
+          "patient_context": {
+            "$ref": "#/components/schemas/PatientContext"
+          },
+          "include_model_proposal": {
+            "type": "boolean",
+            "title": "Include Model Proposal",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "language",
+          "patient_context"
+        ],
+        "title": "TriageRequest"
+      },
+      "TriageResponse": {
+        "properties": {
+          "triage_level": {
+            "type": "string",
+            "enum": [
+              "maximum",
+              "moderate",
+              "deferred"
+            ],
+            "title": "Triage Level"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Summary"
+          },
+          "clinical_rationale": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Clinical Rationale"
+          },
+          "missing_information": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Missing Information"
+          },
+          "follow_up_questions": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Follow Up Questions"
+          },
+          "red_flags": {
+            "items": {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Red Flags"
+          },
+          "collection": {
+            "$ref": "#/components/schemas/CollectionProgress"
+          },
+          "model_proposal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ModelResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "guardrail_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Guardrail Reasons"
+          },
+          "guardrail_status": {
+            "type": "string",
+            "enum": [
+              "model_output",
+              "corrected",
+              "safe_fallback"
+            ],
+            "title": "Guardrail Status",
+            "default": "model_output"
+          },
+          "guardrail_version": {
+            "type": "string",
+            "title": "Guardrail Version",
+            "default": "unconfigured"
+          },
+          "interaction_id": {
+            "type": "string",
+            "title": "Interaction Id"
+          },
+          "safety_notice": {
+            "type": "string",
+            "title": "Safety Notice",
+            "default": "Cette évaluation est une aide au triage et ne remplace pas un professionnel de santé."
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "triage_level",
+          "summary",
+          "clinical_rationale",
+          "missing_information",
+          "collection",
+          "interaction_id",
+          "model_version",
+          "latency_ms"
+        ],
+        "title": "TriageResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

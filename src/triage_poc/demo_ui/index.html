@@ -168,6 +168,25 @@
               <ul id="red-flags"></ul>
             </div>
 
+            <details class="technical-trace" id="model-explanation">
+              <summary data-i18n="proposalTitle">Voir le modèle avant les garde-fous</summary>
+              <p class="trace-help" data-i18n="proposalHelp">Proposition non validée cliniquement. Son format et ses données identifiantes ont déjà été contrôlés. Ce n’est pas la sortie brute des tokens.</p>
+              <h3 data-i18n="proposalBefore">1. Proposition du modèle</h3>
+              <pre id="model-proposal"></pre>
+              <h3 data-i18n="proposalRules">2. Contrôles déclenchés</h3>
+              <ul id="guardrail-reasons"></ul>
+              <p class="trace-help" data-i18n="proposalAfter">3. Le résultat final après ces contrôles est affiché au-dessus.</p>
+            </details>
+            <details class="technical-trace" id="api-inspector">
+              <summary data-i18n="apiTitle">Montrer l’appel API FastAPI</summary>
+              <p class="trace-help" data-i18n="apiHelp">Dernier appel réel de cette page, via le proxy Cloudflare. Les en-têtes d’authentification ne sont pas affichés.</p>
+              <a href="/docs/" target="_blank" rel="noopener" data-i18n="apiDocs">Ouvrir la documentation FastAPI / OpenAPI</a>
+              <h3>POST /v1/triage · application/json</h3>
+              <pre id="api-request"></pre>
+              <h3 id="api-response-status">HTTP 200 · JSON</h3>
+              <pre id="api-response"></pre>
+            </details>
+
             <details class="technical-trace">
               <summary data-i18n="traceTitle">Détails de cette exécution</summary>
               <p class="trace-help" data-i18n="traceHelp">L’identifiant relie cet appel à son audit. La durée API exclut le réveil préalable du service.</p>
@@ -198,7 +217,7 @@
 
     <footer>
       <span>POC pédagogique · aucune donnée patient réelle</span>
-      <a href="/docs">Contrat OpenAPI</a>
+      <a href="/docs/">Contrat OpenAPI</a>
     </footer>
   </body>
 </html>

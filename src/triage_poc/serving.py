@@ -109,6 +109,8 @@ class VllmProvider:
             decision = apply_proposed_guardrails(context, cleaned, request.language)
             return ProviderResult(
                 result=decision.result,
+                model_proposal=(
+                    cleaned.model_copy(deep=True) if request.include_model_proposal else None),
                 model_version=self.version,
                 anonymized_input=TriageRequest(language=request.language, patient_context=context),
                 guardrail_status=decision.status,

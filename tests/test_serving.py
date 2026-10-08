@@ -249,3 +249,33 @@ def test_failure_audit_contains_only_bounded_category(tmp_path, reply, code):
     assert 'output' not in record and 'anonymized_input' not in record
     assert 'private fixture' not in audit.read_text() + response.text
     assert 'alice@example.org' not in audit.read_text() + response.text
+
+
+@pytest.mark.parametrize("include_proposal", [False, True])
+def test_educational_proposal_is_opt_in_redacted_and_not_audited(tmp_path, include_proposal):
+    proposal = {**RESULT, "triage_level": "maximum", "summary": "Contact alice@example.org"}
+    body = {"language": "fr", "include_model_proposal": include_proposal,
+            "patient_context": {"age_group": "adult", "intensity": "forte",
+                                "symptoms": ["douleur thoracique soudaine", "essoufflement"]}}
+    with httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(
+        200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(proposal)}}]},
+    ))) as transport:
+        provider = VllmProvider("http://localhost:8001/v1", "sft", "fixture",
+                                anonymizer=Redactor(), client=transport)
+        audit = tmp_path / "audit.jsonl"
+        response = TestClient(create_app(provider, JsonlAudit(audit))).post("/v1/triage", json=body)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["guardrail_status"] == "safe_fallback"
+    assert data["guardrail_reasons"] == ["explicit_proposed_warning_sign"]
+    assert data["triage_level"] == "maximum"
+    assert "alice@example.org" not in response.text
+    if include_proposal:
+        assert data["model_proposal"]["triage_level"] == "maximum"
+        assert data["model_proposal"]["summary"] == "Contact <EMAIL_ADDRESS>"
+        assert data["summary"] != data["model_proposal"]["summary"]
+    else:
+        assert data["model_proposal"] is None
+    assert json.loads(audit.read_text())["output"]["model_proposal"] is None
+    assert "Contact" not in audit.read_text()

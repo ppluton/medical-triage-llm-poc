@@ -75,3 +75,12 @@ def test_cloudflare_deploy_workflow_is_manual_and_gated():
     assert "CLOUDFLARE_API_TOKEN" in workflow
     assert "--project-name=chsa-triage-poc" in workflow
     assert "push:" not in workflow
+
+
+def test_published_openapi_matches_fastapi_application():
+    import json
+
+    from triage_poc.api import create_app
+
+    published = REPOSITORY_ROOT / "deploy/cloudflare_pages/static/docs/openapi.json"
+    assert json.loads(published.read_text()) == create_app().openapi()
