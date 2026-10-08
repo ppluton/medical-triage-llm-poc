@@ -9,5 +9,11 @@
   },
   "devDependencies": {
     "wrangler": "4.132.0"
+  },
+  "overrides": {
+    "miniflare": {
+      "sharp": "0.35.5",
+      "undici": "7.29.1"
+    }
   }
 }
