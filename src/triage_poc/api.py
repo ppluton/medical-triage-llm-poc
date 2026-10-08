@@ -88,6 +88,8 @@ class ModelResult(StrictModel):
 
 class TriageResponse(ModelResult):
     collection: CollectionProgress
+    guardrail_status: Literal["model_output", "corrected", "safe_fallback"] = "model_output"
+    guardrail_version: str = "unconfigured"
     interaction_id: str
     safety_notice: str = SAFETY_NOTICE
     model_version: str
@@ -142,6 +144,8 @@ def create_app(provider: TriageProvider | None = None, audit: AuditSink | None =
                 interaction_id=interaction_id, model_version=model_version,
                 safety_notice=SAFETY_NOTICES[request.language],
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
+                guardrail_status=inference.guardrail_status,
+                guardrail_version=inference.guardrail_version,
                 collection=collection_progress(
                     inference.anonymized_input.patient_context.model_dump(), request.language),
                 **result.model_dump())

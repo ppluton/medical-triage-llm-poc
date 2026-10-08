@@ -1,5 +1,17 @@
 const copy = {
   fr: {
+    journeyInput: "Saisir les faits", journeyInputHelp: "Un scénario fictif, des informations explicites.",
+    journeyResult: "Comprendre le résultat", journeyResultHelp: "Une priorité et le rôle des garde-fous.",
+    journeyComplete: "Compléter si nécessaire", journeyCompleteHelp: "Une information inconnue reste inconnue.",
+    originLabel: "Comment cette réponse a été obtenue",
+    resultCaption: "Résultat du système après contrôles. La décision reste celle du professionnel.",
+    traceTitle: "Détails de cette exécution", traceHelp: "L’identifiant relie cet appel à son audit. La durée API exclut le réveil préalable du service.",
+    collectionHelp: "Ces questions prédéfinies complètent les champs manquants. « Aucun élément » confirme une absence ; « Information indisponible » signifie que vous ne savez pas.",
+    model_output: ["Proposition du modèle conservée", "Les garde-fous ont conservé la proposition. Cela ne constitue pas une validation clinique."],
+    corrected: ["Proposition ajustée par les garde-fous", "Les contrôles ont modifié une partie de la réponse. Le résultat affiché associe la proposition du modèle et les règles."],
+    safe_fallback: ["Réponse de prudence fournie par les règles", "Les garde-fous ont remplacé la proposition du modèle. La priorité et le texte affichés proviennent de ce remplacement."],
+    unreported: ["Origine de la réponse non renseignée", "Cette version du service ne précise pas l’intervention des garde-fous. Ne pas attribuer le résultat au modèle seul."],
+    priorities: {maximum: "Maximale", moderate: "Intermédiaire", deferred: "Différée"},
     intro: "Cette interface illustre une chaîne gouvernée : collecte, anonymisation, modèle, garde-fous et audit. Elle ne produit ni diagnostic ni décision médicale autonome.",
     intakeTitle: "Informations disponibles", ageGroup: "Groupe d’âge", adult: "Adulte",
     pediatric: "Pédiatrique", olderAdult: "Personne âgée", unknown: "Inconnu",
@@ -7,11 +19,11 @@ const copy = {
     evolution: "Évolution", intensity: "Intensité", details: "Ajouter les éléments disponibles",
     associated: "Signes associés", history: "Antécédents pertinents", vulnerability: "Facteurs de vulnérabilité",
     accessToken: "Jeton d’accès à la démonstration", tokenHelp: "Utilisé pour cet appel uniquement. Il n’est pas enregistré.",
-    assess: "Lancer l’évaluation encadrée", resultTitle: "Évaluation proposée", waiting: "En attente",
+    assess: "Lancer l’évaluation encadrée", resultTitle: "Résultat expliqué", waiting: "En attente",
     empty: "Sélectionnez un scénario ou saisissez un contexte synthétique, puis lancez l’évaluation.",
     priority: "Priorité proposée", considered: "Éléments considérés", questions: "Informations à compléter",
     redFlags: "Signaux d’alerte relevés", latency: "Latence API", interaction: "Interaction", model: "Version modèle",
-    running: "Évaluation en cours", warming: "Réveil du modèle · jusqu’à 3 min", ready: "Réponse contrôlée", error: "Échec explicite",
+    running: "Évaluation en cours", warming: "Réveil du modèle · jusqu’à 3 min", ready: "Réponse reçue", error: "Échec explicite",
     required: "Renseignez au moins un symptôme synthétique et un jeton d’au moins 32 caractères.",
     unavailable: "L’évaluation est indisponible. Vérifiez le jeton ou consultez le journal technique expurgé.",
     guidedLabel: "Conversation guidée", guidedTitle: "Compléter sans recommencer",
@@ -19,6 +31,18 @@ const copy = {
     absentAnswer: "Aucun élément", answerRequired: "Répondez, indiquez une absence ou marquez l’information indisponible.",
   },
   en: {
+    journeyInput: "Enter the facts", journeyInputHelp: "A fictional scenario with explicit information.",
+    journeyResult: "Understand the result", journeyResultHelp: "A priority and the role of guardrails.",
+    journeyComplete: "Fill in the gaps", journeyCompleteHelp: "Unknown information remains unknown.",
+    originLabel: "How this response was produced",
+    resultCaption: "System result after checks. The professional remains responsible for the decision.",
+    traceTitle: "Execution details", traceHelp: "The identifier links this request to its audit. API time excludes the initial service wake-up.",
+    collectionHelp: "These predefined questions fill missing fields. “None” confirms absence; “Information unavailable” means you do not know.",
+    model_output: ["Model proposal retained", "The guardrails retained the proposal. This does not constitute clinical validation."],
+    corrected: ["Proposal adjusted by guardrails", "Checks changed part of the response. The displayed result combines the model proposal and rules."],
+    safe_fallback: ["Precautionary response supplied by rules", "Guardrails replaced the model proposal. The displayed priority and text come from that replacement."],
+    unreported: ["Response origin not reported", "This service version does not report guardrail intervention. Do not attribute the result to the model alone."],
+    priorities: {maximum: "Maximum", moderate: "Moderate", deferred: "Deferred"},
     intro: "This interface demonstrates a governed chain: collection, anonymization, model, guardrails and audit. It provides neither diagnosis nor autonomous medical decisions.",
     intakeTitle: "Available information", ageGroup: "Age group", adult: "Adult",
     pediatric: "Pediatric", olderAdult: "Older adult", unknown: "Unknown",
@@ -26,11 +50,11 @@ const copy = {
     evolution: "Evolution", intensity: "Intensity", details: "Add available details",
     associated: "Associated signs", history: "Relevant history", vulnerability: "Vulnerability factors",
     accessToken: "Demonstration access token", tokenHelp: "Used for this request only. It is not stored.",
-    assess: "Run governed assessment", resultTitle: "Proposed assessment", waiting: "Waiting",
+    assess: "Run governed assessment", resultTitle: "Result explained", waiting: "Waiting",
     empty: "Select a scenario or enter a synthetic context, then run the assessment.",
     priority: "Proposed priority", considered: "Elements considered", questions: "Information to complete",
     redFlags: "Warning signs identified", latency: "API latency", interaction: "Interaction", model: "Model version",
-    running: "Assessment running", warming: "Waking model · up to 3 min", ready: "Controlled response", error: "Explicit failure",
+    running: "Assessment running", warming: "Waking model · up to 3 min", ready: "Response received", error: "Explicit failure",
     required: "Enter at least one synthetic symptom and a token of at least 32 characters.",
     unavailable: "Assessment unavailable. Check the token or inspect the redacted technical log.",
     guidedLabel: "Guided conversation", guidedTitle: "Complete without starting over",
@@ -55,11 +79,14 @@ const presets = {
 let language = "fr";
 let currentContext = null;
 let pendingQuestions = [];
+let requestPending = false;
 const byId = (id) => document.getElementById(id);
 const asList = (value) => value.split(/\n|,/).map((item) => item.trim()).filter(Boolean);
 const optionalNumber = (id) => byId(id).value === "" ? undefined : Number(byId(id).value);
 
 function setLanguage(next) {
+  if (requestPending) return;
+  clearResult();
   language = next;
   document.documentElement.lang = next;
   document.querySelectorAll("[data-language]").forEach((button) => button.classList.toggle("active", button.dataset.language === next));
@@ -67,6 +94,8 @@ function setLanguage(next) {
 }
 
 function applyPreset(name) {
+  if (requestPending) return;
+  clearResult();
   const preset = presets[name];
   setLanguage(preset.language);
   byId("age-group").value = preset.age;
@@ -88,12 +117,28 @@ function renderList(id, values, fallback) {
   rows.forEach((value) => { const item = document.createElement("li"); item.textContent = value; list.append(item); });
 }
 
+function clearResult() {
+  byId("result").hidden = true;
+  byId("empty-result").hidden = false;
+  byId("follow-up-form").hidden = true;
+  byId("empty-result").querySelector("p").textContent = copy[language].empty;
+  byId("status").textContent = copy[language].waiting;
+  byId("status").className = "status idle";
+  currentContext = null;
+  pendingQuestions = [];
+}
+
 function renderResult(data) {
   byId("empty-result").hidden = true;
   byId("result").hidden = false;
   const priority = byId("priority");
   priority.className = `priority ${data.triage_level}`;
-  byId("priority-value").textContent = data.triage_level;
+  byId("priority-value").textContent = copy[language].priorities[data.triage_level] || data.triage_level;
+  const reported = data.guardrail_version && data.guardrail_version !== "unconfigured";
+  const intervention = reported && ["model_output", "corrected", "safe_fallback"].includes(data.guardrail_status) ? data.guardrail_status : "unreported";
+  byId("provenance").className = `provenance ${intervention}`;
+  byId("provenance-title").textContent = copy[language][intervention][0];
+  byId("provenance-description").textContent = copy[language][intervention][1];
   byId("summary").textContent = data.summary;
   renderList("rationale", data.clinical_rationale, language === "fr" ? "Aucun élément retourné." : "No element returned.");
   renderList("questions", data.follow_up_questions.length ? data.follow_up_questions : data.missing_information, language === "fr" ? "Aucune question complémentaire." : "No additional question.");
@@ -196,8 +241,18 @@ document.querySelectorAll("[data-language]").forEach((button) => button.addEvent
 document.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => applyPreset(button.dataset.preset)));
 
 async function assess(context, errorElement, submit) {
+  if (requestPending) return;
+  requestPending = true;
+  const requestLanguage = language;
+  byId("result").hidden = true;
+  byId("empty-result").hidden = false;
+  byId("empty-result").querySelector("p").textContent = copy[language].running;
+  document.querySelectorAll("[data-language], [data-preset], form input, form textarea, form select").forEach((control) => { control.disabled = true; });
+  byId("submit").disabled = true;
+  byId("follow-up-submit").disabled = true;
   const token = byId("token").value;
   errorElement.hidden = true;
+  byId("form-error").hidden = true;
   submit.disabled = true;
   byId("status").className = "status";
   byId("status").textContent = copy[language].running;
@@ -212,13 +267,15 @@ async function assess(context, errorElement, submit) {
         throw new Error(`HTTP ${health.status}`);
       }
       byId("status").textContent = copy[language].warming;
+      byId("empty-result").querySelector("p").textContent = copy[language].warming;
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
     byId("status").textContent = copy[language].running;
+    byId("empty-result").querySelector("p").textContent = copy[language].running;
     const response = await fetch("/v1/triage", {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ language, patient_context: context }),
+      body: JSON.stringify({ language: requestLanguage, patient_context: context }),
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     currentContext = context;
@@ -226,11 +283,18 @@ async function assess(context, errorElement, submit) {
     byId("status").className = "status ready";
     byId("status").textContent = copy[language].ready;
   } catch (_) {
+    byId("empty-result").querySelector("p").textContent = copy[language].unavailable;
     errorElement.textContent = copy[language].unavailable;
     errorElement.hidden = false;
+    byId("form-error").textContent = copy[language].unavailable;
+    byId("form-error").hidden = false;
     byId("status").className = "status error";
     byId("status").textContent = copy[language].error;
   } finally {
+    requestPending = false;
+    byId("submit").disabled = false;
+    byId("follow-up-submit").disabled = false;
+    document.querySelectorAll("[data-language], [data-preset], form input, form textarea, form select").forEach((control) => { control.disabled = false; });
     submit.disabled = false;
   }
 }
@@ -274,4 +338,7 @@ byId("follow-up-form").addEventListener("submit", async (event) => {
   }
 });
 
+byId("triage-form").addEventListener("input", (event) => {
+  if (!requestPending && event.target.id !== "token") clearResult();
+});
 applyPreset("chest");

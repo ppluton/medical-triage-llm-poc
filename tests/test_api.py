@@ -70,3 +70,30 @@ def test_triage_rejects_empty_symptoms_and_unconfigured_model():
         },
     )
     assert valid.status_code == 503
+
+
+def test_triage_exposes_actual_guardrail_intervention_without_raw_model_output():
+    class ReviewedProvider(FakeProvider):
+        status = "safe_fallback"
+
+        def triage(self, request):
+            result = super().triage(request)
+            result.guardrail_status = self.status
+            result.guardrail_version = "proposed-v3"
+            result.guardrail_reasons = ["private_internal_reason"]
+            return result
+
+    provider = ReviewedProvider()
+    client = TestClient(create_app(provider))
+    for status in ("model_output", "corrected", "safe_fallback"):
+        provider.status = status
+        response = client.post("/v1/triage", json={
+            "language": "fr",
+            "patient_context": {"age_group": "adult", "symptoms": ["synthetic"]},
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert data["guardrail_status"] == status
+        assert data["guardrail_version"] == "proposed-v3"
+        assert "guardrail_reasons" not in data
+        assert "raw_output" not in data

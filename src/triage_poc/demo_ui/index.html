@@ -21,7 +21,7 @@
       <section class="intro" aria-labelledby="page-title">
         <div>
           <p class="context">Assistant de triage initial — preuve de concept</p>
-          <h1 id="page-title">Recueillir les faits.<br>Rendre l’incertitude visible.</h1>
+          <h1 id="page-title">Comprendre chaque<br>proposition de triage.</h1>
         </div>
         <p class="intro-copy" data-i18n="intro">
           Cette interface illustre une chaîne gouvernée : collecte, anonymisation, modèle,
@@ -29,6 +29,11 @@
         </p>
       </section>
 
+      <ol class="journey" aria-label="Parcours de démonstration">
+        <li><span>01</span><div><strong data-i18n="journeyInput">Saisir les faits</strong><small data-i18n="journeyInputHelp">Un scénario fictif, des informations explicites.</small></div></li>
+        <li><span>02</span><div><strong data-i18n="journeyResult">Comprendre le résultat</strong><small data-i18n="journeyResultHelp">Une priorité et le rôle des garde-fous.</small></div></li>
+        <li><span>03</span><div><strong data-i18n="journeyComplete">Compléter si nécessaire</strong><small data-i18n="journeyCompleteHelp">Une information inconnue reste inconnue.</small></div></li>
+      </ol>
       <div class="workspace">
         <section class="intake-panel" aria-labelledby="intake-title">
           <div class="section-heading">
@@ -138,11 +143,17 @@
           </div>
 
           <div id="result" class="result" hidden>
+            <section id="provenance" class="provenance" aria-labelledby="provenance-title">
+              <span class="eyebrow" data-i18n="originLabel">Comment cette réponse a été obtenue</span>
+              <h3 id="provenance-title"></h3>
+              <p id="provenance-description"></p>
+            </section>
             <div id="priority" class="priority moderate">
               <span data-i18n="priority">Priorité proposée</span>
               <strong id="priority-value">—</strong>
             </div>
             <p id="summary" class="summary"></p>
+            <p class="result-caption" data-i18n="resultCaption">Résultat du système après contrôles. La décision reste celle du professionnel.</p>
 
             <div class="result-section">
               <h3 data-i18n="considered">Éléments considérés</h3>
@@ -157,11 +168,15 @@
               <ul id="red-flags"></ul>
             </div>
 
+            <details class="technical-trace">
+              <summary data-i18n="traceTitle">Détails de cette exécution</summary>
+              <p class="trace-help" data-i18n="traceHelp">L’identifiant relie cet appel à son audit. La durée API exclut le réveil préalable du service.</p>
             <div class="trace">
               <div><span data-i18n="latency">Latence API</span><strong id="latency">—</strong></div>
               <div><span data-i18n="interaction">Interaction</span><strong id="interaction">—</strong></div>
               <div><span data-i18n="model">Version modèle</span><strong id="model">—</strong></div>
             </div>
+            </details>
             <p id="safety" class="safety"></p>
 
             <form id="follow-up-form" class="follow-up" hidden>
@@ -169,6 +184,7 @@
                 <span data-i18n="guidedLabel">Conversation guidée</span>
                 <strong data-i18n="guidedTitle">Compléter sans recommencer</strong>
               </div>
+              <p class="collection-help" data-i18n="collectionHelp">Ces questions prédéfinies complètent les champs manquants. « Aucun élément » confirme une absence ; « Information indisponible » signifie que vous ne savez pas.</p>
               <div id="guided-questions"></div>
               <button id="follow-up-submit" type="submit" data-i18n="reassess">
                 Ajouter les réponses et réévaluer

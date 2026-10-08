@@ -167,3 +167,37 @@ footer a { color: var(--teal); }
   .trace div + div { border-left: 0; border-top: 1px solid var(--line); }
   footer { display: grid; gap: 10px; }
 }
+
+/* Honor HTML state even when component display rules use grid or flex. */
+[hidden] { display: none !important; }
+.intro { min-height: 200px; padding: 36px 0 28px; gap: 5vw; }
+h1 { font-size: clamp(2.2rem, 4.2vw, 3.8rem); line-height: 1.05; }
+.journey { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 0 0 28px; margin: 0; list-style: none; }
+.journey li { display: flex; gap: 12px; align-items: flex-start; }
+.journey li > span { font-size: .8rem; color: var(--teal); padding-top: 2px; font-weight: 700; }
+.journey strong, .journey small { display: block; }
+.journey strong { font-size: .9rem; }
+.journey small { margin-top: 5px; color: var(--ink-soft); line-height: 1.45; font-size: .8rem; }
+.workspace { border-radius: 16px; overflow: hidden; }
+input, select, textarea, .preset, #submit, #follow-up-submit { border-radius: 7px; }
+.result { gap: 20px; }
+.provenance { padding: 20px; background: #eaf2ef; border: 1px solid #bfd2c9; border-radius: 10px; }
+.provenance.safe_fallback, .provenance.corrected { background: #fff5e6; border-color: #e6cba0; }
+.provenance.unreported { background: #f0f2f3; border-color: var(--line); }
+.eyebrow { font-size: .73rem; color: var(--ink-soft); }
+.provenance h3 { margin: 8px 0; font-size: 1.05rem; line-height: 1.4; }
+.provenance p, .result-caption, .collection-help, .trace-help { margin: 0; font-size: .85rem; color: var(--ink-soft); line-height: 1.6; }
+.priority { border-radius: 8px; }
+.technical-trace .trace { margin-top: 14px; }
+.trace-help { padding-top: 12px; }
+button:disabled { cursor: wait; opacity: .6; }
+.result-panel { scroll-margin-top: 24px; }
+@media (max-width: 900px) { .journey { gap: 12px; } .intro { padding-top: 28px; } }
+@media (max-width: 600px) {
+  .journey { grid-template-columns: 1fr; gap: 14px; }
+  .journey small { margin-top: 2px; }
+  .intro { gap: 16px; }
+  .intake-panel, .result-panel { padding: 22px; }
+  .section-heading { flex-wrap: wrap; gap: 12px; }
+  .guided-actions { flex-wrap: wrap; }
+}
