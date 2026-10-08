@@ -1,6 +1,6 @@
 # Fiche de soutenance — POC LLM de triage médical
 
-- Date : 2026-09-16
+- Date : 2026-10-08
 - Statut : `final_candidate`
 - Usage : aide-mémoire personnel pour la présentation et les questions du jury
 - Sources : `reports/PRESENTATION_POC.md`, `reports/RAPPORT_TECHNIQUE_POC.md`, preuves versionnées et [consignes de soutenance OpenClassrooms](https://openclassrooms.com/fr/paths/2053/projects/3421/8586-livrables-et-soutenance)
@@ -15,16 +15,21 @@ Une chaîne auditable allant de données médicales ouvertes à un démonstrateu
 
 ## Déroulé conseillé
 
-| Temps | Sujet | Message à faire retenir |
-|---:|---|---|
-| 0:00–1:00 | Mission | Assistant pédagogique, aucune décision clinique autonome |
-| 1:00–3:00 | Données | Qualité, séparation des splits, anonymisation et traçabilité |
-| 3:00–5:30 | SFT et LoRA | Le modèle apprend mieux le corpus à coût GPU réduit |
-| 5:30–7:00 | DPO | L’optimisation fonctionne, mais le bénéfice n’est pas assez robuste |
-| 7:00–8:30 | Réserve finale | Le résultat négatif impose des garde-fous |
-| 8:30–10:30 | Architecture | Cloudflare, Modal, FastAPI, vLLM, audit et secrets |
-| 10:30–12:00 | CI/CD et limites | Reproductibilité prouvée, pertinence clinique non prouvée |
-| 12:00–15:00 | Démonstration | Parcours synthétique public et interprétation encadrée |
+| Temps | Slides | Sujet |
+|---|---|---|
+| 0:00–1:20 | 1–2 | Périmètre et mission |
+| 1:20–2:15 | 3 | Rôle de chaque brique |
+| 2:15–4:10 | 4–5 | Données et confidentialité |
+| 4:10–5:10 | 6 | SFT et DPO |
+| 5:10–7:35 | 7–8 | Comparaison et réserve finale |
+| 7:35–8:35 | 9 | Contribution des garde-fous |
+| 8:35–9:35 | 10 | Architecture et CI/CD |
+| 9:35–11:00 | 11 | Démonstration bornée, repli documenté |
+| 11:00–13:45 | 12–13 | Ouverture RAG et prochaines expériences |
+| 13:45–14:30 | 14 | Conclusion |
+| 14:30–15:00 | — | Marge |
+
+Le minutage est une cible à valider par répétition. Préparer un résultat de secours avant l’oral et l’identifier comme une exécution antérieure ; ne pas attendre plusieurs minutes en silence si le GPU se rendort. Le modèle revient à zéro après 120 secondes d’inactivité selon la configuration du POC.
 
 ## Glossaire à expliquer simplement
 
@@ -128,7 +133,7 @@ Récupérer le token de démonstration depuis le gestionnaire de secrets et le c
 
 ### Scénario conseillé
 
-Dans l’interface `/demo`, utiliser « Douleur thoracique » en français, puis basculer sur le scénario neurologique anglais. Montrer :
+Sur le frontend public `https://triage-poc.pierrepluton.com/` (la route `/demo` concerne le backend direct), utiliser « Douleur thoracique » en français, puis basculer sur le scénario neurologique anglais. Montrer :
 
 - les informations structurées et l’étiquette synthétique ;
 - le token collé sans être affiché ailleurs ;

@@ -1,8 +1,8 @@
 # Présentation du POC d’assistance au triage médical CHSA
 
-- Date : 2026-09-21
+- Date : 2026-10-08
 - Statut : `final_candidate`
-- Format : 14 diapositives 16:9, environ 12 minutes de présentation et 3 minutes de démonstration
+- Format : 14 diapositives 16:9, 15 minutes au total ; cible 14 min 30 dont 1 min 25 de démonstration
 - Support : `poc-triage-medical-chsa.pptx`, généré localement hors Git (`output/`), notes orales incluses
 - Source unique des chiffres : [rapport technique](RAPPORT_TECHNIQUE_POC.md)
 
@@ -30,7 +30,7 @@ Le cadrage impose Qwen3-1.7B-Base, un SFT avec LoRA puis un DPO, un endpoint vLL
 
 **Notes orales**
 
-Un modèle Base continue du texte : il ne sait pas suivre une consigne ni produire du JSON. Le SFT lui montre des paires question-réponse ; LoRA rend cet entraînement abordable en n'entraînant que de petites matrices ajoutées. Le DPO lui apprend à préférer une réponse à une autre. Point clé pour la suite : ces techniques n'ont pas le même rôle. Le fine-tuning apprend un comportement, le RAG apporte de la connaissance, les règles gèrent les signaux critiques.
+Un modèle Base est préentraîné à continuer du texte. Il n’est pas spécifiquement adapté au suivi de consignes ; leur respect et le format JSON ne sont pas garantis. Le SFT lui montre des paires question-réponse ; LoRA rend cet entraînement abordable en n'entraînant que de petites matrices ajoutées. Le DPO lui apprend à préférer une réponse à une autre. Point clé pour la suite : ces techniques n'ont pas le même rôle. Le fine-tuning apprend un comportement, le RAG apporte de la connaissance, les règles encadrent les signaux critiques ; celles du POC restent pédagogiques, sans validation clinique.
 
 ## 4. Un corpus bilingue traçable… mais sans labels de triage
 
@@ -62,7 +62,7 @@ Le SFT repart de la Base exacte, avec LoRA rang 16, 150 étapes et une supervisi
 
 **Notes orales**
 
-Base, SFT et DPO sont rechargés dans le même runtime et évalués sur exactement les mêmes exemples. Le SFT réduit la NLL de 46 % et la répétition de 31 % ; il passe de 0 à 5 réponses exactes sur 30. Le fine-tuning a donc bien appris. Le DPO améliore surtout la forme : plus d'arrêts propres, moins de répétitions, mais aucun gain de contenu. Attention : la NLL mesure la ressemblance avec le corpus, pas la qualité du triage.
+Base, SFT et DPO sont rechargés dans le même runtime et évalués sur exactement les mêmes exemples. Le SFT réduit la NLL de 46 % et la répétition de 31 % ; il passe de 0 à 5 réponses exactes sur 30. Le fine-tuning a donc bien appris. Le DPO améliore surtout la forme : plus d'arrêts propres, moins de répétitions, mais aucun gain sur les réponses exactes mesurées. Attention : la NLL mesure la ressemblance avec le corpus, pas la qualité du triage.
 
 ## 8. Mais le modèle seul ne sait pas trier
 
@@ -80,13 +80,13 @@ Voici le résultat central, et il est négatif. Sans contrainte de format, SFT e
 
 Le service ne livre jamais la sortie brute. Il impose un schéma au décodage et applique des garde-fous déterministes. Sur les 18 scénarios, les six cas critiques ressortent bien en maximum. Mais regardez les barres : pour le SFT, 13 sorties sur 18 sont corrigées ou remplacées. La bonne priorité vient majoritairement des règles, pas du modèle. Ce run utilise les adaptateurs antérieurs au corpus final, sur un lot déjà consulté : c'est une preuve d'ingénierie, pas de sécurité clinique.
 
-## 10. Frontend toujours disponible, GPU uniquement à la demande
+## 10. Frontend indépendant, GPU à la demande
 
 *Section : 7 · Architecture*
 
 **Notes orales**
 
-Le site statique est sur Cloudflare Pages et reste disponible en permanence. Une Function Cloudflare vérifie le token de démonstration et appelle Modal avec un secret que le navigateur ne voit jamais. Côté Modal, un GPU T4 démarre à la demande et s'éteint après deux minutes d'inactivité. FastAPI valide et anonymise, vLLM génère sous schéma, les garde-fous vérifient, et l'audit est écrit avant toute réponse : s'il échoue, on renvoie une erreur. Le coût de la preuve a été de 5 centimes. En revanche un cold start prend environ deux minutes : c'est une démo, pas un service temps réel.
+Le site statique est sur Cloudflare Pages, indépendamment du réveil du GPU ; ce découplage ne garantit pas une disponibilité permanente. Une Function Cloudflare vérifie le token de démonstration et appelle Modal avec un secret que le navigateur ne voit jamais. Côté Modal, un GPU T4 démarre à la demande et s'éteint après deux minutes d'inactivité. FastAPI valide et anonymise, vLLM génère sous schéma, les garde-fous vérifient, et l'audit est écrit avant toute réponse : s'il échoue, on renvoie une erreur. Le coût de la preuve a été de 5 centimes. En revanche un cold start prend environ deux minutes : c'est une démo, pas un service temps réel.
 
 ## 11. Démo : deux scénarios synthétiques
 
@@ -118,4 +118,8 @@ Ma recommandation est de ne pas dépenser le prochain budget en entraînement. D
 
 **Notes orales**
 
-Pour conclure : le POC atteint ses objectifs techniques et montre des pratiques souvent négligées, comme les checksums, l'isolement des jeux et la publication des résultats négatifs. Il ne démontre pas de capacité de triage du modèle, ni de sécurité clinique. La suite proposée donne à chaque brique sa responsabilité, puis exige une validation clinique indépendante. Merci, je suis prêt pour vos questions.
+Pour conclure : le POC atteint ses objectifs techniques et montre des pratiques souvent négligées, comme les checksums, l'isolement des jeux et la publication des résultats négatifs. Il ne démontre pas de capacité de triage du modèle, ni de sécurité clinique. La suite proposée donne à chaque brique sa responsabilité : des sources vérifiables, des règles à faire valider cliniquement et une décision humaine. Elle exige une validation clinique indépendante. Merci, je suis prêt pour vos questions.
+
+## Formulation de clôture à afficher
+
+Sources vérifiables, règles à valider cliniquement, décision humaine : la trajectoire proposée.
