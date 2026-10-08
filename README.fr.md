@@ -15,6 +15,8 @@ POC pédagogique bilingue d’un assistant de triage initial, construit avec **Q
 
 **Frontend public : [triage-poc.pierrepluton.com](https://triage-poc.pierrepluton.com/)**
 
+**Artefacts publiés :** [dataset (SFT + DPO)](https://huggingface.co/datasets/Pedro1321/chsa-triage-medical-qa-fr-en) · [adaptateurs LoRA SFT v39 et DPO v41](https://huggingface.co/Pedro1321/chsa-triage-qwen3-1.7b-lora)
+
 L’accès aux appels d’inférence nécessite un token de démonstration transmis séparément. Après une période d’inactivité, le premier appel peut prendre environ deux minutes : le GPU Modal démarre à la demande puis revient automatiquement à zéro tâche après 120 secondes.
 
 ## Ce qui a été construit

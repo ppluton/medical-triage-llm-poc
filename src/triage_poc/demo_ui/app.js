@@ -208,7 +208,7 @@ async function assess(context, errorElement, submit) {
         headers: { "Authorization": `Bearer ${token}` },
       });
       if (health.ok) break;
-      if (![502, 503].includes(health.status) || Date.now() >= readyDeadline) {
+      if (![502, 503, 504, 524].includes(health.status) || Date.now() >= readyDeadline) {
         throw new Error(`HTTP ${health.status}`);
       }
       byId("status").textContent = copy[language].warming;

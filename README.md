@@ -15,6 +15,8 @@ An educational bilingual initial-triage assistant built with **Qwen3-1.7B-Base**
 
 **Public frontend: [triage-poc.pierrepluton.com](https://triage-poc.pierrepluton.com/)**
 
+**Published artifacts:** [dataset (SFT + DPO)](https://huggingface.co/datasets/Pedro1321/chsa-triage-medical-qa-fr-en) · [LoRA adapters SFT v39 and DPO v41](https://huggingface.co/Pedro1321/chsa-triage-qwen3-1.7b-lora)
+
 Inference calls require a demonstration token shared separately. After an idle period, the first request may take about two minutes while Modal starts the GPU. The service then scales back to zero active tasks after 120 seconds.
 
 ## Verified project status
